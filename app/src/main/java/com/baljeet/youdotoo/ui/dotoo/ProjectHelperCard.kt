@@ -20,7 +20,7 @@ import com.baljeet.youdotoo.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.ui.theme.getTextColor
 
 @Composable
-fun projectDescriptionCard(project: ProjectWithProfiles) {
+fun ProjectHelperCard(project: ProjectWithProfiles) {
 
     Box{
         Row(

@@ -90,7 +90,7 @@ fun DoTooView(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 20.dp, start = 10.dp, end = 20.dp, bottom = 5.dp),
+                        .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -151,7 +151,7 @@ fun DoTooView(
                             .fillMaxWidth()
                     )
                     Spacer(modifier = Modifier.height(10.dp))
-                    projectDescriptionCard(
+                    ProjectHelperCard(
                         project = project
                     )
                 }
