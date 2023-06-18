@@ -1,0 +1,224 @@
+package com.baljeet.youdotoo.ui.projects
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.models.ProjectWithProfiles
+import com.baljeet.youdotoo.shared.styles.Nunito
+import com.baljeet.youdotoo.ui.createproject.createProjectView
+import com.baljeet.youdotoo.ui.destinations.DoTooViewDestination
+import com.baljeet.youdotoo.ui.theme.*
+import com.baljeet.youdotoo.util.SharedPref
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+
+
+@Destination
+@Composable
+fun ProjectsView(
+    navigator: DestinationsNavigator?
+) {
+    val viewModel = viewModel<ProjectsViewModel>()
+    ProjectScreenMainContent(viewModel = viewModel, navigator = navigator)
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProjectScreenMainContent(
+    viewModel: ProjectsViewModel?,
+    navigator: DestinationsNavigator?
+){
+    val sheetState = rememberStandardBottomSheetState(
+        skipHiddenState = false,
+        initialValue = SheetValue.Hidden
+    )
+    val sheetScaffoldState = rememberBottomSheetScaffoldState(
+        bottomSheetState = sheetState
+    )
+    val scope = rememberCoroutineScope()
+    BottomSheetScaffold(
+        scaffoldState = sheetScaffoldState,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+            createProjectView(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                sheetState = sheetState
+            )
+        },
+        modifier = Modifier
+            .clip(
+                shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
+            )
+
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp, start = 10.dp, end = 20.dp, bottom = 5.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = "Your DoToos",
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .weight(1f),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = 38.sp,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+
+                FilledIconButton(
+                    onClick = {
+                        scope.launch {
+                            sheetState.expand()
+                        }
+                    }, colors = IconButtonDefaults.filledIconButtonColors(
+                        containerColor = getCardColor()
+                    ),
+                    modifier = Modifier
+                        .height(40.dp)
+                        .width(40.dp)
+
+                ) {
+                    Icon(
+                        Icons.Default.Add,
+                        contentDescription = "Add list button",
+                        tint = getThemeColor()
+                    )
+                }
+            }
+            projectsLazyColumn(
+                viewModel = viewModel, Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(10.dp), navigator
+            )
+        }
+    }
+}
+
+
+@Composable
+fun projectsLazyColumn(
+    viewModel: ProjectsViewModel?,
+    modifier: Modifier,
+    navigator: DestinationsNavigator?
+) {
+    val projectsStateList = remember { mutableStateListOf<ProjectWithProfiles>() }
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(all = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        val projectOwned =
+            projectsStateList.filter { project -> project.project.ownerId == SharedPref.userId }
+        val projectViewing =
+            projectsStateList.filter { project -> project.project.viewerIds.contains(SharedPref.userId) }
+        val projectSharedToMe = projectsStateList.filter { project ->
+            project.project.collaboratorIds.contains(SharedPref.userId)
+        }
+
+        if (projectOwned.isNotEmpty()) {
+            item {
+                Text(
+                    text = "MY DOTOOS",
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    color = getTextColor()
+                )
+            }
+            items(projectOwned) { project ->
+                ProjectCardView(project = project) {
+                    navigator?.navigate(
+                        DoTooViewDestination(
+                            project = project
+                        )
+                    )
+                }
+            }
+            item {
+                Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
+            }
+        }
+        if (projectSharedToMe.isNotEmpty()) {
+            item {
+                Text(
+                    text = "SHARED WITH ME",
+                    fontFamily = FontFamily(Nunito.SemiBold.font),
+                    fontSize = 16.sp,
+                    color = getTextColor()
+                )
+            }
+            items(projectSharedToMe) { project ->
+                ProjectCardView(project = project) {
+                    navigator?.navigate(
+                        DoTooViewDestination(
+                            project = project
+                        )
+                    )
+                }
+            }
+            item {
+                Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
+            }
+        }
+        if (projectViewing.isNotEmpty()) {
+            item {
+                Text(
+                    text = "VIEWING",
+                    fontFamily = FontFamily(Nunito.SemiBold.font),
+                    fontSize = 16.sp,
+                    color = getTextColor()
+                )
+            }
+            items(projectViewing) { project ->
+                ProjectCardView(project = project) {
+                    navigator?.navigate(
+                        DoTooViewDestination(
+                            project = project
+                        )
+                    )
+                }
+            }
+        }
+    }
+    LaunchedEffect(key1 = true) {
+        viewModel?.projectState?.collectLatest { state ->
+            state.projects.let { projects ->
+                projectsStateList.clear()
+                projectsStateList.addAll(projects)
+            }
+        }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultProjectPreview() {
+    ProjectScreenMainContent(navigator = null, viewModel = null)
+}
