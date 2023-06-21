@@ -11,7 +11,7 @@ object SharedPref {
 
 
     fun init(context : Context) {
-        sharedPref = context.getSharedPreferences("Expiry_tracker", MODE )
+        sharedPref = context.getSharedPreferences("DoToo_88", MODE )
     }
 
     private inline fun SharedPreferences.edit(operation: (SharedPreferences.Editor) -> Unit) {
