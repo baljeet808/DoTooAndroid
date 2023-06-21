@@ -43,8 +43,7 @@ fun ChatView(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .background(color = getCardColor()),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 

@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.models.DoTooWithProfiles
 import com.baljeet.youdotoo.shared.views.profilesLazyRow
+import com.baljeet.youdotoo.ui.theme.getCardColor
 import com.baljeet.youdotoo.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.ui.theme.getTextColor
 
@@ -30,7 +31,7 @@ fun DoTooHelperCard(doToo: DoTooWithProfiles) {
             modifier = Modifier
                 .shadow(elevation = 0.dp, shape = RoundedCornerShape(8.dp))
                 .background(
-                    color = MaterialTheme.colorScheme.background,
+                    color = getCardColor(),
                     shape = RoundedCornerShape(8.dp)
                 )
                 .fillMaxWidth()

@@ -2,6 +2,7 @@ package com.baljeet.youdotoo.ui.chat
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,9 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.shared.styles.Nunito
-import com.baljeet.youdotoo.ui.theme.getCardColor
-import com.baljeet.youdotoo.ui.theme.getOppositeOnCardColor
-import com.baljeet.youdotoo.ui.theme.getTextColor
+import com.baljeet.youdotoo.ui.theme.*
 
 /**
  * Updated by Baljeet singh on 18th June, 2023
@@ -41,17 +40,17 @@ fun MessageBoxView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .padding(10.dp)
+            .background(
+                color = getCardColor(),
+                shape = RoundedCornerShape(20.dp)
+            )
     ) {
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(
-                    color = getCardColor(),
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(10.dp),
+                .padding(top = 10.dp, bottom = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -74,13 +73,15 @@ fun MessageBoxView(
                 },
                 textStyle = TextStyle(
                     fontFamily = FontFamily(Nunito.Normal.font),
-                    fontSize = 14.sp
+                    fontSize = 16.sp,
+                    color = getTextColor()
                 ),
                 placeholder = {
                     Text(
                         text = "Write message here...",
                         fontFamily = FontFamily(Nunito.Normal.font),
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
+                        color = Color.Gray
                     )
                 },
                 keyboardOptions = KeyboardOptions(
@@ -93,19 +94,13 @@ fun MessageBoxView(
                 ),
                 maxLines = 5,
                 modifier = Modifier
-                    .border(
-                        width = 1.dp,
-                        shape = RoundedCornerShape(20.dp),
-                        brush = Brush.linearGradient(
-                            colors = listOf(
-                                getTextColor(),
-                                getTextColor()
-                            )
-                        )
-                    )
                     .weight(0.8F),
                 colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = androidx.compose.material3.MaterialTheme.colorScheme.background,
+                    backgroundColor = if (isSystemInDarkTheme()) {
+                        DotooDarkerGray
+                    } else {
+                        Color.White
+                    },
                     focusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     errorIndicatorColor = Color.Transparent,
