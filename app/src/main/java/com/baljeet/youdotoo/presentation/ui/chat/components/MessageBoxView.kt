@@ -24,7 +24,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getOppositeOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import com.baljeet.youdotoo.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 
 /**
  * Updated by Baljeet singh on 18th June, 2023

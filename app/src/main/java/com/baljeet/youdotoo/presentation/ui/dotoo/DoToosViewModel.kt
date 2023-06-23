@@ -1,10 +1,10 @@
 package com.baljeet.youdotoo.presentation.ui.dotoo
 
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.models.DoTooItem
-import com.baljeet.youdotoo.models.DoTooWithProfiles
-import com.baljeet.youdotoo.models.ProjectWithProfiles
-import com.baljeet.youdotoo.util.SharedPref
+import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

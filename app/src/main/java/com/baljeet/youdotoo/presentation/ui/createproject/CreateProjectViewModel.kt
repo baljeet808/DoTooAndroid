@@ -1,8 +1,8 @@
 package com.baljeet.youdotoo.presentation.ui.createproject
 
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.models.Project
-import com.baljeet.youdotoo.util.SharedPref
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow

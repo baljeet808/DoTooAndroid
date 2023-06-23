@@ -3,9 +3,9 @@ package com.baljeet.youdotoo.presentation.ui.signup
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.baljeet.youdotoo.models.User
-import com.baljeet.youdotoo.util.SharedPref
-import com.baljeet.youdotoo.util.asHashMap
+import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.asHashMap
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore

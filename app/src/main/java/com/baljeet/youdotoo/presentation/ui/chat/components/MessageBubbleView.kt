@@ -16,10 +16,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.baljeet.youdotoo.models.*
-import com.baljeet.youdotoo.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
-import com.baljeet.youdotoo.util.toNiceDateTimeFormat
+import com.baljeet.youdotoo.common.toNiceDateTimeFormat
+import com.baljeet.youdotoo.domain.models.*
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime

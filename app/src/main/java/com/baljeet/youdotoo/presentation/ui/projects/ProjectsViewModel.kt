@@ -2,10 +2,10 @@ package com.baljeet.youdotoo.presentation.ui.projects
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.baljeet.youdotoo.models.ProjectWithProfiles
-import com.baljeet.youdotoo.models.Project
-import com.baljeet.youdotoo.models.User
-import com.baljeet.youdotoo.util.SharedPref
+import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -43,7 +43,8 @@ class ProjectsViewModel: ViewModel() {
             if(snapshot != null && error == null ){
                 val projects = ArrayList<Project>()
                 for (project in snapshot){
-                    projects.add(Project(
+                    projects.add(
+                        Project(
                         id = project.getString("id")?:"",
                         name = project.getString("name")?:"",
                         description = project.getString("description")?:"",

@@ -1,12 +1,12 @@
 package com.baljeet.youdotoo.presentation.ui.createDoToo
 
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.models.DoTooItem
-import com.baljeet.youdotoo.models.Project
-import com.baljeet.youdotoo.util.ApiCallState
-import com.baljeet.youdotoo.util.DueDates
-import com.baljeet.youdotoo.util.Priorities
-import com.baljeet.youdotoo.util.SharedPref
+import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.common.ApiCallState
+import com.baljeet.youdotoo.common.DueDates
+import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

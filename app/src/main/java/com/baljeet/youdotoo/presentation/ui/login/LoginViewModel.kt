@@ -3,7 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.login
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.baljeet.youdotoo.util.SharedPref
+import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
