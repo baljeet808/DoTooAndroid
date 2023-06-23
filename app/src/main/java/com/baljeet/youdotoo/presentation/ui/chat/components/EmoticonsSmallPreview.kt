@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.models.Interaction
 import com.baljeet.youdotoo.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 /**
