@@ -10,7 +10,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.ViewModelProvider
 import com.baljeet.youdotoo.ui.NavGraph
 import com.baljeet.youdotoo.ui.destinations.*
-import com.baljeet.youdotoo.ui.theme.YouDoTooTheme
+import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.baljeet.youdotoo.util.SharedPref
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
