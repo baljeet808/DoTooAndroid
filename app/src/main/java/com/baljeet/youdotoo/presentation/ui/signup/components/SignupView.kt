@@ -1,9 +1,11 @@
-package com.baljeet.youdotoo.presentation.ui.signup
+package com.baljeet.youdotoo.presentation.ui.signup.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,41 +13,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.ui.destinations.ProjectsViewDestination
+import com.baljeet.youdotoo.presentation.ui.signup.SignupViewModel
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.presentation.ui.theme.DotooOrange
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.flow.collectLatest
 
-
-@Destination
 @Composable
 fun SignupView(
-    navigator: DestinationsNavigator?
+    navigateToProjects : () -> Unit,
+    signupState : SignupViewModel.SignUpState,
+    performSignup : (email : String, password : String, name : String) -> Unit
 ) {
     val context = LocalContext.current
 
-    val viewModel = viewModel<SignupViewModel>()
-
     LaunchedEffect(key1 = true ){
-        viewModel.state.collectLatest { state->
-            state.signUpError?.let { error->
-                Toast.makeText(
-                    context,
-                    error,
-                    Toast.LENGTH_SHORT
-                ).show()
-                viewModel.resetState()
-            }
-            state.userId?.let {
-                navigator?.navigate(ProjectsViewDestination)
-                viewModel.resetState()
-            }
+        signupState.signUpError?.let { error->
+            Toast.makeText(
+                context,
+                error,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+        signupState.userId?.let {
+            navigateToProjects()
         }
     }
 
@@ -63,7 +56,7 @@ fun SignupView(
             modifier = Modifier
                 .requiredWidth(600.dp)
                 .requiredHeight(320.dp)
-                .offset(y = -110.dp)
+                .offset(y = (-110).dp)
                 .rotate(-15f)
                 .background(color = DotooOrange)
 
@@ -125,7 +118,10 @@ fun SignupView(
                     },
                     placeholder = { Text(text = "Your Name") },
                     maxLines = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
                 OutlinedTextField(
                     value = email,
@@ -139,7 +135,10 @@ fun SignupView(
                     },
                     placeholder = { Text(text = "Your Email") },
                     maxLines = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
                 OutlinedTextField(
                     value = password,
@@ -154,12 +153,20 @@ fun SignupView(
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp)
+                        .padding(top = 10.dp),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            performSignup(email, password, name)
+                        }
+                    )
                 )
 
                 Button(
                     onClick = {
-                        viewModel.performSignup(name, email, password)
+                        performSignup(email, password, name)
                     },
                     colors = ButtonDefaults
                         .buttonColors(containerColor = DotooGreen),

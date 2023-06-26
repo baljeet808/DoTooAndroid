@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.dotoo
+package com.baljeet.youdotoo.presentation.ui.dotoo.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

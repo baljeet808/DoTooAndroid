@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.dotoo
+package com.baljeet.youdotoo.presentation.ui.dotoo.components
 
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.animateContentSize
@@ -26,34 +26,31 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.TrackerObject
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getOppositeOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.ui.destinations.ChatViewDestination
-import com.baljeet.youdotoo.ui.destinations.createDoTooViewDestination
-import com.baljeet.youdotoo.ui.theme.*
-import com.baljeet.youdotoo.common.*
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalPagerApi::class)
-@Destination
 @Composable
 fun DoTooView(
-    navigator: DestinationsNavigator?,
-    project: ProjectWithProfiles
+    project: ProjectWithProfiles,
+    doToosState : List<DoTooWithProfiles>,
+    tracker : TrackerObject,
+    navigateToCreateDoToo : (project : Project) -> Unit,
+    navigateToChatView : (doToo : DoTooWithProfiles) -> Unit,
+    toggleDoToo : (doToo : DoTooWithProfiles) -> Unit
 ) {
     val tabs = listOf(
         DoTooPriorityTab.All,
@@ -61,28 +58,12 @@ fun DoTooView(
         DoTooPriorityTab.Done,
     )
 
-    val viewModel = viewModel<DoToosViewModel>()
     val lazyListState = rememberLazyListState()
     val pagerState = rememberPagerState()
 
     val cardColor = getOnCardColor()
     val isDark = isSystemInDarkTheme()
     val scope = rememberCoroutineScope()
-
-
-    val doToosStateList = remember { mutableStateListOf<DoTooWithProfiles>() }
-
-    viewModel.init(project = project)
-    LaunchedEffect(key1 = true) {
-        viewModel.doToosState.collectLatest { state ->
-            state.doToos?.let { dotoos ->
-                doToosStateList.clear()
-                doToosStateList.addAll(dotoos)
-            } ?: kotlin.run {
-                //m Toast.makeText(context,state.error?:"",Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 
     Scaffold(
         content = {
@@ -111,11 +92,7 @@ fun DoTooView(
                     )
                     FilledIconButton(
                         onClick = {
-                            navigator?.navigate(
-                                createDoTooViewDestination(
-                                    project = project
-                                )
-                            )
+                            navigateToCreateDoToo(project.project)
                         },
                         modifier = Modifier
                             .height(40.dp)
@@ -243,6 +220,10 @@ fun DoTooView(
                             )
                         }
                     }
+
+                    tracker.doToos.clear()
+                    tracker.doToos.addAll(doToosState)
+
                     HorizontalPager(
                         count = tabs.size,
                         state = pagerState,
@@ -253,29 +234,29 @@ fun DoTooView(
                         when(tabs[pagerState.currentPage]){
                             DoTooPriorityTab.All -> {
                                 DoToosLazyColumn(
-                                    viewModel = viewModel,
                                     modifier = Modifier,
-                                    navigator = navigator,
                                     lazyListState = lazyListState,
-                                    dotoos = doToosStateList
+                                    dotoos = doToosState,
+                                    navigateToChatView = navigateToChatView,
+                                    toggleDoToo = toggleDoToo
                                 )
                             }
                             DoTooPriorityTab.Today -> {
                                 DoToosLazyColumn(
-                                    viewModel = viewModel,
                                     modifier = Modifier,
-                                    navigator = navigator,
                                     lazyListState = lazyListState,
-                                    dotoos = doToosStateList.getTodayDoToo()
+                                    dotoos = doToosState.getTodayDoToo(),
+                                    navigateToChatView = navigateToChatView,
+                                    toggleDoToo = toggleDoToo
                                 )
                             }
                             DoTooPriorityTab.Done -> {
                                 DoToosLazyColumn(
-                                    viewModel = viewModel,
                                     modifier = Modifier,
-                                    navigator = navigator,
                                     lazyListState = lazyListState,
-                                    dotoos = doToosStateList.filter { doToo -> doToo.doToo.done}
+                                    dotoos = doToosState.filter { doToo -> doToo.doToo.done},
+                                    navigateToChatView = navigateToChatView,
+                                    toggleDoToo = toggleDoToo
                                 )
                             }
                         }
@@ -291,11 +272,11 @@ fun DoTooView(
 
 @Composable
 fun DoToosLazyColumn(
-    viewModel: DoToosViewModel,
     modifier: Modifier,
-    navigator: DestinationsNavigator?,
     lazyListState: LazyListState,
-    dotoos : List<DoTooWithProfiles>
+    dotoos : List<DoTooWithProfiles>,
+    navigateToChatView : (doToo : DoTooWithProfiles) -> Unit,
+    toggleDoToo : (doToo : DoTooWithProfiles) -> Unit
 ) {
     val context = LocalContext.current
     val hapticFeedback = LocalHapticFeedback.current
@@ -330,20 +311,14 @@ fun DoToosLazyColumn(
                 DoTooCardView(
                     doToo = dotoo,
                     onTapChat = {
-                        navigator?.navigate(
-                            ChatViewDestination(
-                                doToo = dotoo
-                            )
-                        )
+                        navigateToChatView(dotoo)
                     }
                 ) {
                     if (dotoo.doToo.done.not()) {
                         playWooshSound(context)
                     }
                     addHapticFeedback(hapticFeedback = hapticFeedback)
-                    viewModel.toggleIsDone(
-                        doToo = dotoo
-                    )
+                    toggleDoToo(dotoo)
                 }
             }
         }
@@ -360,20 +335,14 @@ fun DoToosLazyColumn(
                 DoTooCardView(
                     doToo = dotoo,
                     onTapChat = {
-                        navigator?.navigate(
-                            ChatViewDestination(
-                                doToo = dotoo
-                            )
-                        )
+                        navigateToChatView(dotoo)
                     },
                     onToggleDone = {
                         if (dotoo.doToo.done.not()) {
                             playWooshSound(context)
                         }
                         addHapticFeedback(hapticFeedback = hapticFeedback)
-                        viewModel.toggleIsDone(
-                            doToo = dotoo
-                        )
+                        toggleDoToo(dotoo)
                     }
                 )
             }
@@ -391,20 +360,14 @@ fun DoToosLazyColumn(
                 DoTooCardView(
                     doToo = dotoo,
                     onTapChat = {
-                        navigator?.navigate(
-                            ChatViewDestination(
-                                doToo = dotoo
-                            )
-                        )
+                        navigateToChatView(dotoo)
                     },
                     onToggleDone = {
                         if (dotoo.doToo.done.not()) {
                             playWooshSound(context)
                         }
                         addHapticFeedback(hapticFeedback = hapticFeedback)
-                        viewModel.toggleIsDone(
-                            doToo = dotoo
-                        )
+                        toggleDoToo(dotoo)
                     }
                 )
             }
@@ -421,7 +384,7 @@ fun DoToosLazyColumn(
 @Preview(showBackground = true)
 @Composable
 fun DotooViewPreview(){
-    DoTooView(navigator = null,
+    DoTooView(
         project = ProjectWithProfiles(
             project = Project(
                 id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",
@@ -435,6 +398,11 @@ fun DotooViewPreview(){
                 viewerIds = listOf()
             ),
             profiles = listOf()
-        )
+        ),
+        navigateToChatView = {},
+        toggleDoToo = {},
+        doToosState = listOf(),
+        navigateToCreateDoToo = {},
+        tracker = TrackerObject()
     )
 }

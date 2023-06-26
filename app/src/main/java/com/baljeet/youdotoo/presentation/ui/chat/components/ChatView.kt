@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.ui.chat
+package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
@@ -23,16 +23,12 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.domain.models.*
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 10:00 AM.
  * **/
-@Destination
 @Composable
 fun ChatView(
-    navigator: DestinationsNavigator?,
     doToo : DoTooWithProfiles
 ) {
 
@@ -160,7 +156,6 @@ fun ChatView(
 @Composable
 fun PreviewChatView(){
     ChatView(
-        navigator = null,
         doToo = DoTooWithProfiles(
             project = Project(
                 id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",

@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.ui.chat
+package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.login
 
 import android.util.Patterns
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
@@ -8,27 +9,35 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.regex.Pattern
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel() {
+data class SignInState(
+    val userId: String? = null,
+    val signInError: String? = null
+)
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+   // savedStateHandle: SavedStateHandle
+) : ViewModel() {
 
     private var auth: FirebaseAuth = Firebase.auth
 
-    private val _state = MutableStateFlow(SignInState())
-    val state = _state.asStateFlow()
+    var state = mutableStateOf(SignInState())
+        private set
 
     init {
+        /*val argument = savedStateHandle.get<String>(DestinationLoginRoute).orEmpty()
+        state.value = state.value.copy(
+            value = argument,
+        )*/
         resetState()
     }
 
-    data class SignInState(
-        val userId: String? = null,
-        val signInError: String? = null
-    )
+
 
     fun performLogin(email: String,password: String){
         if(validateCredential(email, password)){
@@ -49,13 +58,11 @@ class LoginViewModel : ViewModel() {
                     getUserInfo(user.uid)
                 }
             } else {
-                _state.update {
-                    it.copy(
-                        userId = null,
-                        signInError = task.exception?.message
-                            ?: "Invalid credentials, please try again!"
-                    )
-                }
+                state.value = state.value.copy(
+                    userId = null,
+                    signInError = task.exception?.message
+                        ?: "Invalid credentials, please try again!"
+                )
             }
         }
     }
@@ -71,47 +78,42 @@ class LoginViewModel : ViewModel() {
                     SharedPref.userEmail = document.getString("email")?:""
                     SharedPref.userName = document.getString("name")?:""
 
-                _state.update {
-                    it.copy(
-                        userId = userId,
-                        signInError = null
-                    )
-                }
+                state.value = state.value.copy(
+                    userId = userId,
+                    signInError = null
+                )
             }
             .addOnFailureListener { error->
-                _state.update {
-                    it.copy(
-                        userId = null,
-                        signInError = error.message ?: "Invalid credentials, please try again!"
-                    )
-                }
+                state.value = state.value.copy(
+                    userId = null,
+                    signInError = error.message ?: "Invalid credentials, please try again!"
+                )
             }
     }
 
     private fun validateCredential(email: String, password: String): Boolean {
         if (Patterns.EMAIL_ADDRESS.matcher(email).matches().not()) {
-            _state.update {
-                it.copy(
-                    userId = null,
-                    signInError = "Invalidate email. Please provide correct email."
-                )
-            }
+            state.value = state.value.copy(
+                userId = null,
+                signInError = "Invalidate email. Please provide correct email."
+            )
             return false
         }
         if( Pattern.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}\$", password)){
-            _state.update {
-                it.copy(
-                    userId = null,
-                    signInError = "Invalid password. Password should be minimum eight characters, at least one uppercase letter, one lowercase letter and one number."
-                )
-            }
+            state.value = state.value.copy(
+                userId = null,
+                signInError = "Invalid password. Password should be minimum eight characters, at least one uppercase letter, one lowercase letter and one number."
+            )
             return false
         }
         return true
     }
 
     fun resetState() {
-        _state.update { SignInState() }
+        state.value = state.value.copy(
+            userId = null,
+            signInError = null
+        )
     }
 
 }

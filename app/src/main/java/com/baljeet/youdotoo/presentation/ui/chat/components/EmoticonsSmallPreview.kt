@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.ui.chat
+package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

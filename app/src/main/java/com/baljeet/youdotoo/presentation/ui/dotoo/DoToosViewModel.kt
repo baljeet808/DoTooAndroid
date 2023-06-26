@@ -1,24 +1,24 @@
 package com.baljeet.youdotoo.presentation.ui.dotoo
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
-import com.baljeet.youdotoo.common.SharedPref
 import com.google.firebase.firestore.FirebaseFirestore
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class DoToosViewModel : ViewModel() {
 
-    private val _doToosState = MutableStateFlow(DoToosViewStates())
-    val doToosState = _doToosState.asStateFlow()
+@HiltViewModel
+class DoToosViewModel @Inject constructor(
 
-    data class DoToosViewStates(
-        val doToos: List<DoTooWithProfiles>? = null,
-        var error: String? = null
-    )
+) : ViewModel() {
+
+    var doToosState = mutableStateOf<List<DoTooWithProfiles>>(listOf())
+        private set
+
 
     private var projectRef = FirebaseFirestore
         .getInstance()
@@ -50,19 +50,9 @@ class DoToosViewModel : ViewModel() {
                             )
                         )
                     }
-                    _doToosState.update {
-                        it.copy(
-                            doToos = doToos,
-                            error = null
-                        )
-                    }
+                    doToosState.value = doToos
                 } else {
-                    _doToosState.update {
-                        it.copy(
-                            doToos = null,
-                            error = error?.message
-                        )
-                    }
+                    //TODO: handle error case error?.message
                 }
             }
     }

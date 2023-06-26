@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.projects
+package com.baljeet.youdotoo.presentation.ui.projects.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
@@ -21,7 +20,10 @@ import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 
 @Composable
-fun ProjectCardView(project: ProjectWithProfiles, onItemClick: () -> Unit) {
+fun ProjectCardView(
+    project: ProjectWithProfiles,
+    onItemClick: () -> Unit
+) {
 
     Box(
         modifier = Modifier
@@ -96,9 +98,12 @@ fun ProjectCardView(project: ProjectWithProfiles, onItemClick: () -> Unit) {
     }
 
 }
-
+/*
 @Preview(showBackground = true)
 @Composable
 fun DefaultProjectCardPreview() {
-    ProjectsView(navigator = null)
-}
+    ProjectCardView(
+        project = ,
+        onItemClick = {}
+    )
+}*/

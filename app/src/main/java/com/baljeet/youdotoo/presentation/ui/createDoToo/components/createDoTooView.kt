@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.createDoToo
+package com.baljeet.youdotoo.presentation.ui.createDoToo.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -21,17 +21,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
+import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.PrioritySheet
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooPink
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
-import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.PrioritySheet
-import com.baljeet.youdotoo.common.*
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
@@ -39,22 +38,29 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
 import com.maxkeppeler.sheets.clock.ClockDialog
 import com.maxkeppeler.sheets.clock.models.ClockSelection
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
 @Composable
 fun createDoTooView(
-    navigator: DestinationsNavigator?,
-    project: ProjectWithProfiles
+    project: ProjectWithProfiles,
+    navigateBack: ()-> Unit,
+    createState : Boolean,
+    createDoToo : (
+        projectId : String,
+        name : String,
+        description : String,
+        priority: Priorities,
+        dueDate: DueDates,
+        customDate : LocalDateTime?
+    ) -> Unit
 ) {
 
-    val viewModel  = viewModel<CreateDoTooViewModel>()
+    if(createState){
+        navigateBack()
+    }
 
     var currentBottomSheet: BottomSheetType? by remember {
         mutableStateOf(null)
@@ -113,14 +119,6 @@ fun createDoTooView(
             )
         }
     )
-
-    LaunchedEffect(key1 = true ){
-        viewModel.createState.collectLatest {
-            if(it.isSuccessful == true){
-                navigator?.popBackStack()
-            }
-        }
-    }
 
     val calendarState = com.maxkeppeker.sheets.core.models.base.rememberSheetState()
 
@@ -412,13 +410,13 @@ fun createDoTooView(
                 Button(
                     onClick = {
                         //do something here
-                              viewModel.createDoToo(
-                                  project = project.project,
-                                  name = taskName,
-                                  description = description,
-                                  priority = priority,
-                                  dueDate = dueDate,
-                                  customDate = null
+                              createDoToo(
+                                  project.project.id,
+                                  taskName,
+                                  description,
+                                  priority,
+                                  dueDate,
+                                  null
                               )
                     },
                     colors = ButtonDefaults
@@ -452,7 +450,6 @@ fun createDoTooView(
 @Composable
 fun createDoTooPreview() {
     createDoTooView(
-        navigator = null,
         project = ProjectWithProfiles(
             project = Project(
                 id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",
@@ -466,6 +463,10 @@ fun createDoTooPreview() {
                 viewerIds = listOf()
             ),
             profiles = listOf()
-        )
+        ),
+        navigateBack = {},
+        createDoToo = { _: String, _: String, _: String, _: Priorities, _: DueDates, _: LocalDateTime? ->
+        },
+        createState = false
     )
 }

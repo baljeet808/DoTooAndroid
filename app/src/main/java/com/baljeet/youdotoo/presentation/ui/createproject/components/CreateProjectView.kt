@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.createproject
+package com.baljeet.youdotoo.presentation.ui.createproject.components
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -11,15 +11,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectViewModel
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooPink
-import com.ramcosta.composedestinations.annotation.Destination
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
 @Composable
 fun createProjectView(
     modifier: Modifier,
@@ -118,11 +117,6 @@ fun createProjectView(
                     fontSize = 18.sp
                 )
             }
-
-
         }
-
     }
-
-
 }

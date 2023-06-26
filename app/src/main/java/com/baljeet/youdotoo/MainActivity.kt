@@ -7,60 +7,29 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.ViewModelProvider
-import com.baljeet.youdotoo.ui.NavGraph
-import com.baljeet.youdotoo.ui.destinations.*
-import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
+import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.common.SharedPref
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.ramcosta.composedestinations.DestinationsNavHost
+import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    lateinit var viewModel : MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewModel = ViewModelProvider(
-            this,
-            ViewModelProvider.AndroidViewModelFactory(application = application)
-        )[MainViewModel::class.java]
-
-
+        SharedPref.init(applicationContext)
         setContent {
-            SharedPref.init(applicationContext)
             YouDoTooTheme() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    val navGraph = NavGraph(
-                        route = "root",
-                        startRoute = if(isUserSignedIn()) ProjectsViewDestination else LoginViewDestination,
-                        destinations = listOf(
-                            createDoTooViewDestination,
-                            createProjectViewDestination,
-                            DoTooViewDestination,
-                            LoginViewDestination,
-                            ProjectsViewDestination,
-                            SignupViewDestination,
-                            ChatViewDestination
-                        )
-                    )
-
-                    DestinationsNavHost(
-                        navGraph = navGraph
-                    )
+                    val navController = rememberNavController()
+                    NavGraph(navController = navController)
                 }
             }
         }
-    }
-
-    private fun isUserSignedIn(): Boolean {
-        return Firebase.auth.currentUser != null
     }
 
     override fun onStart() {

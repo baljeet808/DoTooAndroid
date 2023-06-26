@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.projects
+package com.baljeet.youdotoo.presentation.ui.projects.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,37 +16,22 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.TrackerObject
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.createproject.createProjectView
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getThemeColor
-import com.baljeet.youdotoo.ui.destinations.DoTooViewDestination
-import com.baljeet.youdotoo.ui.theme.*
-import com.baljeet.youdotoo.common.SharedPref
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
-
-@Destination
-@Composable
-fun ProjectsView(
-    navigator: DestinationsNavigator?
-) {
-    val viewModel = viewModel<ProjectsViewModel>()
-    ProjectScreenMainContent(viewModel = viewModel, navigator = navigator)
-
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectScreenMainContent(
-    viewModel: ProjectsViewModel?,
-    navigator: DestinationsNavigator?
+fun ProjectsView(
+    navigateToDoToos : (project : ProjectWithProfiles) -> Unit,
+    projectsState : List<ProjectWithProfiles>,
+    tracker : TrackerObject
 ){
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
@@ -114,11 +99,18 @@ fun ProjectScreenMainContent(
                     )
                 }
             }
+
+            //updating the tracker on each compose state refresh
+            tracker.projects.clear()
+            tracker.projects.addAll(projectsState)
+
             projectsLazyColumn(
-                viewModel = viewModel, Modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
-                    .padding(10.dp), navigator
+                    .padding(10.dp),
+                projectsState = projectsState,
+                navigateToDoToos =  navigateToDoToos
             )
         }
     }
@@ -127,21 +119,21 @@ fun ProjectScreenMainContent(
 
 @Composable
 fun projectsLazyColumn(
-    viewModel: ProjectsViewModel?,
     modifier: Modifier,
-    navigator: DestinationsNavigator?
+    projectsState: List<ProjectWithProfiles>,
+    navigateToDoToos: (project: ProjectWithProfiles) -> Unit
 ) {
-    val projectsStateList = remember { mutableStateListOf<ProjectWithProfiles>() }
+
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(all = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         val projectOwned =
-            projectsStateList.filter { project -> project.project.ownerId == SharedPref.userId }
+            projectsState.filter { project -> project.project.ownerId == SharedPref.userId }
         val projectViewing =
-            projectsStateList.filter { project -> project.project.viewerIds.contains(SharedPref.userId) }
-        val projectSharedToMe = projectsStateList.filter { project ->
+            projectsState.filter { project -> project.project.viewerIds.contains(SharedPref.userId) }
+        val projectSharedToMe = projectsState.filter { project ->
             project.project.collaboratorIds.contains(SharedPref.userId)
         }
 
@@ -156,11 +148,7 @@ fun projectsLazyColumn(
             }
             items(projectOwned) { project ->
                 ProjectCardView(project = project) {
-                    navigator?.navigate(
-                        DoTooViewDestination(
-                            project = project
-                        )
-                    )
+
                 }
             }
             item {
@@ -178,11 +166,7 @@ fun projectsLazyColumn(
             }
             items(projectSharedToMe) { project ->
                 ProjectCardView(project = project) {
-                    navigator?.navigate(
-                        DoTooViewDestination(
-                            project = project
-                        )
-                    )
+                    navigateToDoToos(project)
                 }
             }
             item {
@@ -200,20 +184,8 @@ fun projectsLazyColumn(
             }
             items(projectViewing) { project ->
                 ProjectCardView(project = project) {
-                    navigator?.navigate(
-                        DoTooViewDestination(
-                            project = project
-                        )
-                    )
+                    navigateToDoToos(project)
                 }
-            }
-        }
-    }
-    LaunchedEffect(key1 = true) {
-        viewModel?.projectState?.collectLatest { state ->
-            state.projects.let { projects ->
-                projectsStateList.clear()
-                projectsStateList.addAll(projects)
             }
         }
     }
@@ -223,5 +195,9 @@ fun projectsLazyColumn(
 @Preview(showBackground = true)
 @Composable
 fun DefaultProjectPreview() {
-    ProjectScreenMainContent(navigator = null, viewModel = null)
+    ProjectsView(
+        navigateToDoToos = {},
+        projectsState = listOf(),
+        tracker = TrackerObject()
+    )
 }

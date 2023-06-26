@@ -91,11 +91,6 @@ enum class DueDates(val toString : String) {
     }
 }
 
-data class ApiCallState(
-    val isSuccessful : Boolean? = null,
-    val error : String? = null
-)
-
 sealed class DoTooPriorityTab( var icon : ImageVector, var title: String){
     object All : DoTooPriorityTab(
         icon = Icons.Default.Flaky,

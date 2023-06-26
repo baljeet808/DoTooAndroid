@@ -1,9 +1,11 @@
-package com.baljeet.youdotoo.presentation.ui.login
+package com.baljeet.youdotoo.presentation.ui.login.components
 
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -11,43 +13,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.ui.destinations.ProjectsViewDestination
-import com.baljeet.youdotoo.ui.destinations.SignupViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooPink
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import kotlinx.coroutines.flow.collectLatest
 
 
-@Destination(start = true)
 @Composable
 fun LoginView(
-    navigator : DestinationsNavigator?
+     navigateToProjects : ()->Unit,
+     navigateToSignUp : ()->Unit,
+     attemptToLogin : (email : String, password : String)-> Unit,
+     state : SignInState
     ){
     val context = LocalContext.current
 
-    val viewModel = viewModel<LoginViewModel>()
-
     LaunchedEffect(key1 = true ){
-        viewModel.state.collectLatest { state->
             state.signInError?.let { error->
                 Toast.makeText(
                     context,
                     error,
                     Toast.LENGTH_SHORT
                 ).show()
-                viewModel.resetState()
             }
             state.userId?.let {
-                navigator?.navigate(ProjectsViewDestination)
-                viewModel.resetState()
+                navigateToProjects()
             }
-        }
     }
 
     Box(modifier = Modifier
@@ -62,7 +56,7 @@ fun LoginView(
             modifier = Modifier
                 .requiredWidth(600.dp)
                 .requiredHeight(320.dp)
-                .offset(y = -100.dp)
+                .offset(y = (-100).dp)
                 .rotate(15f)
                 .background(color = DotooPink)
 
@@ -122,7 +116,10 @@ fun LoginView(
                             },
                     placeholder = { Text(text = "Your Email")},
                     maxLines = 1,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    )
                 )
                 OutlinedTextField(
                     value = password,
@@ -136,12 +133,20 @@ fun LoginView(
                     maxLines = 1,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 10.dp)
+                        .padding(top = 10.dp),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            attemptToLogin(email, password)
+                        }
+                    )
                 )
 
                 Button(
                     onClick = {
-                        viewModel.performLogin(email, password)
+                        attemptToLogin(email, password)
                     },
                     colors = ButtonDefaults
                         .buttonColors(containerColor = DotooBlue),
@@ -175,7 +180,7 @@ fun LoginView(
                 )
                 
                 TextButton(onClick = {
-                    navigator?.navigate(SignupViewDestination())
+                    navigateToSignUp()
                 }) {
                     Text(
                         text = "Create An Account",
