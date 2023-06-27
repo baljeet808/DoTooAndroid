@@ -31,17 +31,12 @@ fun LoginView(
     ){
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = true ){
-            state.signInError?.let { error->
-                Toast.makeText(
-                    context,
-                    error,
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-            state.userId?.let {
-                navigateToProjects()
-            }
+    if(state.userId != null){
+        navigateToProjects()
+    }
+
+    if(state.signInError != null){
+        Toast.makeText(context,"Wrong credentials", Toast.LENGTH_SHORT).show()
     }
 
     Box(modifier = Modifier
@@ -135,7 +130,7 @@ fun LoginView(
                         .fillMaxWidth()
                         .padding(top = 10.dp),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {

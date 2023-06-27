@@ -155,7 +155,7 @@ fun SignupView(
                         .fillMaxWidth()
                         .padding(top = 10.dp),
                     keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Done
                     ),
                     keyboardActions = KeyboardActions(
                         onDone = {

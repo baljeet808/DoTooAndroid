@@ -147,9 +147,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectOwned) { project ->
-                ProjectCardView(project = project) {
-
-                }
+                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
             }
             item {
                 Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
@@ -165,9 +163,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectSharedToMe) { project ->
-                ProjectCardView(project = project) {
-                    navigateToDoToos(project)
-                }
+                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
             }
             item {
                 Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
@@ -183,9 +179,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectViewing) { project ->
-                ProjectCardView(project = project) {
-                    navigateToDoToos(project)
-                }
+                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
             }
         }
     }
