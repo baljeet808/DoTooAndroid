@@ -1,0 +1,1 @@
+C:\Users\homey\Documents\Projects\DoTooAndroid\buildSrc\build\classes\kotlin\main\Depends.class;C:\Users\homey\Documents\Projects\DoTooAndroid\buildSrc\build\classes\kotlin\main\Versions.class

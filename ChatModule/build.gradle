@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-parcelize'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -8,8 +11,10 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdk 28
+        minSdk 26
         targetSdk 33
+        versionCode 1
+        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -32,10 +37,53 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.7.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    //android core
+    implementation Depends.core
+    implementation Depends.lifecycle
+    implementation Depends.lifecycle_runtime_compose
+    implementation Depends.lifecycle_viewmodel_compose
+
+    //compose
+    implementation Depends.activity_compose
+    implementation Depends.compose
+    implementation Depends.compose_ui_tooling_preview
+    implementation Depends.compose_navigation
+    implementation  Depends.compose_foundation
+    androidTestImplementation Depends.compose_ui_test
+    debugImplementation Depends.compose_ui_tooling
+
+    //material
+    implementation Depends.material
+    implementation Depends.androidx_material_icons
+
+
+    //firebase
+    implementation platform(Depends.firebase_bom)
+    implementation Depends.firebase_auth
+    implementation Depends.firebase_functions
+    implementation Depends.firebase_firestore
+
+    //Kotlinx datetime
+    implementation Depends.kotlinx_datetime
+
+
+    //compose coil image loader
+    implementation Depends.coil
+
+    //accompanist
+    implementation Depends.accompanist_pager
+    implementation Depends.accompanist_pager_indicator
+    implementation Depends.accompanist_system_ui_controller
+
+    //maxkeppeler
+    implementation Depends.maxkeppeler_core
+    implementation Depends.maxkeppeler_calendar
+    implementation Depends.maxkeppeler_clock
+
+    //dagger hilt
+    implementation Depends.dagger_hilt
+    kapt Depends.dagger_compiler
+    kapt Depends.hilt_compiler
+    implementation Depends.hilt_navigation_compose
+
 }
