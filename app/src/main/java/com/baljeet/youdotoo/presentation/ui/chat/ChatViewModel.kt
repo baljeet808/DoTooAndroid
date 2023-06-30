@@ -1,15 +1,98 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.Message
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinLocalDateTime
+import java.util.*
 import javax.inject.Inject
 
 /**
  * Updated by Baljeet singh on 23rd June, 2023 at 5:15PM.
  * **/
 @HiltViewModel
-class ChatViewModel @Inject constructor() :  ViewModel() {
+class ChatViewModel @Inject constructor() : ViewModel() {
+
+    var messagesState = mutableStateOf<List<Message>>(listOf())
+        private set
+
+    private var chatRef = FirebaseFirestore.getInstance().collection("projects")
+
+    fun init(dotoo: DoTooWithProfiles) {
+        chatRef.document(dotoo.project.id)
+            .collection("todos")
+            .document(dotoo.doToo.id)
+            .collection("messages")
+            .addSnapshotListener { snapshot, error ->
+                if (snapshot != null && error == null) {
+                    val messages = ArrayList<Message>()
+                    for (message in snapshot) {
+                        messages.add(
+                            Message(
+                                id = message.getString("id") ?: "",
+                                senderId = message.getString("senderId") ?: "",
+                                message = message.getString("message") ?: "",
+                                createdAt = message.getLong("createdAt") ?: 0,
+                                isUpdate = message.getBoolean("senderId") ?: false,
+                                attachmentUrl = message.getString("attachmentUrl") ?: "",
+                                interactions = (message.get("interactions") as ArrayList<String>)
+                            )
+                        )
+                    }
+                    messagesState.value = messages
+                }
+            }
+    }
 
 
+    fun toggleIsDone(doToo: DoTooWithProfiles) {
+        val newDoToo = doToo.doToo.copy()
+        newDoToo.done = doToo.doToo.done.not()
+        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ")
+            .plus(if (newDoToo.done) "completed." else "not completed.")
+        chatRef
+            .document(doToo.project.id)
+            .collection("todos")
+            .document(doToo.doToo.id)
+            .set(newDoToo)
+    }
+
+
+    fun sendMessage(
+        projectId : String,
+        doTooId : String,
+        messageString: String,
+        isUpdate : Boolean = false,
+        updateMessage : String = ""
+    ) {
+        val newMessageID = UUID.randomUUID().toString()
+        val newMessage = Message(
+            id = newMessageID,
+            message = if(isUpdate){
+                updateMessage
+            }else{
+                messageString
+            },
+            senderId = SharedPref.userId!!,
+            createdAt = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
+            isUpdate = isUpdate,
+            attachmentUrl = "",
+            interactions = arrayListOf()
+        )
+
+        chatRef
+            .document(projectId)
+            .collection("todos")
+            .document(doTooId)
+            .collection("messages")
+            .document(newMessageID)
+            .set(newMessage)
+    }
 
 }

@@ -29,12 +29,11 @@ import com.baljeet.youdotoo.domain.models.*
  * **/
 @Composable
 fun ChatView(
-    doToo : DoTooWithProfiles
+    doToo : DoTooWithProfiles,
+    messages : List<Message>,
+    sendMessage : (message : String)->Unit,
+    toggleIsDone : () -> Unit
 ) {
-
-    val message by remember{
-        mutableStateOf("")
-    }
 
     val lazyListState = rememberLazyListState()
 
@@ -69,7 +68,7 @@ fun ChatView(
             Checkbox(
                 checked = doToo.doToo.done,
                 onCheckedChange = {
-                    //Todo
+                    toggleIsDone()
                 },
                 modifier = Modifier
                     .weight(.1f)
@@ -114,10 +113,6 @@ fun ChatView(
             )
         }
 
-
-
-        val messagesStateList = remember { mutableStateListOf<Message>() }
-
         /**
          *LazyColumn of Chat
          * **/
@@ -125,7 +120,7 @@ fun ChatView(
             modifier = Modifier.fillMaxWidth().weight(0.6F),
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
         ){
-            items(messagesStateList){message ->
+            items(messages){message ->
                 MessageBubbleView(
                     message = message,
                     doToo = doToo,
@@ -141,12 +136,13 @@ fun ChatView(
          *SendBox
          * **/
         MessageBoxView(
-            onClickSend ={
-
+            onClickSend ={message ->
+                sendMessage(message)
+            },
+            onClickAttachment = {
+                //TODO: add attachment flow here
             }
-        ) {
-
-        }
+        )
 
     }
 }
@@ -194,6 +190,11 @@ fun PreviewChatView(){
                     avatarUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2F2.png?alt=media&token=f814c406-fa71-4fd7-a37a-e51119a5f107&_gl=1*37amd3*_ga*OTgxMTYwNDY4LjE2ODU2NTc1OTc.*_ga_CW55HF8NVT*MTY4NTY3MDMzMi40LjEuMTY4NTY3MDkwMS4wLjAuMA.."
                 )
             )
-        )
+        ),
+        messages = listOf(),
+        sendMessage = {
+
+        },
+        toggleIsDone = {}
     )
 }
