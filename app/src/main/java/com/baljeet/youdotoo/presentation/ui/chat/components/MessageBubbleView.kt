@@ -1,6 +1,8 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,6 +32,7 @@ import java.time.LocalDateTime
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 1:05 PM.
  * **/
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MessageBubbleView(
     message: Message,
@@ -47,7 +50,10 @@ fun MessageBubbleView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(10.dp),
+            .combinedClickable(
+                onLongClick = onLongPress,
+                onClick = {}
+            ).padding(10.dp),
         horizontalAlignment = if(userId == message.senderId){
             Alignment.End
         }else{

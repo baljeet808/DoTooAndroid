@@ -28,7 +28,9 @@ fun ChatView(
     interactOnMessage : (message : Message, emoticon : String) -> Unit
 ) {
 
-    var selectedMessage : Message? = null
+    var selectedMessage : Message? by remember {
+        mutableStateOf(null)
+    }
 
     var currentBottomSheet: ChatScreenBottomSheetTypes? by remember {
         mutableStateOf(null)
@@ -67,11 +69,11 @@ fun ChatView(
                     ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS -> {
                         selectedMessage?.let {selectedMessage->
                             EmoticonsControllerView(
-                                onItemSelected = {emoticon ->
-                                    interactOnMessage(selectedMessage,emoticon)
+                                message = selectedMessage,
+                                onItemSelected = { emoticon, msg ->
+                                    interactOnMessage( msg,emoticon )
                                     closeSheet()
                                 },
-                                message = selectedMessage,
                                 profiles = doToo.profiles?.toCollection(ArrayList())?: arrayListOf()
                             )
                         }

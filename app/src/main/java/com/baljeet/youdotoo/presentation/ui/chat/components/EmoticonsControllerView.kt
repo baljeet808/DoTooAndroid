@@ -3,6 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.chat.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -31,7 +32,7 @@ import java.time.LocalDateTime
 @SuppressLint("DiscouragedApi")
 @Composable
 fun EmoticonsControllerView(
-    onItemSelected : (emoticonName : String) -> Unit,
+    onItemSelected : (emoticonName : String, message : Message) -> Unit,
     message: Message,
     profiles : ArrayList<User>
 ) {
@@ -58,6 +59,9 @@ fun EmoticonsControllerView(
                     modifier = Modifier
                         .height(42.dp)
                         .width(42.dp)
+                        .clickable {
+                            onItemSelected(emoticon, message)
+                        }
                         .background(shape = RoundedCornerShape(20.dp), color = Color.Transparent)
                 )
             }
@@ -70,7 +74,7 @@ fun EmoticonsControllerView(
 @Composable
 fun PreviewEmoticonControllerView(){
     EmoticonsControllerView(
-        onItemSelected = {},
+        onItemSelected = { _, _ -> },
         message = Message(
             id = "",
             message = "Hey there, This is a new message about your doToo. What do you think.",
