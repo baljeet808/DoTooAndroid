@@ -13,9 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.NotificationsOff
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -24,27 +24,33 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
+import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 /**
- * Updated by Baljeet singh on 18th June, 2023 at 10:00 AM.
+ * Updated by Baljeet singh.
  * **/
+
 @Composable
-fun ChatView(
+fun ChatViewMainContent(
     doToo : DoTooWithProfiles,
     messages : List<Message>,
-    sendMessage : (message : String)->Unit,
-    toggleIsDone : () -> Unit
-) {
-
+    sendMessage : (messageString : String)->Unit,
+    toggleIsDone : () -> Unit,
+    openEmoticons: (message : Message) -> Unit,
+    openCustomEmoticons: () -> Unit,
+    openCollaboratorsScreen : () -> Unit,
+    openPersonTagger : () -> Unit,
+    openAttachments : () -> Unit,
+    showAttachments: (messages : ArrayList<Message>) -> Unit
+){
     val lazyListState = rememberLazyListState()
 
     Column(
@@ -53,8 +59,6 @@ fun ChatView(
             .background(color = getCardColor()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-
-
         /**
          *Column of description and toolbox for editing this Dotoo
          * **/
@@ -62,13 +66,6 @@ fun ChatView(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(animationSpec = tween(durationMillis = 200))
-                /*.height(
-                    if (lazyListState.isScrolled) {
-                        50.dp
-                    } else {
-                        125.dp
-                    }
-                )*/
                 .background(
                     color = if (isSystemInDarkTheme()) {
                         DotooDarkerGray
@@ -113,69 +110,68 @@ fun ChatView(
                     )
                 )
             }
-           if(lazyListState.isScrolled.not()) {
-               Row(
-                   modifier = Modifier
-                       .shadow(elevation = 0.dp, shape = RoundedCornerShape(8.dp))
-                       .fillMaxWidth()
-                       .padding(start = 10.dp, end = 10.dp),
-                   verticalAlignment = Alignment.CenterVertically,
-                   horizontalArrangement = Arrangement.SpaceEvenly
-               ) {
+            if(lazyListState.isScrolled.not()) {
+                Row(
+                    modifier = Modifier
+                        .shadow(elevation = 0.dp, shape = RoundedCornerShape(8.dp))
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
 
 
-                   IconButton(
-                       onClick = { /*TODO*/ },
-                       modifier = Modifier
-                   ) {
-                       Icon(
-                           Icons.Default.NotificationsOff,
-                           contentDescription = "Turn off notification for this doToo",
-                           tint = Color.Gray
-                       )
-                   }
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                    ) {
+                        Icon(
+                            Icons.Default.NotificationsOff,
+                            contentDescription = "Turn off notification for this doToo",
+                            tint = Color.Gray
+                        )
+                    }
 
-                   IconButton(
-                       onClick = { /*TODO*/ },
-                       modifier = Modifier
-                   ) {
-                       Icon(
-                           Icons.Default.DeleteForever,
-                           contentDescription = "Delete this doToo",
-                           tint = Color.Gray
-                       )
-                   }
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                    ) {
+                        Icon(
+                            Icons.Default.DeleteForever,
+                            contentDescription = "Delete this doToo",
+                            tint = Color.Gray
+                        )
+                    }
 
-                   IconButton(
-                       onClick = { /*TODO*/ },
-                       modifier = Modifier
-                   ) {
-                       Icon(
-                           Icons.Default.Info,
-                           contentDescription = "Information about this doToo",
-                           tint = Color.Gray
-                       )
-                   }
+                    IconButton(
+                        onClick = { /*TODO*/ },
+                        modifier = Modifier
+                    ) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = "Information about this doToo",
+                            tint = Color.Gray
+                        )
+                    }
 
-                   doToo.profiles?.let { profiles ->
-                       profilesLazyRow(profiles = profiles, onTapProfiles = {})
-                   } ?: kotlin.run {
-                       Spacer(modifier = Modifier.weight(.5f))
-                       IconButton(
-                           onClick = { /*TODO*/ },
-                           modifier = Modifier
-                       ) {
-                           Icon(
-                               Icons.Outlined.PersonAdd,
-                               contentDescription = "Add collaborator button",
-                               tint = Color.Gray
-                           )
-                       }
-                   }
-               }
-           }
+                    doToo.profiles?.let { profiles ->
+                        profilesLazyRow(profiles = profiles, onTapProfiles = {})
+                    } ?: kotlin.run {
+                        Spacer(modifier = Modifier.weight(.5f))
+                        IconButton(
+                            onClick = { /*TODO*/ },
+                            modifier = Modifier
+                        ) {
+                            Icon(
+                                Icons.Outlined.PersonAdd,
+                                contentDescription = "Add collaborator button",
+                                tint = Color.Gray
+                            )
+                        }
+                    }
+                }
+            }
         }
-
         /**
          *LazyColumn of Chat
          * **/
@@ -190,12 +186,12 @@ fun ChatView(
                     message = message,
                     doToo = doToo,
                     onLongPress = {
+                        openEmoticons(message)
                     },
-                    userId =SharedPref.userId.toString()
+                    userId = SharedPref.userId.toString()
                 )
             }
         }
-
         /**
          *SendBox
          * **/
@@ -203,19 +199,22 @@ fun ChatView(
             onClickSend ={message ->
                 sendMessage(message)
             },
-            onClickAttachment = {
-                //TODO: add attachment flow here
-            }
+            openAttachments = openAttachments,
+            openCollaboratorsScreen = openCollaboratorsScreen,
+            openPersonTagger = openPersonTagger,
+            openCustomEmojis = openCustomEmoticons
         )
 
     }
 }
 
 
+
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewChatView(){
-    ChatView(
+    ChatViewMainContent(
         doToo = DoTooWithProfiles(
             project = Project(
                 id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",
@@ -256,9 +255,13 @@ fun PreviewChatView(){
             )
         ),
         messages = listOf(),
-        sendMessage = {
-
-        },
-        toggleIsDone = {}
+        sendMessage = {},
+        toggleIsDone = {},
+        openEmoticons = {},
+        openCustomEmoticons = {},
+        openCollaboratorsScreen = {},
+        openAttachments = {},
+        showAttachments = {},
+        openPersonTagger = {}
     )
 }

@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
@@ -36,7 +35,10 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @Composable
 fun MessageBoxView(
     onClickSend: (String) -> Unit,
-    onClickAttachment: () -> Unit
+    openCollaboratorsScreen : () -> Unit,
+    openPersonTagger : () -> Unit,
+    openAttachments : () -> Unit,
+    openCustomEmojis : () -> Unit
 ) {
     var message by remember {
         mutableStateOf("")
@@ -107,7 +109,7 @@ fun MessageBoxView(
         ) {
 
             IconButton(
-                onClick = onClickAttachment
+                onClick = openAttachments
             ) {
                 Icon(
                     Icons.Outlined.Image,
@@ -117,7 +119,7 @@ fun MessageBoxView(
             }
 
             IconButton(
-                onClick = onClickAttachment
+                onClick = openPersonTagger
             ) {
                 Icon(
                     Icons.Default.AlternateEmail,
@@ -127,7 +129,7 @@ fun MessageBoxView(
             }
 
             IconButton(
-                onClick = onClickAttachment
+                onClick = openCollaboratorsScreen
             ) {
                 Icon(
                     Icons.Outlined.PersonAdd,
@@ -137,7 +139,7 @@ fun MessageBoxView(
             }
 
             IconButton(
-                onClick = onClickAttachment
+                onClick = openCustomEmojis
             ) {
                 Icon(
                     Icons.Outlined.EmojiEmotions,
@@ -180,7 +182,10 @@ fun MessageBoxView(
 @Composable
 fun PreviewMessageBoxView() {
     MessageBoxView(
-        onClickSend = {}) {
-
-    }
+        onClickSend = {},
+        openCollaboratorsScreen = {},
+        openAttachments = {},
+        openPersonTagger = {},
+        openCustomEmojis = {}
+    )
 }
