@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.domain.models.MessageDto
+import com.baljeet.youdotoo.domain.models.toMessage
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.TimeZone
@@ -34,15 +36,16 @@ class ChatViewModel @Inject constructor() : ViewModel() {
                     val messages = ArrayList<Message>()
                     for (message in snapshot) {
                         messages.add(
-                            Message(
+                            /*Message(
                                 id = message.getString("id") ?: "",
                                 senderId = message.getString("senderId") ?: "",
                                 message = message.getString("message") ?: "",
                                 createdAt = message.getLong("createdAt") ?: 0,
-                                isUpdate = message.getBoolean("senderId") ?: false,
+                                isUpdate = message.getBoolean("isUpdate") ?: false,
                                 attachmentUrl = message.getString("attachmentUrl") ?: "",
-                                interactions = (message.get("interactions") as ArrayList<String>)
-                            )
+                                interactions = (message.get("interactions") as List<String>)
+                            )*/
+                            message.toObject(MessageDto::class.java).toMessage()
                         )
                     }
                     messagesState.value = messages

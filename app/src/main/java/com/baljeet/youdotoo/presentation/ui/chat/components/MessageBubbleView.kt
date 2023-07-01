@@ -115,7 +115,7 @@ fun MessageBubbleView(
 
             if(message.senderId == userId) {
                 EmoticonsSmallPreview(
-                    interactions = message.interactions.getInteractions(),
+                    interactions = message.interactions?.getInteractions()?: arrayListOf(),
                     onViewClicked = onLongPress
                 )
             }
@@ -133,7 +133,7 @@ fun MessageBubbleView(
             )
             if(message.senderId != userId){
                 EmoticonsSmallPreview(
-                    interactions = message.interactions.getInteractions(),
+                    interactions = message.interactions?.getInteractions()?: arrayListOf(),
                     onViewClicked = onLongPress
                 )
             }

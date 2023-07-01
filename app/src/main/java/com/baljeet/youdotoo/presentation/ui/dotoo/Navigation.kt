@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.presentation.ui.chat.DestinationMessageRoute
 import com.baljeet.youdotoo.presentation.ui.createDoToo.CreateDoTooViewModel
 import com.baljeet.youdotoo.presentation.ui.createDoToo.components.createDoTooView
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooView
@@ -38,7 +39,7 @@ fun NavGraphBuilder.addDotooViewDestination(
             },
             navigateToChatView = {doToo ->
                 trackerObject.selectedDoTooIndex = trackerObject.doToos.indexOf(doToo)
-                navController.navigate("")
+                navController.navigate(DestinationMessageRoute)
             },
             project = trackerObject.projects[trackerObject.selectedProjectIndex],
             doToosState = state,

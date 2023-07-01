@@ -85,6 +85,7 @@ class ProjectsViewModel @Inject constructor() : ViewModel() {
         if (project.viewerIds.isNotEmpty()) {
             ids.addAll(project.viewerIds)
         }
+        ids.add(SharedPref.userId!!)
         val users = ArrayList<User>()
         for (userId in ids) {
             db.collection("users").whereEqualTo("id", userId).get()

@@ -34,7 +34,7 @@ fun NavGraphBuilder.addChatViewDestination(
                 )
             },
             toggleIsDone = {
-                viewModel.toggleIsDone(trackerObject.doToos[trackerObject.selectedDoTooIndex])
+                viewModel.toggleIsDone(tracker)
             }
         )
     }
