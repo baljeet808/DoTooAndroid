@@ -85,7 +85,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
             senderId = SharedPref.userId!!,
             createdAt = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             isUpdate = isUpdate,
-            attachmentUrl = "",
+            attachmentUrl = null,
             interactions = arrayListOf()
         )
 

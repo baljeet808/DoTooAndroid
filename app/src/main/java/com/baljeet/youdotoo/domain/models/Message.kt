@@ -15,7 +15,7 @@ class MessageDto {
     var message: String = ""
     var createdAt: Long = 0
     var isUpdate: Boolean  = false
-    var attachmentUrl: String = ""
+    var attachmentUrl: String? = null
     var interactions: List<String> = listOf()
 }
 
@@ -27,7 +27,7 @@ data class Message(
     var createdAt: Long,
     var isUpdate: Boolean,
     var attachmentUrl: String?,
-    var interactions: List<String>?
+    var interactions: List<String>
 ) : Parcelable
 
 
@@ -60,9 +60,9 @@ fun List<String>.getInteractions(): ArrayList<Interaction> {
 
 fun Message.updateInteraction(interactionName: String) {
     val interactionId = SharedPref.userId.plus(",").plus(interactionName)
-    if (this.interactions?.any { i -> i == interactionId } == true) {
-        this.interactions?.toCollection(ArrayList())?.remove(interactionId)
+    if (this.interactions.any { i -> i == interactionId }) {
+        this.interactions.toCollection(ArrayList())?.remove(interactionId)
     } else {
-        this.interactions?.toCollection(ArrayList())?.add(interactionId)
+        this.interactions.toCollection(ArrayList())?.add(interactionId)
     }
 }

@@ -35,6 +35,13 @@ fun MessageBubbleView(
     onLongPress : () -> Unit,
     userId : String
 ) {
+
+    val alignRight = message.senderId != userId
+
+    /**
+     * column as container to separate
+     * time stamp plus emojis from message box plus profile picture
+     * **/
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,6 +53,9 @@ fun MessageBubbleView(
         }
     ) {
 
+        /**
+         * first top row for profile picture and message box
+         * **/
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement =  if(message.senderId == userId){
@@ -55,7 +65,7 @@ fun MessageBubbleView(
             },
             verticalAlignment = Alignment.Bottom,
         ) {
-            if(message.senderId != userId){
+            if(alignRight){
                 AsyncImage(
                     model = doToo?.profiles?.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
@@ -69,10 +79,23 @@ fun MessageBubbleView(
             Column(modifier = Modifier
                 .background(
                     color = getOnCardColor(),
-                    shape = RoundedCornerShape(20.dp)
+                    shape = if(alignRight) {
+                        RoundedCornerShape(
+                            topEnd = 20.dp,
+                            topStart = 20.dp,
+                            bottomStart = 0.dp,
+                            bottomEnd = 20.dp
+                        )
+                    }else{
+                        RoundedCornerShape(
+                            topEnd = 20.dp,
+                            topStart = 20.dp,
+                            bottomStart = 20.dp,
+                            bottomEnd = 0.dp
+                        )
+                    }
                 )
-                .padding(10.dp)
-                .fillMaxWidth(fraction = .65f),
+                .padding(10.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 message.attachmentUrl?.let {url ->
@@ -90,7 +113,7 @@ fun MessageBubbleView(
                     fontSize = 13.sp
                 )
             }
-            if(message.senderId == userId){
+            if(alignRight.not()){
                 AsyncImage(
                     model = doToo?.profiles?.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
@@ -113,9 +136,9 @@ fun MessageBubbleView(
             verticalAlignment = Alignment.Bottom,
         ) {
 
-            if(message.senderId == userId) {
+            if(alignRight.not() && message.interactions.isNotEmpty()) {
                 EmoticonsSmallPreview(
-                    interactions = message.interactions?.getInteractions()?: arrayListOf(),
+                    interactions = message.interactions.getInteractions(),
                     onViewClicked = onLongPress
                 )
             }
@@ -131,9 +154,9 @@ fun MessageBubbleView(
                 },
                 modifier = Modifier.padding(start = 60.dp, end = 60.dp)
             )
-            if(message.senderId != userId){
+            if(alignRight && message.interactions.isNotEmpty()){
                 EmoticonsSmallPreview(
-                    interactions = message.interactions?.getInteractions()?: arrayListOf(),
+                    interactions = message.interactions.getInteractions()?: arrayListOf(),
                     onViewClicked = onLongPress
                 )
             }
