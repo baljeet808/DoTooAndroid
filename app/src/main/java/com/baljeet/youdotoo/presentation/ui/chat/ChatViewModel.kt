@@ -48,7 +48,7 @@ class ChatViewModel @Inject constructor() : ViewModel() {
                             message.toObject(MessageDto::class.java).toMessage()
                         )
                     }
-                    messagesState.value = messages
+                    messagesState.value = messages.sortedBy { it.createdAt }.reversed()
                 }
             }
     }

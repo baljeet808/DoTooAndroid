@@ -119,13 +119,13 @@ fun ChatView(
         LazyColumn(
             modifier = Modifier.fillMaxWidth().weight(0.6F),
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
+            reverseLayout = true
         ){
             items(messages){message ->
                 MessageBubbleView(
                     message = message,
                     doToo = doToo,
                     onLongPress = {
-
                     },
                     userId =SharedPref.userId.toString()
                 )
