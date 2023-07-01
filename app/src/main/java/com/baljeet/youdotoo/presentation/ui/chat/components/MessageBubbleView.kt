@@ -1,8 +1,10 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,9 +19,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.presentation.ui.theme.*
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -70,15 +72,26 @@ fun MessageBubbleView(
                     model = doToo?.profiles?.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
                     modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .background(color = getOnCardColor(), shape = RoundedCornerShape(40.dp))
-                        .clip(shape = RoundedCornerShape(40.dp))
+                        .width(30.dp)
+                        .height(30.dp)
+                        .clip( shape = RoundedCornerShape(40.dp))
                 )
             }
             Column(modifier = Modifier
                 .background(
-                    color = getOnCardColor(),
+                    color = if (isSystemInDarkTheme()) {
+                        if(alignRight){
+                            DotooDarkerGray
+                        }else{
+                            DotooBlue
+                        }
+                    } else {
+                        if(alignRight) {
+                            DoTooLightBlue
+                        }else{
+                            DotooBlue
+                        }
+                    },
                     shape = if(alignRight) {
                         RoundedCornerShape(
                             topEnd = 20.dp,
@@ -95,7 +108,8 @@ fun MessageBubbleView(
                         )
                     }
                 )
-                .padding(10.dp),
+                .padding(10.dp)
+                .widthIn(min = 30.dp, max = 200.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 message.attachmentUrl?.let {url ->
@@ -103,14 +117,16 @@ fun MessageBubbleView(
                         model = url,
                         contentDescription ="Attachment image",
                         modifier = Modifier
-                            .height(200.dp),
-                        contentScale = ContentScale.Crop
+                            .height(180.dp)
+                            .clip(shape = RoundedCornerShape(20.dp))
+                        ,
+                        contentScale = ContentScale.Crop,
                     )
                 }
                 Text(
                     text = message.message,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
-                    fontSize = 13.sp
+                    fontSize = 14.sp
                 )
             }
             if(alignRight.not()){
@@ -118,9 +134,8 @@ fun MessageBubbleView(
                     model = doToo?.profiles?.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
                     modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .background(color = getOnCardColor(), shape = RoundedCornerShape(40.dp))
+                        .width(30.dp)
+                        .height(30.dp)
                         .clip(shape = RoundedCornerShape(40.dp))
                 )
             }

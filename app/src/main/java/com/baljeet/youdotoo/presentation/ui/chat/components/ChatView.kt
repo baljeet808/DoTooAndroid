@@ -2,6 +2,7 @@ package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,6 +24,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 10:00 AM.
@@ -39,7 +41,8 @@ fun ChatView(
 
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(color = getCardColor()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -117,6 +120,7 @@ fun ChatView(
          *LazyColumn of Chat
          * **/
         LazyColumn(
+            state = lazyListState,
             modifier = Modifier.fillMaxWidth().weight(0.6F),
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
             reverseLayout = true
