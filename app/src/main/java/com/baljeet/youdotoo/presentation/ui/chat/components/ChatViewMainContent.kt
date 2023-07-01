@@ -40,17 +40,17 @@ import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 @Composable
 fun ChatViewMainContent(
-    doToo : DoTooWithProfiles,
-    messages : List<Message>,
-    sendMessage : (messageString : String)->Unit,
-    toggleIsDone : () -> Unit,
-    openEmoticons: (message : Message) -> Unit,
+    doToo: DoTooWithProfiles,
+    messages: List<Message>,
+    sendMessage: (messageString: String) -> Unit,
+    toggleIsDone: () -> Unit,
+    openEmoticons: (message: Message) -> Unit,
     openCustomEmoticons: () -> Unit,
-    openCollaboratorsScreen : () -> Unit,
-    openPersonTagger : () -> Unit,
-    openAttachments : () -> Unit,
-    showAttachments: (messages : ArrayList<Message>) -> Unit
-){
+    openCollaboratorsScreen: () -> Unit,
+    openPersonTagger: () -> Unit,
+    openAttachments: () -> Unit,
+    showAttachments: (messages: ArrayList<Message>) -> Unit
+) {
     val lazyListState = rememberLazyListState()
 
     Column(
@@ -110,7 +110,7 @@ fun ChatViewMainContent(
                     )
                 )
             }
-            if(lazyListState.isScrolled.not()) {
+            if (lazyListState.isScrolled.not()) {
                 Row(
                     modifier = Modifier
                         .shadow(elevation = 0.dp, shape = RoundedCornerShape(8.dp))
@@ -177,26 +177,49 @@ fun ChatViewMainContent(
          * **/
         LazyColumn(
             state = lazyListState,
-            modifier = Modifier.fillMaxWidth().weight(0.6F),
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.6F),
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
             reverseLayout = true
-        ){
-            items(messages){message ->
-                MessageBubbleView(
-                    message = message,
-                    doToo = doToo,
-                    onLongPress = {
-                        openEmoticons(message)
-                    },
-                    userId = SharedPref.userId.toString()
-                )
+        ) {
+            items(messages) { message ->
+                val itemIndex = messages.indexOf(message)
+                val nextMessage =
+                    if (messages.last() == message) {
+                        null
+                    } else {
+                        messages[itemIndex + 1]
+                    }
+                val isThisFromMe = message.senderId == SharedPref.userId
+                val showUserInfo = nextMessage?.senderId != message.senderId
+
+                if(isThisFromMe){
+                    SenderMessageBubbleView(
+                        message = message,
+                        doToo = doToo,
+                        onLongPress = {
+                            openEmoticons(message)
+                        },
+                        showSenderInfo  = showUserInfo
+                    )
+                }else{
+                    ThereMessageBubbleView(
+                        message = message,
+                        doToo = doToo,
+                        onLongPress = {
+                            openEmoticons(message)
+                        },
+                        showSenderInfo  = showUserInfo
+                    )
+                }
             }
         }
         /**
          *SendBox
          * **/
         MessageBoxView(
-            onClickSend ={message ->
+            onClickSend = { message ->
                 sendMessage(message)
             },
             openAttachments = openAttachments,
@@ -209,11 +232,9 @@ fun ChatViewMainContent(
 }
 
 
-
-
 @Preview(showBackground = true)
 @Composable
-fun PreviewChatView(){
+fun PreviewChatView() {
     ChatViewMainContent(
         doToo = DoTooWithProfiles(
             project = Project(

@@ -17,12 +17,12 @@ fun User.asHashMap(): HashMap<String, Any> {
     )
 }
 
-fun Long.toNiceDateTimeFormat(): String {
+fun Long.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     return Instant.ofEpochSecond(this).toKotlinInstant()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).toNiceDateTimeFormat()
+        .toLocalDateTime(TimeZone.currentSystemDefault()).toNiceDateTimeFormat(onlyShowTime)
 }
 
-fun LocalDateTime.toNiceDateTimeFormat(): String {
+fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     this.let { dateTime ->
 
         val hours = if (hour > 12) {
@@ -38,19 +38,21 @@ fun LocalDateTime.toNiceDateTimeFormat(): String {
         val givenDateTIme = dateTime.toJavaLocalDateTime().toLocalDate()
         val currentDate = LocalDate.now()
 
-        if(givenDateTIme.isEqual(currentDate)){
-            dateString = dateString.plus("Today ")
-        }else if(givenDateTIme.isEqual(currentDate.minusDays(1))){
-            dateString = dateString.plus("Yesterday ")
-        }else if(givenDateTIme.isEqual(currentDate.plusDays(1))){
-            dateString = dateString.plus("Tomorrow ")
-        }else{
-            dateString = dateString.plus(dayOfMonth.toString()).plus(" ")
-                .plus(month.name.plus(", "))
-                .plus(year.toString().plus("   "))
+        if(onlyShowTime.not()) {
+            if (givenDateTIme.isEqual(currentDate)) {
+                dateString = dateString.plus("Today ")
+            } else if (givenDateTIme.isEqual(currentDate.minusDays(1))) {
+                dateString = dateString.plus("Yesterday ")
+            } else if (givenDateTIme.isEqual(currentDate.plusDays(1))) {
+                dateString = dateString.plus("Tomorrow ")
+            } else {
+                dateString = dateString.plus(dayOfMonth.toString()).plus(" ")
+                    .plus(month.name.plus(", "))
+                    .plus(year.toString().plus("   "))
+            }
         }
 
-        dateString = dateString.plus(hours.toString().plus(" : "))
+        dateString = dateString.plus(hours.toString().plus(":"))
             .plus(minutes.toString())
             .plus(
                 if (isAM) {
