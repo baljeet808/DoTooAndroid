@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.shared.views
+package com.baljeet.youdotoo.presentation.ui.shared.views.lazies
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,7 +12,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,11 +46,6 @@ fun profilesLazyRow(
                 model = profile.avatarUrl,
                 contentDescription = "avatarImage",
                 modifier = Modifier
-                    .shadow(
-                        elevation = 2.dp,
-                        shape = RoundedCornerShape(10.dp),
-                        clip = true
-                    )
                     .width(24.dp)
                     .height(24.dp)
                     .clip(shape = RoundedCornerShape(20.dp))
@@ -63,11 +57,6 @@ fun profilesLazyRow(
                 Button(
                     onClick = { /*TODO*/ },
                     modifier = Modifier
-                        .shadow(
-                            elevation = 2.dp,
-                            shape = RoundedCornerShape(20.dp),
-                            clip = true
-                        )
                         .width(24.dp)
                         .height(24.dp)
                         .clip(shape = RoundedCornerShape(20.dp)),

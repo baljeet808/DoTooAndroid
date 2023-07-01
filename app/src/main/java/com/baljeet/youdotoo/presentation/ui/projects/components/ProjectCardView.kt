@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.shared.views.profilesLazyRow
+import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 

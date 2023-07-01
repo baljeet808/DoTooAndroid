@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
-import com.baljeet.youdotoo.presentation.ui.shared.views.profilesLazyRow
+import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor

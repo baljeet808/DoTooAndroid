@@ -3,17 +3,22 @@ package com.baljeet.youdotoo.presentation.ui.chat.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DeleteForever
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.NotificationsOff
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +29,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
+import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 /**
@@ -48,72 +56,124 @@ fun ChatView(
 
 
         /**
-         *Top row about Dotoo name and check box
-         * **/
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = doToo.doToo.title,
-                modifier = Modifier
-                    .padding(5.dp)
-                    .weight(1f),
-                fontFamily = FontFamily(Nunito.ExtraBold.font),
-                fontSize = if (doToo.doToo.title.count() < 15) {
-                    38.sp
-                } else 24.sp,
-                color = MaterialTheme.colorScheme.secondary
-            )
-            Checkbox(
-                checked = doToo.doToo.done,
-                onCheckedChange = {
-                    toggleIsDone()
-                },
-                modifier = Modifier
-                    .weight(.1f)
-                    .height(40.dp)
-                    .width(40.dp),
-                colors = CheckboxDefaults.colors(
-                    checkedColor = DotooGreen,
-                    checkmarkColor = MaterialTheme.colorScheme.background,
-                )
-            )
-        }
-
-
-        /**
          *Column of description and toolbox for editing this Dotoo
          * **/
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(animationSpec = tween(durationMillis = 200))
-                .height(
+                /*.height(
                     if (lazyListState.isScrolled) {
-                        0.dp
+                        50.dp
                     } else {
                         125.dp
                     }
+                )*/
+                .background(
+                    color = if (isSystemInDarkTheme()) {
+                        DotooDarkerGray
+                    } else {
+                        DoTooLightBlue
+                    }
                 )
-                .padding(start = 20.dp, end = 20.dp)
         ) {
-            Text(
-                text = doToo.doToo.description,
-                color = Color.Gray,
-                fontFamily = FontFamily(Nunito.SemiBold.font),
-                fontSize = 16.sp,
-                maxLines = 3,
+            /**
+             *Top row about Dotoo name and check box
+             * **/
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            DoTooHelperCard(
-                doToo = doToo
-            )
+                    .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = doToo.doToo.title,
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .weight(1f),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = if (doToo.doToo.title.count() < 15) {
+                        38.sp
+                    } else 24.sp,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Checkbox(
+                    checked = doToo.doToo.done,
+                    onCheckedChange = {
+                        toggleIsDone()
+                    },
+                    modifier = Modifier
+                        .weight(.1f)
+                        .height(40.dp)
+                        .width(40.dp),
+                    colors = CheckboxDefaults.colors(
+                        checkedColor = DotooGreen,
+                        checkmarkColor = MaterialTheme.colorScheme.background,
+                    )
+                )
+            }
+           if(lazyListState.isScrolled.not()) {
+               Row(
+                   modifier = Modifier
+                       .shadow(elevation = 0.dp, shape = RoundedCornerShape(8.dp))
+                       .fillMaxWidth()
+                       .padding(start = 10.dp, end = 10.dp),
+                   verticalAlignment = Alignment.CenterVertically,
+                   horizontalArrangement = Arrangement.SpaceEvenly
+               ) {
+
+
+                   IconButton(
+                       onClick = { /*TODO*/ },
+                       modifier = Modifier
+                   ) {
+                       Icon(
+                           Icons.Default.NotificationsOff,
+                           contentDescription = "Turn off notification for this doToo",
+                           tint = Color.Gray
+                       )
+                   }
+
+                   IconButton(
+                       onClick = { /*TODO*/ },
+                       modifier = Modifier
+                   ) {
+                       Icon(
+                           Icons.Default.DeleteForever,
+                           contentDescription = "Delete this doToo",
+                           tint = Color.Gray
+                       )
+                   }
+
+                   IconButton(
+                       onClick = { /*TODO*/ },
+                       modifier = Modifier
+                   ) {
+                       Icon(
+                           Icons.Default.Info,
+                           contentDescription = "Information about this doToo",
+                           tint = Color.Gray
+                       )
+                   }
+
+                   doToo.profiles?.let { profiles ->
+                       profilesLazyRow(profiles = profiles, onTapProfiles = {})
+                   } ?: kotlin.run {
+                       Spacer(modifier = Modifier.weight(.5f))
+                       IconButton(
+                           onClick = { /*TODO*/ },
+                           modifier = Modifier
+                       ) {
+                           Icon(
+                               Icons.Outlined.PersonAdd,
+                               contentDescription = "Add collaborator button",
+                               tint = Color.Gray
+                           )
+                       }
+                   }
+               }
+           }
         }
 
         /**
