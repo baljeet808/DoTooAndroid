@@ -8,10 +8,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.common.BottomSheetType
+import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
+import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
 import kotlinx.coroutines.launch
 
 /**
@@ -23,11 +24,13 @@ fun ChatView(
     messages: List<Message>,
     sendMessage: (message: String) -> Unit,
     toggleIsDone: () -> Unit,
-    showAttachments: (messages: ArrayList<Message>) -> Unit
+    showAttachments: (messages: ArrayList<Message>) -> Unit,
+    interactOnMessage : (message : Message, emoticon : String) -> Unit
 ) {
 
+    var selectedMessage : Message? = null
 
-    var currentBottomSheet: BottomSheetType? by remember {
+    var currentBottomSheet: ChatScreenBottomSheetTypes? by remember {
         mutableStateOf(null)
     }
     val sheetState = rememberStandardBottomSheetState(
@@ -61,12 +64,21 @@ fun ChatView(
         sheetContent = {
             currentBottomSheet?.let {
                 when (it) {
-                    BottomSheetType.TYPE1 -> {
-
+                    ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS -> {
+                        selectedMessage?.let {selectedMessage->
+                            EmoticonsControllerView(
+                                onItemSelected = {emoticon ->
+                                    interactOnMessage(selectedMessage,emoticon)
+                                    closeSheet()
+                                },
+                                message = selectedMessage,
+                                profiles = doToo.profiles?.toCollection(ArrayList())?: arrayListOf()
+                            )
+                        }
                     }
-                    BottomSheetType.TYPE2 -> {
-
-                    }
+                    ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS -> TODO()
+                    ChatScreenBottomSheetTypes.PERSON_TAGGER -> TODO()
+                    ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN -> TODO()
                 }
             }
         }
@@ -76,21 +88,26 @@ fun ChatView(
             messages = messages,
             sendMessage = sendMessage,
             toggleIsDone = toggleIsDone,
-            openEmoticons = {
-
+            openEmoticons = { message ->
+                selectedMessage = message
+                currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
+                openSheet()
             },
             showAttachments = showAttachments,
             openCollaboratorsScreen = {
-
+                currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
+                openSheet()
             },
             openPersonTagger = {
-
+                currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
+                openSheet()
             },
             openAttachments = {
 
             },
             openCustomEmoticons = {
-
+                currentBottomSheet = ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS
+                openSheet()
             }
         )
     }

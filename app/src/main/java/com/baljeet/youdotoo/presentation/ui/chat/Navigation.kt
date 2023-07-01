@@ -35,7 +35,15 @@ fun NavGraphBuilder.addChatViewDestination(
             toggleIsDone = {
                 viewModel.toggleIsDone(tracker)
             },
-            showAttachments = {}
+            showAttachments = {},
+            interactOnMessage = { message, emoticon ->
+                viewModel.interactWithMessage(
+                    projectId = tracker.project.id,
+                    doTooId =  tracker.doToo.id,
+                    message = message,
+                    emoticon = emoticon
+                )
+            }
         )
     }
 }

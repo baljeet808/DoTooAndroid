@@ -17,7 +17,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getAllEmoticons
-import com.baljeet.youdotoo.domain.models.Interaction
+import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.domain.models.User
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinLocalDateTime
+import java.time.LocalDateTime
 
 /**
  * Updated by Baljeet singh.
@@ -27,7 +32,8 @@ import com.baljeet.youdotoo.domain.models.Interaction
 @Composable
 fun EmoticonsControllerView(
     onItemSelected : (emoticonName : String) -> Unit,
-    interactions : ArrayList<Interaction>
+    message: Message,
+    profiles : ArrayList<User>
 ) {
     val context = LocalContext.current
     Column(
@@ -63,18 +69,36 @@ fun EmoticonsControllerView(
 @Preview(showBackground = true)
 @Composable
 fun PreviewEmoticonControllerView(){
-    EmoticonsControllerView(onItemSelected = {}, interactions = arrayListOf(
-        Interaction(
-            userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-            emoticonName = "feeling_good"
+    EmoticonsControllerView(
+        onItemSelected = {},
+        message = Message(
+            id = "",
+            message = "Hey there, This is a new message about your doToo. What do you think.",
+            senderId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+            createdAt = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
+            isUpdate = false,
+            attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2F2.png?alt=media&token=f814c406-fa71-4fd7-a37a-e51119a5f107&_gl=1*37amd3*_ga*OTgxMTYwNDY4LjE2ODU2NTc1OTc.*_ga_CW55HF8NVT*MTY4NTY3MDMzMi40LjEuMTY4NTY3MDkwMS4wLjAuMA..",
+            interactions = arrayListOf(
+                "iz8dz6PufNPGbw9DzWUiZyoTHn62,feeling_good",
+                "NuZXwLl3a8O3mXRcXFsJzHQgB172,wow",
+                "NuZXwLl3a8O3mXRcXFsJzHQgB172,sad_face"
+            )
         ),
-        Interaction(
-            userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-            emoticonName = "wow"
-        ),
-        Interaction(
-            userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-            emoticonName = "sad_face"
+        profiles = arrayListOf(
+            User(
+                id = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
+                name = "Baljeet Singh",
+                email = "baljeet@gmail.com",
+                joined = 82782L,
+                avatarUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2Fdo2.png?alt=media&token=701d3864-68e3-445c-9c75-66bc06d44d09"
+            ),
+            User(
+                id = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+                name = "Karandeep Kaur",
+                email = "baljeet@gmail.com",
+                joined = 82782L,
+                avatarUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2F2.png?alt=media&token=f814c406-fa71-4fd7-a37a-e51119a5f107&_gl=1*37amd3*_ga*OTgxMTYwNDY4LjE2ODU2NTc1OTc.*_ga_CW55HF8NVT*MTY4NTY3MDMzMi40LjEuMTY4NTY3MDkwMS4wLjAuMA.."
+            )
         )
-    ))
+    )
 }

@@ -3,10 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.chat
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
-import com.baljeet.youdotoo.domain.models.Message
-import com.baljeet.youdotoo.domain.models.MessageDto
-import com.baljeet.youdotoo.domain.models.toMessage
+import com.baljeet.youdotoo.domain.models.*
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.TimeZone
@@ -66,24 +63,42 @@ class ChatViewModel @Inject constructor() : ViewModel() {
             .set(newDoToo)
     }
 
+    fun interactWithMessage(
+        projectId: String,
+        doTooId: String,
+        message: Message,
+        emoticon: String
+    ) {
+        val newMessage = message.copy()
+        newMessage.updateInteraction(emoticon)
+        chatRef
+            .document(projectId)
+            .collection("todos")
+            .document(doTooId)
+            .collection("messages")
+            .document(message.id)
+            .set(newMessage)
+    }
+
 
     fun sendMessage(
-        projectId : String,
-        doTooId : String,
+        projectId: String,
+        doTooId: String,
         messageString: String,
-        isUpdate : Boolean = false,
-        updateMessage : String = ""
+        isUpdate: Boolean = false,
+        updateMessage: String = ""
     ) {
         val newMessageID = UUID.randomUUID().toString()
         val newMessage = Message(
             id = newMessageID,
-            message = if(isUpdate){
+            message = if (isUpdate) {
                 updateMessage
-            }else{
+            } else {
                 messageString
             },
             senderId = SharedPref.userId!!,
-            createdAt = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
+            createdAt = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+                .toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             isUpdate = isUpdate,
             attachmentUrl = null,
             interactions = arrayListOf()

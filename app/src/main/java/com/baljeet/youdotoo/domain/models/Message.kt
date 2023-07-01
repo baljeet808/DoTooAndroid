@@ -61,8 +61,8 @@ fun List<String>.getInteractions(): ArrayList<Interaction> {
 fun Message.updateInteraction(interactionName: String) {
     val interactionId = SharedPref.userId.plus(",").plus(interactionName)
     if (this.interactions.any { i -> i == interactionId }) {
-        this.interactions.toCollection(ArrayList())?.remove(interactionId)
+        this.interactions.toCollection(ArrayList()).remove(interactionId)
     } else {
-        this.interactions.toCollection(ArrayList())?.add(interactionId)
+        this.interactions.toCollection(ArrayList()).add(interactionId)
     }
 }
