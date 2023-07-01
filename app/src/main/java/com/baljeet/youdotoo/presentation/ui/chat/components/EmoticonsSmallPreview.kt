@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.Interaction
@@ -63,4 +64,28 @@ fun EmoticonsSmallPreview(
         }
     }
 
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun PreviewEmoticonsSmallPreview(){
+    EmoticonsSmallPreview(
+        interactions = arrayListOf(
+            Interaction(
+                userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+                emoticonName = "feeling_good"
+            ),
+            Interaction(
+                userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+                emoticonName = "wow"
+            ),
+            Interaction(
+                userId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+                emoticonName = "sad_face"
+            )
+        )
+    ) {
+
+    }
 }
