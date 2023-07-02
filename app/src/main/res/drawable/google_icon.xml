@@ -1,9 +1,9 @@
 <vector android:height="48dp" android:viewportHeight="384"
     android:viewportWidth="384" android:width="48dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="#ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
-    <path android:fillColor="#ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
-    <path android:fillColor="#ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
-    <path android:fillColor="#d7ecff" android:fillType="nonZero" android:pathData="M192,384C85.89,384 0,298.13 0,192C0,85.89 85.87,0 192,0C298.11,0 384,85.87 384,192C384,298.11 298.13,384 192,384ZM192,384"/>
+    <path android:fillColor="#00ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
+    <path android:fillColor="#00ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
+    <path android:fillColor="#00ffffff" android:pathData="M-38.4,-38.4h460.8v460.8h-460.8z"/>
+    <path android:fillColor="#00d7ecff" android:fillType="nonZero" android:pathData="M192,384C85.89,384 0,298.13 0,192C0,85.89 85.87,0 192,0C298.11,0 384,85.87 384,192C384,298.11 298.13,384 192,384ZM192,384"/>
     <path android:fillColor="#00ffd9" android:fillType="nonZero" android:pathData="M235.44,258.03L263.91,263.15L267.79,290.38C246.8,306.58 220.51,316.23 192,316.23C155.85,316.23 123.25,300.71 100.53,275.98L104.66,249.22L132.51,244C147,260.58 168.3,271.06 192,271.06C208.03,271.06 222.96,266.26 235.44,258.03ZM235.44,258.03"/>
     <path android:fillColor="#ff2e17" android:fillType="nonZero" android:pathData="M308.71,169.41C312.86,169.41 316.23,172.78 316.23,176.94L316.23,192C316.23,232 297.24,267.64 267.79,290.38L235.44,258.03C247.64,249.97 257.49,238.63 263.71,225.26C266.03,220.29 262.36,214.59 256.87,214.59L214.05,214.59C209.89,214.59 206.52,211.22 206.52,207.06L206.52,176.94C206.52,172.78 209.89,169.41 214.05,169.41ZM308.71,169.41"/>
     <path android:fillColor="#0056d1" android:fillType="nonZero" android:pathData="M132.51,244L100.53,275.98C80.2,253.86 67.77,224.36 67.77,192C67.77,160.62 79.46,131.91 98.73,110.02L122.73,115.7L130.76,142.06C119.63,155.68 112.94,173.07 112.94,192C112.94,211.89 120.33,230.1 132.51,244ZM132.51,244"/>

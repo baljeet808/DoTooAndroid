@@ -4,19 +4,21 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +31,7 @@ import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
+import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 
 
 @Composable
@@ -50,10 +53,7 @@ fun SignInView(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp)
-            .background(
-                color = MaterialTheme.colorScheme.background
-            ),
+            .padding(20.dp),
         verticalArrangement = Arrangement.Top
     )
     {
@@ -74,20 +74,23 @@ fun SignInView(
             fontFamily = FontFamily(Nunito.Bold.font),
             fontSize = 22.sp,
             fontWeight = FontWeight.SemiBold,
-            color = DoTooLightBlue,
+            color = if(isSystemInDarkTheme())Color.Gray else DoTooLightBlue,
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(max = 100.dp),
+                .heightIn(max = 100.dp)
+                .padding(start = 10.dp)
+            ,
             maxLines = 1,
 
             )
 
         Image(
-            painterResource(id = R.drawable.todo_illustration),
+            imageVector = ImageVector.vectorResource(id = R.drawable.todo_illustration),
             contentDescription = "todo illustration",
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(max = 300.dp)
+                .background(color = Color.Transparent)
         )
 
         Text(
@@ -117,12 +120,13 @@ fun SignInView(
                 painterResource(id = R.drawable.google_icon),
                 contentDescription = "google icon",
                 modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
+                    .width(40.dp)
+                    .height(40.dp)
+                    .background(color = Color.Transparent)
             )
             Text(
                 text = "Continue With Google",
-                color = DotooBlue,
+                color =  if(isSystemInDarkTheme()) DoTooLightBlue else DotooBlue,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold
@@ -148,10 +152,11 @@ fun SignInView(
                 modifier = Modifier
                     .width(30.dp)
                     .height(30.dp)
+                    .background(color = Color.Transparent)
             )
             Text(
                 text = "Continue With Apple",
-                color = DotooBlue,
+                color = if(isSystemInDarkTheme()) DoTooLightBlue else DotooBlue,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.ExtraBold
@@ -175,7 +180,7 @@ fun SignInView(
                 text = "Or",
                 modifier = Modifier
                     .padding(start = 5.dp, end = 5.dp),
-                color = DoTooLightBlue,
+                color = Color.Gray,
                 textAlign = TextAlign.Center,
                 fontFamily = FontFamily(Nunito.SemiBold.font),
                 fontSize = 14.sp
