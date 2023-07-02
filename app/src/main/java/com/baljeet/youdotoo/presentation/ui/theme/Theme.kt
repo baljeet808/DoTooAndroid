@@ -12,7 +12,7 @@ private val DarkColorScheme = darkColorScheme(
     primary = Color.White,
     secondary = Color.White,
     tertiary = DotooPink,
-    background = Color.Black,
+    background = NightDotooDarkBlue,
     onPrimary = Color.Black,
 )
 
@@ -54,11 +54,11 @@ fun YouDoTooTheme(
     val systemUiController = rememberSystemUiController()
     if(darkTheme){
         systemUiController.setSystemBarsColor(
-            color = DotooDarkGray
+            color = NightDotooDarkBlue
         )
     }else{
         systemUiController.setSystemBarsColor(
-            color = DotooGray
+            color = MaterialTheme.colorScheme.background
         )
     }
 //    val view = LocalView.current

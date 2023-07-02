@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.login.components
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.ClickableText
@@ -16,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
+import com.baljeet.youdotoo.presentation.ui.theme.*
 
 /**
  * Updated by Baljeet singh.
@@ -33,15 +34,15 @@ fun PolicyLineView(
     val dot = "."
 
     val normalStyle = SpanStyle(
-        color = Color.Gray,
+        color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue,
         fontFamily = FontFamily(Nunito.Normal.font),
-        fontSize = 12.sp
+        fontSize = 13.sp
     )
 
     val clickableStyle = SpanStyle(
-        color = DotooBlue,
+        color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
         fontFamily = FontFamily(Nunito.Normal.font),
-        fontSize = 12.sp
+        fontSize = 13.sp
     )
 
     val annotatedString = buildAnnotatedString {

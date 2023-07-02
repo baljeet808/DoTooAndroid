@@ -1,5 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.login.components
 
+import android.content.res.Configuration
+import android.hardware.lights.Light
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,17 +31,15 @@ import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.ConstFirstScreenDescription
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
+import com.baljeet.youdotoo.presentation.ui.theme.*
 
 
 @Composable
 fun SignInView(
     navigateToProjects: () -> Unit,
     navigateToSignUp: () -> Unit,
-    navigateToPolicy : () -> Unit,
-    navigateToTermOfUse : () -> Unit,
+    navigateToPolicy: () -> Unit,
+    navigateToTermOfUse: () -> Unit,
     attemptToLogin: (email: String, password: String) -> Unit,
     state: SignInState
 ) {
@@ -50,180 +50,218 @@ fun SignInView(
         Toast.makeText(context, "Wrong credentials", Toast.LENGTH_SHORT).show()
     }
 
-    Column(
+    Box(
         modifier = Modifier
+            .background(
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooDarkBlue
+                } else {
+                    Color.White
+                }
+            )
             .fillMaxSize()
-            .padding(20.dp),
-        verticalArrangement = Arrangement.Top
-    )
-    {
-
-        Text(
-            text = "You do it too.",
-            fontFamily = FontFamily(Nunito.Bold.font),
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            color = DotooBlue,
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 100.dp),
-            maxLines = 1
+                .fillMaxSize()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.Top
         )
-        Text(
-            text = "YouDoToo",
-            fontFamily = FontFamily(Nunito.Bold.font),
-            fontSize = 22.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = if(isSystemInDarkTheme())Color.Gray else DoTooLightBlue,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 100.dp)
-                .padding(start = 10.dp)
-            ,
-            maxLines = 1,
+        {
 
-            )
-
-        Image(
-            imageVector = ImageVector.vectorResource(id = R.drawable.todo_illustration),
-            contentDescription = "todo illustration",
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 300.dp)
-                .background(color = Color.Transparent)
-        )
-
-        Text(
-            text = ConstFirstScreenDescription,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 30.dp, end = 30.dp),
-            textAlign = TextAlign.Center,
-            color = Color.Gray,
-            fontFamily = FontFamily(Nunito.Normal.font)
-        )
-        Spacer(modifier = Modifier.height(30.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .border(
-                    width = 1.dp,
-                    color = DoTooLightBlue,
-                    shape = RoundedCornerShape(30.dp)
-                ),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painterResource(id = R.drawable.google_icon),
-                contentDescription = "google icon",
+            Text(
+                text = "You do it too!",
+                fontFamily = FontFamily(Nunito.Bold.font),
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooTextColor
+                } else {
+                    LightDotooTextColor
+                },
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
+                    .fillMaxWidth()
+                    .heightIn(max = 100.dp),
+                maxLines = 1
+            )
+            Text(
+                text = "YouDoToo",
+                fontFamily = FontFamily(Nunito.Bold.font),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 100.dp)
+                    .padding(start = 10.dp),
+                maxLines = 1,
+
+                )
+
+            Image(
+                imageVector = ImageVector.vectorResource(id = R.drawable.todo_illustration),
+                contentDescription = "todo illustration",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 300.dp)
                     .background(color = Color.Transparent)
             )
+
             Text(
-                text = "Continue With Google",
-                color =  if(isSystemInDarkTheme()) DoTooLightBlue else DotooBlue,
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold
+                text = ConstFirstScreenDescription,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 30.dp, end = 30.dp),
+                textAlign = TextAlign.Center,
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooFooterTextColor
+                } else {
+                    LightDotooFooterTextColor
+                },
+                fontFamily = FontFamily(Nunito.Normal.font)
             )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .clip(shape = RoundedCornerShape(30.dp))
-                .border(
-                    width = 1.dp,
-                    color = DoTooLightBlue,
-                    shape = RoundedCornerShape(30.dp)
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .clip(shape = RoundedCornerShape(30.dp))
+                    .border(
+                        width = 1.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooLightBlue
+                        } else {
+                            LightDotooLightBlue
+                        },
+                        shape = RoundedCornerShape(30.dp)
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(
+                    10.dp,
+                    alignment = Alignment.CenterHorizontally
                 ),
-            horizontalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.CenterHorizontally),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painterResource(id = R.drawable.apple_icon),
-                contentDescription = "Apple icon",
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painterResource(id = R.drawable.google_icon),
+                    contentDescription = "google icon",
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .background(color = Color.Transparent)
+                )
+                Text(
+                    text = "Continue With Google",
+                    color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
                 modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-                    .background(color = Color.Transparent)
-            )
-            Text(
-                text = "Continue With Apple",
-                color = if(isSystemInDarkTheme()) DoTooLightBlue else DotooBlue,
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(
-                modifier = Modifier
-                    .height(1.dp)
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(color = DoTooLightBlue)
-            )
-            Text(
-                text = "Or",
+                    .height(50.dp)
+                    .clip(shape = RoundedCornerShape(30.dp))
+                    .border(
+                        width = 1.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooLightBlue
+                        } else {
+                            LightDotooLightBlue
+                        },
+                        shape = RoundedCornerShape(30.dp)
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(
+                    10.dp,
+                    alignment = Alignment.CenterHorizontally
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painterResource(id = R.drawable.apple_icon),
+                    contentDescription = "Apple icon",
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
+                        .background(color = Color.Transparent)
+                )
+                Text(
+                    text = "Continue With Apple",
+                    color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
                 modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp),
-                color = Color.Gray,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Nunito.SemiBold.font),
-                fontSize = 14.sp
-            )
-            Spacer(
-                modifier = Modifier
-                    .height(1.dp)
                     .fillMaxWidth()
-                    .weight(1f)
-                    .background(color = DoTooLightBlue)
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Button(
-            onClick = { /*TODO*/ },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .clip(shape = RoundedCornerShape(30.dp)),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = DotooBlue
-            )
-        ) {
-            Text(
-                text = "Sign Up",
-                color = DoTooLightBlue,
-                textAlign = TextAlign.Center,
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.ExtraBold
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
+                    .padding(start = 20.dp, end = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .background(color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue)
+                )
+                Text(
+                    text = "Or",
+                    modifier = Modifier
+                        .padding(start = 5.dp, end = 5.dp),
+                    color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Nunito.SemiBold.font),
+                    fontSize = 14.sp
+                )
+                Spacer(
+                    modifier = Modifier
+                        .height(1.dp)
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .background(color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue)
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .clip(shape = RoundedCornerShape(30.dp)),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = if (isSystemInDarkTheme()) {
+                        NightDotooNormalBlue
+                    } else {
+                        LightDotooNormalBlue
+                    }
+                )
+            ) {
+                Text(
+                    text = "Sign Up",
+                    color = NightDotooTextColor,
+                    textAlign = TextAlign.Center,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
 
-        PolicyLineView(
-            navigateToPolicy = navigateToPolicy,
-            navigateToTermOfUse = navigateToTermOfUse
-        )
+            PolicyLineView(
+                navigateToPolicy = navigateToPolicy,
+                navigateToTermOfUse = navigateToTermOfUse
+            )
 
+        }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun SignInPreview() {
     SignInView(

@@ -23,6 +23,10 @@ fun NavGraphBuilder.addLoginDestination(
     ){
         val viewModel : LoginViewModel = hiltViewModel()
         val state by viewModel.state
+
+        if(state.userId != null){
+            navController.navigate(DestinationProjectRoute)
+        }
         SignInView(
             navigateToProjects = {
                 navController.navigate(DestinationProjectRoute)

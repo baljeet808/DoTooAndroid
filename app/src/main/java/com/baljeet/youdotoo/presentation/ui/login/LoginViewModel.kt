@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.data.dto.SignInResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -14,15 +15,10 @@ import kotlinx.coroutines.launch
 import java.util.regex.Pattern
 import javax.inject.Inject
 
-data class SignInState(
-    val userId: String? = null,
-    val signInError: String? = null
-)
+
 
 @HiltViewModel
-class LoginViewModel @Inject constructor(
-   // savedStateHandle: SavedStateHandle
-) : ViewModel() {
+class LoginViewModel @Inject constructor() : ViewModel() {
 
     private var auth: FirebaseAuth = Firebase.auth
 
@@ -30,13 +26,16 @@ class LoginViewModel @Inject constructor(
         private set
 
     init {
-        /*val argument = savedStateHandle.get<String>(DestinationLoginRoute).orEmpty()
-        state.value = state.value.copy(
-            value = argument,
-        )*/
         resetState()
     }
 
+
+    fun onSignInResult(result: SignInResult) {
+        state.value = state.value.copy(
+            userId = result.data?.userId,
+            signInError = result.errorMessage
+        )
+    }
 
 
     fun performLogin(email: String,password: String){
