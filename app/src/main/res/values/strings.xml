@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DoToo</string>
+    <string name="default_web_client_id">538878880757-5l9chu3t6bbl0qmgffic69nr4q1p5c87.apps.googleusercontent.com</string>
+
 </resources>
