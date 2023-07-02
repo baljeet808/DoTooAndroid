@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.presentation.ui.login.components.LoginView
+import com.baljeet.youdotoo.presentation.ui.login.components.SignInView
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
 import com.baljeet.youdotoo.presentation.ui.signup.DestinationSignupRoute
 
@@ -23,7 +23,7 @@ fun NavGraphBuilder.addLoginDestination(
     ){
         val viewModel : LoginViewModel = hiltViewModel()
         val state by viewModel.state
-        LoginView(
+        SignInView(
             navigateToProjects = {
                 navController.navigate(DestinationProjectRoute)
             },
@@ -33,7 +33,13 @@ fun NavGraphBuilder.addLoginDestination(
             attemptToLogin = { email , password ->
                 viewModel.performLogin(email, password)
             },
-            state = state
+            state = state,
+            navigateToTermOfUse = {
+
+            },
+            navigateToPolicy = {
+
+            }
         )
     }
 }
