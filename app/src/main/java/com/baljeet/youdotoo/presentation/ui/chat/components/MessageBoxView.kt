@@ -38,14 +38,12 @@ fun MessageBoxView(
     openCollaboratorsScreen : () -> Unit,
     openPersonTagger : () -> Unit,
     openAttachments : () -> Unit,
-    openCustomEmojis : () -> Unit
+    openCustomEmojis : () -> Unit,
+    showEditText : Boolean
 ) {
     var message by remember {
         mutableStateOf("")
     }
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -58,46 +56,46 @@ fun MessageBoxView(
             )
     ) {
 
-
-        TextField(
-            value = message,
-            onValueChange = {
-                message = it
-            },
-            textStyle = TextStyle(
-                fontFamily = FontFamily(Nunito.Normal.font),
-                fontSize = 16.sp,
-                color = getTextColor()
-            ),
-            placeholder = {
-                Text(
-                    text = "Write message here...",
+        if(showEditText) {
+            TextField(
+                value = message,
+                onValueChange = {
+                    message = it
+                },
+                textStyle = TextStyle(
                     fontFamily = FontFamily(Nunito.Normal.font),
-                    fontSize = 14.sp,
-                    color = Color.Gray
+                    fontSize = 16.sp,
+                    color = getTextColor()
+                ),
+                placeholder = {
+                    Text(
+                        text = "Write message here...",
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        fontSize = 14.sp,
+                        color = Color.Gray
+                    )
+                },
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Send
+                ),
+                keyboardActions = KeyboardActions(
+                    onSend = {
+                        onClickSend(message)
+                        message = ""
+                    }
+                ),
+                maxLines = 5,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
                 )
-            },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Send
-            ),
-            keyboardActions = KeyboardActions(
-                onSend = {
-                    onClickSend(message)
-                    keyboardController?.hide()
-                    message = ""
-                }
-            ),
-            maxLines = 5,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                errorIndicatorColor = Color.Transparent
             )
-        )
+        }
 
 
         Row(
@@ -150,9 +148,8 @@ fun MessageBoxView(
 
             Button(
                 onClick = {
-                    onClickSend(message)
-                    keyboardController?.hide()
                     message = ""
+                    onClickSend(message)
                 },
                 modifier = Modifier,
                 shape = RoundedCornerShape(30.dp),
@@ -186,6 +183,7 @@ fun PreviewMessageBoxView() {
         openCollaboratorsScreen = {},
         openAttachments = {},
         openPersonTagger = {},
-        openCustomEmojis = {}
+        openCustomEmojis = {},
+        showEditText = true
     )
 }

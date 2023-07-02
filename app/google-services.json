@@ -1,26 +1,44 @@
 {
   "project_info": {
-    "project_number": "910307350887",
-    "project_id": "dotoo-171b4",
-    "storage_bucket": "dotoo-171b4.appspot.com"
+    "project_number": "538878880757",
+    "project_id": "youdotoo-81372",
+    "storage_bucket": "youdotoo-81372.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:910307350887:android:ea4c6ee9d4b81d81b977c2",
+        "mobilesdk_app_id": "1:538878880757:android:6ab925673b2ab3f155cebc",
         "android_client_info": {
           "package_name": "com.baljeet.youdotoo"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "538878880757-18e26bk4hg4032kr8g5ji8u1e7adb12m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.baljeet.youdotoo",
+            "certificate_hash": "2f87a19dde3cdce6e927b27bde749d1d08dbae77"
+          }
+        },
+        {
+          "client_id": "538878880757-q5b99gl0k5cim58so637miftsecbcgck.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyCfWzhRogz2-BkNvfAPfJ7xNIjvUX0-haw"
+          "current_key": "AIzaSyBFJffyyG76XYi-FqaSuPYfppneDpa5bk0"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538878880757-q5b99gl0k5cim58so637miftsecbcgck.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

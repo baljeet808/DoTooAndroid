@@ -57,10 +57,7 @@ fun ChatView(
     }
 
     BottomSheetScaffold(
-        modifier = Modifier
-            .clip(
-                shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
-            ),
+        modifier = Modifier,
         scaffoldState = sheetScaffoldState,
         sheetPeekHeight = 0.dp,
         sheetContent = {

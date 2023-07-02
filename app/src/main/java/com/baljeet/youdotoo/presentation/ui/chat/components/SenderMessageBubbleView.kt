@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -32,6 +31,7 @@ import java.time.LocalDateTime
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 1:05 PM.
  * **/
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SenderMessageBubbleView(
     message: Message,
@@ -43,6 +43,10 @@ fun SenderMessageBubbleView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .combinedClickable(
+                onLongClick = onLongPress,
+                onClick = {}
+            )
             .padding(start = 10.dp, end = 10.dp, top = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End),
         verticalAlignment = Alignment.Top
@@ -82,11 +86,7 @@ fun SenderMessageBubbleView(
             }
             Column(modifier = Modifier
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        DotooBlue
-                    } else {
-                        DoTooLightBlue
-                    },
+                    color = DotooBlue,
                     shape = RoundedCornerShape(
                         topEnd = 0.dp,
                         topStart = 20.dp,
@@ -113,7 +113,7 @@ fun SenderMessageBubbleView(
                     text = message.message,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = DoTooLightBlue
                 )
             }
             if( message.interactions.isNotEmpty()){
@@ -125,15 +125,30 @@ fun SenderMessageBubbleView(
         }
 
         if(showSenderInfo) {
-            AsyncImage(
-                model = doToo?.profiles?.getUserProfilePicture(message.senderId),
-                contentDescription = "avatarImage",
+            Box(
                 modifier = Modifier
-                    .width(30.dp)
-                    .height(30.dp)
-                    .background(color = Color.Gray, shape = RoundedCornerShape(40.dp))
-                    .clip(shape = RoundedCornerShape(40.dp))
-            )
+                    .width(35.dp)
+                    .height(35.dp)
+                    .border(
+                        width = 2.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            DoTooLightBlue
+                        } else {
+                            DotooBlue
+                        },
+                        shape = RoundedCornerShape(40.dp)
+                    )
+                    .padding(3.dp)
+            ){
+                AsyncImage(
+                    model = doToo?.profiles?.getUserProfilePicture(message.senderId),
+                    contentDescription = "avatarImage",
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
+                        .clip(shape = RoundedCornerShape(40.dp))
+                )
+            }
         }else{
             Spacer(modifier = Modifier.width(30.dp).height(30.dp))
         }

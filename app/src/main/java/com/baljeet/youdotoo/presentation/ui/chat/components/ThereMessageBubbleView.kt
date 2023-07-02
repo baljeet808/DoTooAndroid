@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -22,8 +21,7 @@ import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.domain.models.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
+import com.baljeet.youdotoo.presentation.ui.theme.*
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -32,6 +30,7 @@ import java.time.LocalDateTime
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 1:05 PM.
  * **/
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ThereMessageBubbleView(
     message: Message,
@@ -43,24 +42,49 @@ fun ThereMessageBubbleView(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .combinedClickable(
+                onLongClick = onLongPress,
+                onClick = {}
+            )
             .padding(start = 10.dp, end = 10.dp, top = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start),
         verticalAlignment = Alignment.Top
     ) {
 
 
-        if(showSenderInfo) {
-            AsyncImage(
-                model = doToo?.profiles?.getUserProfilePicture(message.senderId),
-                contentDescription = "avatarImage",
+        if (showSenderInfo) {
+            Box(
+                modifier = Modifier
+                    .width(35.dp)
+                    .height(35.dp)
+                    .border(
+                        width = 2.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            DoTooLightBlue
+                        } else {
+                            DotooBlue
+                        },
+                        shape = RoundedCornerShape(40.dp)
+                    )
+                    .padding(3.dp)
+            ) {
+                AsyncImage(
+                    model = doToo?.profiles?.getUserProfilePicture(message.senderId),
+                    contentDescription = "avatarImage",
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
+                        .clip(shape = RoundedCornerShape(40.dp))
+
+                )
+            }
+
+        } else {
+            Spacer(
                 modifier = Modifier
                     .width(30.dp)
                     .height(30.dp)
-                    .background(color = Color.Gray, shape = RoundedCornerShape(40.dp))
-                    .clip(shape = RoundedCornerShape(40.dp))
             )
-        }else{
-            Spacer(modifier = Modifier.width(30.dp).height(30.dp))
         }
 
         Column(
@@ -69,7 +93,7 @@ fun ThereMessageBubbleView(
             verticalArrangement = Arrangement.spacedBy(0.dp, alignment = Alignment.Top),
             horizontalAlignment = Alignment.Start
         ) {
-            if(showSenderInfo) {
+            if (showSenderInfo) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -98,32 +122,28 @@ fun ThereMessageBubbleView(
                     )
                 }
             }
-            Column(modifier = Modifier
-                .background(
-                    color = if (isSystemInDarkTheme()) {
-                        DotooBlue
-                    } else {
-                        DoTooLightBlue
-                    },
-                    shape = RoundedCornerShape(
-                        topEnd = 20.dp,
-                        topStart = 0.dp,
-                        bottomStart = 20.dp,
-                        bottomEnd = 20.dp
+            Column(
+                modifier = Modifier
+                    .background(
+                        color = DoTooLightBlue,
+                        shape = RoundedCornerShape(
+                            topEnd = 20.dp,
+                            topStart = 0.dp,
+                            bottomStart = 20.dp,
+                            bottomEnd = 20.dp
+                        )
                     )
-                )
-                .padding(10.dp)
-                .widthIn(min = 30.dp, max = 200.dp),
+                    .padding(10.dp)
+                    .widthIn(min = 30.dp, max = 200.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
-                message.attachmentUrl?.let {url ->
+                message.attachmentUrl?.let { url ->
                     AsyncImage(
                         model = url,
-                        contentDescription ="Attachment image",
+                        contentDescription = "Attachment image",
                         modifier = Modifier
                             .height(180.dp)
-                            .clip(shape = RoundedCornerShape(20.dp))
-                        ,
+                            .clip(shape = RoundedCornerShape(20.dp)),
                         contentScale = ContentScale.Crop,
                     )
                 }
@@ -131,10 +151,10 @@ fun ThereMessageBubbleView(
                     text = message.message,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
                     fontSize = 14.sp,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = DotooBlue
                 )
             }
-            if( message.interactions.isNotEmpty()){
+            if (message.interactions.isNotEmpty()) {
                 EmoticonsSmallPreview(
                     interactions = message.interactions.getInteractions(),
                     onViewClicked = onLongPress

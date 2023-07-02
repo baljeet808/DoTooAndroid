@@ -38,12 +38,14 @@ fun EmoticonsSmallPreview(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
     ) {
-        Text(
-            text = interactions.size.toString(),
-            fontFamily = FontFamily(Nunito.Bold.font),
-            fontSize = 11.sp,
-            color = getTextColor()
-        )
+        if(interactions.size>3) {
+            Text(
+                text = interactions.size.toString(),
+                fontFamily = FontFamily(Nunito.Bold.font),
+                fontSize = 11.sp,
+                color = getTextColor()
+            )
+        }
         Spacer(modifier = Modifier.width(2.dp))
         interactions.take(3).forEach {interaction->
             val drawableId = remember(interaction.emoticonName) {

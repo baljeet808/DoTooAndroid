@@ -74,9 +74,9 @@ fun ChatViewMainContent(
                     }
                 )
         ) {
-            /**
+         /*   *//**
              *Top row about Dotoo name and check box
-             * **/
+             * **//*
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -122,7 +122,7 @@ fun ChatViewMainContent(
 
 
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { *//*TODO*//* },
                         modifier = Modifier
                     ) {
                         Icon(
@@ -133,7 +133,7 @@ fun ChatViewMainContent(
                     }
 
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { *//*TODO*//* },
                         modifier = Modifier
                     ) {
                         Icon(
@@ -144,7 +144,7 @@ fun ChatViewMainContent(
                     }
 
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { *//*TODO*//* },
                         modifier = Modifier
                     ) {
                         Icon(
@@ -159,7 +159,7 @@ fun ChatViewMainContent(
                     } ?: kotlin.run {
                         Spacer(modifier = Modifier.weight(.5f))
                         IconButton(
-                            onClick = { /*TODO*/ },
+                            onClick = { *//*TODO*//* },
                             modifier = Modifier
                         ) {
                             Icon(
@@ -170,7 +170,7 @@ fun ChatViewMainContent(
                         }
                     }
                 }
-            }
+            }*/
         }
         /**
          *LazyColumn of Chat
@@ -179,7 +179,9 @@ fun ChatViewMainContent(
             state = lazyListState,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.6F),
+                .weight(0.8F)
+                .padding(bottom = 5.dp, top =5.dp)
+            ,
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
             reverseLayout = true
         ) {
@@ -222,6 +224,7 @@ fun ChatViewMainContent(
             onClickSend = { message ->
                 sendMessage(message)
             },
+            showEditText =  lazyListState.isScrolled.not(),
             openAttachments = openAttachments,
             openCollaboratorsScreen = openCollaboratorsScreen,
             openPersonTagger = openPersonTagger,
