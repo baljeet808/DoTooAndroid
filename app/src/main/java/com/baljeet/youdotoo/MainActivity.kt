@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -48,9 +49,12 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
     private var launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>? = null
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SharedPref.init(applicationContext)
+        installSplashScreen()
         setContent {
             YouDoTooTheme() {
                 // A surface container using the 'background' color from the theme
@@ -104,11 +108,6 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                 userData = it
             )
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        installSplashScreen()
     }
 
     override fun attemptLoginViaGoogle() {
