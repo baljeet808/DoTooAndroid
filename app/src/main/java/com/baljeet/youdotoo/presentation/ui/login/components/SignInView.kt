@@ -2,6 +2,7 @@ package com.baljeet.youdotoo.presentation.ui.login.components
 
 import android.content.res.Configuration
 import android.widget.Toast
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,10 +25,16 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.ConstFirstScreenDescription
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
+import com.baljeet.youdotoo.presentation.ui.login.getOnBoardPagerContentList
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.HorizontalPagerIndicator
+import com.google.accompanist.pager.rememberPagerState
 
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun SignInView(
     navigateToPolicy: () -> Unit,
@@ -41,6 +48,10 @@ fun SignInView(
     if (state.signInError != null) {
         Toast.makeText(context, state.signInError, Toast.LENGTH_SHORT).show()
     }
+
+    val pagerState = rememberPagerState()
+    val list = getOnBoardPagerContentList()
+
 
     Box(
         modifier = Modifier
@@ -57,25 +68,14 @@ fun SignInView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(20.dp),
-            verticalArrangement = Arrangement.Top
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         )
         {
 
-            Text(
-                text = "You do it too!",
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooTextColor
-                } else {
-                    LightDotooTextColor
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 100.dp),
-                maxLines = 1
-            )
+            /**
+             * Fixed App name
+             * **/
             Text(
                 text = "YouDoToo",
                 fontFamily = FontFamily(Nunito.Bold.font),
@@ -87,82 +87,98 @@ fun SignInView(
                     .heightIn(max = 100.dp)
                     .padding(start = 10.dp),
                 maxLines = 1,
-
-                )
-
-            Image(
-                imageVector = ImageVector.vectorResource(id = R.drawable.todo_illustration),
-                contentDescription = "todo illustration",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(max = 300.dp)
-                    .background(color = Color.Transparent)
+                textAlign = TextAlign.Center
             )
 
-            Text(
-                text = ConstFirstScreenDescription,
+            /**
+             *On boarding screens
+             * **/
+            HorizontalPager(
+                count = list.size,
+                state = pagerState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 30.dp, end = 30.dp),
-                textAlign = TextAlign.Center,
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooFooterTextColor
-                } else {
-                    LightDotooFooterTextColor
-                },
-                fontFamily = FontFamily(Nunito.Normal.font)
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(shape = RoundedCornerShape(30.dp))
-                    .border(
-                        width = 1.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooLightBlue
-                        } else {
-                            LightDotooLightBlue
-                        },
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .clickable (
-                               onClick = {
-                                    attemptToLogin()
-                               }
-                        ),
-                horizontalArrangement = Arrangement.spacedBy(
-                    10.dp,
-                    alignment = Alignment.CenterHorizontally
-                ),
-                verticalAlignment = Alignment.CenterVertically
+                    .weight(.56F)
             ) {
-                Image(
-                    painterResource(id = R.drawable.google_icon),
-                    contentDescription = "google icon",
-                    modifier = Modifier
-                        .width(40.dp)
-                        .height(40.dp)
-                        .background(color = Color.Transparent)
-                )
-                Text(
-                    text = "Continue With Google",
-                    color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
+                OnboardingPager(pagerContent = list[it])
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
 
-            PolicyLineView(
-                navigateToPolicy = navigateToPolicy,
-                navigateToTermOfUse = navigateToTermOfUse
+            HorizontalPagerIndicator(
+                pagerState = pagerState,
+                modifier = Modifier.padding(20.dp),
+                activeColor = if(isSystemInDarkTheme()){
+                    NightDotooLightBlue
+                }else{
+                    LightDotooLightBlue
+                },
+                indicatorWidth = 14.dp
             )
 
+
+            AnimatedVisibility(
+                pagerState.currentPage == 2,
+
+            ) {
+                /**
+                 * Login and policy button
+                 * **/
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 200.dp),
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp)
+                            .clip(shape = RoundedCornerShape(30.dp))
+                            .border(
+                                width = 1.dp,
+                                color = if (isSystemInDarkTheme()) {
+                                    NightDotooLightBlue
+                                } else {
+                                    LightDotooLightBlue
+                                },
+                                shape = RoundedCornerShape(30.dp)
+                            )
+                            .clickable(
+                                onClick = {
+                                    attemptToLogin()
+                                }
+                            ),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            10.dp,
+                            alignment = Alignment.CenterHorizontally
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Image(
+                            painterResource(id = R.drawable.google_icon),
+                            contentDescription = "google icon",
+                            modifier = Modifier
+                                .width(40.dp)
+                                .height(40.dp)
+                                .background(color = Color.Transparent)
+                        )
+                        Text(
+                            text = "Continue With Google",
+                            color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
+                            fontFamily = FontFamily(Nunito.Bold.font),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    PolicyLineView(
+                        navigateToPolicy = navigateToPolicy,
+                        navigateToTermOfUse = navigateToTermOfUse
+                    )
+                }
+            }
         }
     }
 }
