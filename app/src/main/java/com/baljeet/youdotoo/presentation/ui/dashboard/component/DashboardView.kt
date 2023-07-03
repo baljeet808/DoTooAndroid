@@ -1,10 +1,12 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
@@ -121,7 +123,14 @@ fun DashboardView(
 
         NavHost(
             navController = navController,
-            startDestination = DestinationProjectRoute
+            startDestination = DestinationProjectRoute,
+            modifier = Modifier.background(
+                color = if(darkTheme){
+                    NightDotooNormalBlue
+                }else{
+                    Color.White
+                }
+            )
         ){
             addProjectViewDestination(navController, trackerObject = trackerObject)
             addDotooViewDestination(navController = navController, trackerObject = trackerObject)
