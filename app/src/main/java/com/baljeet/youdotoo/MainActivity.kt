@@ -60,14 +60,12 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            color = if (isSystemInDarkTheme()) {
-                                NightDotooDarkBlue
-                            } else {
-                                Color.White
-                            }
-                        ),
+                        .fillMaxSize(),
+                    color = if (isSystemInDarkTheme()) {
+                        NightDotooDarkBlue
+                    } else {
+                        Color.White
+                    }
                 ) {
                     val navController = rememberNavController()
 

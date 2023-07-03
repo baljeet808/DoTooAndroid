@@ -3,6 +3,7 @@
     <style name="Theme.YouDoTooAppTheme" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/brand_color</item>
         <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <item name="windowSplashScreenAnimationDuration">1000</item>
         <item name="postSplashScreenTheme">@style/Theme.YouDoToo</item>
     </style>
 </resources>

@@ -25,6 +25,7 @@ fun NavGraph(
     signInState : SignInState
 ) {
     val viewModel : MainViewModel = viewModel()
+
     NavHost(
         navController = navController,
         startDestination = if(SharedPref.isUserLoggedIn){
