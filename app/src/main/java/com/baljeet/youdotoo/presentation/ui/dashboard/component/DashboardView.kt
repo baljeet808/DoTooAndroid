@@ -1,9 +1,11 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard.component
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
@@ -19,6 +21,9 @@ import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectViewDestination
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
 /**
@@ -32,6 +37,31 @@ fun DashboardView(
     val scaffoldState = rememberScaffoldState()
 
     val navController = rememberNavController()
+    val darkTheme = isSystemInDarkTheme()
+    val systemUiController = rememberSystemUiController()
+
+
+    if(scaffoldState.drawerState.isClosed){
+        if(darkTheme) {
+            systemUiController.setSystemBarsColor(
+                color = NightDotooNormalBlue
+            )
+        }else{
+            systemUiController.setSystemBarsColor(
+                color = Color.White
+            )
+        }
+    }else{
+        if(darkTheme) {
+            systemUiController.setSystemBarsColor(
+                color = NightDotooDarkBlue
+            )
+        }else{
+            systemUiController.setSystemBarsColor(
+                color = NightDotooNormalBlue
+            )
+        }
+    }
 
 
     Scaffold(

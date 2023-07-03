@@ -43,7 +43,7 @@ fun TopBar(
     }
 
     var toggleSearch by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
 
@@ -87,48 +87,46 @@ fun TopBar(
                 )
             }
 
-
-            AnimatedVisibility(
-                visible = toggleSearch
+            Column(
+                modifier = Modifier
+                    .height(50.dp)
+                    .width(180.dp)
             ) {
-                TextField(
-                    value = searchQuery,
-                    onValueChange = {
-                        searchQuery = it
-                    },
-                    modifier = Modifier
-                        .weight(0.2f)
-                        .height(50.dp)
-                        .padding(5.dp)
-                        .clip(shape = RoundedCornerShape(20.dp)),
-                    colors = TextFieldDefaults.textFieldColors(
-                        backgroundColor = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
-                        } else {
-                            LightAppBarIconsColor
+                AnimatedVisibility(
+                    visible = toggleSearch
+                ) {
+                    TextField(
+                        value = searchQuery,
+                        onValueChange = {
+                            searchQuery = it
                         },
-                        focusedIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Search
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onSearch = {
-                            onSearchItemClicked(searchQuery)
-                        }
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(5.dp)
+                            .clip(shape = RoundedCornerShape(20.dp)),
+                        colors = TextFieldDefaults.textFieldColors(
+                            backgroundColor = if (isSystemInDarkTheme()) {
+                                NightDotooDarkBlue
+                            } else {
+                                LightAppBarIconsColor
+                            },
+                            focusedIndicatorColor = Color.Transparent,
+                            errorIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                onSearchItemClicked(searchQuery)
+                            }
+                        )
                     )
-                )
+                }
+
             }
-            if (toggleSearch.not()) {
-                Spacer(
-                    modifier = Modifier
-                        .weight(0.5f)
-                        .height(50.dp)
-                        .padding(5.dp)
-                )
-            }
+
 
             /**
              * Menu icon to open side nav drawer
@@ -183,7 +181,9 @@ fun TopBar(
                                 shape = RoundedCornerShape(5.dp)
                             )
                     )
-                    Spacer(modifier = Modifier.height(15.dp).width(14.dp))
+                    Spacer(modifier = Modifier
+                        .height(15.dp)
+                        .width(14.dp))
                 }
 
             }
