@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -9,7 +8,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -20,11 +18,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
-import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.dto.SignInResult
-import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.data.remote.GoogleAuthClient
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
