@@ -5,15 +5,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
-import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
-import com.baljeet.youdotoo.presentation.ui.dotoo.addDotooViewDestination
 import com.baljeet.youdotoo.presentation.ui.login.DestinationLoginRoute
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.login.addLoginDestination
-import com.baljeet.youdotoo.presentation.ui.projects.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.signup.addSignupDestination
 
 /**
@@ -29,7 +25,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = if(SharedPref.isUserLoggedIn){
+        startDestination = if(true/*SharedPref.isUserLoggedIn*/){
             DestinationDashboardRoute
         }else{
             DestinationLoginRoute
@@ -37,9 +33,6 @@ fun NavGraph(
     ){
         addLoginDestination(navController, onSignInAttempt, signInState)
         addSignupDestination(navController)
-        addDashboardViewDestination(navController, trackerObject = viewModel.trackerObject)
-        addProjectViewDestination(navController, trackerObject = viewModel.trackerObject)
-        addDotooViewDestination(navController = navController, trackerObject = viewModel.trackerObject)
-        addChatViewDestination(trackerObject = viewModel.trackerObject)
+        addDashboardViewDestination(trackerObject = viewModel.trackerObject)
     }
 }
