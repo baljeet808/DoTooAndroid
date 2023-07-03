@@ -79,14 +79,7 @@ class GoogleAuthClient(
         }
     }
 
-    fun getSignedInUser() : UserData? = auth.currentUser?.run {
-        UserData(
-            userId = uid,
-            userName = displayName,
-            profilePictureUrl = photoUrl?.toString(),
-            userEmail = email
-        )
-    }
+
 
 
     private fun buildSignInRequest(): BeginSignInRequest {

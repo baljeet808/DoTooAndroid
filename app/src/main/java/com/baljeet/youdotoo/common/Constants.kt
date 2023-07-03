@@ -5,4 +5,4 @@ package com.baljeet.youdotoo.common
  * **/
 
 const val ConstFirstScreenDescription = "Keep track of your tasks with colleagues, family and friends. Lets finish them all together."
-const val DefaultWebClientId = "538878880757-5l9chu3t6bbl0qmgffic69nr4q1p5c87.apps.googleusercontent.com"
+const val ConstSampleAvatarUrl = "https://firebasestorage.googleapis.com/v0/b/youdotoo-81372.appspot.com/o/20.png?alt=media&token=fa1489d4-8951-4ef6-8f96-862938aedb62"

@@ -5,9 +5,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.presentation.ui.login.components.SignInView
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
-import com.baljeet.youdotoo.presentation.ui.signup.DestinationSignupRoute
 
 /**
  * Updated by Baljeet singh.
@@ -16,26 +16,28 @@ import com.baljeet.youdotoo.presentation.ui.signup.DestinationSignupRoute
 const val DestinationLoginRoute = "login"
 
 fun NavGraphBuilder.addLoginDestination(
-    navController: NavController
+    navController: NavController,
+    onSignInAttempt : OnAttemptLoginViaGoogle,
+    signInState : SignInState
 ){
     composable(
         route = DestinationLoginRoute
     ){
+
         val viewModel : LoginViewModel = hiltViewModel()
         val state by viewModel.state
 
-        if(state.userId != null){
+        if(signInState.userData != null){
+            onSignInAttempt.resetLoginState()
+            viewModel.updateUser(userData = signInState.userData)
+        }
+        if(state.userData != null){
             navController.navigate(DestinationProjectRoute)
+            viewModel.resetState()
         }
         SignInView(
-            navigateToProjects = {
-                navController.navigate(DestinationProjectRoute)
-            },
-            navigateToSignUp = {
-                navController.navigate(DestinationSignupRoute)
-            },
-            attemptToLogin = { email , password ->
-                viewModel.performLogin(email, password)
+            attemptToLogin = {
+                onSignInAttempt.attemptLoginViaGoogle()
             },
             state = state,
             navigateToTermOfUse = {

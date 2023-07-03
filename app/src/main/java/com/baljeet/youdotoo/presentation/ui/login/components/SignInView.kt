@@ -1,16 +1,10 @@
 package com.baljeet.youdotoo.presentation.ui.login.components
 
 import android.content.res.Configuration
-import android.hardware.lights.Light
 import android.widget.Toast
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,18 +30,16 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 
 @Composable
 fun SignInView(
-    navigateToProjects: () -> Unit,
-    navigateToSignUp: () -> Unit,
     navigateToPolicy: () -> Unit,
     navigateToTermOfUse: () -> Unit,
-    attemptToLogin: (email: String, password: String) -> Unit,
+    attemptToLogin: () -> Unit,
     state: SignInState
 ) {
     val context = LocalContext.current
 
 
     if (state.signInError != null) {
-        Toast.makeText(context, "Wrong credentials", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, state.signInError, Toast.LENGTH_SHORT).show()
     }
 
     Box(
@@ -135,7 +127,12 @@ fun SignInView(
                             LightDotooLightBlue
                         },
                         shape = RoundedCornerShape(30.dp)
-                    ),
+                    )
+                    .clickable (
+                               onClick = {
+                                    attemptToLogin()
+                               }
+                        ),
                 horizontalArrangement = Arrangement.spacedBy(
                     10.dp,
                     alignment = Alignment.CenterHorizontally
@@ -158,99 +155,8 @@ fun SignInView(
                     fontWeight = FontWeight.ExtraBold
                 )
             }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(shape = RoundedCornerShape(30.dp))
-                    .border(
-                        width = 1.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooLightBlue
-                        } else {
-                            LightDotooLightBlue
-                        },
-                        shape = RoundedCornerShape(30.dp)
-                    ),
-                horizontalArrangement = Arrangement.spacedBy(
-                    10.dp,
-                    alignment = Alignment.CenterHorizontally
-                ),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painterResource(id = R.drawable.apple_icon),
-                    contentDescription = "Apple icon",
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                        .background(color = Color.Transparent)
-                )
-                Text(
-                    text = "Continue With Apple",
-                    color = if (isSystemInDarkTheme()) NightDotooTextColor else LightDotooTextColor,
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .background(color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue)
-                )
-                Text(
-                    text = "Or",
-                    modifier = Modifier
-                        .padding(start = 5.dp, end = 5.dp),
-                    color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Nunito.SemiBold.font),
-                    fontSize = 14.sp
-                )
-                Spacer(
-                    modifier = Modifier
-                        .height(1.dp)
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .background(color = if (isSystemInDarkTheme()) NightDotooLightBlue else LightDotooLightBlue)
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            Button(
-                onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .clip(shape = RoundedCornerShape(30.dp)),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (isSystemInDarkTheme()) {
-                        NightDotooNormalBlue
-                    } else {
-                        LightDotooNormalBlue
-                    }
-                )
-            ) {
-                Text(
-                    text = "Sign Up",
-                    color = NightDotooTextColor,
-                    textAlign = TextAlign.Center,
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             PolicyLineView(
                 navigateToPolicy = navigateToPolicy,
@@ -265,11 +171,9 @@ fun SignInView(
 @Composable
 fun SignInPreview() {
     SignInView(
-        navigateToProjects = {},
-        navigateToSignUp = {},
         navigateToPolicy = {},
         navigateToTermOfUse = {},
-        attemptToLogin = { _, _ -> },
+        attemptToLogin = { },
         state = SignInState()
     )
 }
