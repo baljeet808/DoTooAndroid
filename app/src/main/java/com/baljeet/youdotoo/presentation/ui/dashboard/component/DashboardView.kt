@@ -70,7 +70,7 @@ fun DashboardView(
 
         topBar = {
                  TopBar(
-                     notificationsState = false,
+                     notificationsState = true,
                      onMenuItemClick = {
                          scope.launch {
                              scaffoldState.drawerState.open()

@@ -43,7 +43,7 @@ fun TopBar(
     }
 
     var toggleSearch by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
 
 
