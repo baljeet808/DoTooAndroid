@@ -1,20 +1,14 @@
 package com.baljeet.youdotoo.presentation.ui.drawer
 
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.progressSemantics
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Person2
-import androidx.compose.material.icons.outlined.FolderOpen
-import androidx.compose.material.icons.outlined.Person2
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.Topic
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -31,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
+import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -40,7 +35,10 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
  * **/
 @Composable
 fun NavigationDrawer(
-    userData: UserData
+    userData: UserData,
+    menuItems: List<MenuItem>,
+    onMenuItemClick: (MenuItem) -> Unit,
+    closeDrawer : () -> Unit
 ) {
 
     Box(
@@ -62,6 +60,10 @@ fun NavigationDrawer(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.Start
         ) {
+
+            /**
+             * Top row to show profile image and drawer close button
+             * **/
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -69,6 +71,9 @@ fun NavigationDrawer(
                 verticalAlignment = Alignment.Top
             ) {
 
+                /**
+                 * User Profile with Progress bar for total tasks completed
+                 * **/
                 Box(
                     modifier = Modifier
                         .width(100.dp)
@@ -100,8 +105,11 @@ fun NavigationDrawer(
                 }
 
 
+                /**
+                 * Drawer close icon button
+                 * **/
                 IconButton(
-                    onClick = { /*TODO*/ },
+                    onClick = { closeDrawer() },
                     modifier = Modifier
                         .width(50.dp)
                         .height(50.dp)
@@ -118,7 +126,7 @@ fun NavigationDrawer(
                 ) {
                     Icon(
                         Icons.Default.ArrowBackIos,
-                        contentDescription = "Close drawer",
+                        contentDescription = "Button to close side drawer.",
                         tint = if (isSystemInDarkTheme()) {
                             NightDotooTextColor
                         } else {
@@ -130,12 +138,14 @@ fun NavigationDrawer(
             }
 
 
+            /**
+             * Breaking user name into separate lines
+             * **/
+            var userNameMultiline = ""
             val userName = userData.userName
                 ?.split(" ", limit = 3)
                 ?.toCollection(ArrayList())
                 ?: arrayListOf("Unknown", "User")
-            var userNameMultiline = ""
-
             for (word in userName) {
                 userNameMultiline += word
                 if (word != userName.last()) {
@@ -145,6 +155,10 @@ fun NavigationDrawer(
 
             Spacer(modifier = Modifier.height(30.dp))
 
+
+            /**
+             * Showing user name
+             * **/
             Text(
                 text = userNameMultiline,
                 modifier = Modifier
@@ -163,99 +177,49 @@ fun NavigationDrawer(
             Spacer(modifier = Modifier.height(30.dp))
 
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            /**
+             * Lazy column for Menu items
+             * **/
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
 
-                Icon(
-                    Icons.Outlined.Person2,
-                    contentDescription = "profile button",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightDotooFooterTextColor
-                    } else {
-                        LightDotooFooterTextColor
+                items(menuItems) { menuItem ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp)
+                            .clickable(
+                                onClick = {
+                                    onMenuItemClick(menuItem)
+                                }
+                            ),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Icon(
+                            menuItem.icon,
+                            contentDescription = menuItem.contentDescription,
+                            tint = if (isSystemInDarkTheme()) {
+                                NightDotooFooterTextColor
+                            } else {
+                                LightDotooFooterTextColor
+                            }
+                        )
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Text(
+                            text = menuItem.title,
+                            fontFamily = FontFamily(Nunito.Normal.font),
+                            color = if (isSystemInDarkTheme()) {
+                                NightDotooTextColor
+                            } else {
+                                LightDotooFooterTextColor
+                            },
+                        )
                     }
-                )
-                
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = "Account",
-                    fontFamily = FontFamily(Nunito.Normal.font),
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooTextColor
-                    } else {
-                        LightDotooFooterTextColor
-                    },
-                )
+                }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Icon(
-                    Icons.Outlined.Topic,
-                    contentDescription = "Projects button",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightDotooFooterTextColor
-                    } else {
-                        LightDotooFooterTextColor
-                    }
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = "Projects",
-                    fontFamily = FontFamily(Nunito.Normal.font),
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooTextColor
-                    } else {
-                        LightDotooFooterTextColor
-                    },
-
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Icon(
-                    Icons.Outlined.Settings,
-                    contentDescription = "Setting button",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightDotooFooterTextColor
-                    } else {
-                        LightDotooFooterTextColor
-                    }
-                )
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Text(
-                    text = "Settings",
-                    fontFamily = FontFamily(Nunito.Normal.font),
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooTextColor
-                    } else {
-                        LightDotooFooterTextColor
-                    },
-
-                )
-            }
-
         }
     }
 }
@@ -269,6 +233,9 @@ fun PreviewNavigationDrawer() {
             userName = "Karandeep Kaur",
             userEmail = "Karanwaraich45@gmail.com",
             profilePictureUrl = ConstSampleAvatarUrl
-        )
+        ),
+        menuItems = menuItems,
+        onMenuItemClick = {},
+        closeDrawer = {}
     )
 }

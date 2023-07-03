@@ -26,6 +26,8 @@ val LightDotooBrightBlue = Color(0xFF0C71FF)
 val LightDotooLightBlue = Color(0xFFBDC0CB)
 val LightDotooTextColor = Color(0xFF1C2136)
 val LightDotooFooterTextColor = Color(0xFFBDC0CB)
+val LightAppBarIconsColor = Color(0xFF959DB8)
+
 
 //used in dark theme
 val NightDotooDarkBlue = Color(0xFF041955)
@@ -35,6 +37,7 @@ val NightDotooBrightBlue = Color(0xFF0C71FF)
 val NightDotooLightBlue = Color(0xFF4D7199)
 val NightDotooTextColor = Color(0xFFFFFFFF)
 val NightDotooFooterTextColor = Color(0xFF4D7199)
+val NightAppBarIconsColor = Color(0xFF617B97)
 
 
 @Composable

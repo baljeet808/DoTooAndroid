@@ -13,7 +13,7 @@ import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
  * Updated by Baljeet singh.
  * **/
 
-const val DestinationProjectRoute = "Project"
+const val DestinationProjectRoute = "projects"
 
 
 fun NavGraphBuilder.addProjectViewDestination(
