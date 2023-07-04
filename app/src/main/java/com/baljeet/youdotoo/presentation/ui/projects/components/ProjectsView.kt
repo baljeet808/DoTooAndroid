@@ -1,5 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,6 +23,7 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getThemeColor
@@ -29,10 +32,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectsView(
-    navigateToDoToos : (project : ProjectWithProfiles) -> Unit,
-    projectsState : List<ProjectWithProfiles>,
-    tracker : TrackerObject
-){
+    navigateToDoToos: (project: ProjectWithProfiles) -> Unit,
+    projectsState: List<ProjectWithProfiles>,
+    tracker: TrackerObject
+) {
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
         initialValue = SheetValue.Hidden
@@ -57,6 +60,13 @@ fun ProjectsView(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(
+                    color = if (isSystemInDarkTheme()) {
+                        NightDotooNormalBlue
+                    } else {
+                        Color.White
+                    }
+                )
         ) {
             Row(
                 modifier = Modifier
@@ -106,7 +116,7 @@ fun ProjectsView(
                     .weight(1f)
                     .padding(10.dp),
                 projectsState = projectsState,
-                navigateToDoToos =  navigateToDoToos
+                navigateToDoToos = navigateToDoToos
             )
         }
     }
@@ -143,7 +153,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectOwned) { project ->
-                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
+                ProjectCardView(project = project, onItemClick = { navigateToDoToos(project) })
             }
             item {
                 Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
@@ -159,7 +169,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectSharedToMe) { project ->
-                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
+                ProjectCardView(project = project, onItemClick = { navigateToDoToos(project) })
             }
             item {
                 Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
@@ -175,7 +185,7 @@ fun projectsLazyColumn(
                 )
             }
             items(projectViewing) { project ->
-                ProjectCardView(project = project, onItemClick = {navigateToDoToos(project)})
+                ProjectCardView(project = project, onItemClick = { navigateToDoToos(project) })
             }
         }
     }

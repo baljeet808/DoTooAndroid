@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -50,7 +51,7 @@ fun DashboardView(
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
 
-    var maximizeCurrentScreen by remember{
+    var maximizeCurrentScreen by remember {
         mutableStateOf(true)
     }
 
@@ -73,77 +74,95 @@ fun DashboardView(
     systemUiController.setSystemBarsColor(color = statusBarColor)
 
     val scale = animateFloatAsState(
-        if (maximizeCurrentScreen){
+        if (maximizeCurrentScreen) {
             1f
-        }else{
+        } else {
             0.8f
         }
     )
 
     val roundness = animateDpAsState(
-        if (maximizeCurrentScreen){
+        if (maximizeCurrentScreen) {
             0.dp
-        }else{
+        } else {
             40.dp
         }
     )
 
     val offSetX = animateDpAsState(
-        if (maximizeCurrentScreen){
+        if (maximizeCurrentScreen) {
             0.dp
-        }else{
+        } else {
             250.dp
         }
     )
 
 
     Scaffold(
-        modifier = Modifier,
         scaffoldState = scaffoldState,
         drawerScrimColor = Color.Transparent,
         drawerGesturesEnabled = false,
         drawerBackgroundColor = Color.Transparent,
         drawerElevation = 0.dp,
         drawerContent = {
-            NavigationDrawer(
-                userData = UserData(
-                    userId = SharedPref.userId ?: "",
-                    userName = SharedPref.userName,
-                    userEmail = SharedPref.userEmail,
-                    profilePictureUrl = SharedPref.userAvatar
-                ),
-                menuItems = menuItems,
-                onMenuItemClick = { menuId ->
-                    when (menuId.id) {
-                        DestinationAccountRoute -> {
-                            scope.launch {
-                                scaffoldState.drawerState.close()
+            Row(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                NavigationDrawer(
+                    userData = UserData(
+                        userId = SharedPref.userId ?: "",
+                        userName = SharedPref.userName,
+                        userEmail = SharedPref.userEmail,
+                        profilePictureUrl = SharedPref.userAvatar
+                    ),
+                    menuItems = menuItems,
+                    onMenuItemClick = { menuId ->
+                        when (menuId.id) {
+                            DestinationAccountRoute -> {
+                                scope.launch {
+                                    scaffoldState.drawerState.close()
+                                }
+                                maximizeCurrentScreen = true
                             }
-                           maximizeCurrentScreen = true
-                        }
-                        DestinationSettingsRoute -> {
-                            scope.launch {
-                                scaffoldState.drawerState.close()
+                            DestinationSettingsRoute -> {
+                                scope.launch {
+                                    scaffoldState.drawerState.close()
+                                }
+                                maximizeCurrentScreen = true
                             }
-                           maximizeCurrentScreen = true
-                        }
-                        DestinationProjectRoute -> {
-                            scope.launch {
-                                scaffoldState.drawerState.close()
+                            DestinationProjectRoute -> {
+                                scope.launch {
+                                    scaffoldState.drawerState.close()
+                                }
+                                maximizeCurrentScreen = true
+                                navController.navigate(DestinationProjectRoute)
                             }
-                            maximizeCurrentScreen = true
-                            navController.navigate(DestinationProjectRoute)
                         }
-                    }
-                },
-                closeDrawer = {
-                    scope.launch {
-                        scaffoldState.drawerState.close()
-                    }
-                    maximizeCurrentScreen = true
-                },
-                modifier = Modifier.widthIn(max = 250.dp)
-            )
+                    },
+                    closeDrawer = {
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                        maximizeCurrentScreen = true
+                    },
+                    modifier = Modifier.width(250.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = Color.Transparent)
+                        .clickable(
+                            onClick = {
+                                if (scaffoldState.drawerState.isOpen) {
+                                    scope.launch {
+                                        scaffoldState.drawerState.close()
+                                    }
+                                    maximizeCurrentScreen = true
+                                }
+                            }
+                        )
+                )
+            }
         }
     ) {
         Box(
@@ -161,8 +180,7 @@ fun DashboardView(
                     .scale(scale.value)
                     .clip(
                         shape = RoundedCornerShape(roundness.value)
-                    )
-                ,
+                    ),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
 
@@ -206,7 +224,6 @@ fun DashboardView(
             }
 
         }
-
 
 
     }
