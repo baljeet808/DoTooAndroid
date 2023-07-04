@@ -1,18 +1,19 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard.component
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,17 +50,21 @@ fun DashboardView(
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
 
+    var maximizeCurrentScreen by remember{
+        mutableStateOf(true)
+    }
+
     val statusBarColor by animateColorAsState(
-        if(scaffoldState.drawerState.isClosed){
-            if(darkTheme) {
+        if (maximizeCurrentScreen) {
+            if (darkTheme) {
                 NightDotooNormalBlue
-            }else{
-               Color.White
+            } else {
+                Color.White
             }
-        }else{
-            if(darkTheme) {
-             NightDotooDarkBlue
-            }else{
+        } else {
+            if (darkTheme) {
+                NightDotooDarkBlue
+            } else {
                 NightDotooNormalBlue
             }
         }
@@ -67,34 +72,66 @@ fun DashboardView(
 
     systemUiController.setSystemBarsColor(color = statusBarColor)
 
+    val scale = animateFloatAsState(
+        if (maximizeCurrentScreen){
+            1f
+        }else{
+            0.8f
+        }
+    )
 
+    val roundness = animateDpAsState(
+        if (maximizeCurrentScreen){
+            0.dp
+        }else{
+            40.dp
+        }
+    )
+
+    val offSetX = animateDpAsState(
+        if (maximizeCurrentScreen){
+            0.dp
+        }else{
+            250.dp
+        }
+    )
 
 
     Scaffold(
+        modifier = Modifier,
         scaffoldState = scaffoldState,
-        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
-
-        /**
-         * Side navigation drawer body content
-         * **/
+        drawerScrimColor = Color.Transparent,
+        drawerGesturesEnabled = false,
+        drawerBackgroundColor = Color.Transparent,
+        drawerElevation = 0.dp,
         drawerContent = {
             NavigationDrawer(
                 userData = UserData(
-                    userId = SharedPref.userId?:"",
+                    userId = SharedPref.userId ?: "",
                     userName = SharedPref.userName,
                     userEmail = SharedPref.userEmail,
                     profilePictureUrl = SharedPref.userAvatar
                 ),
                 menuItems = menuItems,
-                onMenuItemClick = {menuId ->
-                    when(menuId.id){
-                        DestinationAccountRoute ->{
-
+                onMenuItemClick = { menuId ->
+                    when (menuId.id) {
+                        DestinationAccountRoute -> {
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                           maximizeCurrentScreen = true
                         }
-                        DestinationSettingsRoute ->{
-
+                        DestinationSettingsRoute -> {
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                           maximizeCurrentScreen = true
                         }
                         DestinationProjectRoute -> {
+                            scope.launch {
+                                scaffoldState.drawerState.close()
+                            }
+                            maximizeCurrentScreen = true
                             navController.navigate(DestinationProjectRoute)
                         }
                     }
@@ -103,49 +140,69 @@ fun DashboardView(
                     scope.launch {
                         scaffoldState.drawerState.close()
                     }
+                    maximizeCurrentScreen = true
                 },
-                modifier = Modifier
+                modifier = Modifier.widthIn(max = 250.dp)
             )
         }
     ) {
-
-        Column(
+        Box(
             modifier = Modifier
-                .background( color = if(darkTheme){
-                    NightDotooNormalBlue
-                }else{
-                    Color.White
-                }),
-            verticalArrangement = Arrangement.SpaceBetween,
+                .fillMaxWidth()
+                .background(color = statusBarColor)
         ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(
+                        x = offSetX.value,
+                        y = 0.dp
+                    )
+                    .scale(scale.value)
+                    .clip(
+                        shape = RoundedCornerShape(roundness.value)
+                    )
+                ,
+                verticalArrangement = Arrangement.SpaceBetween,
+            ) {
 
-            /**
-             * Top app bar
-             * **/
-            TopBar(
-                modifier = Modifier.height(60.dp),
-                notificationsState = true,
-                onMenuItemClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
+                /**
+                 * Top app bar
+                 * **/
+                TopBar(
+                    modifier = Modifier.height(60.dp),
+                    notificationsState = true,
+                    onMenuItemClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                        maximizeCurrentScreen = false
+                    },
+                    onNotificationItemClicked = {
+                        //Navigate to notifications
+                    },
+                    onSearchItemClicked = {
+                        //show search results somewhere
                     }
-                },
-                onNotificationItemClicked = {
-                    //Navigate to notifications
-                },
-                onSearchItemClicked = {
-                    //show search results somewhere
-                }
-            )
+                )
 
-            NavHost(
-                navController = navController,
-                startDestination = DestinationProjectRoute,
-                modifier = Modifier.fillMaxSize()
-            ){
-                addProjectViewDestination(navController, trackerObject = trackerObject)
-                addDotooViewDestination(navController = navController, trackerObject = trackerObject)
-                addChatViewDestination(trackerObject = trackerObject)
+
+
+                NavHost(
+                    navController = navController,
+                    startDestination = DestinationProjectRoute,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(color = NightDotooNormalBlue)
+                ) {
+                    addProjectViewDestination(navController, trackerObject = trackerObject)
+                    addDotooViewDestination(
+                        navController = navController,
+                        trackerObject = trackerObject
+                    )
+                    addChatViewDestination(trackerObject = trackerObject)
+                }
+
             }
 
         }
@@ -154,12 +211,13 @@ fun DashboardView(
 
     }
 
+
 }
 
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewDashboardView(){
+fun PreviewDashboardView() {
     DashboardView(
         trackerObject = TrackerObject()
     )
