@@ -8,7 +8,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
@@ -20,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.common.DestinationAccountRoute
 import com.baljeet.youdotoo.common.DestinationSettingsRoute
 import com.baljeet.youdotoo.common.SharedPref
@@ -41,9 +39,7 @@ import kotlinx.coroutines.launch
  * Updated by Baljeet singh.
  * **/
 @Composable
-fun DashboardView(
-    trackerObject: TrackerObject
-) {
+fun DashboardView() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
 
@@ -213,12 +209,9 @@ fun DashboardView(
                         .fillMaxSize()
                         .background(color = NightDotooNormalBlue)
                 ) {
-                    addProjectViewDestination(navController, trackerObject = trackerObject)
-                    addDotooViewDestination(
-                        navController = navController,
-                        trackerObject = trackerObject
-                    )
-                    addChatViewDestination(trackerObject = trackerObject)
+                    addProjectViewDestination(navController)
+                    addDotooViewDestination(navController = navController)
+                    addChatViewDestination()
                 }
 
             }
@@ -235,7 +228,5 @@ fun DashboardView(
 @Preview(showBackground = true)
 @Composable
 fun PreviewDashboardView() {
-    DashboardView(
-        trackerObject = TrackerObject()
-    )
+    DashboardView()
 }

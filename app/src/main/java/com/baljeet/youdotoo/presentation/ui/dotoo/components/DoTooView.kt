@@ -26,7 +26,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Project
@@ -47,7 +46,6 @@ import kotlinx.coroutines.launch
 fun DoTooView(
     project: ProjectWithProfiles,
     doToosState : List<DoTooWithProfiles>,
-    tracker : TrackerObject,
     navigateToCreateDoToo : (project : Project) -> Unit,
     navigateToChatView : (doToo : DoTooWithProfiles) -> Unit,
     toggleDoToo : (doToo : DoTooWithProfiles) -> Unit
@@ -221,8 +219,6 @@ fun DoTooView(
                         }
                     }
 
-                    tracker.doToos.clear()
-                    tracker.doToos.addAll(doToosState)
 
                     HorizontalPager(
                         count = tabs.size,
@@ -402,7 +398,6 @@ fun DotooViewPreview(){
         navigateToChatView = {},
         toggleDoToo = {},
         doToosState = listOf(),
-        navigateToCreateDoToo = {},
-        tracker = TrackerObject()
+        navigateToCreateDoToo = {}
     )
 }

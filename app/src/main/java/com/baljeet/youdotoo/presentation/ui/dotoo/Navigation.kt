@@ -5,7 +5,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.presentation.ui.chat.DestinationMessageRoute
@@ -21,16 +20,15 @@ const val DestinationDotooRoute = "Dotoo"
 const val DestinationCreateDotooRoute = "CreateDotoo"
 
 fun NavGraphBuilder.addDotooViewDestination(
-    navController: NavController,
-    trackerObject : TrackerObject
+    navController: NavController
 ){
     composable(
         route = DestinationDotooRoute
     ){
         val viewModel : DoToosViewModel = hiltViewModel()
         val state by viewModel.doToosState
-        viewModel.init(trackerObject.projects[trackerObject.selectedProjectIndex])
-        DoTooView(
+      //  viewModel.init()
+       /* DoTooView(
             navigateToCreateDoToo = {
                 navController.navigate(DestinationCreateDotooRoute)
             },
@@ -38,13 +36,12 @@ fun NavGraphBuilder.addDotooViewDestination(
                 viewModel.toggleIsDone(doToo)
             },
             navigateToChatView = {doToo ->
-                trackerObject.selectedDoTooIndex = trackerObject.doToos.indexOf(doToo)
                 navController.navigate(DestinationMessageRoute)
             },
-            project = trackerObject.projects[trackerObject.selectedProjectIndex],
-            doToosState = state,
-            tracker = trackerObject
-        )
+            project = ,
+            doToosState = state
+
+        )*/
     }
 
     composable(
@@ -52,8 +49,8 @@ fun NavGraphBuilder.addDotooViewDestination(
     ){
         val viewModel : CreateDoTooViewModel = hiltViewModel()
         val state by viewModel.createState
-        createDoTooView(
-            project = trackerObject.projects[trackerObject.selectedProjectIndex],
+      /*  createDoTooView(
+         //   project = ,
             navigateBack = {
                 navController.popBackStack()
             },
@@ -68,6 +65,6 @@ fun NavGraphBuilder.addDotooViewDestination(
                     customDate = customDate
                 )
             }
-        )
+        )*/
     }
 }

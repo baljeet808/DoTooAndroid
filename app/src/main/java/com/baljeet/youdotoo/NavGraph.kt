@@ -22,7 +22,6 @@ fun NavGraph(
     onSignInAttempt : OnAttemptLoginViaGoogle,
     signInState : SignInState
 ) {
-    val viewModel : MainViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -34,6 +33,6 @@ fun NavGraph(
     ){
         addLoginDestination(navController, onSignInAttempt, signInState)
         addSignupDestination(navController)
-        addDashboardViewDestination(trackerObject = viewModel.trackerObject)
+        addDashboardViewDestination()
     }
 }

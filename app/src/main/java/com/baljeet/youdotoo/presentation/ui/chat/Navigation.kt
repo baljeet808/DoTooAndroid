@@ -4,7 +4,6 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.TrackerObject
 
 /**
  * Updated by Baljeet singh.
@@ -12,38 +11,35 @@ import com.baljeet.youdotoo.TrackerObject
 
 const val DestinationMessageRoute = "messages"
 
-fun NavGraphBuilder.addChatViewDestination(
-    trackerObject: TrackerObject
-){
+fun NavGraphBuilder.addChatViewDestination(){
     composable(
         route = DestinationMessageRoute
     ){
         val viewModel : ChatViewModel = hiltViewModel()
         val messages by viewModel.messagesState
-        val tracker = trackerObject.doToos[trackerObject.selectedDoTooIndex]
-        viewModel.init(tracker)
-        ChatView(
-            doToo = tracker,
+      //  viewModel.init()
+     /*   ChatView(
+            doToo = ,
             messages = messages,
             sendMessage = {messageString ->
                 viewModel.sendMessage(
-                    projectId = tracker.project.id,
-                    doTooId = tracker.doToo.id,
+                    projectId = ,
+                    doTooId = ,
                     messageString = messageString
                 )
             },
             toggleIsDone = {
-                viewModel.toggleIsDone(tracker)
+                viewModel.toggleIsDone()
             },
             showAttachments = {},
             interactOnMessage = { message, emoticon ->
                 viewModel.interactWithMessage(
-                    projectId = tracker.project.id,
-                    doTooId =  tracker.doToo.id,
+                    projectId = ,
+                    doTooId =  ,
                     message = message,
                     emoticon = emoticon
                 )
             }
-        )
+        )*/
     }
 }

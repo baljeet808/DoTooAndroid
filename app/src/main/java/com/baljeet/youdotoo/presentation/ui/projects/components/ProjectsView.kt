@@ -5,20 +5,17 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
@@ -34,7 +31,6 @@ import kotlinx.coroutines.launch
 fun ProjectsView(
     navigateToDoToos: (project: ProjectWithProfiles) -> Unit,
     projectsState: List<ProjectWithProfiles>,
-    tracker: TrackerObject
 ) {
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
@@ -105,10 +101,6 @@ fun ProjectsView(
                     )
                 }
             }
-
-            //updating the tracker on each compose state refresh
-            tracker.projects.clear()
-            tracker.projects.addAll(projectsState)
 
             projectsLazyColumn(
                 modifier = Modifier
@@ -197,7 +189,6 @@ fun projectsLazyColumn(
 fun DefaultProjectPreview() {
     ProjectsView(
         navigateToDoToos = {},
-        projectsState = listOf(),
-        tracker = TrackerObject()
+        projectsState = listOf()
     )
 }

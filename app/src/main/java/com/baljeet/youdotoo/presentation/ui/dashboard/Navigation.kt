@@ -2,7 +2,6 @@ package com.baljeet.youdotoo.presentation.ui.dashboard
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.TrackerObject
 import com.baljeet.youdotoo.presentation.ui.dashboard.component.DashboardView
 
 /**
@@ -12,14 +11,10 @@ import com.baljeet.youdotoo.presentation.ui.dashboard.component.DashboardView
 const val DestinationDashboardRoute = "Dashboard"
 
 
-fun NavGraphBuilder.addDashboardViewDestination(
-    trackerObject : TrackerObject
-){
+fun NavGraphBuilder.addDashboardViewDestination(){
     composable(
         route = DestinationDashboardRoute
     ){
-        DashboardView(
-            trackerObject = trackerObject
-        )
+        DashboardView()
     }
 }

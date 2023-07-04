@@ -29,7 +29,6 @@ import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
@@ -44,8 +43,6 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
     }
 
     private var launcher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>? = null
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

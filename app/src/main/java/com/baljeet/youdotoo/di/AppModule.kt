@@ -1,18 +1,25 @@
 package com.baljeet.youdotoo.di
 
+import android.app.Application
+import androidx.room.Room
+import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
-/**
- * Updated by Baljeet singh.
- * **/
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    //nothing is here for now, it was setup for setting data layer but then figured
-    //That is overkill in this project scope
-    //Now this is just here for future cases
-    //Might delete this if no use found
+    @Provides
+    @Singleton
+    fun providesYouDoTooDatabase(app : Application) : YouDoTooDatabase{
+        return Room.databaseBuilder(
+            context = app,
+            YouDoTooDatabase::class.java,
+            "YouDoToo.db"
+        ).build()
+    }
 }
