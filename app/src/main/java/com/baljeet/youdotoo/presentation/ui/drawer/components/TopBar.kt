@@ -35,7 +35,8 @@ fun TopBar(
     notificationsState : Boolean,
     onMenuItemClick: () -> Unit,
     onNotificationItemClicked: () -> Unit,
-    onSearchItemClicked: (query: String) -> Unit
+    onSearchItemClicked: (query: String) -> Unit,
+    modifier: Modifier
 ) {
 
     var searchQuery by remember {
@@ -48,7 +49,7 @@ fun TopBar(
 
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
                     NightDotooNormalBlue
@@ -200,6 +201,7 @@ fun TopBar(
 @Composable
 fun PreviewTopAppBar() {
     TopBar(
+       modifier = Modifier,
         notificationsState = true,
         onMenuItemClick = {},
         onNotificationItemClicked = {},

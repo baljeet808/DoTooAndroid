@@ -53,10 +53,6 @@ fun ProjectsView(
             )
         },
         modifier = Modifier
-            .clip(
-                shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
-            )
-
     ) {
         Column(
             modifier = Modifier

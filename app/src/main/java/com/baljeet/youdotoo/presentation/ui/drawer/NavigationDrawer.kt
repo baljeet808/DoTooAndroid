@@ -38,11 +38,12 @@ fun NavigationDrawer(
     userData: UserData,
     menuItems: List<MenuItem>,
     onMenuItemClick: (MenuItem) -> Unit,
-    closeDrawer : () -> Unit
+    closeDrawer : () -> Unit,
+    modifier: Modifier
 ) {
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -236,6 +237,7 @@ fun PreviewNavigationDrawer() {
         ),
         menuItems = menuItems,
         onMenuItemClick = {},
-        closeDrawer = {}
+        closeDrawer = {},
+        modifier = Modifier
     )
 }

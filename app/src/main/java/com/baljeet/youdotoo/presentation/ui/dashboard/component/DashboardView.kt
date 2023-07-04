@@ -1,14 +1,21 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard.component
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.TrackerObject
@@ -42,50 +49,31 @@ fun DashboardView(
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
 
+    val statusBarColor by animateColorAsState(
+        if(scaffoldState.drawerState.isClosed){
+            if(darkTheme) {
+                NightDotooNormalBlue
+            }else{
+               Color.White
+            }
+        }else{
+            if(darkTheme) {
+             NightDotooDarkBlue
+            }else{
+                NightDotooNormalBlue
+            }
+        }
+    )
 
-    if(scaffoldState.drawerState.isClosed){
-        if(darkTheme) {
-            systemUiController.setSystemBarsColor(
-                color = NightDotooNormalBlue
-            )
-        }else{
-            systemUiController.setSystemBarsColor(
-                color = Color.White
-            )
-        }
-    }else{
-        if(darkTheme) {
-            systemUiController.setSystemBarsColor(
-                color = NightDotooDarkBlue
-            )
-        }else{
-            systemUiController.setSystemBarsColor(
-                color = NightDotooNormalBlue
-            )
-        }
-    }
+    systemUiController.setSystemBarsColor(color = statusBarColor)
+
+
 
 
     Scaffold(
         scaffoldState = scaffoldState,
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
 
-        topBar = {
-                 TopBar(
-                     notificationsState = true,
-                     onMenuItemClick = {
-                         scope.launch {
-                             scaffoldState.drawerState.open()
-                         }
-                     },
-                     onNotificationItemClicked = {
-                                                 //Navigate to notifications
-                     },
-                     onSearchItemClicked = {
-                         //show search results somewhere
-                     }
-                 )
-        },
         /**
          * Side navigation drawer body content
          * **/
@@ -115,27 +103,54 @@ fun DashboardView(
                     scope.launch {
                         scaffoldState.drawerState.close()
                     }
-                }
+                },
+                modifier = Modifier
             )
         }
     ) {
 
-
-        NavHost(
-            navController = navController,
-            startDestination = DestinationProjectRoute,
-            modifier = Modifier.background(
-                color = if(darkTheme){
+        Column(
+            modifier = Modifier
+                .background( color = if(darkTheme){
                     NightDotooNormalBlue
                 }else{
                     Color.White
+                }),
+            verticalArrangement = Arrangement.SpaceBetween,
+        ) {
+
+            /**
+             * Top app bar
+             * **/
+            TopBar(
+                modifier = Modifier.height(60.dp),
+                notificationsState = true,
+                onMenuItemClick = {
+                    scope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                },
+                onNotificationItemClicked = {
+                    //Navigate to notifications
+                },
+                onSearchItemClicked = {
+                    //show search results somewhere
                 }
             )
-        ){
-            addProjectViewDestination(navController, trackerObject = trackerObject)
-            addDotooViewDestination(navController = navController, trackerObject = trackerObject)
-            addChatViewDestination(trackerObject = trackerObject)
+
+            NavHost(
+                navController = navController,
+                startDestination = DestinationProjectRoute,
+                modifier = Modifier.fillMaxSize()
+            ){
+                addProjectViewDestination(navController, trackerObject = trackerObject)
+                addDotooViewDestination(navController = navController, trackerObject = trackerObject)
+                addChatViewDestination(trackerObject = trackerObject)
+            }
+
         }
+
+
 
     }
 
