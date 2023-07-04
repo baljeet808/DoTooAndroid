@@ -5,6 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
 import com.baljeet.youdotoo.presentation.ui.login.DestinationLoginRoute
@@ -25,7 +26,7 @@ fun NavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = if(true/*SharedPref.isUserLoggedIn*/){
+        startDestination = if(SharedPref.isUserLoggedIn){
             DestinationDashboardRoute
         }else{
             DestinationLoginRoute
