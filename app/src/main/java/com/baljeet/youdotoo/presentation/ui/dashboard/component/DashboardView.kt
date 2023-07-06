@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 fun DashboardView() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
-
     val navController = rememberNavController()
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()

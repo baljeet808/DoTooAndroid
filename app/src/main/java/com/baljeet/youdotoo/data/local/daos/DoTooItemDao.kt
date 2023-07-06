@@ -13,10 +13,13 @@ interface DoTooItemDao {
     @Upsert
     suspend fun upsertAll(doTooItems : List<DoTooItemEntity>)
 
-    @Query("SELECT * FROM todos WHERE projectId == :projectId")
+    @Query("SELECT * FROM todos WHERE projectId = :projectId")
     suspend fun getAllDoTooItems(projectId: String) : List<DoTooItemEntity>
 
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
+
+    @Query("SELECT * FROM todos WHERE dueDate >= :startTimeDate && dueDate <= :endTimeDate")
+    suspend fun getTodayTasks(startTimeDate : Long, endTimeDate : Long): List<DoTooItemEntity>
 
 }
