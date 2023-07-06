@@ -26,11 +26,12 @@ fun NavGraphBuilder.addProjectViewDestination(
         val state by viewModel.projectState
         ProjectsView(
             projectsState = state,
-            navigateToDoToos = {project ->
+            navigateToDoToos = { project ->
                 navController.navigate(DestinationDotooRoute)
             },
             userId = SharedPref.userId!!,
-            isUserAPro = SharedPref.isUserAPro
+            isUserAPro = SharedPref.isUserAPro,
+            userName = SharedPref.userName.split(" ").first()
         )
     }
 }

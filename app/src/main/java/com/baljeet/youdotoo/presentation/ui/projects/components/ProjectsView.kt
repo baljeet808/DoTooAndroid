@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,16 +15,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
-import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.getThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.*
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +32,7 @@ fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
     projectsState: ProjectsState,
     userId : String,
+    userName : String,
     isUserAPro : Boolean
 ) {
     val sheetState = rememberStandardBottomSheetState(
@@ -48,8 +49,7 @@ fun ProjectsView(
         sheetContent = {
             createProjectView(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                    .fillMaxWidth(),
                 sheetState = sheetState
             )
         },
@@ -64,7 +64,8 @@ fun ProjectsView(
                     } else {
                         Color.White
                     }
-                )
+                ),
+            verticalArrangement = Arrangement.Top
         ) {
             Row(
                 modifier = Modifier
@@ -74,7 +75,11 @@ fun ProjectsView(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Your DoToos",
+                    text = if(userName.length> 8){
+                        "Hi, $userName!"
+                    }else{
+                        "What's up, $userName!"
+                         },
                     modifier = Modifier
                         .padding(5.dp)
                         .weight(1f),
@@ -89,7 +94,11 @@ fun ProjectsView(
                             sheetState.expand()
                         }
                     }, colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = getCardColor()
+                        containerColor = if(isSystemInDarkTheme()){
+                            NightDotooDarkBlue
+                        }else{
+                            NightDotooNormalBlue
+                        }
                     ),
                     modifier = Modifier
                         .height(40.dp)
@@ -99,30 +108,55 @@ fun ProjectsView(
                     Icon(
                         Icons.Default.Add,
                         contentDescription = "Add list button",
-                        tint = getThemeColor()
+                        tint = Color.White
                     )
                 }
             }
 
 
-            projectsLazyColumn(
+            Text(
+                text = "Projects".uppercase(),
+                color = if (isSystemInDarkTheme()) {
+                    NightAppBarIconsColor
+                } else {
+                    LightAppBarIconsColor
+                },
+                fontFamily = FontFamily(Nunito.Normal.font),
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                letterSpacing = TextUnit(2f, TextUnitType.Sp)
+            )
+
+            projectsLazyRow(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(10.dp),
+                    .fillMaxWidth(),
                 offlineProjects = projectsState.offlineProjects,
                 onlineProjects = projectsState.onlineProjects,
                 navigateToDoToos = navigateToDoToos,
                 userId = userId,
                 isUserAPro = isUserAPro
             )
+
+            Text(
+                text = "Today's Tasks".uppercase(),
+                color = if (isSystemInDarkTheme()) {
+                    NightAppBarIconsColor
+                } else {
+                    LightAppBarIconsColor
+                },
+                fontFamily = FontFamily(Nunito.Normal.font),
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                letterSpacing = TextUnit(2f, TextUnitType.Sp)
+            )
+
         }
     }
 }
 
 
 @Composable
-fun projectsLazyColumn(
+fun projectsLazyRow(
     modifier: Modifier,
     userId: String,
     isUserAPro: Boolean,
@@ -131,12 +165,12 @@ fun projectsLazyColumn(
     navigateToDoToos: (project: Project) -> Unit
 ) {
 
-    LazyColumn(
+    LazyRow(
         modifier = modifier,
         contentPadding = PaddingValues(all = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        horizontalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        val projectOwned = if (isUserAPro) {
+        val projectOwned = if (isUserAPro.not()) {
             offlineProjects
         } else {
             onlineProjects.filter { project -> project.ownerId == userId }
@@ -147,63 +181,26 @@ fun projectsLazyColumn(
         val projectSharedToMe = onlineProjects.filter { project ->
             project.collaboratorIds.contains(userId)
         }
-
-        if (projectOwned.isNotEmpty()) {
-            item {
-                Text(
-                    text = "MY DOTOOS",
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
-                    color = getTextColor()
-                )
-            }
-            items(projectOwned) { project ->
-                ProjectCardView(
-                    project = project,
-                    onItemClick = { navigateToDoToos(project) },
-                    role = project.getUserRole(userId = userId )
-                )
-            }
-            item {
-                Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
-            }
+        items(projectOwned) { project ->
+            ProjectCardView(
+                project = project,
+                onItemClick = { navigateToDoToos(project) },
+                role = project.getUserRole(userId = userId )
+            )
         }
-        if (projectSharedToMe.isNotEmpty()) {
-            item {
-                Text(
-                    text = "SHARED WITH ME",
-                    fontFamily = FontFamily(Nunito.SemiBold.font),
-                    fontSize = 16.sp,
-                    color = getTextColor()
-                )
-            }
-            items(projectSharedToMe) { project ->
-                ProjectCardView(
-                    project = project,
-                    onItemClick = { navigateToDoToos(project) },
-                    role = project.getUserRole(userId = userId )
-                )
-            }
-            item {
-                Divider(modifier = Modifier.height(20.dp), color = Color.Transparent)
-            }
+        items(projectSharedToMe) { project ->
+            ProjectCardView(
+                project = project,
+                onItemClick = { navigateToDoToos(project) },
+                role = project.getUserRole(userId = userId )
+            )
         }
-        if (projectViewing.isNotEmpty()) {
-            item {
-                Text(
-                    text = "VIEWING",
-                    fontFamily = FontFamily(Nunito.SemiBold.font),
-                    fontSize = 16.sp,
-                    color = getTextColor()
-                )
-            }
-            items(projectViewing) { project ->
-                ProjectCardView(
-                    project = project,
-                    onItemClick = { navigateToDoToos(project) },
-                    role = project.getUserRole(userId = userId )
-                )
-            }
+        items(projectViewing) { project ->
+            ProjectCardView(
+                project = project,
+                onItemClick = { navigateToDoToos(project) },
+                role = project.getUserRole(userId = userId )
+            )
         }
     }
 }
@@ -241,6 +238,7 @@ fun DefaultProjectPreview() {
             )
         ),
         userId = "",
-        isUserAPro = true
+        isUserAPro = true,
+        userName = "Karandeep Kaur"
     )
 }

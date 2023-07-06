@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.drawer
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,14 +14,17 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -42,6 +46,49 @@ fun NavigationDrawer(
     modifier: Modifier
 ) {
 
+
+    val transition = rememberInfiniteTransition()
+
+    val offsetX by transition.animateValue(
+        initialValue = (-40).dp,
+        targetValue = 20.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 10000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+    val offsetY by transition.animateValue(
+        initialValue = (300).dp,
+        targetValue = 450.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+
+    val offsetX1 by transition.animateValue(
+        initialValue =-60.dp,
+        targetValue = 20.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+    val offsetY1 by transition.animateValue(
+        initialValue = 450.dp,
+        targetValue = 300.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+
+
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -54,6 +101,30 @@ fun NavigationDrawer(
             )
             .padding(20.dp)
     ) {
+
+
+        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+            drawCircle(
+                color = NightTransparentWhiteColor,
+                radius = 230.dp.toPx(),
+                center = Offset(
+                    x = offsetX1.toPx(),
+                    y = offsetY1.toPx()
+                )
+            )
+        })
+
+        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+            drawCircle(
+                color = NightTransparentWhiteColor,
+                radius = 180.dp.toPx(),
+                center = Offset(
+                    x = offsetX.toPx(),
+                    y = offsetY.toPx()
+                )
+            )
+        })
+
 
         Column(
             modifier = Modifier
