@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -92,7 +93,6 @@ fun DashboardView() {
         }
     )
 
-
     Scaffold(
         scaffoldState = scaffoldState,
         drawerScrimColor = Color.Transparent,
@@ -171,6 +171,8 @@ fun DashboardView() {
                     }
                 )
         ) {
+
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -186,7 +188,9 @@ fun DashboardView() {
                             Color.White
                         },
                         shape = RoundedCornerShape(roundness.value)
-                    ),
+                    )
+                    .clip(shape = RoundedCornerShape(roundness.value))
+                ,
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
 
