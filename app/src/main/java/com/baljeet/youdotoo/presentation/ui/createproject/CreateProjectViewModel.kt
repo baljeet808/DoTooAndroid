@@ -36,7 +36,8 @@ class CreateProjectViewModel: ViewModel() {
                 name = projectName,
                 description = description?:"",
                 collaboratorIds = listOf(),
-                viewerIds = listOf()
+                viewerIds = listOf(),
+                update = "${SharedPref.userName} created new project named '${projectName}.'"
             )
 
             projectRef

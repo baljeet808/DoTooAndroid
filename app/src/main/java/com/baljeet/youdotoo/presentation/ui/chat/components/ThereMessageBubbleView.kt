@@ -3,7 +3,6 @@ package com.baljeet.youdotoo.presentation.ui.chat.components
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -194,7 +193,8 @@ fun PreviewThereMessageBubble() {
                     "iz8dz6PufNPGbw9DzWUiZyoTHn62",
                     "NuZXwLl3a8O3mXRcXFsJzHQgB172"
                 ),
-                viewerIds = listOf()
+                viewerIds = listOf(),
+                update = ""
             ),
             doToo = DoTooItem(
                 id = "",

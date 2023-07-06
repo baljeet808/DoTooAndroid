@@ -14,12 +14,12 @@ interface ProjectDao {
     suspend fun upsertAll(projects : List<ProjectEntity>)
 
     @Query("SELECT * FROM projects")
-    suspend fun getAllClients() : List<ProjectEntity>
+    suspend fun getAllProjects() : List<ProjectEntity>
 
     @Delete
-    fun delete(project : ProjectEntity)
+    suspend fun delete(project : ProjectEntity)
 
     @Query("SELECT * FROM projects WHERE name LIKE :searchQuery ")
-    fun search(searchQuery : String) : List<ProjectEntity>
+    suspend fun search(searchQuery : String) : List<ProjectEntity>
 
 }

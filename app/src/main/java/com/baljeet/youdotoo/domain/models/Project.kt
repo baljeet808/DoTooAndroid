@@ -10,5 +10,6 @@ data class Project(
     var description : String,
     var ownerId : String,
     var collaboratorIds : List<String>,
-    var viewerIds: List<String>
+    var viewerIds: List<String>,
+    var update : String
 ): Parcelable

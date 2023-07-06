@@ -10,8 +10,7 @@ fun Project.toProjectEntity() : ProjectEntity{
         name = name,
         description = description,
         ownerId = ownerId,
-        collaboratorIds = collaboratorIds.joinToString(","),
-        viewerIds = viewerIds.joinToString(",")
+        update = update
     )
 }
 
@@ -22,7 +21,8 @@ fun ProjectEntity.toProject(): Project{
         name = name,
         description = description,
         ownerId = ownerId,
-        collaboratorIds = collaboratorIds.split(","),
-        viewerIds = viewerIds.split(",")
+        collaboratorIds = arrayListOf(),
+        viewerIds = arrayListOf(),
+        update = update
     )
 }

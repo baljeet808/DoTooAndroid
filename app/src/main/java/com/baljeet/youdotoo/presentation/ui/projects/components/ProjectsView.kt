@@ -17,8 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
+import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
@@ -29,8 +30,8 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectsView(
-    navigateToDoToos: (project: ProjectWithProfiles) -> Unit,
-    projectsState: List<ProjectWithProfiles>,
+    navigateToDoToos: (project: Project) -> Unit,
+    projectsState: ProjectsState,
 ) {
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
@@ -102,12 +103,14 @@ fun ProjectsView(
                 }
             }
 
+
             projectsLazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)
                     .padding(10.dp),
-                projectsState = projectsState,
+                offlineProjects = projectsState.offlineProjects,
+                onlineProjects = projectsState.onlineProjects,
                 navigateToDoToos = navigateToDoToos
             )
         }
@@ -118,8 +121,9 @@ fun ProjectsView(
 @Composable
 fun projectsLazyColumn(
     modifier: Modifier,
-    projectsState: List<ProjectWithProfiles>,
-    navigateToDoToos: (project: ProjectWithProfiles) -> Unit
+    offlineProjects: List<Project>,
+    onlineProjects: List<Project>,
+    navigateToDoToos: (project: Project) -> Unit
 ) {
 
     LazyColumn(
@@ -127,12 +131,16 @@ fun projectsLazyColumn(
         contentPadding = PaddingValues(all = 10.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        val projectOwned =
-            projectsState.filter { project -> project.project.ownerId == SharedPref.userId }
-        val projectViewing =
-            projectsState.filter { project -> project.project.viewerIds.contains(SharedPref.userId) }
-        val projectSharedToMe = projectsState.filter { project ->
-            project.project.collaboratorIds.contains(SharedPref.userId)
+        val projectOwned = if (SharedPref.isUserAPro.not()) {
+            offlineProjects
+        } else {
+            onlineProjects.filter { project -> project.ownerId == SharedPref.userId }
+        }
+        val projectViewing = onlineProjects.filter { project ->
+            project.viewerIds.contains(SharedPref.userId)
+        }
+        val projectSharedToMe = onlineProjects.filter { project ->
+            project.collaboratorIds.contains(SharedPref.userId)
         }
 
         if (projectOwned.isNotEmpty()) {
@@ -189,6 +197,18 @@ fun projectsLazyColumn(
 fun DefaultProjectPreview() {
     ProjectsView(
         navigateToDoToos = {},
-        projectsState = listOf()
+        projectsState = ProjectsState(
+            offlineProjects = arrayListOf(
+                Project(
+                    id = "",
+                    name = "Home Chores",
+                    description = "This project is about the irritating stuff which always gets forgotten.",
+                    ownerId = "",
+                    collaboratorIds = arrayListOf(),
+                    viewerIds = arrayListOf(),
+                    update = ""
+                )
+            )
+        )
     )
 }

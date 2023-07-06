@@ -7,6 +7,10 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.SearchProjectsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -17,12 +21,21 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
+data class ProjectsState(
+    var onlineProjects: List<Project> = listOf(),
+    var offlineProjects: List<Project> = listOf()
+)
+
 @HiltViewModel
-class ProjectsViewModel @Inject constructor() : ViewModel() {
+class ProjectsViewModel @Inject constructor(
+    private val getProjectsUseCase: GetProjectsUseCase,
+    private val upsertProjectUseCase: UpsertProjectUseCase,
+    private val deleteProjectUseCase: DeleteProjectUseCase,
+    private val searchProjectsUseCase: SearchProjectsUseCase,
+) : ViewModel() {
 
-    var projectState = mutableStateOf<List<ProjectWithProfiles>>(listOf())
+    var projectState = mutableStateOf(ProjectsState())
         private set
-
 
 
     var db = Firebase.firestore
@@ -30,20 +43,40 @@ class ProjectsViewModel @Inject constructor() : ViewModel() {
     var projectsReference = FirebaseFirestore
         .getInstance()
         .collection("projects")
+
+    var projectsQuery = projectsReference
         .where(
             Filter.or(
-                Filter.equalTo("ownerId", SharedPref.userId),
                 Filter.arrayContains("collaboratorIds", SharedPref.userId),
                 Filter.arrayContains("viewerIds", SharedPref.userId)
             )
         )
 
+
     init {
-        projectsReference.addSnapshotListener { snapshot, error ->
+        if (SharedPref.isUserAPro) {
+            projectsQuery = projectsReference.where(
+                Filter.or(
+                    Filter.equalTo("ownerId", SharedPref.userId),
+                    Filter.arrayContains("collaboratorIds", SharedPref.userId),
+                    Filter.arrayContains("viewerIds", SharedPref.userId)
+                )
+            )
+        }
+
+
+        if (SharedPref.isUserAPro.not()) {
+            viewModelScope.launch {
+                projectState.value = projectState.value.copy(
+                    offlineProjects = getProjectsUseCase().toCollection(ArrayList())
+                )
+            }
+        }
+        projectsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
-                val projects = ArrayList<Project>()
+                val onlineProjects = arrayListOf<Project>()
                 for (project in snapshot) {
-                    projects.add(
+                    onlineProjects.add(
                         Project(
                             id = project.getString("id") ?: "",
                             name = project.getString("name") ?: "",
@@ -51,13 +84,22 @@ class ProjectsViewModel @Inject constructor() : ViewModel() {
                             ownerId = project.getString("ownerId") ?: "",
                             viewerIds = (project.get("viewerIds") as List<String>),
                             collaboratorIds = (project.get("collaboratorIds") as List<String>),
+                            update = project.getString("update") ?: ""
                         )
                     )
                 }
-                fetchProfilesForProjects(projects)
+                // save the user owned projects to local db
+                viewModelScope.launch {
+                    upsertProjectUseCase.invoke(onlineProjects.filter { project -> project.ownerId == SharedPref.userId })
+                }
+
+                projectState.value = projectState.value.copy(
+                    onlineProjects = onlineProjects
+                )
             }
         }
     }
+
 
     private fun fetchProfilesForProjects(projects: List<Project>) {
         val projectsWithProfiles = arrayListOf<ProjectWithProfiles>()
@@ -66,12 +108,11 @@ class ProjectsViewModel @Inject constructor() : ViewModel() {
                 val profiles = getUserProfiles(project)
                 projectsWithProfiles.add(
                     ProjectWithProfiles(
-                        profiles = if (profiles.isNotEmpty()) profiles else null,
+                        profiles = profiles.ifEmpty { null },
                         project = project
                     )
                 )
             }
-            projectState.value = projectsWithProfiles
         }
     }
 

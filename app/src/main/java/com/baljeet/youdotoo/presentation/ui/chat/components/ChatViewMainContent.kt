@@ -8,30 +8,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DeleteForever
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.NotificationsOff
-import androidx.compose.material.icons.outlined.PersonAdd
-import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.domain.models.*
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
 
 /**
@@ -249,7 +235,8 @@ fun PreviewChatView() {
                     "iz8dz6PufNPGbw9DzWUiZyoTHn62",
                     "NuZXwLl3a8O3mXRcXFsJzHQgB172"
                 ),
-                viewerIds = listOf()
+                viewerIds = listOf(),
+                update = ""
             ),
             doToo = DoTooItem(
                 id = "",

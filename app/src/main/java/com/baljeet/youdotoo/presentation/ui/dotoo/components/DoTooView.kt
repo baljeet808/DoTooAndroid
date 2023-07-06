@@ -391,7 +391,8 @@ fun DotooViewPreview(){
                     "iz8dz6PufNPGbw9DzWUiZyoTHn62",
                     "NuZXwLl3a8O3mXRcXFsJzHQgB172"
                 ),
-                viewerIds = listOf()
+                viewerIds = listOf(),
+                update = ""
             ),
             profiles = listOf()
         ),

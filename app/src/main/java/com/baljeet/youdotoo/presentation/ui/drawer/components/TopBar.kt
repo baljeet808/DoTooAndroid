@@ -14,9 +14,7 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SearchOff
-import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -75,6 +73,8 @@ fun TopBar(
                     onMenuItemClick()
                 },
                 modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp)
                     .weight(0.2f)
             ) {
                 Icon(
@@ -84,7 +84,8 @@ fun TopBar(
                         NightAppBarIconsColor
                     } else {
                         LightAppBarIconsColor
-                    }
+                    },
+                    modifier = Modifier.width(40.dp).height(40.dp)
                 )
             }
 
@@ -164,8 +165,8 @@ fun TopBar(
                     .weight(0.2f)
             ) {
                 Icon(
-                    Icons.Outlined.Notifications,
-                    contentDescription = "Menu button to open Notifications",
+                    Icons.Outlined.Message,
+                    contentDescription = "Menu button to open Chat",
                     tint = if (isSystemInDarkTheme()) {
                         NightAppBarIconsColor
                     } else {
