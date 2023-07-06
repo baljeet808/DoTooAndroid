@@ -48,13 +48,6 @@ fun TopBar(
 
     Box(
         modifier = modifier
-            .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooNormalBlue
-                } else {
-                    Color.White
-                }
-            )
             .fillMaxWidth()
     ) {
         Row(
@@ -73,8 +66,8 @@ fun TopBar(
                     onMenuItemClick()
                 },
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
+                    .width(35.dp)
+                    .height(35.dp)
                     .weight(0.2f)
             ) {
                 Icon(
@@ -85,7 +78,7 @@ fun TopBar(
                     } else {
                         LightAppBarIconsColor
                     },
-                    modifier = Modifier.width(40.dp).height(40.dp)
+                    modifier = Modifier.width(35.dp).height(35.dp)
                 )
             }
 

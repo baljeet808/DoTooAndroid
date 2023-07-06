@@ -38,6 +38,12 @@ val NightDotooLightBlue = Color(0xFF4D7199)
 val NightDotooTextColor = Color(0xFFFFFFFF)
 val NightDotooFooterTextColor = Color(0xFF4D7199)
 val NightAppBarIconsColor = Color(0xFF617B97)
+val NightTransparentWhiteColor = Color(0x11FFFFFF)
+
+
+//common
+val DoTooRed = Color(0xFFF53C4F)
+val DoTooYellow = Color(0xFFFF8526)
 
 
 @Composable

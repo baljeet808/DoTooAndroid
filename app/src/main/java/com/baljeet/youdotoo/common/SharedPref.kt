@@ -69,7 +69,7 @@ object SharedPref {
 
 
     var isUserAPro : Boolean
-        get() = sharedPref.getBoolean("isUserAPro", true)
+        get() = sharedPref.getBoolean("isUserAPro", false)
         set(value) = sharedPref.edit { it.putBoolean("isUserAPro", value) }
 
     var subscriptionIsMonthly : Boolean

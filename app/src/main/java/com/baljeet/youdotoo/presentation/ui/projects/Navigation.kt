@@ -5,6 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.dotoo.DestinationDotooRoute
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
 
@@ -27,7 +28,9 @@ fun NavGraphBuilder.addProjectViewDestination(
             projectsState = state,
             navigateToDoToos = {project ->
                 navController.navigate(DestinationDotooRoute)
-            }
+            },
+            userId = SharedPref.userId!!,
+            isUserAPro = SharedPref.isUserAPro
         )
     }
 }

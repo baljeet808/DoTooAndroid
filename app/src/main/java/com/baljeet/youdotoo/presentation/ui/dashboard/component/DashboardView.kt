@@ -12,7 +12,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -163,18 +162,29 @@ fun DashboardView() {
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(color = statusBarColor)
+                .fillMaxSize()
+                .background(
+                    color = if (darkTheme) {
+                        NightDotooDarkBlue
+                    } else {
+                        NightDotooNormalBlue
+                    }
+                )
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxSize()
                     .offset(
                         x = offSetX.value,
                         y = 0.dp
                     )
                     .scale(scale.value)
-                    .clip(
+                    .background(
+                        color = if (darkTheme) {
+                            NightDotooNormalBlue
+                        } else {
+                            Color.White
+                        },
                         shape = RoundedCornerShape(roundness.value)
                     ),
                 verticalArrangement = Arrangement.SpaceBetween,
@@ -201,18 +211,16 @@ fun DashboardView() {
                 )
 
 
-
-                NavHost(
-                    navController = navController,
-                    startDestination = DestinationProjectRoute,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(color = NightDotooNormalBlue)
-                ) {
-                    addProjectViewDestination(navController)
-                    addDotooViewDestination(navController = navController)
-                    addChatViewDestination()
-                }
+                   NavHost(
+                       navController = navController,
+                       startDestination = DestinationProjectRoute,
+                       modifier = Modifier
+                           .fillMaxSize()
+                   ) {
+                       addProjectViewDestination(navController)
+                       addDotooViewDestination(navController = navController)
+                       addChatViewDestination()
+                   }
 
             }
 
