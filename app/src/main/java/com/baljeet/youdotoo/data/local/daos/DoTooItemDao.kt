@@ -19,7 +19,7 @@ interface DoTooItemDao {
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
 
-    @Query("SELECT * FROM todos WHERE dueDate >= :startTimeDate && dueDate <= :endTimeDate")
+    @Query("SELECT * FROM todos WHERE dueDate >= :startTimeDate AND dueDate <= :endTimeDate")
     suspend fun getTodayTasks(startTimeDate : Long, endTimeDate : Long): List<DoTooItemEntity>
 
 }

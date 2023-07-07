@@ -31,16 +31,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.*
 
 
 @Composable
 fun ProjectCardView(
-    project: Project,
+    project: ProjectWithTaskCount,
     role: String,
     onItemClick: () -> Unit
 ) {
@@ -89,7 +87,7 @@ fun ProjectCardView(
     Box(
         modifier = Modifier
             .widthIn(max = 220.dp)
-            .heightIn(max = 160.dp)
+            .heightIn(max = 130.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -125,18 +123,30 @@ fun ProjectCardView(
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .clickable(onClick = onItemClick)
-                .padding(10.dp),
+                .padding(20.dp),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 5.dp, bottom = 5.dp, start = 10.dp, end = 10.dp),
-                horizontalArrangement = Arrangement.Start,
+                    .padding( bottom = 5.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
+                Text(
+                    text = project.taskCount.toString().plus(" Tasks"),
+                    color = if (isSystemInDarkTheme()) {
+                        NightAppBarIconsColor
+                    } else {
+                        LightAppBarIconsColor
+                    },
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                )
 
                 Icon(
                     when (role) {
@@ -151,10 +161,12 @@ fun ProjectCardView(
                         .width(20.dp)
                         .height(20.dp)
                 )
+
+
             }
 
             Text(
-                text = project.name,
+                text = project.project.name,
                 color = MaterialTheme.colorScheme.secondary,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 22.sp,
@@ -164,9 +176,8 @@ fun ProjectCardView(
             )
             Spacer(modifier = Modifier.height(10.dp))
             LinearProgressIndicator(
-                progress = 0.6f,
-                modifier = Modifier
-                    .padding(5.dp),
+                progress = project.progress,
+                modifier = Modifier,
                 color = NightDotooBrightPink,
                 strokeCap = StrokeCap.Round
             )
@@ -180,14 +191,18 @@ fun ProjectCardView(
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
-        project = Project(
-            id = "",
-            name = "Home Chores",
-            description = "This project is about the irritating stuff which always gets forgotten.",
-            ownerId = "",
-            collaboratorIds = arrayListOf(),
-            viewerIds = arrayListOf(),
-            update = ""
+        project =  ProjectWithTaskCount(
+            project = Project(
+                id = "",
+                name = "Home Chores",
+                description = "This project is about the irritating stuff which always gets forgotten.",
+                ownerId = "",
+                collaboratorIds = arrayListOf(),
+                viewerIds = arrayListOf(),
+                update = ""
+            ),
+            taskCount = 88,
+            progress = 0.3f
         ),
         onItemClick = {},
         role = "Blocked"

@@ -28,7 +28,8 @@ import javax.inject.Inject
 
 data class ProjectWithTaskCount(
     var project : Project,
-    var taskCount : Int
+    var taskCount : Int,
+    var progress : Float
 )
 
 data class ProjectsState(
@@ -103,7 +104,8 @@ class ProjectsViewModel @Inject constructor(
                     projects.add(
                         ProjectWithTaskCount(
                             project = project,
-                            taskCount = tasks.count()
+                            taskCount = tasks.count(),
+                            progress = tasks.count { task -> task.done }.toFloat() / tasks.count().toFloat()
                         )
                     )
                 }
@@ -137,7 +139,8 @@ class ProjectsViewModel @Inject constructor(
                         projects.add(
                             ProjectWithTaskCount(
                                 project = project,
-                                taskCount = tasks.count()
+                                taskCount = tasks.count(),
+                                progress = tasks.count { task -> task.done }.toFloat() / tasks.count().toFloat()
                             )
                         )
                     }

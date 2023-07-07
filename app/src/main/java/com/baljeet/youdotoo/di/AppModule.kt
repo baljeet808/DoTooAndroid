@@ -3,7 +3,9 @@ package com.baljeet.youdotoo.di
 import android.app.Application
 import androidx.room.Room
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
+import com.baljeet.youdotoo.data.repository_implementations.DoTooItemsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.ProjectRepositoryImpl
+import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.ProjectRepository
 import dagger.Module
 import dagger.Provides
@@ -19,6 +21,12 @@ object AppModule {
     @Singleton
     fun providesProjectRepository(localDB : YouDoTooDatabase): ProjectRepository {
         return ProjectRepositoryImpl(localDB)
+    }
+
+    @Provides
+    @Singleton
+    fun providesDoTooItemRepository(localDB : YouDoTooDatabase): DoTooItemsRepository {
+        return DoTooItemsRepositoryImpl(localDB)
     }
 
     @Provides

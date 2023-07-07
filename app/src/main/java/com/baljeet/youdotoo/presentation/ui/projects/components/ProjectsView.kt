@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
+import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -174,14 +175,18 @@ fun DefaultProjectPreview() {
         navigateToDoToos = {},
         projectsState = ProjectsState(
             offlineProjects = arrayListOf(
-                Project(
-                    id = "",
-                    name = "Home Chores",
-                    description = "This project is about the irritating stuff which always gets forgotten.",
-                    ownerId = "",
-                    collaboratorIds = arrayListOf(),
-                    viewerIds = arrayListOf(),
-                    update = ""
+                ProjectWithTaskCount(
+                    project = Project(
+                        id = "",
+                        name = "Home Chores",
+                        description = "This project is about the irritating stuff which always gets forgotten.",
+                        ownerId = "",
+                        collaboratorIds = arrayListOf(),
+                        viewerIds = arrayListOf(),
+                        update = ""
+                    ),
+                    taskCount = 88,
+                    progress = 0.6f
                 )
             )
         ),
