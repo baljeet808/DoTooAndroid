@@ -65,6 +65,10 @@ fun ProjectsView(
                 ),
             verticalArrangement = Arrangement.Top
         ) {
+
+            /**
+             * Top Row for greeting and Add project button
+             * **/
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -112,6 +116,9 @@ fun ProjectsView(
             }
 
 
+            /**
+             * Simple Projects heading
+             * **/
             Text(
                 text = "Projects".uppercase(),
                 color = if (isSystemInDarkTheme()) {
@@ -125,6 +132,9 @@ fun ProjectsView(
                 letterSpacing = TextUnit(2f, TextUnitType.Sp)
             )
 
+            /**
+             * Horizontal list of all projects
+             * **/
             ProjectsLazyRow(
                 modifier = Modifier
                     .fillMaxWidth(),
@@ -135,6 +145,9 @@ fun ProjectsView(
                 isUserAPro = isUserAPro
             )
 
+            /**
+             * Simple Today's Tasks heading
+             * **/
             Text(
                 text = "Today's Tasks".uppercase(),
                 color = if (isSystemInDarkTheme()) {
@@ -147,6 +160,8 @@ fun ProjectsView(
                 modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 10.dp),
                 letterSpacing = TextUnit(2f, TextUnitType.Sp)
             )
+
+
 
         }
     }
