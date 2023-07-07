@@ -14,7 +14,7 @@ val DotooGreen = Color(0xFF69BA6C)
 val DotooDarkerGray = Color(0xFF1D1D1D)
 val DotooDarkGray = Color(0xFF2E2E30)
 val OnDotooDarkGray = Color(0xFF2B2326)
-val DotooGray = Color(0xFFF8F1F3)
+val DotooGray = Color(0xFFF1F2F8)
 val DoTooLightBlue = Color(0xFFD6DAE2)
 val OnDotooGray = Color(0xFFDDD0D4)
 

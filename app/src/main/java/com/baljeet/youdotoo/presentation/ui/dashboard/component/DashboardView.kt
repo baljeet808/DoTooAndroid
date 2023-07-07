@@ -30,6 +30,7 @@ import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectViewDestination
+import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -52,10 +53,10 @@ fun DashboardView() {
 
     val statusBarColor by animateColorAsState(
         if (maximizeCurrentScreen) {
-            if (darkTheme) {
+            if (isSystemInDarkTheme()) {
                 NightDotooNormalBlue
             } else {
-                Color.White
+                DotooGray
             }
         } else {
             if (darkTheme) {
@@ -181,10 +182,10 @@ fun DashboardView() {
                     )
                     .scale(scale.value)
                     .background(
-                        color = if (darkTheme) {
+                        color = if (isSystemInDarkTheme()) {
                             NightDotooNormalBlue
                         } else {
-                            Color.White
+                            DotooGray
                         },
                         shape = RoundedCornerShape(roundness.value)
                     )

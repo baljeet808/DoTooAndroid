@@ -60,7 +60,7 @@ fun ProjectsView(
                     color = if (isSystemInDarkTheme()) {
                         NightDotooNormalBlue
                     } else {
-                        Color.White
+                        DotooGray
                     }
                 ),
             verticalArrangement = Arrangement.Top

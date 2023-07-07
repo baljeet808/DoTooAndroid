@@ -93,7 +93,7 @@ fun ProjectCardView(
                 color = if (isSystemInDarkTheme()) {
                     NightDotooDarkBlue
                 } else {
-                    NightDotooNormalBlue
+                    Color.White
                 },
                 shape = RoundedCornerShape(20.dp)
             ),
@@ -131,7 +131,7 @@ fun ProjectCardView(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding( bottom = 5.dp),
+                    .padding(bottom = 5.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -156,7 +156,11 @@ fun ProjectCardView(
                         else -> Icons.Default.Block
                     },
                     contentDescription = "Icon to show that user is $role of selected project.",
-                    tint = Color.White,
+                    tint = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        LightAppBarIconsColor
+                    },
                     modifier = Modifier
                         .width(20.dp)
                         .height(20.dp)
@@ -187,11 +191,11 @@ fun ProjectCardView(
 
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
-        project =  ProjectWithTaskCount(
+        project = ProjectWithTaskCount(
             project = Project(
                 id = "",
                 name = "Home Chores",
