@@ -4,9 +4,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.data.local.converters.convertLocalDateTimeToEpochSeconds
+import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetTodayDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.SearchProjectsUseCase
@@ -18,12 +22,19 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.toKotlinLocalDateTime
 import javax.inject.Inject
 
+data class ProjectWithTaskCount(
+    var project : Project,
+    var taskCount : Int
+)
 
 data class ProjectsState(
-    var onlineProjects: List<Project> = listOf(),
-    var offlineProjects: List<Project> = listOf()
+    var onlineProjects: List<ProjectWithTaskCount> = listOf(),
+    var offlineProjects: List<ProjectWithTaskCount> = listOf(),
+    var todayTasks: List<DoTooItem> = listOf()
 )
 
 @HiltViewModel
@@ -32,19 +43,38 @@ class ProjectsViewModel @Inject constructor(
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val deleteProjectUseCase: DeleteProjectUseCase,
     private val searchProjectsUseCase: SearchProjectsUseCase,
+    private val getTodayDoToosUseCase: GetTodayDoToosUseCase,
+    private val getProjectDoToosUseCase: GetProjectDoToosUseCase
 ) : ViewModel() {
 
     var projectState = mutableStateOf(ProjectsState())
         private set
 
+    private val todayDateInLong = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+    private val todayStartDateTime = LocalDateTime(
+        year = todayDateInLong.year,
+        monthNumber = todayDateInLong.monthNumber,
+        dayOfMonth = todayDateInLong.dayOfMonth,
+        hour = 0,
+        minute = 0
+    )
+    private val todayEndDateTime = LocalDateTime(
+        year = todayDateInLong.year,
+        monthNumber = todayDateInLong.monthNumber,
+        dayOfMonth = todayDateInLong.dayOfMonth,
+        hour = 23,
+        minute = 59,
+        second = 59
+    )
 
-    var db = Firebase.firestore
 
-    var projectsReference = FirebaseFirestore
+    private var db = Firebase.firestore
+
+    private var projectsReference = FirebaseFirestore
         .getInstance()
         .collection("projects")
 
-    var projectsQuery = projectsReference
+    private var projectsQuery = projectsReference
         .where(
             Filter.or(
                 Filter.arrayContains("collaboratorIds", SharedPref.userId),
@@ -64,14 +94,25 @@ class ProjectsViewModel @Inject constructor(
             )
         }
 
-
         if (SharedPref.isUserAPro.not()) {
             viewModelScope.launch {
+                val offlineProjects = getProjectsUseCase().toCollection(ArrayList())
+                val projects = arrayListOf<ProjectWithTaskCount>()
+                offlineProjects.forEach { project ->
+                    val tasks = getProjectDoToosUseCase(projectId = project.id)
+                    projects.add(
+                        ProjectWithTaskCount(
+                            project = project,
+                            taskCount = tasks.count()
+                        )
+                    )
+                }
                 projectState.value = projectState.value.copy(
-                    offlineProjects = getProjectsUseCase().toCollection(ArrayList())
+                    offlineProjects = projects
                 )
             }
         }
+
         projectsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
                 val onlineProjects = arrayListOf<Project>()
@@ -88,16 +129,43 @@ class ProjectsViewModel @Inject constructor(
                         )
                     )
                 }
-                // save the user owned projects to local db
-                viewModelScope.launch {
-                    upsertProjectUseCase.invoke(onlineProjects.filter { project -> project.ownerId == SharedPref.userId })
-                }
 
-                projectState.value = projectState.value.copy(
-                    onlineProjects = onlineProjects
-                )
+                viewModelScope.launch {
+                    val projects = arrayListOf<ProjectWithTaskCount>()
+                    onlineProjects.forEach { project ->
+                        val tasks = getProjectDoToosUseCase(projectId = project.id)
+                        projects.add(
+                            ProjectWithTaskCount(
+                                project = project,
+                                taskCount = tasks.count()
+                            )
+                        )
+                    }
+                    // save the user owned projects to local db
+                    viewModelScope.launch {
+                        upsertProjectUseCase.invoke(onlineProjects.filter { project -> project.ownerId == SharedPref.userId })
+                    }
+                    projectState.value = projectState.value.copy(
+                        onlineProjects = projects
+                    )
+                }
             }
         }
+
+
+        /**
+         * fetch the today's tasks from local database only and
+         * then update the firestore when we make any changes to them
+         * **/
+        viewModelScope.launch {
+            projectState.value = projectState.value.copy(
+                todayTasks = getTodayDoToosUseCase(
+                    startTimeDate = convertLocalDateTimeToEpochSeconds(todayStartDateTime),
+                    endTimeDate = convertLocalDateTimeToEpochSeconds(todayEndDateTime)
+                )
+            )
+        }
+
     }
 
 

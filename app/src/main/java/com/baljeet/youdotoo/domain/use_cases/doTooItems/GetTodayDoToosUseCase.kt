@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class GetTodayDoToosUseCase @Inject constructor(
     private val repository: DoTooItemsRepository
 ){
-    suspend operator fun invoke(): List<DoTooItem>  {
-        return repository.getTodayTasks()
+    suspend operator fun invoke(startTimeDate: Long, endTimeDate : Long): List<DoTooItem>  {
+        return repository.getTodayTasks(startTimeDate, endTimeDate)
     }
 }
