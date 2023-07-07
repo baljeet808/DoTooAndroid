@@ -43,7 +43,7 @@ fun ProjectCardView(
     onItemClick: () -> Unit
 ) {
 
-
+    val darkTheme = isSystemInDarkTheme()
     val transition = rememberInfiniteTransition()
 
     val offsetX by transition.animateValue(
@@ -101,7 +101,11 @@ fun ProjectCardView(
 
         Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
             drawCircle(
-                color = NightTransparentWhiteColor,
+                color = if (darkTheme) {
+                    NightTransparentWhiteColor
+                } else {
+                    DotooGray
+                },
                 radius = 60.dp.toPx(),
                 center = Offset(
                     x = offsetX1.toPx(),
@@ -112,7 +116,11 @@ fun ProjectCardView(
 
         Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
             drawCircle(
-                color = NightTransparentWhiteColor,
+                color = if (darkTheme) {
+                    NightTransparentWhiteColor
+                } else {
+                    DotooGray
+                },
                 radius = 30.dp.toPx(),
                 center = Offset(
                     x = offsetX.toPx(),
