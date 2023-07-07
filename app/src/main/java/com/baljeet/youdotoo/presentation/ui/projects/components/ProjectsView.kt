@@ -16,8 +16,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
+import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -29,9 +31,11 @@ import kotlinx.coroutines.launch
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
     projectsState: ProjectsState,
-    userId : String,
-    userName : String,
-    isUserAPro : Boolean
+    userId: String,
+    userName: String,
+    isUserAPro: Boolean,
+    onToggleTask: (DoTooItem) -> Unit,
+    navigateToTask: (DoTooItem) -> Unit
 ) {
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
@@ -77,11 +81,11 @@ fun ProjectsView(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if(userName.length> 8){
+                    text = if (userName.length > 8) {
                         "Hi, $userName!"
-                    }else{
+                    } else {
                         "What's up, $userName!"
-                         },
+                    },
                     modifier = Modifier
                         .padding(5.dp)
                         .weight(1f),
@@ -96,9 +100,9 @@ fun ProjectsView(
                             sheetState.expand()
                         }
                     }, colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if(isSystemInDarkTheme()){
+                        containerColor = if (isSystemInDarkTheme()) {
                             NightDotooDarkBlue
-                        }else{
+                        } else {
                             NightDotooNormalBlue
                         }
                     ),
@@ -128,7 +132,9 @@ fun ProjectsView(
                 },
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
                 letterSpacing = TextUnit(2f, TextUnitType.Sp)
             )
 
@@ -157,10 +163,22 @@ fun ProjectsView(
                 },
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
                 letterSpacing = TextUnit(2f, TextUnitType.Sp)
             )
 
+            DoTooItemsLazyColumn(
+                doToos = projectsState.todayTasks,
+                onToggleDoToo = { doToo ->
+                    onToggleTask(doToo)
+                },
+                onNavigateClick = { doToo ->
+                    navigateToTask(doToo)
+                },
+                modifier = Modifier
+            )
 
 
         }
@@ -168,16 +186,15 @@ fun ProjectsView(
 }
 
 
-
-fun Project.getUserRole (userId : String): String{
-    if(this.ownerId == userId){
-        return    "Admin"
+fun Project.getUserRole(userId: String): String {
+    if (this.ownerId == userId) {
+        return "Admin"
     }
-    if(this.collaboratorIds.contains(userId)){
-       return  "Collaborator"
+    if (this.collaboratorIds.contains(userId)) {
+        return "Collaborator"
     }
-    if(this.viewerIds.contains(userId)){
-       return "Viewer"
+    if (this.viewerIds.contains(userId)) {
+        return "Viewer"
     }
     return "Blocked"
 }
@@ -207,6 +224,8 @@ fun DefaultProjectPreview() {
         ),
         userId = "",
         isUserAPro = true,
-        userName = "Karandeep Kaur"
+        userName = "Karandeep Kaur",
+        onToggleTask = {},
+        navigateToTask = {}
     )
 }

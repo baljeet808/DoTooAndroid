@@ -31,7 +31,13 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             userId = SharedPref.userId!!,
             isUserAPro = SharedPref.isUserAPro,
-            userName = SharedPref.userName.split(" ").first()
+            userName = SharedPref.userName.split(" ").first(),
+            onToggleTask = {
+
+            },
+            navigateToTask = {
+
+            }
         )
     }
 }
