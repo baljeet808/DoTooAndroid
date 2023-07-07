@@ -31,7 +31,6 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 /**
  * Updated by Baljeet singh on 18th June, 2023
  * **/
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MessageBoxView(
     onClickSend: (String) -> Unit,

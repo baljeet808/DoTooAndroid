@@ -8,3 +8,10 @@ data class ProjectWithProfiles(
     var project : Project,
     var profiles : List<User>?
 ):Parcelable
+
+@Parcelize
+data class ProjectWithEveryThing(
+    var project : Project,
+    var doToos : List<DoTooItem>,
+    var profiles : List<User>?
+):Parcelable
