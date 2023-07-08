@@ -47,7 +47,7 @@ class CreateDoTooViewModel  @Inject constructor() : ViewModel() {
                 DueDates.CUSTOM -> {
                     customDate?.toInstant(TimeZone.currentSystemDefault())?.epochSeconds?:0L
                 }
-                DueDates.INDEFINITE -> {
+                DueDates.TODAY -> {
                     0L
                 }
                 else -> {

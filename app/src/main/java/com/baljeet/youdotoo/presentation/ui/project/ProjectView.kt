@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProjectWithEverything
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
@@ -33,7 +34,8 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
 fun ProjectView(
     project: ProjectWithEveryThing,
     onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit,
-    navigateToCreateTask : () -> Unit
+    navigateToCreateTask : (projectOwner : Boolean) -> Unit,
+
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -41,7 +43,11 @@ fun ProjectView(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToCreateTask,
+                onClick = {
+                    navigateToCreateTask(
+                        project.project?.ownerId == SharedPref.userId
+                    )
+                },
                 modifier = Modifier,
                 backgroundColor =
                 if (isSystemInDarkTheme()) {

@@ -14,80 +14,48 @@ enum class Priorities(val toString: String) {
 }
 
 enum class DueDates(val toString : String) {
-    UPCOMING_FRIDAY_5PM("Upcoming Friday 5 PM"),
-    TOMORROW_5PM("Tomorrow 5 PM"),
-    TOMORROW_9AM("Tomorrow 9 AM"),
-    TONIGHT_9PM("Tonight 9 PM"),
-    TODAY_5PM("Today 5 PM"),
-    INDEFINITE("Indefinite"),
+    NEXT_FRIDAY("Next Friday"),
+    TOMORROW("Tomorrow"),
+    TODAY("Today"),
     CUSTOM("Custom");
 
-    fun getExactDateTime(): LocalDateTime {
-        val currentDateTime = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+    fun getExactDate(): LocalDate {
+        val currentDate = java.time.LocalDate.now().toKotlinLocalDate()
 
         return when(this){
-            TODAY_5PM -> {
-                LocalDateTime(
-                    year = currentDateTime.year,
-                    month = currentDateTime.month,
-                    dayOfMonth = currentDateTime.dayOfMonth,
-                    hour = 17,
-                    minute = 0,
-                    second = 0
-                )
+            TODAY -> {
+                currentDate
             }
-            TONIGHT_9PM -> {
-                LocalDateTime(
-                    year = currentDateTime.year,
-                    month = currentDateTime.month,
-                    dayOfMonth = currentDateTime.dayOfMonth,
-                    hour = 21,
-                    minute = 0,
-                    second = 0
-                )
+            TOMORROW -> {
+                currentDate.plus(1,DateTimeUnit.DAY)
             }
-            TOMORROW_9AM -> {
-                LocalDateTime(
-                    year = currentDateTime.year,
-                    month = currentDateTime.month,
-                    dayOfMonth = currentDateTime.dayOfMonth.plus(1),
-                    hour = 9,
-                    minute = 0,
-                    second = 0
-                )
-            }
-            TOMORROW_5PM -> {
-                LocalDateTime(
-                    year = currentDateTime.year,
-                    month = currentDateTime.month,
-                    dayOfMonth = currentDateTime.dayOfMonth.plus(1),
-                    hour = 17,
-                    minute = 0,
-                    second = 0
-                )
-            }
-            UPCOMING_FRIDAY_5PM -> {
-                val currentDayOfWeek = currentDateTime.dayOfWeek.isoDayNumber
-                val dayOfMonth = if(currentDayOfWeek < 5 ){
-                    currentDateTime.dayOfMonth.plus((5 - currentDayOfWeek))
+            NEXT_FRIDAY -> {
+                val currentDayOfWeek = currentDate.dayOfWeek.isoDayNumber
+                if(currentDayOfWeek==5){
+                    currentDate.plus(7,DateTimeUnit.DAY)
+                }else if(currentDayOfWeek < 5){
+                    currentDate.plus((5-currentDayOfWeek),DateTimeUnit.DAY)
                 }else{
-                    currentDateTime.dayOfMonth.plus(7 - (currentDayOfWeek-5))
+                    currentDate.plus(7 - (currentDayOfWeek - 5), DateTimeUnit.DAY)
                 }
-                LocalDateTime(
-                    year = currentDateTime.year,
-                    month = currentDateTime.month,
-                    dayOfMonth = dayOfMonth,
-                    hour = 17,
-                    minute = 0,
-                    second = 0
-                )
+                currentDate
             }
-            else -> { currentDateTime }
+            else -> {
+                currentDate
+            }
         }
     }
 
     fun getExactDateTimeInSecondsFrom1970(): Long {
-        return getExactDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds
+        val date = getExactDate()
+        return LocalDateTime(
+            year = date.year,
+            monthNumber = date.monthNumber,
+            dayOfMonth = date.dayOfMonth,
+            hour = 9,
+            minute = 0,
+            second = 0
+        ).toInstant(TimeZone.currentSystemDefault()).epochSeconds
     }
 }
 

@@ -17,11 +17,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import com.baljeet.youdotoo.common.getSampleProjectWithTaskCount
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
-import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -284,19 +284,7 @@ fun DefaultProjectPreview() {
         navigateToDoToos = {},
         projectsState = ProjectsState(
             offlineProjects = arrayListOf(
-                ProjectWithTaskCount(
-                    project = Project(
-                        id = "",
-                        name = "Home Chores",
-                        description = "This project is about the irritating stuff which always gets forgotten.",
-                        ownerId = "",
-                        collaboratorIds = arrayListOf(),
-                        viewerIds = arrayListOf(),
-                        update = ""
-                    ),
-                    taskCount = 88,
-                    progress = 0.6f
-                )
+                getSampleProjectWithTaskCount()
             )
         ),
         userId = "",

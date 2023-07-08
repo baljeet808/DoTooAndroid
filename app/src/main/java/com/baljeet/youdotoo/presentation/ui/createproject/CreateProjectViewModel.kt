@@ -37,7 +37,8 @@ class CreateProjectViewModel: ViewModel() {
                 description = description?:"",
                 collaboratorIds = listOf(),
                 viewerIds = listOf(),
-                update = "${SharedPref.userName} created new project named '${projectName}.'"
+                update = "${SharedPref.userName} created new project named '${projectName}.'",
+                color = 4294935846
             )
 
             projectRef

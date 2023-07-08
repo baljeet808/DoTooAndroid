@@ -16,7 +16,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
         DoTooItemEntity::class,
         UserEntity::class
     ],
-    version = 2
+    version = 3
 )
 abstract class YouDoTooDatabase  : RoomDatabase(){
     abstract val projectDao : ProjectDao

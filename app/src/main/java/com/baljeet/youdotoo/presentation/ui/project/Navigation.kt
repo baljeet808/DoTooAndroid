@@ -36,9 +36,9 @@ fun NavGraphBuilder.addProjectViewDestination(
                     doTooItem, project
                 )
             },
-            navigateToCreateTask = {
+            navigateToCreateTask = {projectOwner->
                 navController.navigate(
-                    "create_task/".plus(projectId)
+                    "create_task/".plus(projectId).plus("/${projectOwner}")
                 )
             }
         )

@@ -10,7 +10,8 @@ fun Project.toProjectEntity() : ProjectEntity{
         name = name,
         description = description,
         ownerId = ownerId,
-        update = update
+        update = update,
+        color = color
     )
 }
 
@@ -23,6 +24,7 @@ fun ProjectEntity.toProject(): Project{
         ownerId = ownerId,
         collaboratorIds = arrayListOf(),
         viewerIds = arrayListOf(),
-        update = update
+        update = update,
+        color = color
     )
 }

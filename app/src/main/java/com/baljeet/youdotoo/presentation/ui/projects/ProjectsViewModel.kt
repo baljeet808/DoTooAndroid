@@ -127,7 +127,8 @@ class ProjectsViewModel @Inject constructor(
                             ownerId = project.getString("ownerId") ?: "",
                             viewerIds = (project.get("viewerIds") as List<String>),
                             collaboratorIds = (project.get("collaboratorIds") as List<String>),
-                            update = project.getString("update") ?: ""
+                            update = project.getString("update") ?: "",
+                            color = 4294935846
                         )
                     )
                 }

@@ -381,21 +381,7 @@ fun DoToosLazyColumn(
 @Composable
 fun DotooViewPreview(){
     DoTooView(
-        project = ProjectWithProfiles(
-            project = Project(
-                id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",
-                name = "Test is the name",
-                description = "Android is my game. Because test is my name",
-                ownerId = "",
-                collaboratorIds = listOf(
-                    "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-                    "NuZXwLl3a8O3mXRcXFsJzHQgB172"
-                ),
-                viewerIds = listOf(),
-                update = ""
-            ),
-            profiles = listOf()
-        ),
+        project = getSampleProjectsWithProfiles(),
         navigateToChatView = {},
         toggleDoToo = {},
         doToosState = listOf(),

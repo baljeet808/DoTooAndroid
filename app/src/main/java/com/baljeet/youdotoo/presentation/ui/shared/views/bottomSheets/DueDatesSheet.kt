@@ -87,7 +87,7 @@ fun DueDatesSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Or Pick Custom Date & Time",
+                    text = "Or Pick Custom Date",
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -111,5 +111,5 @@ fun DueDatesSheet(
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun dueDateSheetPreview(){
-    DueDatesSheet(dueDate = DueDates.INDEFINITE, onDatePickerSelected = { }, onDateSelected = {} )
+    DueDatesSheet(dueDate = DueDates.TODAY, onDatePickerSelected = { }, onDateSelected = {} )
 }

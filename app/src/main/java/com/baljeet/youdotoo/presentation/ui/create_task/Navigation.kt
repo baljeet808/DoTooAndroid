@@ -7,9 +7,12 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.baljeet.youdotoo.common.DueDates
+import com.baljeet.youdotoo.common.Priorities
+import kotlinx.datetime.LocalDateTime
 
 
-const val DestinationCreateTaskRoute = "create_task/{projectId}"
+const val DestinationCreateTaskRoute = "create_task/{projectId}/{projectOwner}"
 
 
 fun NavGraphBuilder.addCreateTaskViewDestination(
@@ -21,6 +24,9 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         arguments = listOf(
             navArgument("projectId"){
                 type = NavType.StringType
+            },
+            navArgument("projectOwner"){
+                type = NavType.BoolType
             }
         )
     ){backStackEntry ->
@@ -28,10 +34,27 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         val projectId = backStackEntry.arguments?.getString("projectId")
 
         val viewModel : CreateTaskViewModel = hiltViewModel()
-        val state by viewModel.createState
+        val taskCreated by viewModel.createState
 
+        if(taskCreated){
+            //navigate back
+            navController.popBackStack()
+        }
         CreateTaskView(
-            createState = state
+            createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDateTime? ->
+                viewModel.createTask(
+                    name = title,
+                    description = description,
+                    priority = priority,
+                    dueDate = dueDate,
+                    customDate = customDate
+                )
+            },
+            navigateBack = {
+                //navigate back
+                navController.popBackStack()
+            },
+            allProjects = listOf()
         )
 
     }

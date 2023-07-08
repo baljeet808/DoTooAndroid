@@ -41,6 +41,17 @@ fun getSampleDoTooWithProfiles(): DoTooWithProfiles{
     )
 }
 
+fun getSampleProjectsWithProfiles() : ProjectWithProfiles{
+    return ProjectWithProfiles(
+        project = getSampleProject(),
+        profiles = listOf(
+            getSampleProfile(),
+            getSampleProfile(),
+            getSampleProfile()
+        )
+    )
+}
+
 
 fun getSampleProfile(): User{
     return  User(
@@ -101,7 +112,8 @@ fun getSampleProject(): Project{
         ownerId = "",
         collaboratorIds = getSampleIds(),
         viewerIds = getSampleIds(),
-        update = ""
+        update = "",
+        color = 4294935846
     )
 }
 

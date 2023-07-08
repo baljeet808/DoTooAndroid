@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.*
-import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
@@ -36,11 +35,10 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
-import com.maxkeppeler.sheets.clock.ClockDialog
-import com.maxkeppeler.sheets.clock.models.ClockSelection
 import kotlinx.coroutines.launch
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.toKotlinLocalDateTime
+import kotlinx.datetime.toKotlinLocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -98,15 +96,15 @@ fun createDoTooView(
     var dueDate by remember {
         mutableStateOf(
            // DueDates.valueOf(SharedPref.previouslyUsedDueDateOption)
-            DueDates.INDEFINITE
+            DueDates.TODAY
         )
     }
-    var customDatetime: LocalDateTime by remember {
+    var customDatetime: LocalDate by remember {
         mutableStateOf(
-            java.time.LocalDateTime.now().toKotlinLocalDateTime()
+            java.time.LocalDate.now().toKotlinLocalDate()
         )
     }
-    val clockState = com.maxkeppeker.sheets.core.models.base.rememberSheetState()
+  /*  val clockState = com.maxkeppeker.sheets.core.models.base.rememberSheetState()
     ClockDialog(
         state = clockState,
         selection = ClockSelection.HoursMinutes{ hours, minutes ->
@@ -119,7 +117,7 @@ fun createDoTooView(
             )
         }
     )
-
+*/
     val calendarState = com.maxkeppeker.sheets.core.models.base.rememberSheetState()
 
     CalendarDialog(
@@ -134,14 +132,14 @@ fun createDoTooView(
             dismissOnBackPress = true
         ),
         selection = CalendarSelection.Date {date ->
-            customDatetime = LocalDateTime(
+            /*customDatetime = LocalDateTime(
                 year = date.year,
                 monthNumber = date.monthValue,
                 dayOfMonth = date.dayOfMonth,
                 hour = 0,
                 minute = 0
             )
-            clockState.show()
+            clockState.show()*/
         }
     )
 
@@ -161,7 +159,7 @@ fun createDoTooView(
                             onDateSelected = { selectedDate ->
                                 dueDate = selectedDate
                                // SharedPref.previouslyUsedDueDateOption = selectedDate.name
-                                customDatetime = selectedDate.getExactDateTime()
+                                customDatetime = selectedDate.getExactDate()
                                 closeSheet()
                             },
                             onDatePickerSelected = {
@@ -385,21 +383,6 @@ fun createDoTooView(
                             )
                         }
                     }
-                    if(dueDate != DueDates.INDEFINITE) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Start
-                        ) {
-                            Text(
-                                text = customDatetime.toNiceDateTimeFormat(),
-                                color = MaterialTheme.colorScheme.secondary,
-                                fontFamily = FontFamily(Nunito.SemiBold.font),
-                                fontSize = 18.sp,
-                                modifier = Modifier.weight(.9f)
-                            )
-                        }
-                    }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
 
@@ -450,21 +433,7 @@ fun createDoTooView(
 @Composable
 fun createDoTooPreview() {
     createDoTooView(
-        project = ProjectWithProfiles(
-            project = Project(
-                id = "74D46CEC-04C8-4E7E-BA2E-B9C7E8D2E958",
-                name = "Test is the name",
-                description = "Android is my game. Because test is my name",
-                ownerId = "5JULxCTJWVM04kzeGrbs4DJRzsS2",
-                collaboratorIds = listOf(
-                    "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-                    "NuZXwLl3a8O3mXRcXFsJzHQgB172"
-                ),
-                viewerIds = listOf(),
-                update = ""
-            ),
-            profiles = listOf()
-        ),
+        project = getSampleProjectsWithProfiles(),
         navigateBack = {},
         createDoToo = { _: String, _: String, _: String, _: Priorities, _: DueDates, _: LocalDateTime? ->
         },

@@ -13,7 +13,6 @@ import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
-import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
@@ -60,7 +59,8 @@ class ProjectViewModel @Inject constructor(
                         ownerId = snapshot.getString("ownerId") ?: "",
                         viewerIds = (snapshot.get("viewerIds") as List<String>),
                         collaboratorIds = (snapshot.get("collaboratorIds") as List<String>),
-                        update = snapshot.getString("update") ?: ""
+                        update = snapshot.getString("update") ?: "",
+                        color = 4294935846
                     )
                     //saving to local database
                     viewModelScope.launch {
