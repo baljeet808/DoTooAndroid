@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,6 +21,7 @@ import java.time.LocalDateTime
 
 @Composable
 fun DoTooItemsLazyColumn(
+    lazyListState: LazyListState,
     doToos : List<DoTooItem>,
     onToggleDoToo : (doToo: DoTooItem) -> Unit,
     onNavigateClick :(doToo : DoTooItem) -> Unit,
@@ -27,6 +29,7 @@ fun DoTooItemsLazyColumn(
 ){
 
     LazyColumn(
+        state = lazyListState,
         modifier = modifier
             .fillMaxSize()
             .background(color = Color.Transparent),
@@ -51,6 +54,7 @@ fun DoTooItemsLazyColumn(
 @Composable
 fun PreviewDoTooItemsLazyColumn(){
     DoTooItemsLazyColumn(
+        lazyListState = LazyListState(),
         doToos = listOf(
             DoTooItem(
                 id = "",

@@ -3,6 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.projects.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
@@ -177,7 +178,8 @@ fun ProjectsView(
                 onNavigateClick = { doToo ->
                     navigateToTask(doToo)
                 },
-                modifier = Modifier
+                modifier = Modifier,
+                lazyListState = LazyListState()
             )
 
 

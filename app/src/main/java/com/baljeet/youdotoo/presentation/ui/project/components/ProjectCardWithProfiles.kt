@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.project.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -181,7 +182,7 @@ fun ProjectCardWithProfiles(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewProjectCardWithProfiles(){
     ProjectCardWithProfiles(
