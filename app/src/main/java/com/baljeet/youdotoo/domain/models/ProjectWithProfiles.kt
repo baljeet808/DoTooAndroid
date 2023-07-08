@@ -11,7 +11,7 @@ data class ProjectWithProfiles(
 
 @Parcelize
 data class ProjectWithEveryThing(
-    var project : Project,
-    var doToos : List<DoTooItem>,
-    var profiles : List<User>?
+    var project : Project? = null,
+    var doToos : List<DoTooItem> = listOf(),
+    var profiles : List<User>? = null
 ):Parcelable

@@ -5,6 +5,7 @@ import com.baljeet.youdotoo.domain.models.Project
 
 interface ProjectRepository {
      suspend fun getProjects(): List<Project>
+     suspend fun getProjectById(projectId : String): Project
      suspend fun upsertProject(projects : List<Project>)
      suspend fun deleteProject(project : Project)
      suspend fun searchProjects(searchQuery : String) : List<Project>

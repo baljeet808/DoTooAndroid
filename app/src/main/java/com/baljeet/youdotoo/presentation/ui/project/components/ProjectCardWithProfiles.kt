@@ -139,7 +139,7 @@ fun ProjectCardWithProfiles(
                     lightColor = DoTooYellow
                 )
                 Text(
-                    text = project.project.description,
+                    text = project.project?.description?:"",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 5.dp, end = 5.dp),
@@ -157,7 +157,7 @@ fun ProjectCardWithProfiles(
                 .padding(10.dp)
         ) {
             Text(
-                text = project.project.name,
+                text = project.project?.name?:"",
                 modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth(),

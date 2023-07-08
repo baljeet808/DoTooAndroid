@@ -7,10 +7,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-class UpsertProjectUseCase @Inject constructor(
+class GetProjectByIdUseCase @Inject constructor(
     private val repository: ProjectRepository
 ){
-    suspend operator fun invoke(projects: List<Project> ) {
-        return repository.upsertProject(projects)
+    suspend operator fun invoke(projectId : String): Project  {
+        return repository.getProjectById(projectId)
     }
 }

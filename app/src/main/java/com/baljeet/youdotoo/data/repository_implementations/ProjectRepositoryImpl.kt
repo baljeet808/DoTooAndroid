@@ -20,6 +20,10 @@ class ProjectRepositoryImpl @Inject constructor(
         return projectDao.getAllProjects().map { it.toProject() }
     }
 
+    override suspend fun getProjectById(projectId: String): Project {
+        return projectDao.getProjectById(projectId).toProject()
+    }
+
     override suspend fun upsertProject(projects: List<Project>) {
         projectDao.upsertAll(projects.map { it.toProjectEntity() })
     }

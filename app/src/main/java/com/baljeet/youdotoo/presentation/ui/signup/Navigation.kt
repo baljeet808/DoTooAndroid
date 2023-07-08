@@ -5,7 +5,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
+import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.signup.components.SignupView
 
 /**
@@ -24,7 +24,7 @@ fun NavGraphBuilder.addSignupDestination(
         val state by viewModel.state
         SignupView(
             navigateToProjects = {
-                navController.navigate(DestinationProjectRoute)
+                navController.navigate(DestinationDashboardRoute)
             },
             signupState = state,
             performSignup = { email, password, name ->

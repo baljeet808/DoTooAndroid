@@ -5,7 +5,7 @@ import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import com.baljeet.youdotoo.presentation.ui.drawer.MenuItem
-import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
+import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 
 /**
  * Updated by Baljeet singh
@@ -27,7 +27,7 @@ val menuItems = arrayListOf(
         contentDescription = "Menu item to show Account"
     ),
     MenuItem(
-        id = DestinationProjectRoute,
+        id = DestinationProjectsRoute,
         title = "Projects",
         icon = Icons.Outlined.FolderOpen,
         contentDescription = "Menu item to show all Projects"

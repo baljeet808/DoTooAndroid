@@ -28,9 +28,9 @@ import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.dotoo.addDotooViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
-import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectRoute
+import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
-import com.baljeet.youdotoo.presentation.ui.projects.addProjectViewDestination
+import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
@@ -126,12 +126,12 @@ fun DashboardView() {
                                 }
                                 maximizeCurrentScreen = true
                             }
-                            DestinationProjectRoute -> {
+                            DestinationProjectsRoute -> {
                                 scope.launch {
                                     scaffoldState.drawerState.close()
                                 }
                                 maximizeCurrentScreen = true
-                                navController.navigate(DestinationProjectRoute)
+                                navController.navigate(DestinationProjectsRoute)
                             }
                         }
                     },
@@ -222,6 +222,7 @@ fun DashboardView() {
                        modifier = Modifier
                            .fillMaxSize()
                    ) {
+                       addProjectsViewDestination(navController)
                        addProjectViewDestination(navController)
                        addDotooViewDestination(navController = navController)
                        addChatViewDestination()
