@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
-import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.profilesLazyRow
+import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.getOnCardColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
@@ -79,7 +79,7 @@ fun ProjectHelperCard(project: ProjectWithProfiles) {
             }
 
             project.profiles?.let { profiles ->
-                profilesLazyRow(profiles = profiles, onTapProfiles = {})
+                ProfilesLazyRow(profiles = profiles, onTapProfiles = {})
             }?: kotlin.run {
                 Spacer(modifier = Modifier.weight(.5f))
                 FilledIconButton(

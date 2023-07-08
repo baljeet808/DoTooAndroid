@@ -15,16 +15,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
-import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.isScrolled
-import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
-
-/**
- * Updated by Baljeet singh.
- * **/
 
 @Composable
 fun ChatViewMainContent(
@@ -227,7 +223,7 @@ fun ChatViewMainContent(
 @Composable
 fun PreviewChatView() {
     ChatViewMainContent(
-        doToo =getSampleDoTooWithProfiles(),
+        doToo = getSampleDoTooWithProfiles(),
         messages = listOf(),
         sendMessage = {},
         toggleIsDone = {},
