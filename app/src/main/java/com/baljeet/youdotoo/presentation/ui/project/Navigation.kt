@@ -7,7 +7,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectView
 
 
 const val DestinationProjectRoute = "project/{projectId}"
