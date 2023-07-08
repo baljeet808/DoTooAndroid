@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProjectTopBar(
     notificationsState : Boolean,
-    onMenuItemClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
     onNotificationItemClicked: () -> Unit,
     onDeleteItemClicked: () -> Unit,
     modifier: Modifier
@@ -47,14 +47,14 @@ fun ProjectTopBar(
              * **/
             IconButton(
                 onClick = {
-                    onMenuItemClick()
+                    onFavoriteClick()
                 },
                 modifier = Modifier
                     .weight(0.2f)
             ) {
                 Icon(
                     Icons.Outlined.Favorite,
-                    contentDescription = "Back button for navigating back to dashboard",
+                    contentDescription = "Button to mark this project favorite.",
                     tint = Color.White
                 )
             }
@@ -124,13 +124,13 @@ fun ProjectTopBar(
 }
 
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewProjectTopBar() {
     ProjectTopBar(
        modifier = Modifier,
         notificationsState = true,
-        onMenuItemClick = {},
+        onFavoriteClick = {},
         onNotificationItemClicked = {},
         onDeleteItemClicked = {}
     )

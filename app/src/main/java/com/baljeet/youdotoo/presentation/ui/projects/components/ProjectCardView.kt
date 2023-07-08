@@ -1,8 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
 import android.content.res.Configuration
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -18,22 +16,22 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.common.getSampleProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 
 
 @Composable
@@ -43,51 +41,10 @@ fun ProjectCardView(
     onItemClick: () -> Unit
 ) {
 
-    val darkTheme = isSystemInDarkTheme()
-    val transition = rememberInfiniteTransition()
-
-    val offsetX by transition.animateValue(
-        initialValue = (180).dp,
-        targetValue = 80.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 10000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter
-    )
-    val offsetY by transition.animateValue(
-        initialValue = (100).dp,
-        targetValue = 50.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 18000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter
-    )
-
-    val offsetX1 by transition.animateValue(
-        initialValue = 0.dp,
-        targetValue = 80.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 15000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter
-    )
-    val offsetY1 by transition.animateValue(
-        initialValue = 0.dp,
-        targetValue = 100.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 18000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter
-    )
-
     Box(
         modifier = Modifier
             .widthIn(max = 220.dp)
-            .heightIn(max = 130.dp)
+            .heightIn(max = 140.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -98,36 +55,6 @@ fun ProjectCardView(
                 shape = RoundedCornerShape(20.dp)
             ),
     ) {
-
-        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-            drawCircle(
-                color = if (darkTheme) {
-                    NightTransparentWhiteColor
-                } else {
-                    DotooGray
-                },
-                radius = 60.dp.toPx(),
-                center = Offset(
-                    x = offsetX1.toPx(),
-                    y = offsetY1.toPx()
-                )
-            )
-        })
-
-        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-            drawCircle(
-                color = if (darkTheme) {
-                    NightTransparentWhiteColor
-                } else {
-                    DotooGray
-                },
-                radius = 30.dp.toPx(),
-                center = Offset(
-                    x = offsetX.toPx(),
-                    y = offsetY.toPx()
-                )
-            )
-        })
 
         Column(
             modifier = Modifier
@@ -203,19 +130,7 @@ fun ProjectCardView(
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
-        project = ProjectWithTaskCount(
-            project = Project(
-                id = "",
-                name = "Home Chores",
-                description = "This project is about the irritating stuff which always gets forgotten.",
-                ownerId = "",
-                collaboratorIds = arrayListOf(),
-                viewerIds = arrayListOf(),
-                update = ""
-            ),
-            taskCount = 88,
-            progress = 0.3f
-        ),
+        project = getSampleProjectWithTaskCount(),
         onItemClick = {},
         role = "Blocked"
     )

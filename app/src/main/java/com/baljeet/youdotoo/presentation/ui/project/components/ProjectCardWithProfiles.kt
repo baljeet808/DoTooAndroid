@@ -114,7 +114,7 @@ fun ProjectCardWithProfiles(
 
         ProjectTopBar(
             notificationsState = true,
-            onMenuItemClick = { /*TODO*/ },
+            onFavoriteClick = { /*TODO*/ },
             onNotificationItemClicked = { /*TODO*/ },
             onDeleteItemClicked = { /*TODO*/ },
             modifier = Modifier
@@ -124,7 +124,6 @@ fun ProjectCardWithProfiles(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .heightIn(min = 150.dp)
                     .padding(10.dp),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -146,7 +145,7 @@ fun ProjectCardWithProfiles(
                         .padding(start = 5.dp, end = 5.dp),
                     color = LessTransparentWhiteColor,
                     fontSize = 16.sp,
-                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontFamily = FontFamily(Nunito.Bold.font),
                     letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
                 )
             }
@@ -164,7 +163,8 @@ fun ProjectCardWithProfiles(
                     .fillMaxWidth(),
                 fontFamily = FontFamily(Nunito.ExtraBold.font),
                 fontSize = 38.sp,
-                color = Color.White
+                color = Color.White,
+                lineHeight = TextUnit(49f, TextUnitType.Sp)
             )
             AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
                 Text(
@@ -174,7 +174,7 @@ fun ProjectCardWithProfiles(
                         .padding(start = 5.dp, end = 5.dp),
                     color = LessTransparentWhiteColor,
                     fontSize = 16.sp,
-                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontFamily = FontFamily(Nunito.Bold.font),
                     letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
                 )
             }

@@ -25,6 +25,7 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
+import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.dotoo.addDotooViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
@@ -224,7 +225,8 @@ fun DashboardView() {
                    ) {
                        addProjectsViewDestination(navController)
                        addProjectViewDestination(navController)
-                       addDotooViewDestination(navController = navController)
+                       addDotooViewDestination(navController)
+                       addCreateTaskViewDestination(navController)
                        addChatViewDestination()
                    }
 

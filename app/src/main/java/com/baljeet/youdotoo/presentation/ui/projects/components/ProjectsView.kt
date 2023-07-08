@@ -1,5 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -10,13 +12,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.*
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
@@ -38,6 +38,48 @@ fun ProjectsView(
     onToggleTask: (DoTooItem) -> Unit,
     navigateToTask: (DoTooItem) -> Unit
 ) {
+
+    val transition = rememberInfiniteTransition()
+
+    val offsetX by transition.animateValue(
+        initialValue = (300).dp,
+        targetValue = 150.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+    val offsetY by transition.animateValue(
+        initialValue = (450).dp,
+        targetValue = 550.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+
+    val offsetX1 by transition.animateValue(
+        initialValue =160.dp,
+        targetValue = 310.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+    val offsetY1 by transition.animateValue(
+        initialValue = 550.dp,
+        targetValue = 450.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter
+    )
+
+
     val sheetState = rememberStandardBottomSheetState(
         skipHiddenState = false,
         initialValue = SheetValue.Hidden
@@ -58,132 +100,165 @@ fun ProjectsView(
         },
         modifier = Modifier
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooNormalBlue
-                    } else {
-                        DotooGray
-                    }
-                ),
-            verticalArrangement = Arrangement.Top
+
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooNormalBlue
+                } else {
+                    DotooGray
+                }
+            )
         ) {
 
-            /**
-             * Top Row for greeting and Add project button
-             * **/
-            Row(
+
+            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+                drawCircle(
+                    color = NightTransparentWhiteColor,
+                    radius = 230.dp.toPx(),
+                    center = Offset(
+                        x = offsetX1.toPx(),
+                        y = offsetY1.toPx()
+                    )
+                )
+            })
+
+            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+                drawCircle(
+                    color = NightTransparentWhiteColor,
+                    radius = 180.dp.toPx(),
+                    center = Offset(
+                        x = offsetX.toPx(),
+                        y = offsetY.toPx()
+                    )
+                )
+            })
+
+
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.Top
             ) {
-                Text(
-                    text = if (userName.length > 8) {
-                        "Hi, $userName!"
-                    } else {
-                        "What's up, $userName!"
-                    },
+
+
+
+                /**
+                 * Top Row for greeting and Add project button
+                 * **/
+                Row(
                     modifier = Modifier
-                        .padding(5.dp)
-                        .weight(1f),
-                    fontFamily = FontFamily(Nunito.ExtraBold.font),
-                    fontSize = 38.sp,
-                    color = MaterialTheme.colorScheme.secondary
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = if (userName.length > 8) {
+                            "Hi, $userName!"
+                        } else {
+                            "What's up, $userName!"
+                        },
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .weight(1f),
+                        fontFamily = FontFamily(Nunito.ExtraBold.font),
+                        fontSize = 38.sp,
+                        color = MaterialTheme.colorScheme.secondary
+                    )
+
+                    FilledIconButton(
+                        onClick = {
+                            scope.launch {
+                                sheetState.expand()
+                            }
+                        }, colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = if (isSystemInDarkTheme()) {
+                                NightDotooDarkBlue
+                            } else {
+                                NightDotooNormalBlue
+                            }
+                        ),
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(40.dp)
+
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Add list button",
+                            tint = Color.White
+                        )
+                    }
+                }
+
+
+                /**
+                 * Simple Projects heading
+                 * **/
+                Text(
+                    text = "Projects".uppercase(),
+                    color = if (isSystemInDarkTheme()) {
+                        NightAppBarIconsColor
+                    } else {
+                        LightAppBarIconsColor
+                    },
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                    letterSpacing = TextUnit(2f, TextUnitType.Sp)
                 )
 
-                FilledIconButton(
-                    onClick = {
-                        scope.launch {
-                            sheetState.expand()
-                        }
-                    }, colors = IconButtonDefaults.filledIconButtonColors(
-                        containerColor = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
-                        } else {
-                            NightDotooNormalBlue
-                        }
-                    ),
+                /**
+                 * Horizontal list of all projects
+                 * **/
+                ProjectsLazyRow(
                     modifier = Modifier
-                        .height(40.dp)
-                        .width(40.dp)
+                        .fillMaxWidth(),
+                    offlineProjects = projectsState.offlineProjects,
+                    onlineProjects = projectsState.onlineProjects,
+                    navigateToDoToos = navigateToDoToos,
+                    userId = userId,
+                    isUserAPro = isUserAPro
+                )
 
-                ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = "Add list button",
-                        tint = Color.White
-                    )
-                }
+                /**
+                 * Simple Today's Tasks heading
+                 * **/
+                Text(
+                    text = "Today's Tasks".uppercase(),
+                    color = if (isSystemInDarkTheme()) {
+                        NightAppBarIconsColor
+                    } else {
+                        LightAppBarIconsColor
+                    },
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 16.sp,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                    letterSpacing = TextUnit(2f, TextUnitType.Sp)
+                )
+
+                DoTooItemsLazyColumn(
+                    doToos = projectsState.todayTasks,
+                    onToggleDoToo = { doToo ->
+                        onToggleTask(doToo)
+                    },
+                    onNavigateClick = { doToo ->
+                        navigateToTask(doToo)
+                    },
+                    modifier = Modifier,
+                    lazyListState = LazyListState()
+                )
+
+
             }
-
-
-            /**
-             * Simple Projects heading
-             * **/
-            Text(
-                text = "Projects".uppercase(),
-                color = if (isSystemInDarkTheme()) {
-                    NightAppBarIconsColor
-                } else {
-                    LightAppBarIconsColor
-                },
-                fontFamily = FontFamily(Nunito.Normal.font),
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                letterSpacing = TextUnit(2f, TextUnitType.Sp)
-            )
-
-            /**
-             * Horizontal list of all projects
-             * **/
-            ProjectsLazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                offlineProjects = projectsState.offlineProjects,
-                onlineProjects = projectsState.onlineProjects,
-                navigateToDoToos = navigateToDoToos,
-                userId = userId,
-                isUserAPro = isUserAPro
-            )
-
-            /**
-             * Simple Today's Tasks heading
-             * **/
-            Text(
-                text = "Today's Tasks".uppercase(),
-                color = if (isSystemInDarkTheme()) {
-                    NightAppBarIconsColor
-                } else {
-                    LightAppBarIconsColor
-                },
-                fontFamily = FontFamily(Nunito.Normal.font),
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                letterSpacing = TextUnit(2f, TextUnitType.Sp)
-            )
-
-            DoTooItemsLazyColumn(
-                doToos = projectsState.todayTasks,
-                onToggleDoToo = { doToo ->
-                    onToggleTask(doToo)
-                },
-                onNavigateClick = { doToo ->
-                    navigateToTask(doToo)
-                },
-                modifier = Modifier,
-                lazyListState = LazyListState()
-            )
-
-
         }
+
     }
 }
 

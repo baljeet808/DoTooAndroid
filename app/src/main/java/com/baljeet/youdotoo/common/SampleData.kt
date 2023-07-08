@@ -1,10 +1,12 @@
 package com.baljeet.youdotoo.common
 
 import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
+import java.util.UUID
 import kotlin.random.Random
 
 
@@ -65,9 +67,14 @@ fun getRandomAvatar(): String{
     return avatars[randomInt]
 }
 
+
+fun getRandomId(): String{
+    return UUID.randomUUID().toString()
+}
+
 fun getSampleDotooItem(): DoTooItem{
     return DoTooItem(
-        id = "",
+        id = getRandomId(),
         title = "Wash the dishes Please",
         description = "To see the preview comment code related to viewModel",
         dueDate = 90L,
@@ -78,9 +85,17 @@ fun getSampleDotooItem(): DoTooItem{
     )
 }
 
+fun getSampleProjectWithTaskCount(): ProjectWithTaskCount{
+    return ProjectWithTaskCount(
+        project = getSampleProject(),
+        taskCount = 88,
+        progress = 0.3f
+    )
+}
+
 fun getSampleProject(): Project{
     return  Project(
-        id = "",
+        id = getRandomId(),
         name = "Home Chores",
         description = "This project is about the irritating stuff which always gets forgotten.",
         ownerId = "",
@@ -92,7 +107,7 @@ fun getSampleProject(): Project{
 
 fun getSampleMessage(): Message{
     return Message(
-        id = "",
+        id = getRandomId(),
         message = "Hey there, This is a new message about your doToo. What do you think.",
         senderId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
         createdAt = getSampleDateInLong(),

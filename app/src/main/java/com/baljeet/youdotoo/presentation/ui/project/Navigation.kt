@@ -23,7 +23,10 @@ fun NavGraphBuilder.addProjectViewDestination(
                 type = NavType.StringType
             }
         )
-    ){
+    ){backStackEntry ->
+
+        val projectId = backStackEntry.arguments?.getString("projectId")
+
         val viewModel : ProjectViewModel = hiltViewModel()
         val state by viewModel.projectState
         ProjectView(
@@ -31,6 +34,11 @@ fun NavGraphBuilder.addProjectViewDestination(
             onToggle={doTooItem, project ->
                 viewModel.upsertDoToo(
                     doTooItem, project
+                )
+            },
+            navigateToCreateTask = {
+                navController.navigate(
+                    "create_task/".plus(projectId)
                 )
             }
         )
