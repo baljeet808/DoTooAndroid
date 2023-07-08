@@ -27,7 +27,12 @@ fun NavGraphBuilder.addProjectViewDestination(
         val viewModel : ProjectViewModel = hiltViewModel()
         val state by viewModel.projectState
         ProjectView(
-            project = state
+            project = state,
+            onToggle={doTooItem, project ->
+                viewModel.upsertDoToo(
+                    doTooItem, project
+                )
+            }
         )
     }
 

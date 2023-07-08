@@ -29,7 +29,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getProjectsUseCase: GetProjectsUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
     private val upsertUserUseCase: UpsertUserUseCase,
@@ -75,11 +74,7 @@ class ProjectViewModel @Inject constructor(
                 val project = getProjectByIdUseCase(projectId)
                 val tasks = getProjectDoToosUseCase(projectId = project.id)
 
-                val isProjectIsSharedToUser =
-                    project.collaboratorIds.contains(SharedPref.userId) ||
-                            project.viewerIds.contains(SharedPref.userId)
-
-                if (isProjectIsSharedToUser) {
+                if (isProjectIsSharedToUser(project)) {
                     fetchProfilesForProjects(project = project, todos = tasks)
                 } else {
                     projectState.value = projectState.value.copy(
@@ -91,6 +86,12 @@ class ProjectViewModel @Inject constructor(
         }
 
     }
+
+    private fun isProjectIsSharedToUser(project: Project) =
+        project.collaboratorIds.contains(SharedPref.userId) ||
+    project.viewerIds.contains(SharedPref.userId)
+
+
 
     private fun fetchProjectTodosOnline(project: Project) {
         projectsReference
@@ -170,6 +171,26 @@ class ProjectViewModel @Inject constructor(
                 doToos = todos,
                 profiles = profiles
             )
+        }
+    }
+
+    fun upsertDoToo(doTooItem: DoTooItem, project : Project){
+        val newDoToo = doTooItem.copy()
+        newDoToo.done = doTooItem.done.not()
+        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
+        if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
+            projectsReference
+                .document(projectId)
+                .collection("todos")
+                .document(newDoToo.id)
+                .set(newDoToo)
+            viewModelScope.launch {
+                upsertDoToosUseCase(listOf(newDoToo),projectId)
+            }
+        }else {
+            viewModelScope.launch {
+                upsertDoToosUseCase(listOf(newDoToo),projectId)
+            }
         }
     }
 }

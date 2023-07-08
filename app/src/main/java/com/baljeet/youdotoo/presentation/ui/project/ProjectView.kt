@@ -11,6 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getSampleProjectWithEverything
+import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithEveryThing
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
@@ -18,6 +20,7 @@ import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithPr
 @Composable
 fun ProjectView(
     project: ProjectWithEveryThing,
+    onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -41,7 +44,11 @@ fun ProjectView(
         DoTooItemsLazyColumn(
             lazyListState = lazyListState,
             doToos = project.doToos,
-            onToggleDoToo = {},
+            onToggleDoToo = {doToo->
+                project.project?.let {project ->
+                    onToggle(doToo, project)
+                }
+            },
             onNavigateClick = {},
             modifier = Modifier
                 .fillMaxSize()
@@ -57,6 +64,7 @@ fun ProjectView(
 @Composable
 fun PreviewProjectView() {
     ProjectView(
-        project = getSampleProjectWithEverything()
+        project = getSampleProjectWithEverything(),
+        onToggle = {_,_->}
     )
 }

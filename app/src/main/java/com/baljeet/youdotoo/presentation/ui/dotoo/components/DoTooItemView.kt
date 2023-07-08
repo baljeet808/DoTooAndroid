@@ -9,21 +9,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Circle
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.playWooshSound
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.*
-import kotlinx.datetime.*
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
 
 @Composable
@@ -32,6 +43,9 @@ fun DoTooItemView(
     onNavigateClick: () -> Unit,
     onToggleDone: () -> Unit
 ) {
+
+    val context = LocalContext.current
+    val hapticFeedback = LocalHapticFeedback.current
 
     Box(
         modifier = Modifier
@@ -56,7 +70,13 @@ fun DoTooItemView(
 
 
             IconButton(
-                onClick = onToggleDone,
+                onClick = {
+                    if (doToo.done.not()) {
+                        playWooshSound(context)
+                    }
+                    addHapticFeedback(hapticFeedback = hapticFeedback)
+                    onToggleDone()
+                },
                 modifier = Modifier
 
                     .height(30.dp)
@@ -91,10 +111,18 @@ fun DoTooItemView(
 
             Text(
                 text = doToo.title,
-                color = if (isSystemInDarkTheme()) {
-                    Color.White
+                color = if (doToo.done) {
+                    if (isSystemInDarkTheme()) {
+                        LessTransparentWhiteColor
+                    } else {
+                        Color.Gray
+                    }
                 } else {
-                    Color.Black
+                    if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        Color.Black
+                    }
                 },
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 20.sp,
