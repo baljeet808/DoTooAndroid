@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.create_task
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -37,7 +38,9 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         val viewModel : CreateTaskViewModel = hiltViewModel()
         val state by viewModel.createState
 
-        if(state.isCreated){
+        val projects by viewModel.getProjects().collectAsState(initial = listOf())
+
+        if(state){
             navController.popBackStack()
             viewModel.resetState()
         }
@@ -58,7 +61,7 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
                 viewModel.resetState()
             },
             projectId = projectId!!,
-            state = state
+            projects = projects
         )
 
     }

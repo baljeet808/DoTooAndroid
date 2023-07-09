@@ -8,7 +8,6 @@ import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
-import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
@@ -24,11 +23,6 @@ import java.util.*
 import javax.inject.Inject
 
 
-data class CreateTaskState(
-    var projects : List<Project> = listOf(),
-    var isCreated : Boolean = false
-)
-
 @HiltViewModel
 class CreateTaskViewModel  @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -36,27 +30,17 @@ class CreateTaskViewModel  @Inject constructor(
     private val getProjectsUseCase: GetProjectsUseCase
 ) : ViewModel() {
 
-    private val projectId: String = checkNotNull(savedStateHandle["projectId"])
     private val projectOwner: Boolean = checkNotNull(savedStateHandle["projectOwner"])
 
     private var projectRef = FirebaseFirestore
         .getInstance()
         .collection("projects")
 
-    var createState = mutableStateOf(CreateTaskState())
+    var createState = mutableStateOf(false)
         private set
 
 
-    init {
-        viewModelScope.launch {
-            getProjectsUseCase().collect { projects ->
-                createState.value = createState.value.copy(
-                    projects = projects.map { it.toProject() }
-                )
-            }
-        }
-    }
-
+    fun getProjects() = getProjectsUseCase()
 
     fun createTask(
         name : String,
@@ -96,34 +80,28 @@ class CreateTaskViewModel  @Inject constructor(
                 .addOnSuccessListener {
                     viewModelScope.launch {
                         upsertDoToosUseCase(
-                            projectId = projectId,
+                            projectId = selectedProject.id,
                             dotoos = listOf(newDoToo)
                         )
                     }
-                    createState.value = createState.value.copy(
-                        isCreated = true
-                    )
+                    createState.value = true
                 }
                 .addOnFailureListener {
-                    createState.value = createState.value.copy(
-                        isCreated = false
-                    )
+                    createState.value = false
                 }
         }else{
             viewModelScope.launch {
                 upsertDoToosUseCase(
-                    projectId = projectId,
+                    projectId = selectedProject.id,
                     dotoos = listOf(newDoToo)
                 )
             }
-            createState.value = createState.value.copy(
-                isCreated = true
-            )
+            createState.value = true
         }
     }
 
     fun resetState(){
-        createState.value = CreateTaskState()
+        createState.value = false
     }
 
 }

@@ -59,9 +59,10 @@ class ProjectViewModel @Inject constructor(
                 .document(newDoToo.id)
                 .set(newDoToo)
 
-        }
-        viewModelScope.launch {
-            upsertDoToosUseCase(listOf(newDoToo),projectId)
+        }else{
+            viewModelScope.launch {
+                upsertDoToosUseCase(listOf(newDoToo),projectId)
+            }
         }
     }
 }

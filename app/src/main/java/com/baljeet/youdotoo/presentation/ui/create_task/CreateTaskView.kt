@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.mappers.toProject
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
@@ -58,7 +61,7 @@ fun CreateTaskView(
     ) -> Unit,
     projectId: String,
     navigateBack: () -> Unit,
-    state: CreateTaskState
+    projects : List<ProjectEntity>
 ) {
 
     val hapticFeedback = LocalHapticFeedback.current
@@ -122,12 +125,12 @@ fun CreateTaskView(
 
     var selectedProject by remember {
         mutableStateOf(
-            state.projects.firstOrNull { project -> project.id == projectId }
+            projects.firstOrNull { project -> project.id == projectId }
         )
     }
 
-    if (state.projects.isNotEmpty()) {
-        selectedProject = state.projects.firstOrNull { project -> project.id == projectId }
+    if(projects.isNotEmpty()){
+        selectedProject = projects.firstOrNull { project -> project.id == projectId }
     }
 
     var priority by remember {
@@ -200,10 +203,11 @@ fun CreateTaskView(
                     }
                     EnumCreateTaskSheetType.SELECT_PROJECT -> {
                         SelectProjectBottomSheet(
-                            projects = state.projects,
-                            selectedProject = selectedProject,
+                            projects = projects.map { p -> p.toProject() },
+                            selectedProject = selectedProject?.toProject(),
                             onProjectSelected = { project ->
-                                selectedProject = project
+                                selectedProject = project.toProjectEntity()
+                                closeSheet()
                             }
                         )
                     }
@@ -673,7 +677,7 @@ fun CreateTaskView(
                                         priority,
                                         dueDate,
                                         customDatetime,
-                                        selectedProject!!
+                                        selectedProject!!.toProject()
                                     )
                                 } else {
                                     title = ""
@@ -719,13 +723,6 @@ fun PreviewCreateTaskView() {
         createTask = { _, _, _, _, _, _ -> },
         navigateBack = {},
         projectId = sampleProject.id,
-        state = CreateTaskState(
-            projects = listOf(
-                sampleProject,
-                getSampleProject(),
-                getSampleProject(),
-            ),
-            isCreated = false
-        )
+        projects = listOf()
     )
 }
