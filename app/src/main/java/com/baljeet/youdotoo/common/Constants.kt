@@ -19,6 +19,10 @@ const val ConstSampleAvatarUrl = "https://firebasestorage.googleapis.com/v0/b/yo
 const val DestinationAccountRoute = "account"
 const val DestinationSettingsRoute = "settings"
 
+
+const val maxTitleCharsAllowed = 60
+const val maxDescriptionCharsAllowed = 120
+
 val menuItems = arrayListOf(
     MenuItem(
         id = DestinationAccountRoute,

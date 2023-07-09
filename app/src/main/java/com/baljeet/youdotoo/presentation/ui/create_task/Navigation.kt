@@ -54,7 +54,8 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
                 //navigate back
                 navController.popBackStack()
             },
-            allProjects = listOf()
+            allProjects = listOf(),
+            projectId = projectId!!
         )
 
     }
