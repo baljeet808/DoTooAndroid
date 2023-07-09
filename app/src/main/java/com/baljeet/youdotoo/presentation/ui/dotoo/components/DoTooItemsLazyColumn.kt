@@ -14,11 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.domain.models.DoTooItem
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toKotlinLocalDateTime
-import java.time.LocalDateTime
 
 
 @Composable
@@ -59,29 +56,14 @@ fun DoTooItemsLazyColumn(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewDoTooItemsLazyColumn(){
+    val sampleTaskItem = getSampleDotooItem()
     DoTooItemsLazyColumn(
         lazyListState = LazyListState(),
         doToos = listOf(
-            DoTooItem(
-                id = "",
-                title = "Need to water the plants ASAP!",
-                description = "Plants are getting dry, we need to water them today. Who ever is home please do this.",
-                dueDate = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-                createDate = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-                done = false,
-                priority = "High",
-                updatedBy = "Baljeet Singh created this task."
-            ),
-            DoTooItem(
-                id = "",
-                title = "Need to water the plants ASAP!",
-                description = "Plants are getting dry, we need to water them today. Who ever is home please do this.",
-                dueDate = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-                createDate = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-                done = false,
-                priority = "High",
-                updatedBy = "Baljeet Singh created this task."
-            )
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            sampleTaskItem
         ),
         onNavigateClick = {},
         onToggleDoToo = {},

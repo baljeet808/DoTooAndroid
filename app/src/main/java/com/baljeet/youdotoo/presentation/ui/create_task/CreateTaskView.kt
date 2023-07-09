@@ -2,6 +2,7 @@ package com.baljeet.youdotoo.presentation.ui.create_task
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,8 +17,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +41,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 
@@ -50,13 +54,35 @@ fun CreateTaskView(
         priority: Priorities,
         dueDate: DueDates,
         customDate: LocalDate?,
-        selectedProject : Project
+        selectedProject: Project
     ) -> Unit,
     projectId: String,
     navigateBack: () -> Unit,
     state: CreateTaskState
 ) {
 
+    val hapticFeedback = LocalHapticFeedback.current
+
+    val transition = rememberInfiniteTransition()
+
+    val rotation = transition.animateValue(
+        initialValue = -3f,
+        targetValue =  3f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 100),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Float.VectorConverter
+    )
+
+    var showTitleErrorAnimation by remember{
+        mutableStateOf(false)
+    }
+
+    LaunchedEffect(key1 = showTitleErrorAnimation){
+        delay(1000)
+        showTitleErrorAnimation = false
+    }
 
     var currentBottomSheet: EnumCreateTaskSheetType? by remember {
         mutableStateOf(null)
@@ -100,7 +126,7 @@ fun CreateTaskView(
         )
     }
 
-    if(state.projects.isNotEmpty()){
+    if (state.projects.isNotEmpty()) {
         selectedProject = state.projects.firstOrNull { project -> project.id == projectId }
     }
 
@@ -172,7 +198,7 @@ fun CreateTaskView(
                             }
                         )
                     }
-                    EnumCreateTaskSheetType.SELECT_PROJECT->{
+                    EnumCreateTaskSheetType.SELECT_PROJECT -> {
                         SelectProjectBottomSheet(
                             projects = state.projects,
                             selectedProject = selectedProject,
@@ -183,7 +209,7 @@ fun CreateTaskView(
                     }
                 }
             }
-        } ,
+        },
         modifier = Modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -192,8 +218,7 @@ fun CreateTaskView(
                     Color.White
                 },
                 shape = RoundedCornerShape(20.dp)
-            )
-        ,
+            ),
         scaffoldState = sheetScaffoldState,
         sheetPeekHeight = 0.dp
     ) {
@@ -226,8 +251,10 @@ fun CreateTaskView(
 
                 AnimatedVisibility(visible = (customDatetime != null)) {
                     Text(
-                        text = "Due Date set to ".plus(customDatetime?.toJavaLocalDate()?.toNiceDateFormat()?:""),
-                        color = Color(selectedProject?.color?:4294935846),
+                        text = "Due Date set to ".plus(
+                            customDatetime?.toJavaLocalDate()?.toNiceDateFormat() ?: ""
+                        ),
+                        color = Color(selectedProject?.color ?: 4294935846),
                         fontFamily = FontFamily(Nunito.Bold.font),
                         fontSize = 16.sp,
                         maxLines = 1,
@@ -293,8 +320,7 @@ fun CreateTaskView(
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_DUE_DATE
                                 openSheet()
                             }
-                        )
-                    ,
+                        ),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -492,7 +518,15 @@ fun CreateTaskView(
                                 Color.Black
                             },
                             fontSize = 24.sp,
-                            fontFamily = FontFamily(Nunito.SemiBold.font)
+                            fontFamily = FontFamily(Nunito.SemiBold.font),
+                            modifier = Modifier
+                                .rotate(
+                                    if (showTitleErrorAnimation) {
+                                        rotation.value
+                                    } else {
+                                        0f
+                                    }
+                                )
                         )
                     },
                     textStyle = TextStyle(
@@ -632,14 +666,20 @@ fun CreateTaskView(
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
                         .clickable(
                             onClick = {
-                                createTask(
-                                    title,
-                                    description,
-                                    priority,
-                                    dueDate,
-                                    customDatetime,
-                                    selectedProject!!
-                                )
+                                if (title.isNotBlank()) {
+                                    createTask(
+                                        title,
+                                        description,
+                                        priority,
+                                        dueDate,
+                                        customDatetime,
+                                        selectedProject!!
+                                    )
+                                } else {
+                                    title = ""
+                                    showTitleErrorAnimation = true
+                                }
+                                addHapticFeedback(hapticFeedback = hapticFeedback)
                             }
                         )
                 ) {
