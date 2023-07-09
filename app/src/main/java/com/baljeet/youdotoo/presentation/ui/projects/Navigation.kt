@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
 
@@ -36,6 +37,23 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             navigateToTask = {
 
+            },
+            navigateToCreateTask = {
+                val userProjects = projects.filter { project -> project.project.ownerId == SharedPref.userId!! }
+                if(userProjects.isNotEmpty()){
+                    userProjects.first().let {project ->
+                        navController.navigate(
+                            "create_task/".plus(project.project.id).plus("/${true}")
+                        )
+                    }
+                }else{
+                    val newProjectId = getRandomId()
+                    viewModel.createDummyProject(newProjectId)
+
+                    navController.navigate(
+                        "create_task/".plus(newProjectId).plus("/${true}")
+                    )
+                }
             }
         )
     }

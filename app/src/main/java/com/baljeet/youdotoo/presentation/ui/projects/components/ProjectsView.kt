@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,7 +23,6 @@ import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -37,7 +37,8 @@ fun ProjectsView(
     userId: String,
     userName: String,
     onToggleTask: (DoTooItem) -> Unit,
-    navigateToTask: (DoTooItem) -> Unit
+    navigateToTask: (DoTooItem) -> Unit,
+    navigateToCreateTask: () -> Unit
 ) {
 
     val transition = rememberInfiniteTransition()
@@ -81,27 +82,20 @@ fun ProjectsView(
         ),
         typeConverter = Dp.VectorConverter
     )
-
-
-    val sheetState = rememberStandardBottomSheetState(
-        skipHiddenState = false,
-        initialValue = SheetValue.Hidden
-    )
-    val sheetScaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = sheetState
-    )
-    val scope = rememberCoroutineScope()
-    BottomSheetScaffold(
-        scaffoldState = sheetScaffoldState,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
-            createProjectView(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                sheetState = sheetState
-            )
-        },
-        modifier = Modifier
+    Scaffold(
+        floatingActionButton = {
+            androidx.compose.material.FloatingActionButton(
+                onClick = navigateToCreateTask,
+                modifier = Modifier,
+                backgroundColor = NightDotooBrightBlue
+            ) {
+                Icon(
+                    Icons.Outlined.Add,
+                    contentDescription = "Floating button to quickly add a task to this project",
+                    tint = Color.White
+                )
+            }
+        }
     ) {
 
         Box(
@@ -158,6 +152,9 @@ fun ProjectsView(
                 /**
                  * Top Row for greeting and Add project button
                  * **/
+                /**
+                 * Top Row for greeting and Add project button
+                 * **/
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -181,9 +178,7 @@ fun ProjectsView(
 
                     FilledIconButton(
                         onClick = {
-                            scope.launch {
-                                sheetState.expand()
-                            }
+                            //TODO: navigate to create project screen
                         }, colors = IconButtonDefaults.filledIconButtonColors(
                             containerColor = if (isSystemInDarkTheme()) {
                                 NightDotooDarkBlue
@@ -208,6 +203,11 @@ fun ProjectsView(
                 /**
                  * Simple Projects heading
                  * **/
+
+
+                /**
+                 * Simple Projects heading
+                 * **/
                 Text(
                     text = "Projects".uppercase(),
                     color = if (isSystemInDarkTheme()) {
@@ -226,6 +226,10 @@ fun ProjectsView(
                 /**
                  * Horizontal list of all projects
                  * **/
+
+                /**
+                 * Horizontal list of all projects
+                 * **/
                 ProjectsLazyRow(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -233,6 +237,10 @@ fun ProjectsView(
                     navigateToDoToos = navigateToDoToos,
                     userId = userId
                 )
+
+                /**
+                 * Simple Today's Tasks heading
+                 * **/
 
                 /**
                  * Simple Today's Tasks heading
@@ -304,6 +312,7 @@ fun DefaultProjectPreview() {
         userId = "",
         userName = "Karandeep Kaur",
         onToggleTask = {},
-        navigateToTask = {}
+        navigateToTask = {},
+        navigateToCreateTask = {}
     )
 }

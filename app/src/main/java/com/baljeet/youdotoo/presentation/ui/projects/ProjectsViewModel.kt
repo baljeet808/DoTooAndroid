@@ -3,6 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.projects
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
@@ -219,8 +220,28 @@ class ProjectsViewModel @Inject constructor(
             }
             upsertDoToosUseCase(listOf(newDoToo),project.id)
         }
+    }
 
-
+    fun createDummyProject( newProjectId : String ){
+        val newProject = Project(
+            id = newProjectId,
+            name = "My tasks",
+            description = "This is auto generated project, you can modify this project as per your wish.",
+            ownerId = SharedPref.userId!!,
+            collaboratorIds = listOf(),
+            viewerIds = listOf(),
+            update = "${SharedPref.userName} created this Project named 'My tasks'.",
+            color = getRandomColor()
+        )
+        viewModelScope.launch {
+            if(SharedPref.isUserAPro){
+                projectsReference
+                    .document(newProjectId)
+                    .set(newProject)
+            }else{
+                upsertProjectUseCase(listOf(newProject))
+            }
+        }
     }
 
 
