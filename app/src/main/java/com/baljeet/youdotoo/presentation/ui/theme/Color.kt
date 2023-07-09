@@ -39,6 +39,7 @@ val NightDotooFooterTextColor = Color(0xFF4D7199)
 val NightAppBarIconsColor = Color(0xFF69839E)
 val NightTransparentWhiteColor = Color(0x11FFFFFF)
 val LessTransparentWhiteColor = Color(0x77FFFFFF)
+val LessTransparentBlueColor = Color(0x11041955)
 
 
 //common

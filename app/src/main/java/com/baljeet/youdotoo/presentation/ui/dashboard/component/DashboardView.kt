@@ -209,9 +209,6 @@ fun DashboardView() {
                     },
                     onNotificationItemClicked = {
                         //Navigate to notifications
-                    },
-                    onSearchItemClicked = {
-                        //show search results somewhere
                     }
                 )
 

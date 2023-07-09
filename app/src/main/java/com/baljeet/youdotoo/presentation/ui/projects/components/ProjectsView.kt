@@ -41,6 +41,8 @@ fun ProjectsView(
 
     val transition = rememberInfiniteTransition()
 
+    val darkTheme = isSystemInDarkTheme()
+
     val offsetX by transition.animateValue(
         initialValue = (300).dp,
         targetValue = 150.dp,
@@ -61,7 +63,7 @@ fun ProjectsView(
     )
 
     val offsetX1 by transition.animateValue(
-        initialValue =160.dp,
+        initialValue = 160.dp,
         targetValue = 310.dp,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 30000),
@@ -101,21 +103,26 @@ fun ProjectsView(
         modifier = Modifier
     ) {
 
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooNormalBlue
-                } else {
-                    DotooGray
-                }
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = if (isSystemInDarkTheme()) {
+                        NightDotooNormalBlue
+                    } else {
+                        DotooGray
+                    }
+                )
         ) {
 
 
             Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
                 drawCircle(
-                    color = NightTransparentWhiteColor,
+                    color = if (darkTheme) {
+                        NightTransparentWhiteColor
+                    } else {
+                        LessTransparentBlueColor
+                    },
                     radius = 230.dp.toPx(),
                     center = Offset(
                         x = offsetX1.toPx(),
@@ -126,7 +133,11 @@ fun ProjectsView(
 
             Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
                 drawCircle(
-                    color = NightTransparentWhiteColor,
+                    color = if (darkTheme) {
+                        NightTransparentWhiteColor
+                    } else {
+                        LessTransparentBlueColor
+                    },
                     radius = 180.dp.toPx(),
                     center = Offset(
                         x = offsetX.toPx(),
@@ -141,7 +152,6 @@ fun ProjectsView(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Top
             ) {
-
 
 
                 /**
@@ -251,7 +261,7 @@ fun ProjectsView(
                     onNavigateClick = { doToo ->
                         navigateToTask(doToo)
                     },
-                    modifier = Modifier,
+                    modifier = Modifier.padding(20.dp),
                     lazyListState = LazyListState()
                 )
 

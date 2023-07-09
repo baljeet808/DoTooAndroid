@@ -6,24 +6,25 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SearchOff
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.formatNicelyWithoutYear
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
+import java.time.LocalDate
 
 /**
  * Updated by Baljeet singh.
@@ -33,18 +34,8 @@ fun TopBar(
     notificationsState : Boolean,
     onMenuItemClick: () -> Unit,
     onNotificationItemClicked: () -> Unit,
-    onSearchItemClicked: (query: String) -> Unit,
     modifier: Modifier
 ) {
-
-    var searchQuery by remember {
-        mutableStateOf("")
-    }
-
-    var toggleSearch by remember {
-        mutableStateOf(false)
-    }
-
 
     Box(
         modifier = modifier
@@ -53,8 +44,8 @@ fun TopBar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
+                .padding(top = 5.dp, start = 20.dp, end = 15.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
@@ -66,9 +57,8 @@ fun TopBar(
                     onMenuItemClick()
                 },
                 modifier = Modifier
-                    .width(35.dp)
-                    .height(35.dp)
-                    .weight(0.2f)
+                    .width(30.dp)
+                    .height(30.dp)
             ) {
                 Icon(
                     Icons.Outlined.Menu,
@@ -78,84 +68,32 @@ fun TopBar(
                     } else {
                         LightAppBarIconsColor
                     },
-                    modifier = Modifier.width(35.dp).height(35.dp)
+                    modifier = Modifier
+                        .width(35.dp)
+                        .height(35.dp)
                 )
             }
 
-            Column(
-                modifier = Modifier
-                    .height(50.dp)
-                    .width(180.dp)
-            ) {
-                AnimatedVisibility(
-                    visible = toggleSearch
-                ) {
-                    TextField(
-                        value = searchQuery,
-                        onValueChange = {
-                            searchQuery = it
-                        },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(5.dp)
-                            .clip(shape = RoundedCornerShape(20.dp)),
-                        colors = TextFieldDefaults.textFieldColors(
-                            backgroundColor = if (isSystemInDarkTheme()) {
-                                NightDotooDarkBlue
-                            } else {
-                                LightAppBarIconsColor
-                            },
-                            focusedIndicatorColor = Color.Transparent,
-                            errorIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
-                        ),
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Search
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onSearch = {
-                                onSearchItemClicked(searchQuery)
-                            }
-                        )
-                    )
-                }
-
-            }
-
-
-            /**
-             * Menu icon to open side nav drawer
-             * **/
-            IconButton(
-                onClick = {
-                    toggleSearch = toggleSearch.not()
+            Text(
+                text = LocalDate.now().formatNicelyWithoutYear(),
+                color = if (isSystemInDarkTheme()) {
+                    NightAppBarIconsColor
+                } else {
+                    LightAppBarIconsColor
                 },
-                modifier = Modifier
-                    .weight(0.2f)
-            ) {
-                Icon(
-                    if (toggleSearch) {
-                        Icons.Filled.SearchOff
-                    } else {
-                        Icons.Outlined.Search
-                    },
-                    contentDescription = "Button to search projects",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    }
-                )
-            }
+                fontFamily = FontFamily(Nunito.Normal.font),
+                fontSize = 16.sp
+            )
+
+
             /**
-             * Menu icon to open side nav drawer
+             * Menu button to open Chat
              * **/
             IconButton(
                 onClick = {
                     onNotificationItemClicked()
                 },
                 modifier = Modifier
-                    .weight(0.2f)
             ) {
                 Icon(
                     Icons.Outlined.Message,
@@ -199,6 +137,5 @@ fun PreviewTopAppBar() {
         notificationsState = true,
         onMenuItemClick = {},
         onNotificationItemClicked = {},
-        onSearchItemClicked = {}
     )
 }

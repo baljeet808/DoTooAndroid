@@ -66,7 +66,7 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     }
 }
 
-fun LocalDate.toNiceDateFormat(): String {
+fun LocalDate.toNiceDateFormat(showYear : Boolean = true): String {
     this.let { dateTime ->
 
         var dateString = ""
@@ -81,12 +81,19 @@ fun LocalDate.toNiceDateFormat(): String {
             dateString.plus("Tomorrow ")
         } else {
             dateString.plus(dayOfMonth.toString()).plus(" ")
-                .plus(month.name.plus(", "))
-                .plus(year.toString().plus("   "))
+                .plus(month.name)
+        }
+
+        if(showYear) {
+            dateString = dateString.plus(", ").plus(year.toString())
         }
 
         return dateString
     }
+}
+
+fun LocalDate.formatNicelyWithoutYear(): String {
+        return dayOfMonth.toString().plus(" ").plus(month.name).plus(", ").plus(dayOfWeek.name)
 }
 
 fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
@@ -106,13 +113,6 @@ fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
 val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 2 || firstVisibleItemScrollOffset > 0
 
-fun List<DoTooWithProfiles>.getTodayDoToo(): List<DoTooWithProfiles> {
-    return this.filter { dotoo ->
-        Instant.ofEpochSecond(dotoo.doToo.dueDate).toKotlinInstant().toLocalDateTime(
-            TimeZone.currentSystemDefault()
-        ).toJavaLocalDateTime().toLocalDate().isEqual(LocalDate.now())
-    }
-}
 
 
 
