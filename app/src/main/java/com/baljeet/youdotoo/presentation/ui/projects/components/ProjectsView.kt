@@ -26,9 +26,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
