@@ -1,10 +1,11 @@
 package com.baljeet.youdotoo.data.repository_implementations
 
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -14,12 +15,16 @@ class DoTooItemsRepositoryImpl @Inject constructor(
 
     private val doToosDao = localDB.doTooItemDao
 
-    override suspend fun getDoToos(projectId: String): List<DoTooItem> {
-        return doToosDao.getAllDoTooItems(projectId = projectId).map { it.toDoTooItem() }
+    override fun getDoToos(projectId: String): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getAllDoTooItems(projectId = projectId)
     }
 
-    override suspend fun getTodayTasks(todayDateInLong: Long): List<DoTooItem> {
-        return doToosDao.getTodayTasks(todayDateInLong).map { it.toDoTooItem() }
+    override suspend fun getDoTooById(doTooId: String): DoTooItemEntity {
+        return doToosDao.getDoTooById(doTooId)
+    }
+
+    override fun getTodayTasks(todayDateInLong: Long): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getTodayTasks(todayDateInLong)
     }
 
     override suspend fun upsertDoTooItem(doTooItems: List<DoTooItem>, projectId: String) {

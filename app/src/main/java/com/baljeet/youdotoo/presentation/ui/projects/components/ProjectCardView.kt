@@ -25,8 +25,8 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.getSampleProjectWithTaskCount
-import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
+import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
@@ -36,7 +36,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 
 @Composable
 fun ProjectCardView(
-    project: ProjectWithTaskCount,
+    project: ProjectWithDoToos,
     role: String,
     onItemClick: () -> Unit
 ) {
@@ -72,7 +72,7 @@ fun ProjectCardView(
             ) {
 
                 Text(
-                    text = project.taskCount.toString().plus(" Tasks"),
+                    text = project.tasks.size.toString().plus(" Tasks"),
                     color = if (isSystemInDarkTheme()) {
                         NightAppBarIconsColor
                     } else {
@@ -115,7 +115,7 @@ fun ProjectCardView(
             )
             Spacer(modifier = Modifier.height(10.dp))
             LinearProgressIndicator(
-                progress = project.progress,
+                progress = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
                 modifier = Modifier,
                 color = NightDotooBrightPink,
                 strokeCap = StrokeCap.Round
@@ -130,7 +130,7 @@ fun ProjectCardView(
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
-        project = getSampleProjectWithTaskCount(),
+        project = getSampleProjectWithTasks(),
         onItemClick = {},
         role = "Blocked"
     )

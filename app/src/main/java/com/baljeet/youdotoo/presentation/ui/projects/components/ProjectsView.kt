@@ -17,12 +17,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.baljeet.youdotoo.common.getSampleProjectWithTaskCount
+import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.createproject.components.createProjectView
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
-import com.baljeet.youdotoo.presentation.ui.projects.ProjectsState
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import kotlinx.coroutines.launch
@@ -31,10 +32,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
-    projectsState: ProjectsState,
+    projects: List<ProjectWithDoToos>,
+    todayTasks : List<DoTooItem>,
     userId: String,
     userName: String,
-    isUserAPro: Boolean,
     onToggleTask: (DoTooItem) -> Unit,
     navigateToTask: (DoTooItem) -> Unit
 ) {
@@ -228,11 +229,9 @@ fun ProjectsView(
                 ProjectsLazyRow(
                     modifier = Modifier
                         .fillMaxWidth(),
-                    offlineProjects = projectsState.offlineProjects,
-                    onlineProjects = projectsState.onlineProjects,
+                    projects = projects,
                     navigateToDoToos = navigateToDoToos,
-                    userId = userId,
-                    isUserAPro = isUserAPro
+                    userId = userId
                 )
 
                 /**
@@ -254,7 +253,7 @@ fun ProjectsView(
                 )
 
                 DoTooItemsLazyColumn(
-                    doToos = projectsState.todayTasks,
+                    doToos = todayTasks,
                     onToggleDoToo = { doToo ->
                         onToggleTask(doToo)
                     },
@@ -292,13 +291,17 @@ fun Project.getUserRole(userId: String): String {
 fun DefaultProjectPreview() {
     ProjectsView(
         navigateToDoToos = {},
-        projectsState = ProjectsState(
-            offlineProjects = arrayListOf(
-                getSampleProjectWithTaskCount()
-            )
+        projects= arrayListOf(
+            getSampleProjectWithTasks(),
+            getSampleProjectWithTasks(),
+            getSampleProjectWithTasks()
+            ),
+        todayTasks = arrayListOf(
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem()
         ),
         userId = "",
-        isUserAPro = true,
         userName = "Karandeep Kaur",
         onToggleTask = {},
         navigateToTask = {}

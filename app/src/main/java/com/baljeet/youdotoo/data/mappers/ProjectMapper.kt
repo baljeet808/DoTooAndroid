@@ -11,7 +11,9 @@ fun Project.toProjectEntity() : ProjectEntity{
         description = description,
         ownerId = ownerId,
         update = update,
-        color = color
+        color = color,
+        collaboratorIds = collaboratorIds.joinToString ( "," ),
+        viewerIds = viewerIds.joinToString (",")
     )
 }
 
@@ -22,8 +24,8 @@ fun ProjectEntity.toProject(): Project{
         name = name,
         description = description,
         ownerId = ownerId,
-        collaboratorIds = arrayListOf(),
-        viewerIds = arrayListOf(),
+        collaboratorIds = collaboratorIds.split(","),
+        viewerIds = viewerIds.split(","),
         update = update,
         color = color
     )

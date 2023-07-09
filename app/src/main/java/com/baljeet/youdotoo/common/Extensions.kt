@@ -1,7 +1,7 @@
 package com.baljeet.youdotoo.common
 
 import androidx.compose.foundation.lazy.LazyListState
-import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.*
 import java.time.Instant
@@ -113,6 +113,19 @@ fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
 val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 2 || firstVisibleItemScrollOffset > 0
 
+
+fun Project.getUserIds(): List<String>{
+    val ids = if (this.collaboratorIds.isNotEmpty()) {
+        this.collaboratorIds.toCollection(ArrayList())
+    } else {
+        arrayListOf()
+    }
+    if (this.viewerIds.isNotEmpty()) {
+        ids.addAll(this.viewerIds)
+    }
+    ids.add(SharedPref.userId!!)
+    return ids
+}
 
 
 

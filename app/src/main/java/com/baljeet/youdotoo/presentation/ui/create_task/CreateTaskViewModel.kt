@@ -8,6 +8,7 @@ import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
@@ -15,8 +16,10 @@ import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toKotlinLocalDateTime
 import java.util.*
 import javax.inject.Inject
 
@@ -46,9 +49,11 @@ class CreateTaskViewModel  @Inject constructor(
 
     init {
         viewModelScope.launch {
-            createState.value = createState.value.copy(
-              projects = getProjectsUseCase()
-            )
+            getProjectsUseCase().collect { projects ->
+                createState.value = createState.value.copy(
+                    projects = projects.map { it.toProject() }
+                )
+            }
         }
     }
 
@@ -99,7 +104,7 @@ class CreateTaskViewModel  @Inject constructor(
                         isCreated = true
                     )
                 }
-                .addOnFailureListener {error->
+                .addOnFailureListener {
                     createState.value = createState.value.copy(
                         isCreated = false
                     )

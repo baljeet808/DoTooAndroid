@@ -12,5 +12,7 @@ data class ProjectEntity(
     var description : String,
     var ownerId : String,
     var update : String,
-    var color : Long
+    var color : Long,
+    var collaboratorIds : String,
+    var viewerIds: String
 )

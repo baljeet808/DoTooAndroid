@@ -1,10 +1,13 @@
 package com.baljeet.youdotoo.data.repository_implementations
 
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.repository_interfaces.ProjectRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 /**
@@ -14,14 +17,22 @@ class ProjectRepositoryImpl @Inject constructor(
     localDB: YouDoTooDatabase
 ) : ProjectRepository {
 
-    val projectDao = localDB.projectDao
+    private val projectDao = localDB.projectDao
 
-    override suspend fun getProjects(): List<Project> {
-        return projectDao.getAllProjects().map { it.toProject() }
+    override fun getProjects(): Flow<List<ProjectEntity>> {
+        return projectDao.getAllProjects()
     }
 
-    override suspend fun getProjectById(projectId: String): Project {
-        return projectDao.getProjectById(projectId).toProject()
+    override fun getAllProjectsAndTasksAsFlow(): Flow<List<ProjectWithDoToos>> {
+        return projectDao.getAllProjectsAndTasksAsFlow()
+    }
+
+    override suspend fun getProjectById(projectId: String): ProjectEntity {
+        return projectDao.getProjectById(projectId)
+    }
+
+    override fun getProjectByIdAsFlow(projectId: String): Flow<ProjectEntity> {
+        return projectDao.getProjectByIdAsFlow(projectId)
     }
 
     override suspend fun upsertProject(projects: List<Project>) {

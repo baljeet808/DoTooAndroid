@@ -1,7 +1,9 @@
 package com.baljeet.youdotoo.common
 
+import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.*
-import com.baljeet.youdotoo.presentation.ui.projects.ProjectWithTaskCount
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -10,11 +12,11 @@ import java.util.UUID
 import kotlin.random.Random
 
 
-fun getSampleProjectWithEverything(): ProjectWithEveryThing{
+fun getSampleProjectWithEverything(): ProjectWithEveryThing {
     return ProjectWithEveryThing(
-        project = getSampleProject() ,
+        project = getSampleProject(),
         profiles = listOf(
-           getSampleProfile(),
+            getSampleProfile(),
             getSampleProfile(),
             getSampleProfile(),
             getSampleProfile(),
@@ -30,8 +32,8 @@ fun getSampleProjectWithEverything(): ProjectWithEveryThing{
     )
 }
 
-fun getSampleDoTooWithProfiles(): DoTooWithProfiles{
-    return  DoTooWithProfiles(
+fun getSampleDoTooWithProfiles(): DoTooWithProfiles {
+    return DoTooWithProfiles(
         project = getSampleProject(),
         doToo = getSampleDotooItem(),
         profiles = listOf(
@@ -41,20 +43,8 @@ fun getSampleDoTooWithProfiles(): DoTooWithProfiles{
     )
 }
 
-fun getSampleProjectsWithProfiles() : ProjectWithProfiles{
-    return ProjectWithProfiles(
-        project = getSampleProject(),
-        profiles = listOf(
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile()
-        )
-    )
-}
-
-
-fun getSampleProfile(): User{
-    return  User(
+fun getSampleProfile(): User {
+    return User(
         id = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
         name = "Baljeet Singh",
         email = "baljeet@gmail.com",
@@ -63,9 +53,8 @@ fun getSampleProfile(): User{
     )
 }
 
-
-fun getRandomAvatar(): String{
-    val randomInt = Random.nextInt(from = 0,6)
+fun getRandomAvatar(): String {
+    val randomInt = Random.nextInt(from = 0, 6)
     val avatars = arrayListOf<String>(
         "https://firebasestorage.googleapis.com/v0/b/youdotoo-81372.appspot.com/o/20.png?alt=media&token=fa1489d4-8951-4ef6-8f96-862938aedb62",
         "https://firebasestorage.googleapis.com/v0/b/youdotoo-81372.appspot.com/o/1.png?alt=media&token=b15d14e9-722d-410d-b9b4-23682b5773f3",
@@ -79,11 +68,11 @@ fun getRandomAvatar(): String{
 }
 
 
-fun getRandomId(): String{
+fun getRandomId(): String {
     return UUID.randomUUID().toString()
 }
 
-fun getSampleDotooItem(): DoTooItem{
+fun getSampleDotooItem(): DoTooItem {
     return DoTooItem(
         id = getRandomId(),
         title = "Wash the dishes Please",
@@ -96,16 +85,8 @@ fun getSampleDotooItem(): DoTooItem{
     )
 }
 
-fun getSampleProjectWithTaskCount(): ProjectWithTaskCount{
-    return ProjectWithTaskCount(
-        project = getSampleProject(),
-        taskCount = 88,
-        progress = 0.3f
-    )
-}
-
-fun getSampleProject(): Project{
-    return  Project(
+fun getSampleProject(): Project {
+    return Project(
         id = getRandomId(),
         name = "Project name should have only 20 characters.",
         description = "This project is about the irritating stuff which always gets forgotten.",
@@ -117,8 +98,19 @@ fun getSampleProject(): Project{
     )
 }
 
-fun getRandomColor(): Long{
-    val randomInt = Random.nextInt(from = 0,10)
+fun getSampleProjectWithTasks(): ProjectWithDoToos {
+    return ProjectWithDoToos(
+        project = getSampleProject().toProjectEntity(),
+        tasks = listOf(
+            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
+            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
+            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
+        )
+    )
+}
+
+fun getRandomColor(): Long {
+    val randomInt = Random.nextInt(from = 0, 10)
     val colors = listOf<Long>(
         //DoTooRed
         4294261839,
@@ -146,7 +138,7 @@ fun getRandomColor(): Long{
     return colors[randomInt]
 }
 
-fun getSampleMessage(): Message{
+fun getSampleMessage(): Message {
     return Message(
         id = getRandomId(),
         message = "Hey there, This is a new message about your doToo. What do you think.",
@@ -158,10 +150,10 @@ fun getSampleMessage(): Message{
     )
 }
 
-fun getSampleDateInLong() =  LocalDateTime.now().toKotlinLocalDateTime()
+fun getSampleDateInLong() = LocalDateTime.now().toKotlinLocalDateTime()
     .toInstant(TimeZone.currentSystemDefault()).epochSeconds
 
-fun getSampleInteractions(): ArrayList<String>{
+fun getSampleInteractions(): ArrayList<String> {
     return arrayListOf(
         "iz8dz6PufNPGbw9DzWUiZyoTHn62,feeling_good",
         "NuZXwLl3a8O3mXRcXFsJzHQgB172,wow",
@@ -169,9 +161,9 @@ fun getSampleInteractions(): ArrayList<String>{
     )
 }
 
-fun getSampleIds(): List<String>{
+fun getSampleIds(): List<String> {
     return listOf(
-            "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-    "NuZXwLl3a8O3mXRcXFsJzHQgB172"
+        "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+        "NuZXwLl3a8O3mXRcXFsJzHQgB172"
     )
 }

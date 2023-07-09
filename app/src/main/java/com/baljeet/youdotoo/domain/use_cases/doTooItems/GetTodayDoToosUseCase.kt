@@ -1,7 +1,8 @@
 package com.baljeet.youdotoo.domain.use_cases.doTooItems
 
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -10,7 +11,7 @@ import javax.inject.Singleton
 class GetTodayDoToosUseCase @Inject constructor(
     private val repository: DoTooItemsRepository
 ){
-    suspend operator fun invoke(todayDateInLong: Long): List<DoTooItem>  {
+    operator fun invoke(todayDateInLong: Long): Flow<List<DoTooItemEntity>> {
         return repository.getTodayTasks(todayDateInLong)
     }
 }

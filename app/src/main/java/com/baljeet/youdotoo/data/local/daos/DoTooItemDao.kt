@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -14,12 +15,16 @@ interface DoTooItemDao {
     suspend fun upsertAll(doTooItems : List<DoTooItemEntity>)
 
     @Query("SELECT * FROM todos WHERE projectId = :projectId")
-    suspend fun getAllDoTooItems(projectId: String) : List<DoTooItemEntity>
+    fun getAllDoTooItems(projectId: String) : Flow<List<DoTooItemEntity>>
+
+
+    @Query("SELECT * FROM todos where id = :doTooId")
+    suspend fun getDoTooById(doTooId : String) : DoTooItemEntity
 
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
 
     @Query("SELECT * FROM todos WHERE dueDate = :todayDateInLong")
-    suspend fun getTodayTasks(todayDateInLong : Long): List<DoTooItemEntity>
+    fun getTodayTasks(todayDateInLong : Long): Flow<List<DoTooItemEntity>>
 
 }

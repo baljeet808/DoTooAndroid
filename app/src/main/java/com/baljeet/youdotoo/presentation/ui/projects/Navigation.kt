@@ -1,11 +1,13 @@
 package com.baljeet.youdotoo.presentation.ui.projects
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
 
 
@@ -19,17 +21,18 @@ fun NavGraphBuilder.addProjectsViewDestination(
         route = DestinationProjectsRoute
     ){
         val viewModel : ProjectsViewModel = hiltViewModel()
-        val state by viewModel.projectState
+        val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
+        val todayTasks by viewModel.todayTasks().collectAsState(initial = arrayListOf())
         ProjectsView(
-            projectsState = state,
+            projects = projects,
+            todayTasks = todayTasks.map { it.toDoTooItem() },
             navigateToDoToos = { project ->
                 navController.navigate("project/".plus(project.id))
             },
             userId = SharedPref.userId!!,
-            isUserAPro = SharedPref.isUserAPro,
             userName = SharedPref.userName.split(" ").first(),
             onToggleTask = {
-
+                viewModel.upsertDoToo(it)
             },
             navigateToTask = {
 
