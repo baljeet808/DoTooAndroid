@@ -44,6 +44,6 @@ object AppModule {
             context = app,
             YouDoTooDatabase::class.java,
             "YouDoToo.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 }
