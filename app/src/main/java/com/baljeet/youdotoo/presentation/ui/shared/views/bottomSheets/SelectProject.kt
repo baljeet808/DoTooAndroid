@@ -45,7 +45,7 @@ fun SelectProjectBottomSheet(
                 } else {
                     Color.White
                 },
-                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+                shape = RoundedCornerShape(20.dp)
             )
             .padding(10.dp)
     ) {
@@ -114,11 +114,7 @@ fun SelectProjectBottomSheet(
                             onProjectSelected(project)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkmarkColor = if (isSystemInDarkTheme()) {
-                                Color.White
-                            } else {
-                                Color.Black
-                            },
+                            checkmarkColor = Color.White,
                             checkedColor = NightDotooBrightBlue,
                             uncheckedColor = if (isSystemInDarkTheme()) {
                                 Color.White

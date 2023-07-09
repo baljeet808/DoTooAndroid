@@ -1,33 +1,48 @@
 package com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.DueDates
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 
 @Composable
 fun DueDatesSheet(
     dueDate: DueDates,
-    onDateSelected : (DueDates) -> Unit,
+    onDateSelected: (DueDates) -> Unit,
     onDatePickerSelected: () -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooDarkBlue
+                } else {
+                    Color.White
+                },
+                shape = RoundedCornerShape(20.dp)
+            )
             .padding(10.dp)
     ) {
 
@@ -38,71 +53,70 @@ fun DueDatesSheet(
 
             Text(
                 text = "Select Due Date",
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 28.sp,
-                color = MaterialTheme.colorScheme.secondary
+                fontFamily = FontFamily(Nunito.SemiBold.font),
+                fontSize = 24.sp,
+                color = if (isSystemInDarkTheme()) {
+                    Color.White
+                } else {
+                    Color.Black
+                },
+                fontWeight = FontWeight.Light
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Divider(modifier = Modifier.height(1.dp))
-            for (date in DueDates.values().toCollection(ArrayList()).filter { d -> d != DueDates.CUSTOM }){
+            for (date in DueDates.values().toCollection(ArrayList())) {
                 Spacer(modifier = Modifier.height(10.dp))
+
                 Row(
                     modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = if (isSystemInDarkTheme()) {
+                                NightDotooFooterTextColor
+                            } else {
+                                LightDotooFooterTextColor
+                            },
+                            shape = RoundedCornerShape(30.dp)
+                        )
                         .fillMaxWidth()
-                        .clickable {
-                            onDateSelected(date)
-                        },
+                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
-                ){
+                ) {
                     Text(
                         text = date.toString,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontFamily = FontFamily(Nunito.SemiBold.font),
-                        fontSize = 18.sp,
-                        textAlign = TextAlign.Start
+                        color = if (isSystemInDarkTheme()) {
+                            Color.White
+                        } else {
+                            Color.Black
+                        },
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
+
                     Checkbox(
                         checked = date == dueDate,
                         onCheckedChange = {
+                            if(date == DueDates.CUSTOM){
+                                onDatePickerSelected()
+                            }
                             onDateSelected(date)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkmarkColor = MaterialTheme.colorScheme.background,
-                            checkedColor = DotooGreen
+                            checkmarkColor = Color.White,
+                            checkedColor = NightDotooBrightBlue,
+                            uncheckedColor = if (isSystemInDarkTheme()) {
+                                Color.White
+                            } else {
+                                Color.Black
+                            }
                         )
                     )
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Divider(modifier = Modifier.height(1.dp))
-            Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        onDatePickerSelected()
-                    },
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Or Pick Custom Date",
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                Icon(
-                    Icons.Default.EditCalendar,
-                    contentDescription ="Pick From Calendar Button",
-                    tint = MaterialTheme.colorScheme.tertiary,
-                    modifier = Modifier.padding(end = 10.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-            Divider(modifier = Modifier.height(0.dp))
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
@@ -110,6 +124,6 @@ fun DueDatesSheet(
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun dueDateSheetPreview(){
-    DueDatesSheet(dueDate = DueDates.TODAY, onDatePickerSelected = { }, onDateSelected = {} )
+fun dueDateSheetPreview() {
+    DueDatesSheet(dueDate = DueDates.TODAY, onDatePickerSelected = { }, onDateSelected = {})
 }

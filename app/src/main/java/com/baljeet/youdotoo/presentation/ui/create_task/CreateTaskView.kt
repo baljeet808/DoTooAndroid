@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
@@ -102,6 +101,10 @@ fun CreateTaskView(
         )
     }
 
+    if(state.projects.isNotEmpty()){
+        selectedProject = state.projects.firstOrNull { project -> project.id == projectId }
+    }
+
     var priority by remember {
         mutableStateOf(
             Priorities.HIGH
@@ -183,9 +186,15 @@ fun CreateTaskView(
             }
         } ,
         modifier = Modifier
-            .clip(
-                shape = RoundedCornerShape(topEnd = 20.dp, topStart = 20.dp)
-            ),
+            .background(
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooDarkBlue
+                } else {
+                    Color.White
+                },
+                shape = RoundedCornerShape(20.dp)
+            )
+        ,
         scaffoldState = sheetScaffoldState,
         sheetPeekHeight = 0.dp
     ) {

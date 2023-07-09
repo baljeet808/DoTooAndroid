@@ -1,19 +1,30 @@
 package com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets
 
-import androidx.compose.foundation.clickable
+import android.content.res.Configuration
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 
 
 @Composable
@@ -24,6 +35,14 @@ fun PrioritySheet(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .background(
+                color = if (isSystemInDarkTheme()) {
+                    NightDotooDarkBlue
+                } else {
+                    Color.White
+                },
+                shape = RoundedCornerShape(20.dp)
+            )
             .padding(10.dp)
     ) {
 
@@ -34,44 +53,65 @@ fun PrioritySheet(
 
             Text(
                 text = "Select Priority",
-                fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 28.sp,
-                color = MaterialTheme.colorScheme.secondary
+                fontFamily = FontFamily(Nunito.SemiBold.font),
+                fontSize = 24.sp,
+                color = if (isSystemInDarkTheme()) {
+                    Color.White
+                } else {
+                    Color.Black
+                },
+                fontWeight = FontWeight.Light
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Divider(modifier = Modifier.height(1.dp))
             for (priorityEntry in Priorities.values()) {
                 Spacer(modifier = Modifier.height(10.dp))
+
                 Row(
                     modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            color = if (isSystemInDarkTheme()) {
+                                NightDotooFooterTextColor
+                            } else {
+                                LightDotooFooterTextColor
+                            },
+                            shape = RoundedCornerShape(30.dp)
+                        )
                         .fillMaxWidth()
-                        .clickable {
-                            onPriorityChanged(priorityEntry)
-                        },
+                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = priorityEntry.toString,
-                        color = MaterialTheme.colorScheme.secondary,
-                        fontFamily = FontFamily(Nunito.SemiBold.font),
-                        fontSize = 18.sp,
-                        modifier = Modifier.weight(0.8f),
-                        textAlign = TextAlign.Start
+                        color = if (isSystemInDarkTheme()) {
+                            Color.White
+                        } else {
+                            Color.Black
+                        },
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f),
                     )
+
                     Checkbox(
                         checked = priorityEntry == priority,
                         onCheckedChange = {
                             onPriorityChanged(priorityEntry)
                         },
                         colors = CheckboxDefaults.colors(
-                            checkmarkColor = MaterialTheme.colorScheme.background,
-                            checkedColor = DotooGreen
-                        ),
-                        modifier = Modifier.weight(0.1f)
+                            checkmarkColor = Color.White,
+                            checkedColor = NightDotooBrightBlue,
+                            uncheckedColor = if (isSystemInDarkTheme()) {
+                                Color.White
+                            } else {
+                                Color.Black
+                            }
+                        )
                     )
                 }
-
             }
             Spacer(modifier = Modifier.height(10.dp))
         }
@@ -80,7 +120,7 @@ fun PrioritySheet(
 
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PrioritySheetPreview(){
     PrioritySheet(priority = Priorities.LOW, onPriorityChanged = {})
