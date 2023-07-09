@@ -10,7 +10,6 @@ val DotooOrange = Color(0xFFFDA437)
 val DotooHalfTransparentOrange = Color(0x55FDA437)
 val DotooBlue = Color(0xFF424F82)
 val DotooKaranBlue = Color(0xFF4D7199)
-val DotooGreen = Color(0xFF69BA6C)
 val DotooDarkerGray = Color(0xFF1D1D1D)
 val DotooDarkGray = Color(0xFF2E2E30)
 val OnDotooDarkGray = Color(0xFF2B2326)
@@ -45,6 +44,15 @@ val LessTransparentWhiteColor = Color(0x77FFFFFF)
 //common
 val DoTooRed = Color(0xFFF53C4F)
 val DoTooYellow = Color(0xFFFF8526)
+val DotooGreen = Color(0xFFB7E885)
+val DotooSkyBlue= Color(0xFF8BDFFE)
+val DotooTeal= Color(0xFFA6F0E0)
+val DotooGraphite= Color(0xFF302D2D)
+val DotooPeach= Color(0xFFE8869F)
+val DotooPurple= Color(0xFFBE89FE)
+val DotooDarkGreen= Color(0xFF006261)
+val DotooPeakYellow= Color(0xFFF2CD31)
+val DotooCuteGreen= Color(0xFF2D9959)
 
 
 @Composable

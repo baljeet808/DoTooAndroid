@@ -107,14 +107,43 @@ fun getSampleProjectWithTaskCount(): ProjectWithTaskCount{
 fun getSampleProject(): Project{
     return  Project(
         id = getRandomId(),
-        name = "Home Chores",
+        name = "Project name should have only 20 characters.",
         description = "This project is about the irritating stuff which always gets forgotten.",
         ownerId = "",
         collaboratorIds = getSampleIds(),
         viewerIds = getSampleIds(),
         update = "",
-        color = 4294935846
+        color = getRandomColor()
     )
+}
+
+fun getRandomColor(): Long{
+    val randomInt = Random.nextInt(from = 0,10)
+    val colors = listOf<Long>(
+        //DoTooRed
+        4294261839,
+        //DotooYellow
+        4294935846,
+        //DotooGreen
+        4290242693,
+        //DotooSkyBlue
+        4287356926,
+        //DotooTeal
+        4289130720,
+        //DotooGraphite
+        4281347373,
+        //DotooPeach
+        4293428895,
+        //DotooPurple
+        4290677246,
+        //DotooDarkGreen
+        4278215265,
+        //DotooPeakYellow
+        4294102321,
+        //DotooCuteGreen
+        4281178457
+    )
+    return colors[randomInt]
 }
 
 fun getSampleMessage(): Message{

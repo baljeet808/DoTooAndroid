@@ -79,6 +79,10 @@ enum class BottomSheetType() {
     TYPE1, TYPE2
 }
 
+enum class EnumCreateTaskSheetType() {
+    SELECT_PROJECT, SELECT_DUE_DATE, SELECT_PRIORITY
+}
+
 
 enum class ChatScreenBottomSheetTypes() {
     MESSAGE_EMOTICONS, CUSTOM_EMOTICONS, PERSON_TAGGER, COLLABORATOR_SCREEN
