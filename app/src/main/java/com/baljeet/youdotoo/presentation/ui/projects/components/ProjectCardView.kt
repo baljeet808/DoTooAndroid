@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,10 +12,7 @@ import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +37,11 @@ fun ProjectCardView(
     role: String,
     onItemClick: () -> Unit
 ) {
+
+    val animatedProgress = animateFloatAsState(
+        targetValue = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    ).value
 
     Box(
         modifier = Modifier
@@ -114,7 +117,7 @@ fun ProjectCardView(
             )
             Spacer(modifier = Modifier.height(10.dp))
             LinearProgressIndicator(
-                progress = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
+                progress = animatedProgress,
                 modifier = Modifier,
                 color = Color(project.project.color),
                 strokeCap = StrokeCap.Round
