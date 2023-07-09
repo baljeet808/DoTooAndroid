@@ -7,23 +7,30 @@ import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
 import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toKotlinLocalDateTime
 import java.util.*
 import javax.inject.Inject
 
 
+data class CreateTaskState(
+    var projects : List<Project> = listOf(),
+    var isCreated : Boolean = false
+)
+
 @HiltViewModel
 class CreateTaskViewModel  @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val upsertDoToosUseCase: UpsertDoToosUseCase
+    private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val getProjectsUseCase: GetProjectsUseCase
 ) : ViewModel() {
 
     private val projectId: String = checkNotNull(savedStateHandle["projectId"])
@@ -33,15 +40,26 @@ class CreateTaskViewModel  @Inject constructor(
         .getInstance()
         .collection("projects")
 
-    var createState = mutableStateOf<Boolean>(false)
+    var createState = mutableStateOf(CreateTaskState())
         private set
+
+
+    init {
+        viewModelScope.launch {
+            createState.value = createState.value.copy(
+              projects = getProjectsUseCase()
+            )
+        }
+    }
+
 
     fun createTask(
         name : String,
         description : String,
         priority: Priorities,
         dueDate: DueDates,
-        customDate : LocalDateTime?
+        customDate : LocalDate?,
+        selectedProject : Project
     ){
 
 
@@ -53,10 +71,10 @@ class CreateTaskViewModel  @Inject constructor(
             priority = priority.toString,
             dueDate = when (dueDate) {
                 DueDates.CUSTOM -> {
-                    customDate?.toInstant(TimeZone.currentSystemDefault())?.epochSeconds?:0L
+                    customDate?.getExactDateTimeInSecondsFrom1970()?:0L
                 }
                 else -> {
-                    dueDate.getExactDateTimeInSecondsFrom1970()
+                    dueDate.getExactDate().getExactDateTimeInSecondsFrom1970()
                 }
             },
             createDate = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
@@ -66,7 +84,7 @@ class CreateTaskViewModel  @Inject constructor(
 
         if (SharedPref.isUserAPro || projectOwner.not()){
             projectRef
-                .document(projectId)
+                .document(selectedProject.id)
                 .collection("todos")
                 .document(newDoTooID)
                 .set(newDoToo)
@@ -77,10 +95,14 @@ class CreateTaskViewModel  @Inject constructor(
                             dotoos = listOf(newDoToo)
                         )
                     }
-                    createState.value = true
+                    createState.value = createState.value.copy(
+                        isCreated = true
+                    )
                 }
                 .addOnFailureListener {error->
-                    createState.value = false
+                    createState.value = createState.value.copy(
+                        isCreated = false
+                    )
                 }
         }else{
             viewModelScope.launch {
@@ -89,8 +111,14 @@ class CreateTaskViewModel  @Inject constructor(
                     dotoos = listOf(newDoToo)
                 )
             }
-            createState.value = true
+            createState.value = createState.value.copy(
+                isCreated = true
+            )
         }
+    }
+
+    fun resetState(){
+        createState.value = CreateTaskState()
     }
 
 }

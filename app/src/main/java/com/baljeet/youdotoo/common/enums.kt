@@ -22,20 +22,20 @@ enum class DueDates(val toString : String) {
     fun getExactDate(): LocalDate {
         val currentDate = java.time.LocalDate.now().toKotlinLocalDate()
 
-        return when(this){
+        return when (this) {
             TODAY -> {
                 currentDate
             }
             TOMORROW -> {
-                currentDate.plus(1,DateTimeUnit.DAY)
+                currentDate.plus(1, DateTimeUnit.DAY)
             }
             NEXT_FRIDAY -> {
                 val currentDayOfWeek = currentDate.dayOfWeek.isoDayNumber
-                if(currentDayOfWeek==5){
-                    currentDate.plus(7,DateTimeUnit.DAY)
-                }else if(currentDayOfWeek < 5){
-                    currentDate.plus((5-currentDayOfWeek),DateTimeUnit.DAY)
-                }else{
+                if (currentDayOfWeek == 5) {
+                    currentDate.plus(7, DateTimeUnit.DAY)
+                } else if (currentDayOfWeek < 5) {
+                    currentDate.plus((5 - currentDayOfWeek), DateTimeUnit.DAY)
+                } else {
                     currentDate.plus(7 - (currentDayOfWeek - 5), DateTimeUnit.DAY)
                 }
                 currentDate
@@ -46,17 +46,6 @@ enum class DueDates(val toString : String) {
         }
     }
 
-    fun getExactDateTimeInSecondsFrom1970(): Long {
-        val date = getExactDate()
-        return LocalDateTime(
-            year = date.year,
-            monthNumber = date.monthNumber,
-            dayOfMonth = date.dayOfMonth,
-            hour = 9,
-            minute = 0,
-            second = 0
-        ).toInstant(TimeZone.currentSystemDefault()).epochSeconds
-    }
 }
 
 sealed class DoTooPriorityTab( var icon : ImageVector, var title: String){
@@ -74,10 +63,6 @@ sealed class DoTooPriorityTab( var icon : ImageVector, var title: String){
     )
 }
 
-
-enum class BottomSheetType() {
-    TYPE1, TYPE2
-}
 
 enum class EnumCreateTaskSheetType() {
     SELECT_PROJECT, SELECT_DUE_DATE, SELECT_PRIORITY

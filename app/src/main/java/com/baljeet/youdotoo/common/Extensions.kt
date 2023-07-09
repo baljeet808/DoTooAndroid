@@ -66,6 +66,20 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     }
 }
 
+fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
+    val date = this
+    return LocalDateTime(
+        year = date.year,
+        monthNumber = date.monthNumber,
+        dayOfMonth = date.dayOfMonth,
+        hour = 9,
+        minute = 0,
+        second = 0
+    ).toInstant(TimeZone.currentSystemDefault()).epochSeconds
+}
+
+
+
 val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 2 || firstVisibleItemScrollOffset > 0
 

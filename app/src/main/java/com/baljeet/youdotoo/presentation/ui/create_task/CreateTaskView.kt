@@ -32,6 +32,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.PrioritySheet
+import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.SelectProjectBottomSheet
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -40,7 +41,6 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,11 +51,12 @@ fun CreateTaskView(
         description: String,
         priority: Priorities,
         dueDate: DueDates,
-        customDate: LocalDateTime?,
+        customDate: LocalDate?,
+        selectedProject : Project
     ) -> Unit,
-    allProjects: List<Project>,
     projectId: String,
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    state: CreateTaskState
 ) {
 
 
@@ -97,7 +98,7 @@ fun CreateTaskView(
 
     var selectedProject by remember {
         mutableStateOf(
-            allProjects.firstOrNull { project -> project.id == projectId }
+            state.projects.firstOrNull { project -> project.id == projectId }
         )
     }
 
@@ -170,7 +171,13 @@ fun CreateTaskView(
                         )
                     }
                     EnumCreateTaskSheetType.SELECT_PROJECT->{
-
+                        SelectProjectBottomSheet(
+                            projects = state.projects,
+                            selectedProject = selectedProject,
+                            onProjectSelected = { project ->
+                                selectedProject = project
+                            }
+                        )
                     }
                 }
             }
@@ -257,7 +264,14 @@ fun CreateTaskView(
                             },
                             shape = RoundedCornerShape(30.dp)
                         )
-                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
+                        .clickable(
+                            onClick = {
+                                currentBottomSheet = EnumCreateTaskSheetType.SELECT_DUE_DATE
+                                openSheet()
+                            }
+                        )
+                    ,
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -291,7 +305,13 @@ fun CreateTaskView(
                             },
                             shape = RoundedCornerShape(30.dp)
                         )
-                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp),
+                        .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
+                        .clickable(
+                            onClick = {
+                                currentBottomSheet = EnumCreateTaskSheetType.SELECT_PROJECT
+                                openSheet()
+                            }
+                        ),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -299,7 +319,9 @@ fun CreateTaskView(
                         Icons.Outlined.Adjust,
                         contentDescription = "Button to set due date for this task.",
                         tint = Color(selectedProject?.color ?: 0xFFFF8526),
-                        modifier = Modifier.width(30.dp).height(30.dp)
+                        modifier = Modifier
+                            .width(30.dp)
+                            .height(30.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
@@ -332,7 +354,13 @@ fun CreateTaskView(
 
                 //set priority
                 Row(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .clickable(
+                            onClick = {
+                                currentBottomSheet = EnumCreateTaskSheetType.SELECT_PRIORITY
+                                openSheet()
+                            }
+                        ),
                     horizontalArrangement = Arrangement.SpaceAround,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -579,6 +607,18 @@ fun CreateTaskView(
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
+                        .clickable(
+                            onClick = {
+                                createTask(
+                                    title,
+                                    description,
+                                    priority,
+                                    dueDate,
+                                    customDatetime,
+                                    selectedProject!!
+                                )
+                            }
+                        )
                 ) {
                     Text(
                         text = "New Task",
@@ -602,12 +642,9 @@ fun CreateTaskView(
                         }
                     )
                 }
-
             }
-
         }
     }
-
 }
 
 
@@ -616,13 +653,16 @@ fun CreateTaskView(
 fun PreviewCreateTaskView() {
     val sampleProject = getSampleProject()
     CreateTaskView(
-        createTask = { _, _, _, _, _ -> },
+        createTask = { _, _, _, _, _, _ -> },
         navigateBack = {},
-        allProjects = listOf(
-            sampleProject,
-            getSampleProject(),
-            getSampleProject(),
-        ),
-        projectId = sampleProject.id
+        projectId = sampleProject.id,
+        state = CreateTaskState(
+            projects = listOf(
+                sampleProject,
+                getSampleProject(),
+                getSampleProject(),
+            ),
+            isCreated = false
+        )
     )
 }

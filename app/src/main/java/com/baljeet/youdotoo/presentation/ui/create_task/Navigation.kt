@@ -9,7 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
-import kotlinx.datetime.LocalDateTime
+import com.baljeet.youdotoo.domain.models.Project
+import kotlinx.datetime.LocalDate
 
 
 const val DestinationCreateTaskRoute = "create_task/{projectId}/{projectOwner}"
@@ -34,28 +35,30 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         val projectId = backStackEntry.arguments?.getString("projectId")
 
         val viewModel : CreateTaskViewModel = hiltViewModel()
-        val taskCreated by viewModel.createState
+        val state by viewModel.createState
 
-        if(taskCreated){
-            //navigate back
+        if(state.isCreated){
             navController.popBackStack()
+            viewModel.resetState()
         }
         CreateTaskView(
-            createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDateTime? ->
+            createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDate?, selectedProject : Project ->
                 viewModel.createTask(
                     name = title,
                     description = description,
                     priority = priority,
                     dueDate = dueDate,
-                    customDate = customDate
+                    customDate = customDate,
+                    selectedProject = selectedProject
                 )
             },
             navigateBack = {
                 //navigate back
                 navController.popBackStack()
+                viewModel.resetState()
             },
-            allProjects = listOf(),
-            projectId = projectId!!
+            projectId = projectId!!,
+            state = state
         )
 
     }

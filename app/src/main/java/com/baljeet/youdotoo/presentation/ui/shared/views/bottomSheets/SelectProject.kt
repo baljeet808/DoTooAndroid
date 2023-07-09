@@ -33,7 +33,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 @Composable
 fun SelectProjectBottomSheet(
     projects: List<Project>,
-    selectedProject: Project,
+    selectedProject: Project?,
     onProjectSelected: (project: Project) -> Unit
 ) {
     Box(
@@ -109,7 +109,7 @@ fun SelectProjectBottomSheet(
                     )
 
                     Checkbox(
-                        checked = project.id == selectedProject.id,
+                        checked = project.id == selectedProject?.id,
                         onCheckedChange = {
                             onProjectSelected(project)
                         },
