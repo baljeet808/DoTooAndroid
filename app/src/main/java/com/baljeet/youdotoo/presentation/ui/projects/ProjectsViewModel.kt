@@ -4,7 +4,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.data.local.converters.convertLocalDateTimeToEpochSeconds
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.ProjectWithProfiles
@@ -23,6 +22,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
 import javax.inject.Inject
 
@@ -51,22 +52,17 @@ class ProjectsViewModel @Inject constructor(
     var projectState = mutableStateOf(ProjectsState())
         private set
 
-    private val todayDateInLong = java.time.LocalDateTime.now().toKotlinLocalDateTime()
-    private val todayStartDateTime = LocalDateTime(
-        year = todayDateInLong.year,
-        monthNumber = todayDateInLong.monthNumber,
-        dayOfMonth = todayDateInLong.dayOfMonth,
-        hour = 0,
-        minute = 0
-    )
-    private val todayEndDateTime = LocalDateTime(
-        year = todayDateInLong.year,
-        monthNumber = todayDateInLong.monthNumber,
-        dayOfMonth = todayDateInLong.dayOfMonth,
-        hour = 23,
-        minute = 59,
-        second = 59
-    )
+    private val todayDate= java.time.LocalDateTime.now().toKotlinLocalDateTime()
+
+
+    private val todayDateInLong  = LocalDateTime(
+        year = todayDate.year,
+        monthNumber = todayDate.monthNumber,
+        dayOfMonth = todayDate.dayOfMonth,
+        hour = 9,
+        minute = 0,
+        second = 0
+    ).toInstant(TimeZone.currentSystemDefault()).epochSeconds
 
 
     private var db = Firebase.firestore
@@ -164,8 +160,7 @@ class ProjectsViewModel @Inject constructor(
         viewModelScope.launch {
             projectState.value = projectState.value.copy(
                 todayTasks = getTodayDoToosUseCase(
-                    startTimeDate = convertLocalDateTimeToEpochSeconds(todayStartDateTime),
-                    endTimeDate = convertLocalDateTimeToEpochSeconds(todayEndDateTime)
+                    todayDateInLong =todayDateInLong
                 )
             )
         }

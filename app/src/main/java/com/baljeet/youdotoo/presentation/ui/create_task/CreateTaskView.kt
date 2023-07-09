@@ -39,8 +39,7 @@ import com.maxkeppeler.sheets.calendar.models.CalendarSelection
 import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
 import kotlinx.coroutines.launch
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.toKotlinLocalDate
+import kotlinx.datetime.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,12 +85,12 @@ fun CreateTaskView(
 
     var dueDate by remember {
         mutableStateOf(
-            DueDates.NEXT_FRIDAY
+            DueDates.TODAY
         )
     }
-    var customDatetime: LocalDate by remember {
+    var customDatetime: LocalDate? by remember {
         mutableStateOf(
-            java.time.LocalDate.now().toKotlinLocalDate()
+            null
         )
     }
 
@@ -221,8 +220,23 @@ fun CreateTaskView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp),
-                horizontalArrangement = Arrangement.End
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Bottom
             ) {
+
+                AnimatedVisibility(visible = (customDatetime != null)) {
+                    Text(
+                        text = "Due Date set to ".plus(customDatetime?.toJavaLocalDate()?.toNiceDateFormat()?:""),
+                        color = Color(selectedProject?.color?:4294935846),
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        fontSize = 16.sp,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(start = 10.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
 
                 IconButton(
                     onClick = navigateBack,
@@ -447,7 +461,7 @@ fun CreateTaskView(
                 Text(
                     text = "Title",
                     color = LightAppBarIconsColor,
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
                     modifier = Modifier
                         .fillMaxWidth()
@@ -501,7 +515,7 @@ fun CreateTaskView(
                     } else {
                         LightAppBarIconsColor
                     },
-                    fontSize = 12.sp,
+                    fontSize = 13.sp,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
                     modifier = Modifier.padding(start = 15.dp)
                 )
@@ -530,7 +544,7 @@ fun CreateTaskView(
                     Text(
                         text = "Description",
                         color = LightAppBarIconsColor,
-                        fontSize = 12.sp,
+                        fontSize = 13.sp,
                         fontFamily = FontFamily(Nunito.SemiBold.font),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -584,7 +598,7 @@ fun CreateTaskView(
                         } else {
                             LightAppBarIconsColor
                         },
-                        fontSize = 12.sp,
+                        fontSize = 13.sp,
                         fontFamily = FontFamily(Nunito.SemiBold.font),
                         modifier = Modifier.padding(start = 15.dp)
                     )

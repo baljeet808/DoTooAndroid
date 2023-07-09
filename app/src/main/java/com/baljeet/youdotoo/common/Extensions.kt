@@ -66,6 +66,29 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     }
 }
 
+fun LocalDate.toNiceDateFormat(): String {
+    this.let { dateTime ->
+
+        var dateString = ""
+
+        val currentDate = LocalDate.now()
+
+        dateString = if (dateTime.isEqual(currentDate)) {
+            dateString.plus("Today ")
+        } else if (dateTime.isEqual(currentDate.minusDays(1))) {
+            dateString.plus("Yesterday ")
+        } else if (dateTime.isEqual(currentDate.plusDays(1))) {
+            dateString.plus("Tomorrow ")
+        } else {
+            dateString.plus(dayOfMonth.toString()).plus(" ")
+                .plus(month.name.plus(", "))
+                .plus(year.toString().plus("   "))
+        }
+
+        return dateString
+    }
+}
+
 fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
     val date = this
     return LocalDateTime(

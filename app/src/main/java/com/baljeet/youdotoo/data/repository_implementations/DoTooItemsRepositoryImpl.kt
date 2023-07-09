@@ -18,12 +18,8 @@ class DoTooItemsRepositoryImpl @Inject constructor(
         return doToosDao.getAllDoTooItems(projectId = projectId).map { it.toDoTooItem() }
     }
 
-    override suspend fun getTodayTasks(startTimeDate: Long, endTimeDate : Long): List<DoTooItem> {
-
-        return doToosDao.getTodayTasks(
-            startTimeDate = startTimeDate,
-            endTimeDate = startTimeDate
-        ).map { it.toDoTooItem() }
+    override suspend fun getTodayTasks(todayDateInLong: Long): List<DoTooItem> {
+        return doToosDao.getTodayTasks(todayDateInLong).map { it.toDoTooItem() }
     }
 
     override suspend fun upsertDoTooItem(doTooItems: List<DoTooItem>, projectId: String) {
