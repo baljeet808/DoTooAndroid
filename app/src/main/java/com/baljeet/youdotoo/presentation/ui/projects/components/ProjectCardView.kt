@@ -30,7 +30,6 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 
 
@@ -117,7 +116,7 @@ fun ProjectCardView(
             LinearProgressIndicator(
                 progress = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
                 modifier = Modifier,
-                color = NightDotooBrightPink,
+                color = Color(project.project.color),
                 strokeCap = StrokeCap.Round
             )
         }
