@@ -5,7 +5,10 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -22,21 +25,29 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.getSampleProjectWithEverything
+import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleProfile
+import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.isScrolled
-import com.baljeet.youdotoo.domain.models.ProjectWithEveryThing
+import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 
 
 @Composable
 fun ProjectCardWithProfiles(
-    project : ProjectWithEveryThing,
-    lazyListState : LazyListState,
-
-){
+    project: Project?,
+    users: List<User>,
+    tasks: List<DoTooItem>,
+    lazyListState: LazyListState,
+) {
 
     val darkTheme = isSystemInDarkTheme()
 
@@ -52,11 +63,9 @@ fun ProjectCardWithProfiles(
                 } else {
                     DoTooYellow
                 }
-            )
-        ,
+            ),
         verticalArrangement = Arrangement.SpaceAround
     ) {
-
 
 
         Canvas(modifier = Modifier.fillMaxWidth(), onDraw = {
@@ -82,30 +91,30 @@ fun ProjectCardWithProfiles(
             )
 
             //creating lines using canvas
-            for ( i in 1..6){
+            for (i in 1..6) {
                 drawLine(
                     color = NightTransparentWhiteColor,
                     strokeWidth = 4.dp.toPx(),
                     start = Offset(
-                        x = (170+(i*25)).dp.toPx(),
+                        x = (170 + (i * 25)).dp.toPx(),
                         y = (0).dp.toPx()
                     ),
-                    end  = Offset(
+                    end = Offset(
                         x = (160).dp.toPx(),
-                        y = (10+(i*25)).dp.toPx()
+                        y = (10 + (i * 25)).dp.toPx()
                     )
                 )
             }
-            for ( i in 1..8){
+            for (i in 1..8) {
                 drawLine(
                     color = NightTransparentWhiteColor,
                     strokeWidth = 4.dp.toPx(),
                     start = Offset(
-                        x = (320+(i*25)).dp.toPx(),
+                        x = (320 + (i * 25)).dp.toPx(),
                         y = (0).dp.toPx()
                     ),
-                    end  = Offset(
-                        x = (135+(i*25)).dp.toPx(),
+                    end = Offset(
+                        x = (135 + (i * 25)).dp.toPx(),
                         y = (185).dp.toPx()
                     )
                 )
@@ -120,16 +129,16 @@ fun ProjectCardWithProfiles(
             modifier = Modifier
         )
 
-        AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (project.profiles != null))) {
+        AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (users.isNotEmpty()))) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
-            ){
+            ) {
                 ProfilesLazyRow(
-                    profiles = project.profiles!!,
+                    profiles = users,
                     onTapProfiles = {
                         //TODO: show profiles card
                     },
@@ -139,7 +148,7 @@ fun ProjectCardWithProfiles(
                     lightColor = DoTooYellow
                 )
                 Text(
-                    text = project.project?.description?:"",
+                    text = project?.description?:"",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 5.dp, end = 5.dp),
@@ -157,7 +166,7 @@ fun ProjectCardWithProfiles(
                 .padding(10.dp)
         ) {
             Text(
-                text = project.project?.name?:"",
+                text = project?.name?:"",
                 modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth(),
@@ -168,7 +177,7 @@ fun ProjectCardWithProfiles(
             )
             AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
                 Text(
-                    text = project.doToos.size.toString().plus(" Tasks"),
+                    text = tasks.size.toString().plus(" Tasks"),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 5.dp, end = 5.dp),
@@ -184,9 +193,15 @@ fun ProjectCardWithProfiles(
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewProjectCardWithProfiles(){
+fun PreviewProjectCardWithProfiles() {
     ProjectCardWithProfiles(
-        project = getSampleProjectWithEverything(),
-        lazyListState = LazyListState()
+        project = getSampleProject(),
+        lazyListState = LazyListState(),
+        tasks = listOf(
+            getSampleDotooItem()
+        ),
+        users = listOf(
+            getSampleProfile()
+        )
     )
 }

@@ -18,11 +18,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getSampleProjectWithEverything
+import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.data.mappers.*
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.domain.models.ProjectWithEveryThing
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
@@ -32,10 +34,12 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
 
 @Composable
 fun ProjectView(
-    project: ProjectWithEveryThing,
+    project: ProjectEntity?,
+    userId : String,
+    users : List<UserEntity>,
+    tasks : List<DoTooItemEntity>,
     onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit,
-    navigateToCreateTask : (projectOwner : Boolean) -> Unit,
-
+    navigateToCreateTask : (projectOwner : Boolean) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -45,7 +49,7 @@ fun ProjectView(
             FloatingActionButton(
                 onClick = {
                     navigateToCreateTask(
-                        project.project?.ownerId == SharedPref.userId
+                        project?.ownerId == userId
                     )
                 },
                 modifier = Modifier,
@@ -82,7 +86,9 @@ fun ProjectView(
              *Top Project Card
              * **/
             ProjectCardWithProfiles(
-                project = project,
+                project = project?.toProject(),
+                users = users.map { it.toUser() },
+                tasks = tasks.map { it.toDoTooItem() },
                 lazyListState = lazyListState
             )
 
@@ -91,10 +97,10 @@ fun ProjectView(
              * **/
             DoTooItemsLazyColumn(
                 lazyListState = lazyListState,
-                doToos = project.doToos,
+                doToos = tasks.map { it.toDoTooItem() },
                 onToggleDoToo = {doToo->
-                    project.project?.let {project ->
-                        onToggle(doToo, project)
+                    project?.let {
+                        onToggle(doToo, project.toProject())
                     }
                 },
                 onNavigateClick = {},
@@ -115,8 +121,13 @@ fun ProjectView(
 @Composable
 fun PreviewProjectView() {
     ProjectView(
-        project = getSampleProjectWithEverything(),
+        project = getSampleProject().toProjectEntity(),
         onToggle = {_,_->},
-        navigateToCreateTask = {}
+        navigateToCreateTask = {},
+        userId = getRandomId(),
+        tasks = listOf(
+            getSampleDotooItem().toDoTooItemEntity(getRandomId())
+        ),
+        users = listOf(getSampleProfile().toUserEntity())
     )
 }

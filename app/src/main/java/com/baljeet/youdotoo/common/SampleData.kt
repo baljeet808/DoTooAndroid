@@ -12,25 +12,6 @@ import java.util.UUID
 import kotlin.random.Random
 
 
-fun getSampleProjectWithEverything(): ProjectWithEveryThing {
-    return ProjectWithEveryThing(
-        project = getSampleProject(),
-        profiles = listOf(
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile(),
-            getSampleProfile(),
-        ),
-        doToos = listOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
-        )
-    )
-}
 
 fun getSampleDoTooWithProfiles(): DoTooWithProfiles {
     return DoTooWithProfiles(
