@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
+import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
 
 
@@ -54,6 +55,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
                         "create_task/".plus(newProjectId).plus("/${true}")
                     )
                 }
+            },
+            navigateToCreateProject = {
+                navController.navigate(DestinationCreateProjectRoute)
             }
         )
     }

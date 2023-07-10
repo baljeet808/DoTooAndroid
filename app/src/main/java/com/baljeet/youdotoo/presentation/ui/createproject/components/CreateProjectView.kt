@@ -7,6 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -27,10 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.addHapticFeedback
-import com.baljeet.youdotoo.common.getRandomColor
-import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
-import com.baljeet.youdotoo.common.maxTitleCharsAllowedForProject
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import kotlinx.coroutines.delay
@@ -50,11 +49,15 @@ fun CreateProjectView(
     }
 
     var selectedColor by remember {
-        mutableStateOf(getRandomColor())
+        mutableStateOf(getRandomColorEnum())
     }
 
 
     var descriptionOn by remember {
+        mutableStateOf(false)
+    }
+
+    var showColorOptions by remember {
         mutableStateOf(false)
     }
 
@@ -119,7 +122,6 @@ fun CreateProjectView(
                 color = MaterialTheme.colorScheme.secondary
             )
 
-            Spacer(modifier = Modifier.weight(1f))
 
             IconButton(
                 onClick = navigateBack,
@@ -149,7 +151,7 @@ fun CreateProjectView(
         }
 
         /**
-         * Row for Due date and Project selection
+         * Row for preview and project color button
          * **/
         Row(
             modifier = Modifier
@@ -182,7 +184,10 @@ fun CreateProjectView(
                 Icon(
                     Icons.Outlined.Preview,
                     contentDescription = "Button to see the project preview.",
-                    tint = LightAppBarIconsColor
+                    tint = LightAppBarIconsColor,
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
@@ -191,7 +196,8 @@ fun CreateProjectView(
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
                 )
             }
 
@@ -212,7 +218,7 @@ fun CreateProjectView(
                     .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
                     .clickable(
                         onClick = {
-
+                            showColorOptions = showColorOptions.not()
                         }
                     ),
                 horizontalArrangement = Arrangement.SpaceAround,
@@ -221,14 +227,14 @@ fun CreateProjectView(
                 Icon(
                     Icons.Outlined.Adjust,
                     contentDescription = "Button to set project color.",
-                    tint = Color(selectedColor),
+                    tint = Color(selectedColor.longValue),
                     modifier = Modifier
                         .width(30.dp)
                         .height(30.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = selectedColor.toString(),
+                    text = selectedColor.name,
                     color = LightAppBarIconsColor,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
@@ -237,6 +243,75 @@ fun CreateProjectView(
                 )
             }
 
+        }
+
+        AnimatedVisibility(visible = showColorOptions) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp)
+            ){
+                item {
+                    Spacer(modifier = Modifier.width(20.dp))
+                }
+                items(EnumProjectColors.values()){ color ->
+                    Row(
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                color = if(selectedColor == color){
+                                    if (isSystemInDarkTheme()) {
+                                        Color.White
+                                    } else {
+                                        Color.Black
+                                    }
+                                }else{
+                                    if (isSystemInDarkTheme()) {
+                                        NightDotooFooterTextColor
+                                    } else {
+                                        LightDotooFooterTextColor
+                                    }
+                                },
+                                shape = RoundedCornerShape(30.dp)
+                            )
+                            .padding(top = 5.dp, start = 10.dp, end = 10.dp, bottom = 5.dp)
+                            .clickable(
+                                onClick = {
+                                    selectedColor = color
+                                }
+                            ),
+                        horizontalArrangement = Arrangement.SpaceAround,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            Icons.Outlined.Adjust,
+                            contentDescription = "Button to set project color.",
+                            tint = Color(color.longValue),
+                            modifier = Modifier
+                                .width(25.dp)
+                                .height(25.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = color.name,
+                            color = if(selectedColor == color){
+                                if (isSystemInDarkTheme()) {
+                                    Color.White
+                                } else {
+                                    Color.Black
+                                }
+                            }else{
+                                LightAppBarIconsColor
+                            },
+                            fontFamily = FontFamily(Nunito.Bold.font),
+                            fontSize = 15.sp,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(10.dp))
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -513,7 +588,7 @@ fun CreateProjectView(
                                 createProject(
                                     projectName,
                                     description,
-                                    selectedColor
+                                    selectedColor.longValue
                                 )
                             } else {
                                 projectName = ""
@@ -524,7 +599,7 @@ fun CreateProjectView(
                     )
             ) {
                 Text(
-                    text = "New Task",
+                    text = "New Project",
                     color = if (isSystemInDarkTheme()) {
                         NightDotooBrightBlue
                     } else {

@@ -39,7 +39,8 @@ fun ProjectsView(
     userName: String,
     onToggleTask: (DoTooItem) -> Unit,
     navigateToTask: (DoTooItem) -> Unit,
-    navigateToCreateTask: () -> Unit
+    navigateToCreateTask: () -> Unit,
+    navigateToCreateProject: () -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -176,9 +177,8 @@ fun ProjectsView(
                         )
 
                         FilledIconButton(
-                            onClick = {
-                                //TODO: navigate to create project screen
-                            }, colors = IconButtonDefaults.filledIconButtonColors(
+                            onClick = navigateToCreateProject
+                            , colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = if (isSystemInDarkTheme()) {
                                     NightDotooDarkBlue
                                 } else {
@@ -299,6 +299,7 @@ fun DefaultProjectPreview() {
         userName = "Karandeep Kaur",
         onToggleTask = {},
         navigateToTask = {},
-        navigateToCreateTask = {}
+        navigateToCreateTask = {},
+        navigateToCreateProject = {}
     )
 }

@@ -57,13 +57,7 @@ fun ProjectCardWithProfiles(
             .padding(10.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .clip(shape = RoundedCornerShape(20.dp))
-            .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
-                } else {
-                    DoTooYellow
-                }
-            ),
+            .background(color = Color(project?.color?:4278215265)),
         verticalArrangement = Arrangement.SpaceAround
     ) {
 
@@ -78,11 +72,7 @@ fun ProjectCardWithProfiles(
                 )
             )
             drawCircle(
-                color = if (darkTheme) {
-                    NightDotooDarkBlue
-                } else {
-                    DoTooYellow
-                },
+                color = Color(project?.color?:4278215265),
                 radius = 100.dp.toPx(),
                 center = Offset(
                     x = 50.dp.toPx(),

@@ -122,7 +122,7 @@ class ProjectsViewModel @Inject constructor(
                         viewerIds = (project.get("viewerIds") as List<String>),
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
-                        color = 4294935846
+                        color = project.getLong("color")?:4278215265
                     )
 
                     // save all online projects to local db

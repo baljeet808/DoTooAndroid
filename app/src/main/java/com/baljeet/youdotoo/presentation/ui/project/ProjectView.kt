@@ -27,10 +27,7 @@ import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
-import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.baljeet.youdotoo.presentation.ui.theme.*
 
 @Composable
 fun ProjectView(
@@ -53,12 +50,7 @@ fun ProjectView(
                     )
                 },
                 modifier = Modifier,
-                backgroundColor =
-                if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
-                } else {
-                    DoTooYellow
-                }
+                backgroundColor = NightDotooBrightBlue
             ) {
                 Icon(
                     Icons.Outlined.Add,
