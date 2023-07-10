@@ -1,76 +1,58 @@
 package com.baljeet.youdotoo.presentation.ui.createproject
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.domain.models.Project
+import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import java.util.*
+import javax.inject.Inject
 
-class CreateProjectViewModel: ViewModel() {
+@HiltViewModel
+class CreateProjectViewModel @Inject constructor(
+    private val upsertProjectUseCase: UpsertProjectUseCase
+) : ViewModel() {
 
-    private val _projectState = MutableStateFlow(ProjectViewStates())
-    val projectState  = _projectState.asStateFlow()
 
-    data class ProjectViewStates(
-        var success : Boolean = false,
-        var error : String? = null
-    )
-
+    var createState = mutableStateOf(false)
+        private set
 
     var db = Firebase.firestore
 
+    fun createProject(projectName: String, description: String?, projectColor: Long) {
+        val newProjectId = UUID.randomUUID().toString()
+        val projectRef = db.collection("projects")
 
-    fun createProject(projectName : String, description : String?){
-        if(canSave(projectName)){
-            val newProjectId = UUID.randomUUID().toString()
-            val projectRef = db.collection("projects")
+        val newProject = Project(
+            id = newProjectId,
+            ownerId = SharedPref.userId!!,
+            name = projectName,
+            description = description ?: "",
+            collaboratorIds = listOf(),
+            viewerIds = listOf(),
+            update = "${SharedPref.userName} created new project named '${projectName}.'",
+            color = projectColor
+        )
 
-
-            val newProject = Project(
-                id = newProjectId,
-                ownerId = SharedPref.userId!!,
-                name = projectName,
-                description = description?:"",
-                collaboratorIds = listOf(),
-                viewerIds = listOf(),
-                update = "${SharedPref.userName} created new project named '${projectName}.'",
-                color = 4294935846
-            )
-
+        if(SharedPref.isUserAPro) {
             projectRef
                 .document(newProjectId)
-                .set(newProject).addOnCompleteListener { Task ->
-                    if(Task.isSuccessful){
-                        _projectState.update {
-                            it.copy(
-                                success = true,
-                                error = null
-                            )
-                        }
-                    }else{
-                        _projectState.update {
-                            it.copy(
-                                success = false,
-                                error = "Something went wrong. Try again!"
-                            )
-                        }
-                    }
-                }
+                .set(newProject)
         }else{
-            _projectState.update {
-                it.copy(
-                    success = false,
-                    error = "Please fill required fields."
-                )
+            viewModelScope.launch {
+                upsertProjectUseCase(listOf(newProject))
             }
         }
+
     }
 
-    private fun canSave(projectName: String): Boolean{
-        return projectName.isNotBlank() && SharedPref.userId != null
+    fun resetState(){
+        createState.value = false
     }
+
 }

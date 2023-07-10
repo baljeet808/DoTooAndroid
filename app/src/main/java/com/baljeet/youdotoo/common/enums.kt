@@ -48,22 +48,6 @@ enum class DueDates(val toString : String) {
 
 }
 
-sealed class DoTooPriorityTab( var icon : ImageVector, var title: String){
-    object All : DoTooPriorityTab(
-        icon = Icons.Default.Flaky,
-        title = "All"
-    )
-    object Today : DoTooPriorityTab(
-        icon = Icons.Default.Today,
-        title = "Today"
-    )
-    object Done : DoTooPriorityTab(
-        icon = Icons.Default.Checklist,
-        title = "Done"
-    )
-}
-
-
 enum class EnumCreateTaskSheetType() {
     SELECT_PROJECT, SELECT_DUE_DATE, SELECT_PRIORITY
 }
@@ -71,4 +55,19 @@ enum class EnumCreateTaskSheetType() {
 
 enum class ChatScreenBottomSheetTypes() {
     MESSAGE_EMOTICONS, CUSTOM_EMOTICONS, PERSON_TAGGER, COLLABORATOR_SCREEN
+}
+
+enum class EnumProjectColors(val longValue : Long){
+    Green(4278215265),
+    Orange(4294935846),
+    Lime(4281178457),
+    Red(4294261839),
+    Cyan(4287356926),
+    Yellow(4294935846),
+    Purple(4290677246),
+    Graphite(4281347373),
+    Peach(4293428895),
+    Teal(4289130720),
+    Brown(4289014314),
+    Pink(4294928820)
 }

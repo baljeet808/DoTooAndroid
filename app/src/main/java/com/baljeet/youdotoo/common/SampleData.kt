@@ -90,15 +90,13 @@ fun getSampleProjectWithTasks(): ProjectWithDoToos {
     )
 }
 
-fun getRandomColor(): Long {
-    val randomInt = Random.nextInt(from = 0, 10)
-    val colors = listOf<Long>(
+
+fun getAllColors(): List<Long>{
+    return listOf(
         //DoTooRed
         4294261839,
         //DotooYellow
         4294935846,
-        //DotooGreen
-        4290242693,
         //DotooSkyBlue
         4287356926,
         //DotooTeal
@@ -114,9 +112,17 @@ fun getRandomColor(): Long {
         //DotooPeakYellow
         4294102321,
         //DotooCuteGreen
-        4281178457
+        4281178457,
+        //DotooBrown
+        4289014314,
+        //DotooPink
+        4294928820
     )
-    return colors[randomInt]
+}
+
+fun getRandomColor(): Long {
+    val randomInt = Random.nextInt(from = 0, 10)
+    return getAllColors()[randomInt]
 }
 
 fun getSampleMessage(): Message {

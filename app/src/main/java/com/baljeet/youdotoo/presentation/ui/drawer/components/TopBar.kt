@@ -3,7 +3,6 @@ package com.baljeet.youdotoo.presentation.ui.drawer.components
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
@@ -22,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.formatNicelyWithoutYear
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
 import java.time.LocalDate
 
@@ -63,11 +61,7 @@ fun TopBar(
                 Icon(
                     Icons.Outlined.Menu,
                     contentDescription = "Menu button to open side drawer.",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    },
+                    tint = LightAppBarIconsColor,
                     modifier = Modifier
                         .width(35.dp)
                         .height(35.dp)
@@ -76,11 +70,7 @@ fun TopBar(
 
             Text(
                 text = LocalDate.now().formatNicelyWithoutYear(),
-                color = if (isSystemInDarkTheme()) {
-                    NightAppBarIconsColor
-                } else {
-                    LightAppBarIconsColor
-                },
+                color = LightAppBarIconsColor,
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 16.sp
             )
@@ -98,11 +88,7 @@ fun TopBar(
                 Icon(
                     Icons.Outlined.Message,
                     contentDescription = "Menu button to open Chat",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    }
+                    tint = LightAppBarIconsColor
                 )
                 AnimatedVisibility(visible = notificationsState) {
                     Box(

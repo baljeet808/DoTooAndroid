@@ -22,6 +22,7 @@ const val DestinationSettingsRoute = "settings"
 
 const val maxTitleCharsAllowed = 60
 const val maxDescriptionCharsAllowed = 120
+const val maxTitleCharsAllowedForProject = 40
 
 val menuItems = arrayListOf(
     MenuItem(

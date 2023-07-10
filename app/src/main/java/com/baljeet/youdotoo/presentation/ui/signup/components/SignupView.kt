@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.signup.SignupViewModel
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGreen
 import com.baljeet.youdotoo.presentation.ui.theme.DotooOrange
 
 @Composable
@@ -169,7 +168,7 @@ fun SignupView(
                         performSignup(email, password, name)
                     },
                     colors = ButtonDefaults
-                        .buttonColors(containerColor = DotooGreen),
+                        .buttonColors(containerColor = DotooOrange),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 20.dp),

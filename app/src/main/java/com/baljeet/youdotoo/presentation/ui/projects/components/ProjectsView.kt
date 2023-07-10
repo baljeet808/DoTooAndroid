@@ -1,16 +1,18 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
@@ -38,6 +41,8 @@ fun ProjectsView(
     navigateToTask: (DoTooItem) -> Unit,
     navigateToCreateTask: () -> Unit
 ) {
+
+    val lazyListState = rememberLazyListState()
 
     val transition = rememberInfiniteTransition()
 
@@ -145,111 +150,94 @@ fun ProjectsView(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Top
             ) {
-
-
                 /**
                  * Top Row for greeting and Add project button
                  * **/
-                /**
-                 * Top Row for greeting and Add project button
-                 * **/
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = if (userName.length > 8) {
-                            "Hi, $userName!"
-                        } else {
-                            "What's up, $userName!"
-                        },
+                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+                    Row(
                         modifier = Modifier
-                            .padding(5.dp)
-                            .weight(1f),
-                        fontFamily = FontFamily(Nunito.ExtraBold.font),
-                        fontSize = 38.sp,
-                        color = MaterialTheme.colorScheme.secondary
-                    )
-
-                    FilledIconButton(
-                        onClick = {
-                            //TODO: navigate to create project screen
-                        }, colors = IconButtonDefaults.filledIconButtonColors(
-                            containerColor = if (isSystemInDarkTheme()) {
-                                NightDotooDarkBlue
-                            } else {
-                                NightDotooNormalBlue
-                            }
-                        ),
-                        modifier = Modifier
-                            .height(40.dp)
-                            .width(40.dp)
-
+                            .fillMaxWidth()
+                            .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Add list button",
-                            tint = Color.White
+                        Text(
+                            text = if (userName.length > 8) {
+                                "Hi, $userName!"
+                            } else {
+                                "What's up, $userName!"
+                            },
+                            modifier = Modifier
+                                .padding(5.dp)
+                                .weight(1f),
+                            fontFamily = FontFamily(Nunito.ExtraBold.font),
+                            fontSize = 38.sp,
+                            color = MaterialTheme.colorScheme.secondary
                         )
+
+                        FilledIconButton(
+                            onClick = {
+                                //TODO: navigate to create project screen
+                            }, colors = IconButtonDefaults.filledIconButtonColors(
+                                containerColor = if (isSystemInDarkTheme()) {
+                                    NightDotooDarkBlue
+                                } else {
+                                    NightDotooNormalBlue
+                                }
+                            ),
+                            modifier = Modifier
+                                .height(40.dp)
+                                .width(40.dp)
+
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = "Add list button",
+                                tint = Color.White
+                            )
+                        }
                     }
+
+                }
+
+                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+                    /**
+                     * Simple Projects heading
+                     * **/
+                    Text(
+                        text = "Projects".uppercase(),
+                        color = LightAppBarIconsColor,
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                        letterSpacing = TextUnit(2f, TextUnitType.Sp)
+                    )
                 }
 
 
                 /**
-                 * Simple Projects heading
-                 * **/
-
-
-                /**
-                 * Simple Projects heading
-                 * **/
-                Text(
-                    text = "Projects".uppercase(),
-                    color = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    },
-                    fontFamily = FontFamily(Nunito.Normal.font),
-                    fontSize = 16.sp,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                    letterSpacing = TextUnit(2f, TextUnitType.Sp)
-                )
-
-                /**
                  * Horizontal list of all projects
                  * **/
+                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
 
-                /**
-                 * Horizontal list of all projects
-                 * **/
-                ProjectsLazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    projects = projects,
-                    navigateToDoToos = navigateToDoToos,
-                    userId = userId
-                )
+                    ProjectsLazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        projects = projects,
+                        navigateToDoToos = navigateToDoToos,
+                        userId = userId
+                    )
+                }
 
-                /**
-                 * Simple Today's Tasks heading
-                 * **/
 
                 /**
                  * Simple Today's Tasks heading
                  * **/
                 Text(
                     text = "Today's Tasks".uppercase(),
-                    color = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    },
+                    color = LightAppBarIconsColor,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
                     modifier = Modifier
@@ -266,8 +254,8 @@ fun ProjectsView(
                     onNavigateClick = { doToo ->
                         navigateToTask(doToo)
                     },
-                    modifier = Modifier.padding(20.dp),
-                    lazyListState = LazyListState()
+                    modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                    lazyListState = lazyListState
                 )
 
 

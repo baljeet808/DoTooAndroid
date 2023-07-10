@@ -78,12 +78,6 @@ class CreateTaskViewModel  @Inject constructor(
                 .document(newDoTooID)
                 .set(newDoToo)
                 .addOnSuccessListener {
-                    viewModelScope.launch {
-                        upsertDoToosUseCase(
-                            projectId = selectedProject.id,
-                            dotoos = listOf(newDoToo)
-                        )
-                    }
                     createState.value = true
                 }
                 .addOnFailureListener {

@@ -121,13 +121,15 @@ fun ProjectCardWithProfiles(
             }
         })
 
-        ProjectTopBar(
-            notificationsState = true,
-            onFavoriteClick = { /*TODO*/ },
-            onNotificationItemClicked = { /*TODO*/ },
-            onDeleteItemClicked = { /*TODO*/ },
-            modifier = Modifier
-        )
+        AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (users.isNotEmpty()))) {
+            ProjectTopBar(
+                notificationsState = true,
+                onFavoriteClick = { /*TODO*/ },
+                onNotificationItemClicked = { /*TODO*/ },
+                onDeleteItemClicked = { /*TODO*/ },
+                modifier = Modifier
+            )
+        }
 
         AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (users.isNotEmpty()))) {
             Column(
