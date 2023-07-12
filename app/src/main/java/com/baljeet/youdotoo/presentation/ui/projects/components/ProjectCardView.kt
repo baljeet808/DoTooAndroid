@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -46,7 +47,7 @@ fun ProjectCardView(
     Box(
         modifier = Modifier
             .widthIn(max = 220.dp)
-            .heightIn(max = 140.dp)
+            .heightIn(max = 160.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -110,7 +111,10 @@ fun ProjectCardView(
                 text = project.project.name,
                 color = MaterialTheme.colorScheme.secondary,
                 fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 22.sp,
+                fontSize = 20.sp,
+                maxLines = 2,
+                minLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 5.dp, bottom = 5.dp)

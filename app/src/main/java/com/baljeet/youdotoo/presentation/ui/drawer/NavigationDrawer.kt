@@ -249,6 +249,28 @@ fun NavigationDrawer(
             Spacer(modifier = Modifier.height(30.dp))
 
 
+            userData.userEmail?.let { email ->
+                /**
+                 * Showing user email
+                 * **/
+                Text(
+                    text = email,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Start,
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontWeight = FontWeight.ExtraBold,
+                    color = LessTransparentWhiteColor
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+            }
+
+
+
+
+
+
             /**
              * Lazy column for Menu items
              * **/
