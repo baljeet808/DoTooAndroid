@@ -11,9 +11,7 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
-import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetDoTooByIdUseCase
-import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetTodayDoToosUseCase
-import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.*
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsWithDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
@@ -28,10 +26,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toKotlinLocalDateTime
+import kotlinx.datetime.*
 import javax.inject.Inject
 
 
@@ -42,7 +37,11 @@ class ProjectsViewModel @Inject constructor(
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val getYesterdayDoToosUseCase: GetYesterdayDoToosUseCase,
     private val getTodayDoToosUseCase: GetTodayDoToosUseCase,
+    private val getTomorrowDoToosUseCase: GetTomorrowDoToosUseCase,
+    private val getPendingDoToosUseCase: GetPendingDoToosUseCase,
+    private val getAllOtherDoToosUseCase: GetAllOtherDoToosUseCase,
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val upsertUserUseCase: UpsertUserUseCase
 ) : ViewModel() {
@@ -60,6 +59,35 @@ class ProjectsViewModel @Inject constructor(
     ).toInstant(TimeZone.currentSystemDefault()).epochSeconds
 
 
+    private val tomorrowDateInLong = LocalDateTime(
+        year = todayDate.year,
+        monthNumber = todayDate.monthNumber,
+        dayOfMonth = todayDate.dayOfMonth,
+        hour = 9,
+        minute = 0,
+        second = 0
+    ).toInstant(TimeZone.currentSystemDefault())
+        .plus(
+            unit = DateTimeUnit.DAY,
+            value = 1,
+            timeZone = TimeZone.currentSystemDefault()
+        ).epochSeconds
+
+    private val yesterdayDateInLong = LocalDateTime(
+        year = todayDate.year,
+        monthNumber = todayDate.monthNumber,
+        dayOfMonth = todayDate.dayOfMonth,
+        hour = 9,
+        minute = 0,
+        second = 0
+    ).toInstant(TimeZone.currentSystemDefault())
+        .minus(
+            unit = DateTimeUnit.DAY,
+            value = 1,
+            timeZone = TimeZone.currentSystemDefault()
+        ).epochSeconds
+
+
     private var db = Firebase.firestore
 
     private var projectsReference = FirebaseFirestore
@@ -73,13 +101,37 @@ class ProjectsViewModel @Inject constructor(
      * Fetch all projects and there tasks from local db
      * Valid rule for both pro and non pro members
      * **/
-    fun projectsWithTaskCount() : Flow<List<ProjectWithDoToos>> = getProjectsWithDoToosUseCase()
+    fun projectsWithTaskCount(): Flow<List<ProjectWithDoToos>> = getProjectsWithDoToosUseCase()
+
+    /**
+     * fetch the yesterday's tasks from local database only and
+     * then update the firestore when we make any changes to them
+     * **/
+    fun yesteradyTasks(): Flow<List<DoTooItemEntity>> = getYesterdayDoToosUseCase(yesterdayDateInLong)
 
     /**
      * fetch the today's tasks from local database only and
      * then update the firestore when we make any changes to them
      * **/
-    fun todayTasks() : Flow<List<DoTooItemEntity>> = getTodayDoToosUseCase(todayDateInLong)
+    fun todayTasks(): Flow<List<DoTooItemEntity>> = getTodayDoToosUseCase(todayDateInLong)
+
+    /**
+     * fetch the tomorrow's tasks from local database only and
+     * then update the firestore when we make any changes to them
+     * **/
+    fun tomorrowTasks(): Flow<List<DoTooItemEntity>> = getTomorrowDoToosUseCase(tomorrowDateInLong)
+
+    /**
+     * fetch the pending tasks of past from local database only and
+     * then update the firestore when we make any changes to them
+     * **/
+    fun pendingTasks(): Flow<List<DoTooItemEntity>> = getPendingDoToosUseCase(yesterdayDateInLong)
+
+    /**
+     * fetch all other tasks of future from local database only and
+     * then update the firestore when we make any changes to them
+     * **/
+    fun allOtherTasks(): Flow<List<DoTooItemEntity>> = getAllOtherDoToosUseCase(tomorrowDateInLong)
 
 
     init {
@@ -122,7 +174,7 @@ class ProjectsViewModel @Inject constructor(
                         viewerIds = (project.get("viewerIds") as List<String>),
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
-                        color = project.getLong("color")?:4278215265
+                        color = project.getLong("color") ?: 4278215265
                     )
 
                     // save all online projects to local db
@@ -146,7 +198,8 @@ class ProjectsViewModel @Inject constructor(
                                             dueDate = doToo.getLong("dueDate") ?: 0L,
                                             priority = doToo.getString("priority") ?: "High",
                                             updatedBy = doToo.getString("updatedBy") ?: "",
-                                            done = doToo.getBoolean("done") ?: false
+                                            done = doToo.getBoolean("done") ?: false,
+                                            projectColor = doToo.getLong("projectColor") ?: getRandomColor(),
                                         )
                                     )
                                 }
@@ -164,8 +217,6 @@ class ProjectsViewModel @Inject constructor(
         }
 
     }
-
-
 
 
     private fun getUserProfilesAndUpdateDatabase(project: Project) {
@@ -199,18 +250,20 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
-    private fun isProjectIsSharedToUser(project: ProjectEntity) = project.ownerId != SharedPref.userId
+    private fun isProjectIsSharedToUser(project: ProjectEntity) =
+        project.ownerId != SharedPref.userId
 
 
-    fun upsertDoToo(doTooItem: DoTooItem){
+    fun upsertDoToo(doTooItem: DoTooItem) {
         val newDoToo = doTooItem.copy()
         newDoToo.done = doTooItem.done.not()
-        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
+        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ")
+            .plus(if (newDoToo.done) "completed." else "not completed.")
 
         viewModelScope.launch {
             val task = getDoTooByIdUseCase(doTooItem.id)
             val project = getProjectByIdUseCase(projectId = task.projectId)
-            if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
+            if (SharedPref.isUserAPro || isProjectIsSharedToUser(project)) {
                 projectsReference
                     .document(project.id)
                     .collection("todos")
@@ -218,11 +271,11 @@ class ProjectsViewModel @Inject constructor(
                     .set(newDoToo)
 
             }
-            upsertDoToosUseCase(listOf(newDoToo),project.id)
+            upsertDoToosUseCase(listOf(newDoToo), project.id)
         }
     }
 
-    fun createDummyProject( newProjectId : String ){
+    fun createDummyProject(newProjectId: String) {
         val newProject = Project(
             id = newProjectId,
             name = "My tasks",
@@ -234,16 +287,15 @@ class ProjectsViewModel @Inject constructor(
             color = getRandomColor()
         )
         viewModelScope.launch {
-            if(SharedPref.isUserAPro){
+            if (SharedPref.isUserAPro) {
                 projectsReference
                     .document(newProjectId)
                     .set(newProject)
-            }else{
+            } else {
                 upsertProjectUseCase(listOf(newProject))
             }
         }
     }
-
 
 
 }

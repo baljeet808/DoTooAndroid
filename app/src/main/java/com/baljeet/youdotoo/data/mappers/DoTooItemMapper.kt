@@ -14,7 +14,8 @@ fun DoTooItem.toDoTooItemEntity(projectId: String) : DoTooItemEntity{
         createDate = createDate,
         done = done,
         priority = priority,
-        updatedBy = updatedBy
+        updatedBy = updatedBy,
+        projectColor = projectColor
     )
 }
 
@@ -28,6 +29,7 @@ fun DoTooItemEntity.toDoTooItem(): DoTooItem{
         createDate = createDate,
         done = done,
         priority = priority,
-        updatedBy = updatedBy
+        updatedBy = updatedBy,
+        projectColor = projectColor
     )
 }

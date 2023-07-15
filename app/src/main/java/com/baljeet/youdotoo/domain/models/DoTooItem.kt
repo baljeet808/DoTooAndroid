@@ -12,5 +12,6 @@ data class DoTooItem(
     val createDate : Long,
     var done : Boolean,
     val priority : String,
-    var updatedBy : String
+    var updatedBy : String,
+    var projectColor : Long
 ):Parcelable

@@ -6,13 +6,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
+import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.common.isScrolled
@@ -29,12 +30,19 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.google.accompanist.pager.*
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
     projects: List<ProjectWithDoToos>,
-    todayTasks : List<DoTooItem>,
+    pendingTasks: List<DoTooItem>,
+    yesterdayTasks: List<DoTooItem>,
+    todayTasks: List<DoTooItem>,
+    tomorrowTasks: List<DoTooItem>,
+    allOtherTasks: List<DoTooItem>,
     userId: String,
     userName: String,
     onToggleTask: (DoTooItem) -> Unit,
@@ -43,7 +51,26 @@ fun ProjectsView(
     navigateToCreateProject: () -> Unit
 ) {
 
-    val lazyListState = rememberLazyListState()
+    val tasksTabs = EnumDashboardTasksTabs.values()
+
+    val pagerState = rememberPagerState(initialPage = 2)
+
+    val scope = rememberCoroutineScope()
+
+    val pendingLazyListState = rememberLazyListState()
+    val yesterdayLazyListState = rememberLazyListState()
+    val todayLazyListState = rememberLazyListState()
+    val tomorrowLazyListState = rememberLazyListState()
+    val allOtherLazyListState = rememberLazyListState()
+
+    val isTopCardsVisible = isTopCardVisible(
+        pendingLazyListState,
+        yesterdayLazyListState,
+        todayLazyListState,
+        tomorrowLazyListState,
+        allOtherLazyListState,
+        pagerState
+    )
 
     val transition = rememberInfiniteTransition()
 
@@ -154,7 +181,7 @@ fun ProjectsView(
                 /**
                  * Top Row for greeting and Add project button
                  * **/
-                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+                AnimatedVisibility(visible = isTopCardsVisible) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -177,8 +204,8 @@ fun ProjectsView(
                         )
 
                         FilledIconButton(
-                            onClick = navigateToCreateProject
-                            , colors = IconButtonDefaults.filledIconButtonColors(
+                            onClick = navigateToCreateProject,
+                            colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = if (isSystemInDarkTheme()) {
                                     NightDotooDarkBlue
                                 } else {
@@ -200,7 +227,7 @@ fun ProjectsView(
 
                 }
 
-                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+                AnimatedVisibility(visible = isTopCardsVisible) {
                     /**
                      * Simple Projects heading
                      * **/
@@ -220,7 +247,7 @@ fun ProjectsView(
                 /**
                  * Horizontal list of all projects
                  * **/
-                AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+                AnimatedVisibility(visible = isTopCardsVisible) {
 
                     ProjectsLazyRow(
                         modifier = Modifier
@@ -232,36 +259,191 @@ fun ProjectsView(
                 }
 
 
-                /**
-                 * Simple Today's Tasks heading
-                 * **/
-                Text(
-                    text = "Today's Tasks".uppercase(),
-                    color = LightAppBarIconsColor,
-                    fontFamily = FontFamily(Nunito.Normal.font),
-                    fontSize = 16.sp,
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                    letterSpacing = TextUnit(2f, TextUnitType.Sp)
-                )
+                        .weight(1f)
+                ) {
+                    androidx.compose.material.ScrollableTabRow(
+                        selectedTabIndex = pagerState.currentPage,
+                        modifier = Modifier
+                            .padding(0.dp),
+                        indicator = { tabPositions ->
+                            TabRowDefaults.PrimaryIndicator(
+                                modifier = Modifier
+                                    .pagerTabIndicatorOffset(
+                                        pagerState,
+                                        tabPositions
+                                    )
+                            )
+                        },
+                        backgroundColor = Color.Transparent,
+                        divider = {}
+                    ) {
+                        tasksTabs.forEachIndexed { index, tasksTab ->
 
-                DoTooItemsLazyColumn(
-                    doToos = todayTasks,
-                    onToggleDoToo = { doToo ->
-                        onToggleTask(doToo)
-                    },
-                    onNavigateClick = { doToo ->
-                        navigateToTask(doToo)
-                    },
-                    modifier = Modifier.padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                    lazyListState = lazyListState
-                )
+                            val color = remember{
+                                androidx.compose.animation.Animatable(Color.Black)
+                            }
+                            LaunchedEffect(key1 = pagerState.currentPage == index){
+                                color.animateTo(
+                                    if(pagerState.currentPage == index)
+                                    {
+                                        if(darkTheme){
+                                            Color.White
+                                        }else{
+                                            Color.Black
+                                        }
+                                    }else {
+                                        LightAppBarIconsColor
+                                    }
+                                )
+                            }
+                            androidx.compose.material.Tab(
+                                text = {
+                                    Text(
+                                        text = if(tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
+                                        color = color.value,
+                                        fontFamily = FontFamily(Nunito.Normal.font),
+                                        letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                                    )
+                                },
+                                selected = pagerState.currentPage == index,
+                                modifier = Modifier.background(color = Color.Transparent),
+                                onClick = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(index)
+                                    }
+                                }
+                            )
+                        }
+                    }
 
 
+                    HorizontalPager(
+                        count = tasksTabs.size,
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        when (tasksTabs[pagerState.currentPage]) {
+                            EnumDashboardTasksTabs.Yesterday -> {
+                                DoTooItemsLazyColumn(
+                                    doToos = yesterdayTasks,
+                                    onToggleDoToo = { doToo ->
+                                        onToggleTask(doToo)
+                                    },
+                                    onNavigateClick = { doToo ->
+                                        navigateToTask(doToo)
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    lazyListState = yesterdayLazyListState
+                                )
+                            }
+                            EnumDashboardTasksTabs.Today -> {
+                                DoTooItemsLazyColumn(
+                                    doToos = todayTasks,
+                                    onToggleDoToo = { doToo ->
+                                        onToggleTask(doToo)
+                                    },
+                                    onNavigateClick = { doToo ->
+                                        navigateToTask(doToo)
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    lazyListState = todayLazyListState
+                                )
+                            }
+                            EnumDashboardTasksTabs.Tomorrow -> {
+                                DoTooItemsLazyColumn(
+                                    doToos = tomorrowTasks,
+                                    onToggleDoToo = { doToo ->
+                                        onToggleTask(doToo)
+                                    },
+                                    onNavigateClick = { doToo ->
+                                        navigateToTask(doToo)
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    lazyListState = tomorrowLazyListState
+                                )
+                            }
+                            EnumDashboardTasksTabs.Pending -> {
+                                DoTooItemsLazyColumn(
+                                    doToos = pendingTasks,
+                                    onToggleDoToo = { doToo ->
+                                        onToggleTask(doToo)
+                                    },
+                                    onNavigateClick = { doToo ->
+                                        navigateToTask(doToo)
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    lazyListState = pendingLazyListState
+                                )
+                            }
+                            EnumDashboardTasksTabs.AllOther -> {
+                                DoTooItemsLazyColumn(
+                                    doToos = allOtherTasks,
+                                    onToggleDoToo = { doToo ->
+                                        onToggleTask(doToo)
+                                    },
+                                    onNavigateClick = { doToo ->
+                                        navigateToTask(doToo)
+                                    },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .weight(1f)
+                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                    lazyListState = allOtherLazyListState
+                                )
+                            }
+                        }
+                    }
+                }
             }
         }
+    }
+}
 
+@OptIn(ExperimentalPagerApi::class)
+fun isTopCardVisible(
+    pendingLazyListState : LazyListState,
+    yesterdayLazyListState : LazyListState,
+    todayLazyListState : LazyListState,
+    tomorrowLazyListState : LazyListState,
+    allOtherLazyListState : LazyListState,
+    pagerState : PagerState
+): Boolean{
+    when(pagerState.currentPage){
+        0 -> {
+            return pendingLazyListState.isScrolled.not()
+        }
+        1 -> {
+            return yesterdayLazyListState.isScrolled.not()
+        }
+        2 -> {
+            return todayLazyListState.isScrolled.not()
+        }
+        3 ->{
+            return tomorrowLazyListState.isScrolled.not()
+        }
+        4 ->{
+            return allOtherLazyListState.isScrolled.not()
+        }
+        else ->{
+            return true
+        }
     }
 }
 
@@ -285,12 +467,32 @@ fun Project.getUserRole(userId: String): String {
 fun DefaultProjectPreview() {
     ProjectsView(
         navigateToDoToos = {},
-        projects= arrayListOf(
+        projects = arrayListOf(
             getSampleProjectWithTasks(),
             getSampleProjectWithTasks(),
             getSampleProjectWithTasks()
-            ),
+        ),
+        pendingTasks = arrayListOf(
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem()
+        ),
+        yesterdayTasks = arrayListOf(
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem()
+        ),
         todayTasks = arrayListOf(
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem()
+        ),
+        tomorrowTasks = arrayListOf(
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem()
+        ),
+        allOtherTasks = arrayListOf(
             getSampleDotooItem(),
             getSampleDotooItem(),
             getSampleDotooItem()

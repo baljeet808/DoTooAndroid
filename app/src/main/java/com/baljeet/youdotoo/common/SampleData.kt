@@ -62,7 +62,8 @@ fun getSampleDotooItem(): DoTooItem {
         createDate = 789L,
         done = true,
         priority = "High",
-        updatedBy = "Baljeet create this doToo item."
+        updatedBy = "Baljeet create this doToo item.",
+        projectColor = getRandomColor()
     )
 }
 

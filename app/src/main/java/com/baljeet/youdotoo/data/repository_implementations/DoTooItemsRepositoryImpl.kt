@@ -23,8 +23,24 @@ class DoTooItemsRepositoryImpl @Inject constructor(
         return doToosDao.getDoTooById(doTooId)
     }
 
+    override fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getYesterdayTasks(yesterdayDateInLong)
+    }
+
     override fun getTodayTasks(todayDateInLong: Long): Flow<List<DoTooItemEntity>> {
         return doToosDao.getTodayTasks(todayDateInLong)
+    }
+
+    override fun getTomorrowTasks(tomorrowDateInLong: Long): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getTomorrowTasks(tomorrowDateInLong)
+    }
+
+    override fun getPendingTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getPendingTasks(yesterdayDateInLong)
+    }
+
+    override fun getAllOtherTasks(tomorrowDateInLong: Long): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getAllOtherTasks(tomorrowDateInLong)
     }
 
     override suspend fun upsertDoTooItem(doTooItems: List<DoTooItem>, projectId: String) {

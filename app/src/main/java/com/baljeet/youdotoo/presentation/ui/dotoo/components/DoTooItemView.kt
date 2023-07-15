@@ -21,11 +21,14 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.playWooshSound
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -51,6 +54,7 @@ fun DoTooItemView(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .height(80.dp)
             .clickable(onClick = onNavigateClick)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
@@ -61,11 +65,12 @@ fun DoTooItemView(
                 },
                 shape = RoundedCornerShape(20.dp)
             ),
+        contentAlignment = Alignment.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 10.dp, end = 10.dp, top = 20.dp, bottom = 20.dp),
+                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -89,11 +94,11 @@ fun DoTooItemView(
                     Icon(
                         Icons.Filled.CheckCircle,
                         contentDescription = "Checked circular icon",
-                        tint = if (isSystemInDarkTheme()) {
+                        tint = /*if (isSystemInDarkTheme()) {
                             Color.White
                         } else {
                             LightAppBarIconsColor
-                        },
+                        }*/ Color(doToo.projectColor),
                         modifier = Modifier
                             .height(30.dp)
                             .width(30.dp)
@@ -102,7 +107,7 @@ fun DoTooItemView(
                     Icon(
                         Icons.Outlined.Circle,
                         contentDescription = "Checked circular icon",
-                        tint = NightDotooBrightBlue,
+                        tint = /*NightDotooBrightBlue*/ Color(doToo.projectColor),
                         modifier = Modifier
                             .height(30.dp)
                             .width(30.dp)
@@ -113,21 +118,15 @@ fun DoTooItemView(
 
             Text(
                 text = doToo.title,
-                color = if (doToo.done) {
-                    if (isSystemInDarkTheme()) {
-                        LessTransparentWhiteColor
-                    } else {
-                        Color.Gray
-                    }
+                color = if (isSystemInDarkTheme()) {
+                    Color.White
                 } else {
-                    if (isSystemInDarkTheme()) {
-                        Color.White
-                    } else {
-                        Color.Black
-                    }
+                    Color.Black
                 },
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 20.sp,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
                 style = if (doToo.done) {
                     TextStyle(textDecoration = TextDecoration.LineThrough)
                 } else {
@@ -146,18 +145,7 @@ fun DoTooItemView(
 @Composable
 fun PreviewDoTooItemView() {
     DoTooItemView(
-        doToo = DoTooItem(
-            id = "",
-            title = "Need to water the plants ASAP!",
-            description = "Plants are getting dry, we need to water them today. Who ever is home please do this.",
-            dueDate = LocalDateTime.now().toKotlinLocalDateTime()
-                .toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-            createDate = LocalDateTime.now().toKotlinLocalDateTime()
-                .toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-            done = true,
-            priority = "High",
-            updatedBy = "Baljeet Singh created this task."
-        ),
+        doToo = getSampleDotooItem(),
         onToggleDone = {},
         onNavigateClick = {}
     )

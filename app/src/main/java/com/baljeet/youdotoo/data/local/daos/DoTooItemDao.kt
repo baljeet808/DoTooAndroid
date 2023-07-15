@@ -24,7 +24,19 @@ interface DoTooItemDao {
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
 
+    @Query("SELECT * FROM todos WHERE dueDate = :yesterdayDateInLong")
+    fun getYesterdayTasks(yesterdayDateInLong : Long): Flow<List<DoTooItemEntity>>
+
     @Query("SELECT * FROM todos WHERE dueDate = :todayDateInLong")
     fun getTodayTasks(todayDateInLong : Long): Flow<List<DoTooItemEntity>>
+
+    @Query("SELECT * FROM todos WHERE dueDate = :tomorrowDateInLong")
+    fun getTomorrowTasks(tomorrowDateInLong : Long): Flow<List<DoTooItemEntity>>
+
+    @Query("SELECT * FROM todos WHERE dueDate < :yesterdayDateInLong")
+    fun getPendingTasks(yesterdayDateInLong : Long): Flow<List<DoTooItemEntity>>
+
+    @Query("SELECT * FROM todos WHERE dueDate > :tomorrowDateInLong")
+    fun getAllOtherTasks(tomorrowDateInLong : Long): Flow<List<DoTooItemEntity>>
 
 }

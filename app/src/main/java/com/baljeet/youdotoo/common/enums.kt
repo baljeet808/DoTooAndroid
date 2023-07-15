@@ -1,10 +1,5 @@
 package com.baljeet.youdotoo.common
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.Flaky
-import androidx.compose.material.icons.filled.Today
-import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.datetime.*
 
 enum class Priorities(val toString: String) {
@@ -70,4 +65,8 @@ enum class EnumProjectColors(val longValue : Long){
     Teal(4289130720),
     Brown(4289014314),
     Pink(4294928820)
+}
+
+enum class EnumDashboardTasksTabs{
+    Pending,Yesterday,Today,Tomorrow,AllOther
 }

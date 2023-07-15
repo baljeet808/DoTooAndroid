@@ -45,7 +45,8 @@ class DoToosViewModel @Inject constructor(
                                     dueDate = doToo.getLong("dueDate") ?: 0L,
                                     priority = doToo.getString("priority") ?: "High",
                                     updatedBy = doToo.getString("updatedBy") ?: "",
-                                    done = doToo.getBoolean("done") ?: false
+                                    done = doToo.getBoolean("done") ?: false,
+                                    projectColor = doToo.getLong("projectColor") ?: 4294261839,
                                 )
                             )
                         )

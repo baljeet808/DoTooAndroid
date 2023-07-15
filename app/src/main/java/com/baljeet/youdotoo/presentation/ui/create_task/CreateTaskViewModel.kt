@@ -68,7 +68,8 @@ class CreateTaskViewModel  @Inject constructor(
             },
             createDate = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             updatedBy = SharedPref.userName.plus(" created this Dotoo."),
-            done = false
+            done = false,
+            projectColor = selectedProject.color
         )
 
         if (SharedPref.isUserAPro || projectOwner.not()){
