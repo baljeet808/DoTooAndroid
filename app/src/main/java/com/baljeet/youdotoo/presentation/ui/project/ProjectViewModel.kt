@@ -9,6 +9,7 @@ import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class ProjectViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val deleteDoToosUseCase: DeleteDoTooUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
     private val getProjectDoToosUseCase: GetProjectDoToosUseCase
@@ -62,6 +64,21 @@ class ProjectViewModel @Inject constructor(
         }else{
             viewModelScope.launch {
                 upsertDoToosUseCase(listOf(newDoToo),projectId)
+            }
+        }
+    }
+
+
+    fun deleteTask(task : DoTooItem){
+        if(SharedPref.isUserAPro){
+            projectsReference
+                .document(projectId)
+                .collection("todos")
+                .document(task.id)
+                .delete()
+        }else{
+            viewModelScope.launch {
+                deleteDoToosUseCase(task, projectId = projectId)
             }
         }
     }

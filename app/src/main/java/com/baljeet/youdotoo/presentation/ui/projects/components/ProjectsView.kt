@@ -48,7 +48,8 @@ fun ProjectsView(
     onToggleTask: (DoTooItem) -> Unit,
     navigateToTask: (DoTooItem) -> Unit,
     navigateToCreateTask: () -> Unit,
-    navigateToCreateProject: () -> Unit
+    navigateToCreateProject: () -> Unit,
+    deleteTask : (task : DoTooItem) -> Unit
 ) {
 
     val tasksTabs = EnumDashboardTasksTabs.values()
@@ -341,7 +342,8 @@ fun ProjectsView(
                                         .fillMaxWidth()
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = yesterdayLazyListState
+                                    lazyListState = yesterdayLazyListState,
+                                    onItemDelete = deleteTask
                                 )
                             }
                             EnumDashboardTasksTabs.Today -> {
@@ -357,7 +359,8 @@ fun ProjectsView(
                                         .fillMaxWidth()
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = todayLazyListState
+                                    lazyListState = todayLazyListState,
+                                    onItemDelete = deleteTask
                                 )
                             }
                             EnumDashboardTasksTabs.Tomorrow -> {
@@ -373,7 +376,8 @@ fun ProjectsView(
                                         .fillMaxWidth()
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = tomorrowLazyListState
+                                    lazyListState = tomorrowLazyListState,
+                                    onItemDelete = deleteTask
                                 )
                             }
                             EnumDashboardTasksTabs.Pending -> {
@@ -389,7 +393,8 @@ fun ProjectsView(
                                         .fillMaxWidth()
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = pendingLazyListState
+                                    lazyListState = pendingLazyListState,
+                                    onItemDelete = {}
                                 )
                             }
                             EnumDashboardTasksTabs.AllOther -> {
@@ -405,7 +410,8 @@ fun ProjectsView(
                                         .fillMaxWidth()
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = allOtherLazyListState
+                                    lazyListState = allOtherLazyListState,
+                                    onItemDelete = deleteTask
                                 )
                             }
                         }
@@ -502,6 +508,7 @@ fun DefaultProjectPreview() {
         onToggleTask = {},
         navigateToTask = {},
         navigateToCreateTask = {},
-        navigateToCreateProject = {}
+        navigateToCreateProject = {},
+        deleteTask = {}
     )
 }

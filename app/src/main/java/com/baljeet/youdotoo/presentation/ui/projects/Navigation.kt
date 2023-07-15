@@ -25,7 +25,7 @@ fun NavGraphBuilder.addProjectsViewDestination(
         val viewModel : ProjectsViewModel = hiltViewModel()
         val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
         val pendingTasks by viewModel.pendingTasks().collectAsState(initial = arrayListOf())
-        val yesterdayTasks by viewModel.yesteradyTasks().collectAsState(initial = arrayListOf())
+        val yesterdayTasks by viewModel.yesterdayTasks().collectAsState(initial = arrayListOf())
         val todayTasks by viewModel.todayTasks().collectAsState(initial = arrayListOf())
         val tomorrowTasks by viewModel.tomorrowTasks().collectAsState(initial = arrayListOf())
         val allOtherTasks by viewModel.allOtherTasks().collectAsState(initial = arrayListOf())
@@ -66,6 +66,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             navigateToCreateProject = {
                 navController.navigate(DestinationCreateProjectRoute)
+            },
+            deleteTask = { task ->
+                viewModel.deleteTask(task)
             }
         )
     }

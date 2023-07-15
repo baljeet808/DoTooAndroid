@@ -51,7 +51,10 @@ fun NavGraphBuilder.addProjectViewDestination(
                     "create_task/".plus(projectId).plus("/${projectOwner}")
                 )
             },
-            users = users
+            users = users,
+            deleteTask = { task ->
+                viewModel.deleteTask(task)
+            }
         )
     }
 

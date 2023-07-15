@@ -36,7 +36,8 @@ fun ProjectView(
     users : List<UserEntity>,
     tasks : List<DoTooItemEntity>,
     onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit,
-    navigateToCreateTask : (projectOwner : Boolean) -> Unit
+    navigateToCreateTask : (projectOwner : Boolean) -> Unit,
+    deleteTask : (DoTooItem) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -98,7 +99,8 @@ fun ProjectView(
                 onNavigateClick = {},
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp)
+                    .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
+                onItemDelete = deleteTask
             )
 
         }
@@ -120,6 +122,7 @@ fun PreviewProjectView() {
         tasks = listOf(
             getSampleDotooItem().toDoTooItemEntity(getRandomId())
         ),
-        users = listOf(getSampleProfile().toUserEntity())
+        users = listOf(getSampleProfile().toUserEntity()),
+        deleteTask = {}
     )
 }

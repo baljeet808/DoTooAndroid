@@ -34,6 +34,7 @@ import javax.inject.Inject
 class ProjectsViewModel @Inject constructor(
     private val getProjectsWithDoToosUseCase: GetProjectsWithDoToosUseCase,
     private val getDoTooByIdUseCase: GetDoTooByIdUseCase,
+    private val deleteDoToosUseCase: DeleteDoTooUseCase,
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
@@ -107,7 +108,7 @@ class ProjectsViewModel @Inject constructor(
      * fetch the yesterday's tasks from local database only and
      * then update the firestore when we make any changes to them
      * **/
-    fun yesteradyTasks(): Flow<List<DoTooItemEntity>> = getYesterdayDoToosUseCase(yesterdayDateInLong)
+    fun yesterdayTasks(): Flow<List<DoTooItemEntity>> = getYesterdayDoToosUseCase(yesterdayDateInLong)
 
     /**
      * fetch the today's tasks from local database only and
@@ -295,6 +296,24 @@ class ProjectsViewModel @Inject constructor(
                 upsertProjectUseCase(listOf(newProject))
             }
         }
+    }
+
+
+    fun deleteTask(task : DoTooItem){
+       viewModelScope.launch {
+           val taskEntity = getDoTooByIdUseCase(task.id)
+           val project = getProjectByIdUseCase(projectId = taskEntity.projectId)
+           if(SharedPref.isUserAPro){
+               projectsReference
+                   .document(project.id)
+                   .collection("todos")
+                   .document(task.id)
+                   .delete()
+           }else{
+               deleteDoToosUseCase(task, projectId = project.id)
+           }
+       }
+
     }
 
 
