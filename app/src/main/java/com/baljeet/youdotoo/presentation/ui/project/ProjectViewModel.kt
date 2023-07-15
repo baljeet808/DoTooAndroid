@@ -2,7 +2,8 @@ package com.baljeet.youdotoo.presentation.ui.project
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
@@ -62,7 +63,7 @@ class ProjectViewModel @Inject constructor(
                 .set(newDoToo)
 
         }else{
-            viewModelScope.launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 upsertDoToosUseCase(listOf(newDoToo),projectId)
             }
         }
@@ -76,10 +77,9 @@ class ProjectViewModel @Inject constructor(
                 .collection("todos")
                 .document(task.id)
                 .delete()
-        }else{
-            viewModelScope.launch {
-                deleteDoToosUseCase(task, projectId = projectId)
-            }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteDoToosUseCase(task, projectId = projectId)
         }
     }
 }

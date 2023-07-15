@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.dotoo.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -13,7 +14,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,14 +27,11 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.*
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import kotlinx.coroutines.*
 
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemsLazyColumn(
     lazyListState: LazyListState,
@@ -45,8 +42,8 @@ fun DoTooItemsLazyColumn(
     modifier: Modifier
 ) {
 
-    val scope = rememberCoroutineScope()
-    val resetScope = rememberCoroutineScope()
+
+
 
     LazyColumn(
         state = lazyListState,
@@ -55,13 +52,16 @@ fun DoTooItemsLazyColumn(
             .background(color = Color.Transparent),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(doToos) { dotoo ->
-
+        items(doToos, key = {it.id}) { dotoo ->
+            val job = SupervisorJob()
+            val scope = CoroutineScope ( Dispatchers.Default + job )
+            var startJob : Job? = null
+            val stopScope = rememberCoroutineScope()
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        scope.launch {
-                            delay(2000)
+                        startJob = scope.launch {
+                            delay(1000)
                             onItemDelete(dotoo)
                         }
                     }
@@ -69,6 +69,7 @@ fun DoTooItemsLazyColumn(
                 }
             )
             SwipeToDismiss(
+                modifier = Modifier.animateItemPlacement(),
                 state = state,
                 background = {
                 Row(
@@ -115,8 +116,9 @@ fun DoTooItemsLazyColumn(
                         letterSpacing = TextUnit(1.5f, TextUnitType.Sp),
                         modifier = Modifier.clickable(
                             onClick = {
-                                scope.cancel()
-                                resetScope.launch {
+                                scope.coroutineContext.cancelChildren()
+                                startJob?.cancel()
+                                stopScope.launch {
                                     state.reset()
                                 }
                             }

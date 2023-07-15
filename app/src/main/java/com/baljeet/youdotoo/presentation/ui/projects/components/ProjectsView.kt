@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
@@ -343,7 +344,10 @@ fun ProjectsView(
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                                     lazyListState = yesterdayLazyListState,
-                                    onItemDelete = deleteTask
+                                    onItemDelete = { task ->
+                                        Log.v("Log for - ", "reached projects view")
+                                        deleteTask(task)
+                                    }
                                 )
                             }
                             EnumDashboardTasksTabs.Today -> {
@@ -360,7 +364,10 @@ fun ProjectsView(
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                                     lazyListState = todayLazyListState,
-                                    onItemDelete = deleteTask
+                                    onItemDelete = { task ->
+                                        Log.v("Log for - ", "reached projects view")
+                                        deleteTask(task)
+                                    }
                                 )
                             }
                             EnumDashboardTasksTabs.Tomorrow -> {
@@ -377,7 +384,9 @@ fun ProjectsView(
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                                     lazyListState = tomorrowLazyListState,
-                                    onItemDelete = deleteTask
+                                    onItemDelete = { task ->
+                                        deleteTask(task)
+                                    }
                                 )
                             }
                             EnumDashboardTasksTabs.Pending -> {
@@ -394,7 +403,10 @@ fun ProjectsView(
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                                     lazyListState = pendingLazyListState,
-                                    onItemDelete = {}
+                                    onItemDelete = { task ->
+                                        Log.v("Log for - ", "reached projects view")
+                                        deleteTask(task)
+                                    }
                                 )
                             }
                             EnumDashboardTasksTabs.AllOther -> {
@@ -411,7 +423,9 @@ fun ProjectsView(
                                         .weight(1f)
                                         .padding(top = 10.dp, start = 10.dp, end = 10.dp),
                                     lazyListState = allOtherLazyListState,
-                                    onItemDelete = deleteTask
+                                    onItemDelete = { task ->
+                                        deleteTask(task)
+                                    }
                                 )
                             }
                         }

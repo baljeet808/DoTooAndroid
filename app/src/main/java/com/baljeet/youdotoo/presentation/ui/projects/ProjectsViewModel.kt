@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.projects
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getUserIds
@@ -23,6 +22,8 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -179,7 +180,7 @@ class ProjectsViewModel @Inject constructor(
                     )
 
                     // save all online projects to local db
-                    viewModelScope.launch {
+                    CoroutineScope(Dispatchers.IO).launch {
                         upsertProjectUseCase.invoke(arrayListOf(onlineProject))
                     }
 
@@ -204,7 +205,7 @@ class ProjectsViewModel @Inject constructor(
                                         )
                                     )
                                 }
-                                viewModelScope.launch {
+                                CoroutineScope(Dispatchers.IO).launch {
                                     upsertDoToosUseCase(
                                         dotoos = doToos,
                                         projectId = onlineProject.id
@@ -224,7 +225,7 @@ class ProjectsViewModel @Inject constructor(
 
         val ids = project.getUserIds()
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             ids.forEach { userId ->
                 //only fetch from firestore if user is not in the local DB
                 getUserByIdUseCase(userId) ?: kotlin.run {
@@ -239,7 +240,7 @@ class ProjectsViewModel @Inject constructor(
                                     joined = data.getLong("joined") ?: 0L
                                 )
                                 //save user in local db
-                                viewModelScope.launch {
+                                CoroutineScope(Dispatchers.IO).launch {
                                     upsertUserUseCase(listOf(user))
                                 }
                             }
@@ -261,7 +262,7 @@ class ProjectsViewModel @Inject constructor(
         newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ")
             .plus(if (newDoToo.done) "completed." else "not completed.")
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val task = getDoTooByIdUseCase(doTooItem.id)
             val project = getProjectByIdUseCase(projectId = task.projectId)
             if (SharedPref.isUserAPro || isProjectIsSharedToUser(project)) {
@@ -287,7 +288,7 @@ class ProjectsViewModel @Inject constructor(
             update = "${SharedPref.userName} created this Project named 'My tasks'.",
             color = getRandomColor()
         )
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             if (SharedPref.isUserAPro) {
                 projectsReference
                     .document(newProjectId)
@@ -300,7 +301,7 @@ class ProjectsViewModel @Inject constructor(
 
 
     fun deleteTask(task : DoTooItem){
-       viewModelScope.launch {
+       CoroutineScope(Dispatchers.IO).launch {
            val taskEntity = getDoTooByIdUseCase(task.id)
            val project = getProjectByIdUseCase(projectId = taskEntity.projectId)
            if(SharedPref.isUserAPro){
@@ -309,9 +310,8 @@ class ProjectsViewModel @Inject constructor(
                    .collection("todos")
                    .document(task.id)
                    .delete()
-           }else{
-               deleteDoToosUseCase(task, projectId = project.id)
            }
+           deleteDoToosUseCase(task, projectId = project.id)
        }
 
     }
