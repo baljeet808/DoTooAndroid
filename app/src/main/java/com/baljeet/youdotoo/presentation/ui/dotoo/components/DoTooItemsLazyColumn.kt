@@ -44,6 +44,8 @@ fun DoTooItemsLazyColumn(
 
 
 
+    val parentJob = Job()
+    val stopScope = rememberCoroutineScope()
 
     LazyColumn(
         state = lazyListState,
@@ -53,14 +55,14 @@ fun DoTooItemsLazyColumn(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         items(doToos, key = {it.id}) { dotoo ->
-            val job = SupervisorJob()
-            val scope = CoroutineScope ( Dispatchers.Default + job )
-            var startJob : Job? = null
-            val stopScope = rememberCoroutineScope()
+
+            var startJob : CoroutineScope? = null
+
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        startJob = scope.launch {
+                        startJob = CoroutineScope(parentJob)
+                        startJob?.launch {
                             delay(1000)
                             onItemDelete(dotoo)
                         }
@@ -116,7 +118,6 @@ fun DoTooItemsLazyColumn(
                         letterSpacing = TextUnit(1.5f, TextUnitType.Sp),
                         modifier = Modifier.clickable(
                             onClick = {
-                                scope.coroutineContext.cancelChildren()
                                 startJob?.cancel()
                                 stopScope.launch {
                                     state.reset()

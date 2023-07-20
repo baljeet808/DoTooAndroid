@@ -9,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
 import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
@@ -55,7 +57,9 @@ fun ProjectsView(
 
     val tasksTabs = EnumDashboardTasksTabs.values()
 
-    val pagerState = rememberPagerState(initialPage = 2)
+
+
+    val pagerState = rememberPagerState(initialPage = 0)
 
     val scope = rememberCoroutineScope()
 
@@ -303,12 +307,36 @@ fun ProjectsView(
                             }
                             androidx.compose.material.Tab(
                                 text = {
-                                    Text(
-                                        text = if(tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
-                                        color = color.value,
-                                        fontFamily = FontFamily(Nunito.Normal.font),
-                                        letterSpacing = TextUnit(1f, TextUnitType.Sp)
-                                    )
+                                    Row(
+                                        modifier = Modifier,
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.SpaceAround
+                                    ){
+                                        val tasksCount = when(tasksTabs.indexOf(tasksTab)){
+                                            0 -> todayTasks.size
+                                            1 -> tomorrowTasks.size
+                                            2 -> yesterdayTasks.size
+                                            3 -> pendingTasks.size
+                                            4 -> allOtherTasks.size
+                                            else-> allOtherTasks.size
+                                        }
+
+                                        AnimatedVisibility(visible = tasksCount > 0) {
+                                            Text(
+                                                text = tasksCount.toString(),
+                                                color = color.value,
+                                                modifier = Modifier,
+                                                textAlign = TextAlign.Center
+                                            )
+                                        }
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(
+                                            text = if(tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
+                                            color = color.value,
+                                            fontFamily = FontFamily(Nunito.Normal.font),
+                                            letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                                        )
+                                    }
                                 },
                                 selected = pagerState.currentPage == index,
                                 modifier = Modifier.background(color = Color.Transparent),

@@ -24,7 +24,7 @@ fun getOnBoardPagerContentList () : List<OnBoardPagerContent>{
             description = ConstSecScreenDescription
         ),
         OnBoardPagerContent(
-            title = "Organize Task Easily With Dotoos!",
+            title = "Organize Tasks Easily With Dotoos!",
             res = R.drawable.set_reminders,
             description = ConstThirdScreenDescription
         ),
