@@ -9,7 +9,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
@@ -52,14 +51,45 @@ fun ProjectsView(
     navigateToTask: (DoTooItem) -> Unit,
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
-    deleteTask : (task : DoTooItem) -> Unit
+    deleteTask: (task: DoTooItem) -> Unit
 ) {
 
     val tasksTabs = EnumDashboardTasksTabs.values()
 
+    val startingTabIndex = 0
 
 
-    val pagerState = rememberPagerState(initialPage = 0)
+    /**
+     * This logic did not pan out, keeping it to fix it in future
+     * **/
+    /*val tomorrowUndoneTasksCount = tomorrowTasks.filter { t -> t.done.not() }.size
+    val todayUndoneTasksCount = todayTasks.filter { t -> t.done.not() }.size
+    val yesterdayUndoneTasksCount = yesterdayTasks.filter { t -> t.done.not() }.size
+    val pendingUndoneTasksCount = pendingTasks.filter { t -> t.done.not() }.size
+    val allOtherUndoneTasksCount = allOtherTasks.filter { t -> t.done.not() }.size
+
+    var maxUndoneTasksCount = todayUndoneTasksCount
+
+    for (i in 1..5) {
+        if (tomorrowUndoneTasksCount > maxUndoneTasksCount){
+            startingTabIndex = 1
+            maxUndoneTasksCount = tomorrowUndoneTasksCount
+        }
+        if (yesterdayUndoneTasksCount > maxUndoneTasksCount){
+            startingTabIndex = 2
+            maxUndoneTasksCount = yesterdayUndoneTasksCount
+        }
+        if (pendingUndoneTasksCount > maxUndoneTasksCount){
+            startingTabIndex = 3
+            maxUndoneTasksCount = pendingUndoneTasksCount
+        }
+        if (allOtherUndoneTasksCount > maxUndoneTasksCount){
+            startingTabIndex = 4
+            maxUndoneTasksCount = allOtherUndoneTasksCount
+        }
+    }*/
+
+    val pagerState = rememberPagerState(initialPage = startingTabIndex)
 
     val scope = rememberCoroutineScope()
 
@@ -288,19 +318,18 @@ fun ProjectsView(
                     ) {
                         tasksTabs.forEachIndexed { index, tasksTab ->
 
-                            val color = remember{
+                            val color = remember {
                                 androidx.compose.animation.Animatable(Color.Black)
                             }
-                            LaunchedEffect(key1 = pagerState.currentPage == index){
+                            LaunchedEffect(key1 = pagerState.currentPage == index) {
                                 color.animateTo(
-                                    if(pagerState.currentPage == index)
-                                    {
-                                        if(darkTheme){
+                                    if (pagerState.currentPage == index) {
+                                        if (darkTheme) {
                                             Color.White
-                                        }else{
+                                        } else {
                                             Color.Black
                                         }
-                                    }else {
+                                    } else {
                                         LightAppBarIconsColor
                                     }
                                 )
@@ -311,14 +340,14 @@ fun ProjectsView(
                                         modifier = Modifier,
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.SpaceAround
-                                    ){
-                                        val tasksCount = when(tasksTabs.indexOf(tasksTab)){
+                                    ) {
+                                        val tasksCount = when (tasksTabs.indexOf(tasksTab)) {
                                             0 -> todayTasks.size
                                             1 -> tomorrowTasks.size
                                             2 -> yesterdayTasks.size
                                             3 -> pendingTasks.size
                                             4 -> allOtherTasks.size
-                                            else-> allOtherTasks.size
+                                            else -> allOtherTasks.size
                                         }
 
                                         AnimatedVisibility(visible = tasksCount > 0) {
@@ -331,7 +360,7 @@ fun ProjectsView(
                                         }
                                         Spacer(modifier = Modifier.width(5.dp))
                                         Text(
-                                            text = if(tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
+                                            text = if (tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
                                             color = color.value,
                                             fontFamily = FontFamily(Nunito.Normal.font),
                                             letterSpacing = TextUnit(1f, TextUnitType.Sp)
@@ -466,14 +495,14 @@ fun ProjectsView(
 
 @OptIn(ExperimentalPagerApi::class)
 fun isTopCardVisible(
-    pendingLazyListState : LazyListState,
-    yesterdayLazyListState : LazyListState,
-    todayLazyListState : LazyListState,
-    tomorrowLazyListState : LazyListState,
-    allOtherLazyListState : LazyListState,
-    pagerState : PagerState
-): Boolean{
-    when(pagerState.currentPage){
+    pendingLazyListState: LazyListState,
+    yesterdayLazyListState: LazyListState,
+    todayLazyListState: LazyListState,
+    tomorrowLazyListState: LazyListState,
+    allOtherLazyListState: LazyListState,
+    pagerState: PagerState
+): Boolean {
+    when (pagerState.currentPage) {
         0 -> {
             return pendingLazyListState.isScrolled.not()
         }
@@ -483,13 +512,13 @@ fun isTopCardVisible(
         2 -> {
             return todayLazyListState.isScrolled.not()
         }
-        3 ->{
+        3 -> {
             return tomorrowLazyListState.isScrolled.not()
         }
-        4 ->{
+        4 -> {
             return allOtherLazyListState.isScrolled.not()
         }
-        else ->{
+        else -> {
             return true
         }
     }
