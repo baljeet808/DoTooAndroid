@@ -13,8 +13,7 @@ class DashboardViewModel @Inject constructor (
 ): ViewModel() {
 
     /**
-     * fetch the yesterday's tasks from local database only and
-     * then update the firestore when we make any changes to them
+     * fetch the all tasks from local database
      * **/
     fun allTasks(): Flow<List<DoTooItemEntity>> = getAllTasksUseCase()
 
