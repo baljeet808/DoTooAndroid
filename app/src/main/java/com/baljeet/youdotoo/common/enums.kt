@@ -70,3 +70,4 @@ enum class EnumProjectColors(val longValue : Long){
 enum class EnumDashboardTasksTabs{
     Today,Tomorrow,Yesterday,Pending,AllOther
 }
+

@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.common
 
+import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
@@ -8,9 +9,8 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
-import java.util.UUID
+import java.util.*
 import kotlin.random.Random
-
 
 
 fun getSampleDoTooWithProfiles(): DoTooWithProfiles {
@@ -94,6 +94,15 @@ fun getSampleProjectWithTasks(): ProjectWithDoToos {
 fun getRandomColor(): Long {
     val randomInt = Random.nextInt(from = 0, 11)
     return EnumProjectColors.values()[randomInt].longValue
+}
+
+fun getRandomNothingFoundIllustration(): Int {
+    val randomInt = Random.nextInt(from = 0, 1)
+    val resources =  listOf(
+        R.drawable.nothing_found_one,
+        R.drawable.nothing_found_five
+    )
+    return resources[randomInt]
 }
 
 fun getRandomColorEnum(): EnumProjectColors {

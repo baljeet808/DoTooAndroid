@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
+import android.content.res.Configuration
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
@@ -22,15 +23,13 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.*
-import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
-import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.common.getSampleProjectWithTasks
-import com.baljeet.youdotoo.common.isScrolled
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.NothingFoundView
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -388,102 +387,169 @@ fun ProjectsView(
                     ) {
                         when (tasksTabs[pagerState.currentPage]) {
                             EnumDashboardTasksTabs.Yesterday -> {
-                                DoTooItemsLazyColumn(
-                                    doToos = yesterdayTasks,
-                                    onToggleDoToo = { doToo ->
-                                        onToggleTask(doToo)
-                                    },
-                                    onNavigateClick = { doToo ->
-                                        navigateToTask(doToo)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = yesterdayLazyListState,
-                                    onItemDelete = { task ->
-                                        Log.v("Log for - ", "reached projects view")
-                                        deleteTask(task)
-                                    }
-                                )
+                                AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
+                                    DoTooItemsLazyColumn(
+                                        doToos = yesterdayTasks,
+                                        onToggleDoToo = { doToo ->
+                                            onToggleTask(doToo)
+                                        },
+                                        onNavigateClick = { doToo ->
+                                            navigateToTask(doToo)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                        lazyListState = yesterdayLazyListState,
+                                        onItemDelete = { task ->
+                                            Log.v("Log for - ", "reached projects view")
+                                            deleteTask(task)
+                                        }
+                                    )
+                                }
+                                AnimatedVisibility(visible = yesterdayTasks.isEmpty()) {
+                                    NothingFoundView(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(20.dp),
+                                        nightColor = DotooGray,
+                                        hideHeading = true,
+                                        onClick = navigateToCreateTask
+                                    )
+                                }
                             }
                             EnumDashboardTasksTabs.Today -> {
-                                DoTooItemsLazyColumn(
-                                    doToos = todayTasks,
-                                    onToggleDoToo = { doToo ->
-                                        onToggleTask(doToo)
-                                    },
-                                    onNavigateClick = { doToo ->
-                                        navigateToTask(doToo)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = todayLazyListState,
-                                    onItemDelete = { task ->
-                                        Log.v("Log for - ", "reached projects view")
-                                        deleteTask(task)
-                                    }
-                                )
+                                AnimatedVisibility(visible = todayTasks.isNotEmpty()) {
+                                    DoTooItemsLazyColumn(
+                                        doToos = todayTasks,
+                                        onToggleDoToo = { doToo ->
+                                            onToggleTask(doToo)
+                                        },
+                                        onNavigateClick = { doToo ->
+                                            navigateToTask(doToo)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                        lazyListState = todayLazyListState,
+                                        onItemDelete = { task ->
+                                            Log.v("Log for - ", "reached projects view")
+                                            deleteTask(task)
+                                        }
+                                    )
+                                }
+                                AnimatedVisibility(visible = todayTasks.isEmpty()) {
+                                   NothingFoundView(
+                                       modifier = Modifier
+                                           .fillMaxWidth()
+                                           .weight(1f)
+                                           .padding(20.dp),
+                                       nightColor = DotooGray,
+                                       hideHeading = true,
+                                       onClick = navigateToCreateTask
+                                   )
+                                }
                             }
                             EnumDashboardTasksTabs.Tomorrow -> {
-                                DoTooItemsLazyColumn(
-                                    doToos = tomorrowTasks,
-                                    onToggleDoToo = { doToo ->
-                                        onToggleTask(doToo)
-                                    },
-                                    onNavigateClick = { doToo ->
-                                        navigateToTask(doToo)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = tomorrowLazyListState,
-                                    onItemDelete = { task ->
-                                        deleteTask(task)
-                                    }
-                                )
+                                AnimatedVisibility(visible = tomorrowTasks.isNotEmpty()) {
+                                    DoTooItemsLazyColumn(
+                                        doToos = tomorrowTasks,
+                                        onToggleDoToo = { doToo ->
+                                            onToggleTask(doToo)
+                                        },
+                                        onNavigateClick = { doToo ->
+                                            navigateToTask(doToo)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                        lazyListState = tomorrowLazyListState,
+                                        onItemDelete = { task ->
+                                            deleteTask(task)
+                                        }
+                                    )
+                                }
+                                AnimatedVisibility(visible = tomorrowTasks.isEmpty()) {
+                                    NothingFoundView(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(20.dp),
+                                        nightColor = DotooGray,
+                                        hideHeading = true,
+                                        onClick = navigateToCreateTask
+                                    )
+                                }
                             }
                             EnumDashboardTasksTabs.Pending -> {
-                                DoTooItemsLazyColumn(
-                                    doToos = pendingTasks,
-                                    onToggleDoToo = { doToo ->
-                                        onToggleTask(doToo)
-                                    },
-                                    onNavigateClick = { doToo ->
-                                        navigateToTask(doToo)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = pendingLazyListState,
-                                    onItemDelete = { task ->
-                                        Log.v("Log for - ", "reached projects view")
-                                        deleteTask(task)
-                                    }
-                                )
+                                AnimatedVisibility(visible = pendingTasks.isNotEmpty()) {
+                                    DoTooItemsLazyColumn(
+                                        doToos = pendingTasks,
+                                        onToggleDoToo = { doToo ->
+                                            onToggleTask(doToo)
+                                        },
+                                        onNavigateClick = { doToo ->
+                                            navigateToTask(doToo)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                        lazyListState = pendingLazyListState,
+                                        onItemDelete = { task ->
+                                            Log.v("Log for - ", "reached projects view")
+                                            deleteTask(task)
+                                        }
+                                    )
+                                }
+
+                                AnimatedVisibility(visible = pendingTasks.isEmpty()) {
+                                    NothingFoundView(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(20.dp),
+                                        nightColor = DotooGray,
+                                        hideHeading = true,
+                                        onClick = navigateToCreateTask
+                                    )
+                                }
                             }
                             EnumDashboardTasksTabs.AllOther -> {
-                                DoTooItemsLazyColumn(
-                                    doToos = allOtherTasks,
-                                    onToggleDoToo = { doToo ->
-                                        onToggleTask(doToo)
-                                    },
-                                    onNavigateClick = { doToo ->
-                                        navigateToTask(doToo)
-                                    },
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .weight(1f)
-                                        .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                    lazyListState = allOtherLazyListState,
-                                    onItemDelete = { task ->
-                                        deleteTask(task)
-                                    }
-                                )
+                                AnimatedVisibility(visible = allOtherTasks.isNotEmpty()) {
+                                    DoTooItemsLazyColumn(
+                                        doToos = allOtherTasks,
+                                        onToggleDoToo = { doToo ->
+                                            onToggleTask(doToo)
+                                        },
+                                        onNavigateClick = { doToo ->
+                                            navigateToTask(doToo)
+                                        },
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(top = 10.dp, start = 10.dp, end = 10.dp),
+                                        lazyListState = allOtherLazyListState,
+                                        onItemDelete = { task ->
+                                            deleteTask(task)
+                                        }
+                                    )
+                                }
+
+                                AnimatedVisibility(visible = allOtherTasks.isEmpty()) {
+                                    NothingFoundView(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .weight(1f)
+                                            .padding(20.dp),
+                                        nightColor = DotooGray,
+                                        hideHeading = true,
+                                        onClick = navigateToCreateTask
+                                    )
+                                }
                             }
                         }
                     }
@@ -539,7 +605,7 @@ fun Project.getUserRole(userId: String): String {
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DefaultProjectPreview() {
     ProjectsView(
@@ -560,9 +626,9 @@ fun DefaultProjectPreview() {
             getSampleDotooItem()
         ),
         todayTasks = arrayListOf(
+            /*getSampleDotooItem(),
             getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
+            getSampleDotooItem()*/
         ),
         tomorrowTasks = arrayListOf(
             getSampleDotooItem(),
