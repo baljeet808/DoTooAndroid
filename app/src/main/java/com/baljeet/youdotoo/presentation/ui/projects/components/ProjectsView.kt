@@ -29,7 +29,7 @@ import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.shared.views.NothingFoundView
+import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -408,15 +408,6 @@ fun ProjectsView(
                                     )
                                 }
                                 AnimatedVisibility(visible = yesterdayTasks.isEmpty()) {
-                                    NothingFoundView(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .padding(20.dp),
-                                        nightColor = DotooGray,
-                                        hideHeading = true,
-                                        onClick = navigateToCreateTask
-                                    )
                                 }
                             }
                             EnumDashboardTasksTabs.Today -> {
@@ -441,15 +432,7 @@ fun ProjectsView(
                                     )
                                 }
                                 AnimatedVisibility(visible = todayTasks.isEmpty()) {
-                                   NothingFoundView(
-                                       modifier = Modifier
-                                           .fillMaxWidth()
-                                           .weight(1f)
-                                           .padding(20.dp),
-                                       nightColor = DotooGray,
-                                       hideHeading = true,
-                                       onClick = navigateToCreateTask
-                                   )
+                                    NothingHereView()
                                 }
                             }
                             EnumDashboardTasksTabs.Tomorrow -> {
@@ -473,15 +456,7 @@ fun ProjectsView(
                                     )
                                 }
                                 AnimatedVisibility(visible = tomorrowTasks.isEmpty()) {
-                                    NothingFoundView(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .padding(20.dp),
-                                        nightColor = DotooGray,
-                                        hideHeading = true,
-                                        onClick = navigateToCreateTask
-                                    )
+
                                 }
                             }
                             EnumDashboardTasksTabs.Pending -> {
@@ -507,15 +482,6 @@ fun ProjectsView(
                                 }
 
                                 AnimatedVisibility(visible = pendingTasks.isEmpty()) {
-                                    NothingFoundView(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .padding(20.dp),
-                                        nightColor = DotooGray,
-                                        hideHeading = true,
-                                        onClick = navigateToCreateTask
-                                    )
                                 }
                             }
                             EnumDashboardTasksTabs.AllOther -> {
@@ -540,15 +506,7 @@ fun ProjectsView(
                                 }
 
                                 AnimatedVisibility(visible = allOtherTasks.isEmpty()) {
-                                    NothingFoundView(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .weight(1f)
-                                            .padding(20.dp),
-                                        nightColor = DotooGray,
-                                        hideHeading = true,
-                                        onClick = navigateToCreateTask
-                                    )
+
                                 }
                             }
                         }
