@@ -25,7 +25,9 @@ import kotlinx.coroutines.delay
 
 
 @Composable
-fun NothingHereView() {
+fun NothingHereView(
+    modifier: Modifier
+) {
 
 
 
@@ -75,8 +77,8 @@ fun NothingHereView() {
 
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth().height(200.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -152,5 +154,5 @@ fun NothingHereView() {
 @Preview(showBackground = false, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewNothingHereView(){
-    NothingHereView()
+    NothingHereView(modifier = Modifier)
 }

@@ -10,7 +10,6 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
-import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsView
 
 
 const val DestinationProjectsRoute = "projects"
