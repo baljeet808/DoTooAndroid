@@ -8,10 +8,10 @@ import javax.inject.Singleton
 
 
 @Singleton
-class GetProjectDoToosUseCase @Inject constructor(
+class GetAllTasksUseCase @Inject constructor(
     private val repository: DoTooItemsRepository
 ){
-    operator fun invoke(projectId : String): Flow<List<DoTooItemEntity>> {
-        return repository.getDoToosByProjectId(projectId)
+    operator fun invoke(): Flow<List<DoTooItemEntity>> {
+        return repository.getAllDoTooItems()
     }
 }

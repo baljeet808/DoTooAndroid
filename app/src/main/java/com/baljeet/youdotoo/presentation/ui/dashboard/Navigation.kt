@@ -1,5 +1,8 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.presentation.ui.dashboard.component.DashboardView
@@ -15,6 +18,12 @@ fun NavGraphBuilder.addDashboardViewDestination(){
     composable(
         route = DestinationDashboardRoute
     ){
-        DashboardView()
+        val viewModel : DashboardViewModel  = hiltViewModel()
+
+        val allTasks by viewModel.allTasks().collectAsState(initial = arrayListOf())
+
+        DashboardView(
+            allTasks = allTasks
+        )
     }
 }

@@ -29,10 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
+import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
+import java.lang.Float.max
 
 /**
  * Updated by Baljeet singh.
@@ -43,9 +47,19 @@ fun NavigationDrawer(
     menuItems: List<MenuItem>,
     onMenuItemClick: (MenuItem) -> Unit,
     closeDrawer : () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    allTasks : List<DoTooItemEntity>
 ) {
 
+
+    val animatedProgress = animateFloatAsState(
+        targetValue = (max(0.1f,allTasks.filter { task -> task.done }.size.toFloat()) / max(1F,(allTasks.size).toFloat())),
+        animationSpec = tween(
+            delayMillis = 1500,
+            durationMillis = 1500,
+            easing = LinearEasing
+        )
+    ).value
 
     val transition = rememberInfiniteTransition()
 
@@ -69,7 +83,7 @@ fun NavigationDrawer(
     )
 
     val offsetX1 by transition.animateValue(
-        initialValue =-60.dp,
+        initialValue = (-60).dp,
         targetValue = 20.dp,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 30000),
@@ -166,7 +180,7 @@ fun NavigationDrawer(
                         modifier = Modifier
                             .progressSemantics()
                             .size(100.dp),
-                        progress = .40F,
+                        progress = animatedProgress,
                         trackColor = if (isSystemInDarkTheme()) {
                             NightDotooLightBlue
                         } else {
@@ -331,6 +345,9 @@ fun PreviewNavigationDrawer() {
         menuItems = menuItems,
         onMenuItemClick = {},
         closeDrawer = {},
-        modifier = Modifier
+        modifier = Modifier,
+        allTasks = listOf(
+            getSampleDotooItem().toDoTooItemEntity("0")
+        )
     )
 }

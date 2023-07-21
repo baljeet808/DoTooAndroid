@@ -19,11 +19,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.baljeet.youdotoo.common.DestinationAccountRoute
-import com.baljeet.youdotoo.common.DestinationSettingsRoute
-import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.menuItems
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.data.dto.UserData
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.createproject.addCreateProjectViewDestination
@@ -42,7 +41,9 @@ import kotlinx.coroutines.launch
  * Updated by Baljeet singh.
  * **/
 @Composable
-fun DashboardView() {
+fun DashboardView(
+    allTasks : List<DoTooItemEntity>
+) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
@@ -142,7 +143,8 @@ fun DashboardView() {
                         }
                         maximizeCurrentScreen = true
                     },
-                    modifier = Modifier.width(250.dp)
+                    modifier = Modifier.width(250.dp),
+                    allTasks = allTasks
                 )
                 Box(
                     modifier = Modifier
@@ -241,5 +243,9 @@ fun DashboardView() {
 @Preview(showBackground = true)
 @Composable
 fun PreviewDashboardView() {
-    DashboardView()
+    DashboardView(
+        allTasks = listOf(
+            getSampleDotooItem().toDoTooItemEntity("")
+        )
+    )
 }
