@@ -47,7 +47,6 @@ fun DoTooItemView(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
-            .clickable(onClick = onNavigateClick)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
                 color = if (isSystemInDarkTheme()) {
@@ -61,7 +60,8 @@ fun DoTooItemView(
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .clickable(onClick = onNavigateClick)
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
