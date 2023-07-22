@@ -76,8 +76,6 @@ fun NavGraphBuilder.addProjectsViewDestination(
             }
         )
     }
-
-
     composable(
         route = DestinationCreateProjectRoute
     ){
@@ -107,8 +105,6 @@ fun NavGraphBuilder.addProjectsViewDestination(
         )
 
     }
-
-
 }
 
 

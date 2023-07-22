@@ -3,10 +3,12 @@ package com.baljeet.youdotoo.presentation.ui.projects
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
+import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
@@ -176,7 +178,8 @@ class ProjectsViewModel @Inject constructor(
                         viewerIds = (project.get("viewerIds") as List<String>),
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
-                        color = project.getLong("color") ?: 4278215265
+                        color = project.getLong("color") ?: 4278215265,
+                        updatedAt = project.getLong("updatedAt")?: getSampleDateInLong()
                     )
 
                     // save all online projects to local db
@@ -201,7 +204,7 @@ class ProjectsViewModel @Inject constructor(
                                             priority = doToo.getString("priority") ?: "High",
                                             updatedBy = doToo.getString("updatedBy") ?: "",
                                             done = doToo.getBoolean("done") ?: false,
-                                            projectColor = doToo.getLong("projectColor") ?: getRandomColor(),
+                                            projectColor = doToo.getLong("projectColor") ?: getRandomColor()
                                         )
                                     )
                                 }
@@ -272,10 +275,30 @@ class ProjectsViewModel @Inject constructor(
                     .document(newDoToo.id)
                     .set(newDoToo)
 
+            }else{
+                upsertDoToosUseCase(listOf(newDoToo), project.id)
             }
-            upsertDoToosUseCase(listOf(newDoToo), project.id)
+            upsertProject(project)
         }
     }
+
+
+    private fun upsertProject(project : ProjectEntity){
+        val newProject = project.copy()
+        newProject.updatedAt = getSampleDateInLong()
+        if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
+            projectsReference
+                .document(project.id)
+                .set(newProject.toProject())
+        }else{
+            CoroutineScope(Dispatchers.IO).launch {
+                upsertProjectUseCase(listOf(newProject.toProject()))
+            }
+        }
+    }
+
+
+
 
     fun createDummyProject(newProjectId: String) {
         val newProject = Project(
@@ -286,7 +309,8 @@ class ProjectsViewModel @Inject constructor(
             collaboratorIds = listOf(),
             viewerIds = listOf(),
             update = "${SharedPref.userName} created this Project named 'My tasks'.",
-            color = getRandomColor()
+            color = getRandomColor(),
+            updatedAt = getSampleDateInLong()
         )
         CoroutineScope(Dispatchers.IO).launch {
             if (SharedPref.isUserAPro) {

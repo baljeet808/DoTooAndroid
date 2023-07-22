@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
@@ -15,6 +16,7 @@ import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,7 +33,8 @@ class ProjectViewModel @Inject constructor(
     private val deleteDoToosUseCase: DeleteDoTooUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
-    private val getProjectDoToosUseCase: GetProjectDoToosUseCase
+    private val getProjectDoToosUseCase: GetProjectDoToosUseCase,
+    private val upsertProjectUseCase: UpsertProjectUseCase
 ) : ViewModel() {
 
 
@@ -69,6 +72,22 @@ class ProjectViewModel @Inject constructor(
                 upsertDoToosUseCase(listOf(newDoToo),projectId)
             }
         }
+        upsertProject(project)
+    }
+
+    private fun upsertProject(project : Project){
+        val newProject = project.copy()
+
+        newProject.updatedAt = getSampleDateInLong()
+        if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
+            projectsReference
+                .document(projectId)
+                .set(newProject)
+        }else{
+            CoroutineScope(Dispatchers.IO).launch {
+                upsertProjectUseCase(listOf(newProject))
+            }
+        }
     }
 
 
@@ -95,10 +114,4 @@ class ProjectViewModel @Inject constructor(
             deleteProjectUseCase(project = project)
         }
     }
-
-
-    fun resetState(){
-
-    }
-
 }

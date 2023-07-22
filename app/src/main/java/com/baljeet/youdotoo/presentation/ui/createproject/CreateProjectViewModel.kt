@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.google.firebase.firestore.ktx.firestore
@@ -36,7 +37,8 @@ class CreateProjectViewModel @Inject constructor(
             collaboratorIds = listOf(),
             viewerIds = listOf(),
             update = "${SharedPref.userName} created new project named '${projectName}.'",
-            color = projectColor
+            color = projectColor,
+            updatedAt = getSampleDateInLong()
         )
 
         if(SharedPref.isUserAPro) {

@@ -14,5 +14,6 @@ data class ProjectEntity(
     var update : String,
     var color : Long,
     var collaboratorIds : String,
-    var viewerIds: String
+    var viewerIds: String,
+    var updatedAt : Long
 )

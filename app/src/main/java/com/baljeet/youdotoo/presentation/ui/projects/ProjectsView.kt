@@ -265,7 +265,7 @@ fun ProjectsView(
                     ProjectsLazyRow(
                         modifier = Modifier
                             .fillMaxWidth(),
-                        projects = projects,
+                        projects = projects.sortedBy { p ->  p.project.updatedAt }.reversed(),
                         navigateToDoToos = navigateToDoToos,
                         userId = userId
                     )

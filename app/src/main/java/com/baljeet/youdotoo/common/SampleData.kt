@@ -75,7 +75,8 @@ fun getSampleProject(): Project {
         collaboratorIds = getSampleIds(),
         viewerIds = getSampleIds(),
         update = "",
-        color = getRandomColor()
+        color = getRandomColor(),
+        updatedAt = getSampleDateInLong()
     )
 }
 

@@ -13,7 +13,8 @@ fun Project.toProjectEntity() : ProjectEntity{
         update = update,
         color = color,
         collaboratorIds = collaboratorIds.joinToString ( "," ),
-        viewerIds = viewerIds.joinToString (",")
+        viewerIds = viewerIds.joinToString (","),
+        updatedAt = updatedAt
     )
 }
 
@@ -24,9 +25,18 @@ fun ProjectEntity.toProject(): Project{
         name = name,
         description = description,
         ownerId = ownerId,
-        collaboratorIds = collaboratorIds.split(","),
-        viewerIds = viewerIds.split(","),
+        collaboratorIds = if(collaboratorIds.isNotBlank()){
+            collaboratorIds.split(",")
+        }else{
+            listOf()
+        },
+        viewerIds = if(viewerIds.isNotBlank()){
+            viewerIds.split(",")
+        }else{
+            listOf()
+        },
         update = update,
-        color = color
+        color = color,
+        updatedAt = updatedAt
     )
 }

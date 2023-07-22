@@ -116,12 +116,12 @@ val LazyListState.isScrolled: Boolean
 
 fun Project.getUserIds(): List<String>{
     val ids = if (this.collaboratorIds.isNotEmpty()) {
-        this.collaboratorIds.toCollection(ArrayList())
+        this.collaboratorIds.filter { id -> id.isNotBlank() }.toCollection(ArrayList())
     } else {
         arrayListOf()
     }
     if (this.viewerIds.isNotEmpty()) {
-        ids.addAll(this.viewerIds)
+        ids.addAll(this.viewerIds.filter { id -> id.isNotBlank() })
     }
     ids.add(SharedPref.userId!!)
     return ids
