@@ -36,7 +36,8 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 fun ProjectCardView(
     project: ProjectWithDoToos,
     role: String,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    modifier: Modifier
 ) {
 
     val animatedProgress = animateFloatAsState(
@@ -45,7 +46,7 @@ fun ProjectCardView(
     ).value
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .widthIn(max = 220.dp)
             .heightIn(max = 160.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
@@ -136,6 +137,7 @@ fun ProjectCardView(
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
+        modifier = Modifier,
         project = getSampleProjectWithTasks(),
         onItemClick = {},
         role = "Blocked"

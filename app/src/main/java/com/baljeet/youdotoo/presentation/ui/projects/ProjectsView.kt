@@ -33,6 +33,8 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import com.google.accompanist.pager.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
@@ -52,6 +54,10 @@ fun ProjectsView(
     navigateToCreateProject: () -> Unit,
     deleteTask: (task: DoTooItem) -> Unit
 ) {
+
+    val projectsListState = rememberLazyListState()
+    val listMoveScope = rememberCoroutineScope()
+    val moveAnimationDelay : Long = 200
 
     val tasksTabs = EnumDashboardTasksTabs.values()
 
@@ -267,7 +273,8 @@ fun ProjectsView(
                             .fillMaxWidth(),
                         projects = projects.sortedBy { p ->  p.project.updatedAt }.reversed(),
                         navigateToDoToos = navigateToDoToos,
-                        userId = userId
+                        userId = userId,
+                        listState = projectsListState
                     )
                 }
 
@@ -352,6 +359,10 @@ fun ProjectsView(
                                             doToos = yesterdayTasks,
                                             onToggleDoToo = { doToo ->
                                                 onToggleTask(doToo)
+                                                listMoveScope.launch {
+                                                    delay(moveAnimationDelay)
+                                                    projectsListState.animateScrollToItem(0)
+                                                }
                                             },
                                             onNavigateClick = { doToo ->
                                                 navigateToTask(doToo)
@@ -374,6 +385,10 @@ fun ProjectsView(
                                             doToos = todayTasks,
                                             onToggleDoToo = { doToo ->
                                                 onToggleTask(doToo)
+                                                listMoveScope.launch {
+                                                    delay(moveAnimationDelay)
+                                                    projectsListState.animateScrollToItem(0)
+                                                }
                                             },
                                             onNavigateClick = { doToo ->
                                                 navigateToTask(doToo)
@@ -396,6 +411,10 @@ fun ProjectsView(
                                             doToos = tomorrowTasks,
                                             onToggleDoToo = { doToo ->
                                                 onToggleTask(doToo)
+                                                listMoveScope.launch {
+                                                    delay(moveAnimationDelay)
+                                                    projectsListState.animateScrollToItem(0)
+                                                }
                                             },
                                             onNavigateClick = { doToo ->
                                                 navigateToTask(doToo)
@@ -417,6 +436,10 @@ fun ProjectsView(
                                             doToos = pendingTasks,
                                             onToggleDoToo = { doToo ->
                                                 onToggleTask(doToo)
+                                                listMoveScope.launch {
+                                                    delay(moveAnimationDelay)
+                                                    projectsListState.animateScrollToItem(0)
+                                                }
                                             },
                                             onNavigateClick = { doToo ->
                                                 navigateToTask(doToo)
@@ -439,6 +462,10 @@ fun ProjectsView(
                                             doToos = allOtherTasks,
                                             onToggleDoToo = { doToo ->
                                                 onToggleTask(doToo)
+                                                listMoveScope.launch {
+                                                    delay(moveAnimationDelay)
+                                                    projectsListState.animateScrollToItem(0)
+                                                }
                                             },
                                             onNavigateClick = { doToo ->
                                                 navigateToTask(doToo)
