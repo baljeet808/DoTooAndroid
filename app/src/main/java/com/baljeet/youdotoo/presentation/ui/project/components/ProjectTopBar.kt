@@ -82,7 +82,7 @@ fun ProjectTopBar(
              * **/
             IconButton(
                 onClick = {
-                    onNotificationItemClicked()
+                    onDeleteItemClicked()
                 },
                 modifier = Modifier
                     .weight(0.2f)

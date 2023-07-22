@@ -47,6 +47,7 @@ fun ProjectCardWithProfiles(
     users: List<User>,
     tasks: List<DoTooItem>,
     lazyListState: LazyListState,
+    onItemDeleteClick : () -> Unit
 ) {
 
     val darkTheme = isSystemInDarkTheme()
@@ -116,7 +117,7 @@ fun ProjectCardWithProfiles(
                 notificationsState = true,
                 onFavoriteClick = { /*TODO*/ },
                 onNotificationItemClicked = { /*TODO*/ },
-                onDeleteItemClicked = { /*TODO*/ },
+                onDeleteItemClicked = onItemDeleteClick,
                 modifier = Modifier
             )
         }
@@ -194,6 +195,7 @@ fun PreviewProjectCardWithProfiles() {
         ),
         users = listOf(
             getSampleProfile()
-        )
+        ),
+        onItemDeleteClick = {}
     )
 }

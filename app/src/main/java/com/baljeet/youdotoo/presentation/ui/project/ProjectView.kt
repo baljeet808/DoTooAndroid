@@ -37,7 +37,8 @@ fun ProjectView(
     tasks : List<DoTooItemEntity>,
     onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit,
     navigateToCreateTask : (projectOwner : Boolean) -> Unit,
-    deleteTask : (DoTooItem) -> Unit
+    deleteTask : (DoTooItem) -> Unit,
+    deleteProject : () -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -82,7 +83,8 @@ fun ProjectView(
                 project = project?.toProject(),
                 users = users.map { it.toUser() },
                 tasks = tasks.map { it.toDoTooItem() },
-                lazyListState = lazyListState
+                lazyListState = lazyListState,
+                onItemDeleteClick = deleteProject
             )
 
             /**
@@ -123,6 +125,7 @@ fun PreviewProjectView() {
             getSampleDotooItem().toDoTooItemEntity(getRandomId())
         ),
         users = listOf(getSampleProfile().toUserEntity()),
-        deleteTask = {}
+        deleteTask = {},
+        deleteProject = {},
     )
 }

@@ -13,6 +13,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +27,7 @@ import javax.inject.Inject
 class ProjectViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val deleteProjectUseCase: DeleteProjectUseCase,
     private val deleteDoToosUseCase: DeleteDoTooUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
@@ -82,4 +84,21 @@ class ProjectViewModel @Inject constructor(
             deleteDoToosUseCase(task, projectId = projectId)
         }
     }
+
+    fun deleteProject(project: Project){
+        if(SharedPref.isUserAPro){
+            projectsReference
+                .document(projectId)
+                .delete()
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteProjectUseCase(project = project)
+        }
+    }
+
+
+    fun resetState(){
+
+    }
+
 }

@@ -54,6 +54,12 @@ fun NavGraphBuilder.addProjectViewDestination(
             users = users,
             deleteTask = { task ->
                 viewModel.deleteTask(task)
+            },
+            deleteProject = {
+                project?.toProject()?.let {
+                    viewModel.deleteProject(it)
+                    navController.popBackStack()
+                }
             }
         )
     }

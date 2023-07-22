@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class DeleteProjectUseCase @Inject constructor(
     private val repository: ProjectRepository
 ){
-    suspend fun invoke(project : Project)  {
+    suspend operator fun invoke(project : Project)  {
         return repository.deleteProject(project)
     }
 }
