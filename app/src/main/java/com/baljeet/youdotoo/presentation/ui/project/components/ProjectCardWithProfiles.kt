@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,19 +26,16 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.common.getSampleProfile
-import com.baljeet.youdotoo.common.getSampleProject
-import com.baljeet.youdotoo.common.isScrolled
+import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBox
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 
 
@@ -47,10 +45,21 @@ fun ProjectCardWithProfiles(
     users: List<User>,
     tasks: List<DoTooItem>,
     lazyListState: LazyListState,
-    onItemDeleteClick : () -> Unit
+    onItemDeleteClick: () -> Unit,
+    updateProjectTitle: (title: String) -> Unit,
+    updateProjectDescription: (title: String) -> Unit,
+    toggleFavorite: () -> Unit,
+    toggleNotificationSetting: () -> Unit
 ) {
 
     val darkTheme = isSystemInDarkTheme()
+
+    val showEditTitleBox by remember {
+        mutableStateOf(false)
+    }
+    var showEditDescriptionBox by remember {
+        mutableStateOf(false)
+    }
 
     Column(
         modifier = Modifier
@@ -58,7 +67,7 @@ fun ProjectCardWithProfiles(
             .padding(10.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .clip(shape = RoundedCornerShape(20.dp))
-            .background(color = Color(project?.color?:4278215265)),
+            .background(color = Color(project?.color ?: 4278215265)),
         verticalArrangement = Arrangement.SpaceAround
     ) {
 
@@ -73,7 +82,7 @@ fun ProjectCardWithProfiles(
                 )
             )
             drawCircle(
-                color = Color(project?.color?:4278215265),
+                color = Color(project?.color ?: 4278215265),
                 radius = 100.dp.toPx(),
                 center = Offset(
                     x = 50.dp.toPx(),
@@ -140,16 +149,39 @@ fun ProjectCardWithProfiles(
                     spaceBetween = 8,
                     lightColor = DoTooYellow
                 )
-                Text(
-                    text = project?.description?:"",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 5.dp, end = 5.dp),
-                    color = LessTransparentWhiteColor,
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
-                )
+                AnimatedVisibility(visible = showEditDescriptionBox.not()) {
+                    Text(
+                        text = project?.description ?: "",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(
+                                onClick = {
+                                    showEditDescriptionBox = true
+                                }
+                            )
+                            .padding(start = 5.dp, end = 5.dp),
+                        color = LessTransparentWhiteColor,
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
+                    )
+                }
+                AnimatedVisibility(visible = showEditDescriptionBox) {
+                    EditOnFlyBox(
+                        modifier = Modifier,
+                        onSubmit = {
+                                   showEditDescriptionBox = false
+                        },
+                        placeholder = project?.description?:"",
+                        label = "Project Description",
+                        maxCharLength = maxDescriptionCharsAllowed,
+                        onCancel = {
+                                   showEditDescriptionBox = false
+                        },
+                        themeColor =Color(project?.color ?: 4278215265),
+                        lines = 3
+                    )
+                }
             }
         }
 
@@ -159,7 +191,7 @@ fun ProjectCardWithProfiles(
                 .padding(10.dp)
         ) {
             Text(
-                text = project?.name?:"",
+                text = project?.name ?: "",
                 modifier = Modifier
                     .padding(5.dp)
                     .fillMaxWidth(),
@@ -196,6 +228,10 @@ fun PreviewProjectCardWithProfiles() {
         users = listOf(
             getSampleProfile()
         ),
-        onItemDeleteClick = {}
+        onItemDeleteClick = {},
+        toggleFavorite = {},
+        updateProjectDescription = {},
+        updateProjectTitle = {},
+        toggleNotificationSetting = {}
     )
 }

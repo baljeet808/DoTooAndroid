@@ -84,7 +84,11 @@ fun ProjectView(
                 users = users.map { it.toUser() },
                 tasks = tasks.map { it.toDoTooItem() },
                 lazyListState = lazyListState,
-                onItemDeleteClick = deleteProject
+                onItemDeleteClick = deleteProject,
+                updateProjectTitle = {},
+                updateProjectDescription = {},
+                toggleFavorite = {},
+                toggleNotificationSetting = {}
             )
 
             /**
