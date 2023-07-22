@@ -52,9 +52,7 @@ fun ProjectCardWithProfiles(
     toggleNotificationSetting: () -> Unit
 ) {
 
-    val darkTheme = isSystemInDarkTheme()
-
-    val showEditTitleBox by remember {
+    var showEditTitleBox by remember {
         mutableStateOf(false)
     }
     var showEditDescriptionBox by remember {
@@ -151,7 +149,11 @@ fun ProjectCardWithProfiles(
                 )
                 AnimatedVisibility(visible = showEditDescriptionBox.not()) {
                     Text(
-                        text = project?.description ?: "",
+                        text = if (project?.description.isNullOrBlank()) {
+                            "Add Description here..."
+                        } else {
+                            project?.description!!
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(
@@ -169,16 +171,17 @@ fun ProjectCardWithProfiles(
                 AnimatedVisibility(visible = showEditDescriptionBox) {
                     EditOnFlyBox(
                         modifier = Modifier,
-                        onSubmit = {
-                                   showEditDescriptionBox = false
+                        onSubmit = { desc ->
+                           updateProjectDescription(desc)
+                            showEditDescriptionBox = false
                         },
-                        placeholder = project?.description?:"",
+                        placeholder = project?.description ?: "",
                         label = "Project Description",
                         maxCharLength = maxDescriptionCharsAllowed,
                         onCancel = {
-                                   showEditDescriptionBox = false
+                            showEditDescriptionBox = false
                         },
-                        themeColor =Color(project?.color ?: 4278215265),
+                        themeColor = Color(project?.color ?: 4278215265),
                         lines = 3
                     )
                 }
@@ -190,16 +193,44 @@ fun ProjectCardWithProfiles(
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            Text(
-                text = project?.name ?: "",
-                modifier = Modifier
-                    .padding(5.dp)
-                    .fillMaxWidth(),
-                fontFamily = FontFamily(Nunito.ExtraBold.font),
-                fontSize = 38.sp,
-                color = Color.White,
-                lineHeight = TextUnit(49f, TextUnitType.Sp)
-            )
+            AnimatedVisibility(visible = showEditTitleBox.not()) {
+                Text(
+                    text = if (project?.name.isNullOrBlank()) {
+                        "Add title here..."
+                    } else {
+                        project?.name!!
+                    },
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .clickable(
+                            onClick = {
+                                showEditTitleBox = true
+                            }
+                        )
+                        .fillMaxWidth(),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = 38.sp,
+                    color = Color.White,
+                    lineHeight = TextUnit(49f, TextUnitType.Sp)
+                )
+            }
+            AnimatedVisibility(visible = showEditTitleBox) {
+                EditOnFlyBox(
+                    modifier = Modifier,
+                    onSubmit = { title ->
+                        updateProjectTitle(title)
+                        showEditTitleBox = false
+                    },
+                    placeholder = project?.name ?: "",
+                    label = "Project Title",
+                    maxCharLength = maxTitleCharsAllowed,
+                    onCancel = {
+                        showEditTitleBox = false
+                    },
+                    themeColor = Color(project?.color ?: 4278215265),
+                    lines = 2
+                )
+            }
             AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
                 Text(
                     text = tasks.size.toString().plus(" Tasks"),

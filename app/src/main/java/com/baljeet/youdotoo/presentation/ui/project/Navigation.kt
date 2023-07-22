@@ -60,6 +60,9 @@ fun NavGraphBuilder.addProjectViewDestination(
                     viewModel.deleteProject(it)
                     navController.popBackStack()
                 }
+            },
+            upsertProject = { updatedProject ->
+                viewModel.upsertProject(updatedProject)
             }
         )
     }

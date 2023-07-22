@@ -75,17 +75,17 @@ class ProjectViewModel @Inject constructor(
         upsertProject(project)
     }
 
-    private fun upsertProject(project : Project){
-        val newProject = project.copy()
+    fun upsertProject(project : Project){
+        val projectCopy = project.copy()
 
-        newProject.updatedAt = getSampleDateInLong()
+        projectCopy.updatedAt = getSampleDateInLong()
         if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
             projectsReference
                 .document(projectId)
-                .set(newProject)
+                .set(projectCopy)
         }else{
             CoroutineScope(Dispatchers.IO).launch {
-                upsertProjectUseCase(listOf(newProject))
+                upsertProjectUseCase(listOf(projectCopy))
             }
         }
     }

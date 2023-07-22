@@ -38,7 +38,8 @@ fun ProjectView(
     onToggle : (doTooItem : DoTooItem, project : Project ) -> Unit,
     navigateToCreateTask : (projectOwner : Boolean) -> Unit,
     deleteTask : (DoTooItem) -> Unit,
-    deleteProject : () -> Unit
+    deleteProject : () -> Unit,
+    upsertProject : (Project)  -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -85,8 +86,18 @@ fun ProjectView(
                 tasks = tasks.map { it.toDoTooItem() },
                 lazyListState = lazyListState,
                 onItemDeleteClick = deleteProject,
-                updateProjectTitle = {},
-                updateProjectDescription = {},
+                updateProjectTitle = { title ->
+                    project?.copy()?.toProject()?.let { projectCopy ->
+                        projectCopy.name = title
+                        upsertProject(projectCopy)
+                    }
+                },
+                updateProjectDescription = { description ->
+                    project?.copy()?.toProject()?.let { projectCopy ->
+                        projectCopy.description = description
+                        upsertProject(projectCopy)
+                    }
+                },
                 toggleFavorite = {},
                 toggleNotificationSetting = {}
             )
@@ -131,5 +142,6 @@ fun PreviewProjectView() {
         users = listOf(getSampleProfile().toUserEntity()),
         deleteTask = {},
         deleteProject = {},
+        upsertProject = {}
     )
 }
