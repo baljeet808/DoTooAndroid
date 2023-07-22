@@ -9,10 +9,13 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
-import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
+import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectViewModel
+import com.baljeet.youdotoo.presentation.ui.createproject.components.CreateProjectView
 
 
 const val DestinationProjectsRoute = "projects"
+
+const val DestinationCreateProjectRoute = "create_project"
 
 
 fun NavGraphBuilder.addProjectsViewDestination(
@@ -21,7 +24,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
     composable(
         route = DestinationProjectsRoute
     ){
+
         val viewModel : ProjectsViewModel = hiltViewModel()
+
         val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
         val pendingTasks by viewModel.pendingTasks().collectAsState(initial = arrayListOf())
         val yesterdayTasks by viewModel.yesterdayTasks().collectAsState(initial = arrayListOf())
@@ -71,6 +76,39 @@ fun NavGraphBuilder.addProjectsViewDestination(
             }
         )
     }
+
+
+    composable(
+        route = DestinationCreateProjectRoute
+    ){
+
+        val viewModel : CreateProjectViewModel = hiltViewModel()
+        val state by viewModel.createState
+
+        if(state){
+            navController.popBackStack()
+            viewModel.resetState()
+        }
+        CreateProjectView(
+            createProject = { name: String, description: String, color : Long ->
+                viewModel.createProject(
+                    projectName = name,
+                    description = description,
+                    projectColor = color
+                )
+                navController.popBackStack()
+                viewModel.resetState()
+            },
+            navigateBack = {
+                //navigate back
+                navController.popBackStack()
+                viewModel.resetState()
+            }
+        )
+
+    }
+
+
 }
 
 

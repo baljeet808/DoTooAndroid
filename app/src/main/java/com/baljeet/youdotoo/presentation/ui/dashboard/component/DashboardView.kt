@@ -25,7 +25,6 @@ import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
-import com.baljeet.youdotoo.presentation.ui.createproject.addCreateProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
@@ -42,7 +41,7 @@ import kotlinx.coroutines.launch
  * **/
 @Composable
 fun DashboardView(
-    allTasks : List<DoTooItemEntity>
+    allTasks: List<DoTooItemEntity>
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -193,8 +192,7 @@ fun DashboardView(
                         },
                         shape = RoundedCornerShape(roundness.value)
                     )
-                    .clip(shape = RoundedCornerShape(roundness.value))
-                ,
+                    .clip(shape = RoundedCornerShape(roundness.value)),
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
 
@@ -216,27 +214,20 @@ fun DashboardView(
                 )
 
 
-                   NavHost(
-                       navController = navController,
-                       startDestination = DestinationProjectsRoute,
-                       modifier = Modifier
-                           .fillMaxSize()
-                   ) {
-                       addProjectsViewDestination(navController)
-                       addProjectViewDestination(navController)
-                       addCreateTaskViewDestination(navController)
-                       addCreateProjectViewDestination(navController)
-                       addChatViewDestination()
-                   }
-
+                NavHost(
+                    navController = navController,
+                    startDestination = DestinationProjectsRoute,
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    addProjectsViewDestination(navController)
+                    addProjectViewDestination(navController)
+                    addCreateTaskViewDestination(navController)
+                    addChatViewDestination()
+                }
             }
-
         }
-
-
     }
-
-
 }
 
 
