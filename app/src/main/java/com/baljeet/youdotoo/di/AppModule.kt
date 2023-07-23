@@ -4,9 +4,11 @@ import android.app.Application
 import androidx.room.Room
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
 import com.baljeet.youdotoo.data.repository_implementations.DoTooItemsRepositoryImpl
+import com.baljeet.youdotoo.data.repository_implementations.InvitationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.ProjectRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.UserRepositoryImpl
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
+import com.baljeet.youdotoo.domain.repository_interfaces.InvitationsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.ProjectRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.UserRepository
 import dagger.Module
@@ -35,6 +37,12 @@ object AppModule {
     @Singleton
     fun providesUserRepository(localDB : YouDoTooDatabase): UserRepository {
         return UserRepositoryImpl(localDB)
+    }
+
+    @Provides
+    @Singleton
+    fun providesInvitationRepository(localDB : YouDoTooDatabase): InvitationsRepository {
+        return InvitationsRepositoryImpl(localDB)
     }
 
     @Provides
