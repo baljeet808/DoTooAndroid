@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.signup.components
+package com.baljeet.youdotoo.presentation.ui.signup
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.signup.SignupViewModel
 import com.baljeet.youdotoo.presentation.ui.theme.DotooOrange
 
 @Composable

@@ -4,7 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FolderOpen
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
-import com.baljeet.youdotoo.presentation.ui.drawer.MenuItem
+import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 
 /**

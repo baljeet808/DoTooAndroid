@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.dotoo.components
+package com.baljeet.youdotoo.presentation.ui.dotoo
 
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi

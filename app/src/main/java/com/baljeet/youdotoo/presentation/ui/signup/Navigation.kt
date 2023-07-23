@@ -6,7 +6,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
-import com.baljeet.youdotoo.presentation.ui.signup.components.SignupView
 
 /**
  * Updated by Baljeet singh.

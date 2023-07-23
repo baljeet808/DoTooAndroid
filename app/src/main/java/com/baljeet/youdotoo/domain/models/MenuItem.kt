@@ -1,12 +1,8 @@
-package com.baljeet.youdotoo.presentation.ui.drawer
+package com.baljeet.youdotoo.domain.models
 
 import androidx.compose.ui.graphics.vector.ImageVector
 
-/**
- * Updated by Baljeet singh.
- * **/
 data class MenuItem(
-
     val id : String,
     val title : String,
     val icon : ImageVector,

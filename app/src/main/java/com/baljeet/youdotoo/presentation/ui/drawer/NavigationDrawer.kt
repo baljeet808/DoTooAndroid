@@ -34,6 +34,7 @@ import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import java.lang.Float.max

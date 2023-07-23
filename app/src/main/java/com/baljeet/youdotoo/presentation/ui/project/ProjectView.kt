@@ -25,7 +25,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.*
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
+import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
 import com.baljeet.youdotoo.presentation.ui.theme.*
 

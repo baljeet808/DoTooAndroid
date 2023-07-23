@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
-import com.baljeet.youdotoo.presentation.ui.login.components.SignInView
 
 /**
  * Updated by Baljeet singh.

@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.presentation.ui.login.OnBoardPagerContent
-import com.baljeet.youdotoo.presentation.ui.login.getOnBoardPagerContentList
+import com.baljeet.youdotoo.domain.models.OnBoardPagerContent
+import com.baljeet.youdotoo.domain.models.getOnBoardPagerContentList
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
 

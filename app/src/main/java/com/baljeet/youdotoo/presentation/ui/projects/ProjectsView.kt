@@ -26,7 +26,7 @@ import com.baljeet.youdotoo.common.*
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.presentation.ui.dotoo.components.DoTooItemsLazyColumn
+import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.projects.components.TasksSchedulesTabRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito

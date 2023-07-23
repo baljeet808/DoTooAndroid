@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.createproject.components
+package com.baljeet.youdotoo.presentation.ui.createproject
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*

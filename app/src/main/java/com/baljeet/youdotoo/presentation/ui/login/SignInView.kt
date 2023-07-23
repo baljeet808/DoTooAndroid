@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.login.components
+package com.baljeet.youdotoo.presentation.ui.login
 
 import android.content.res.Configuration
 import android.widget.Toast
@@ -12,10 +12,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -23,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.R
-import com.baljeet.youdotoo.common.ConstFirstScreenDescription
-import com.baljeet.youdotoo.presentation.ui.login.SignInState
-import com.baljeet.youdotoo.presentation.ui.login.getOnBoardPagerContentList
+import com.baljeet.youdotoo.domain.models.getOnBoardPagerContentList
+import com.baljeet.youdotoo.presentation.ui.login.components.OnboardingPager
+import com.baljeet.youdotoo.presentation.ui.login.components.PolicyLineView
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
 import com.google.accompanist.pager.ExperimentalPagerApi

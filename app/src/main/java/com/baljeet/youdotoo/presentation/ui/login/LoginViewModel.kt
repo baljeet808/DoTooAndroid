@@ -10,11 +10,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
-import java.time.Clock
 import java.time.LocalDateTime
-import java.util.TimeZone
 import javax.inject.Inject
 
+data class SignInState(
+    val userData: UserData? = null,
+    val signInError: String? = null
+)
 
 @HiltViewModel
 class LoginViewModel @Inject constructor() : ViewModel() {

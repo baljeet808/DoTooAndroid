@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.dashboard.component
+package com.baljeet.youdotoo.presentation.ui.dashboard
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -27,6 +27,7 @@ import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
+import com.baljeet.youdotoo.presentation.ui.invitation.addInvitationViewDestination
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
@@ -224,6 +225,7 @@ fun DashboardView(
                     addProjectViewDestination(navController)
                     addCreateTaskViewDestination(navController)
                     addChatViewDestination()
+                    addInvitationViewDestination(navController)
                 }
             }
         }

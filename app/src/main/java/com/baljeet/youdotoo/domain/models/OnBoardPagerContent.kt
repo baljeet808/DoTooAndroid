@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.login
+package com.baljeet.youdotoo.domain.models
 
 import androidx.annotation.DrawableRes
 import com.baljeet.youdotoo.R
