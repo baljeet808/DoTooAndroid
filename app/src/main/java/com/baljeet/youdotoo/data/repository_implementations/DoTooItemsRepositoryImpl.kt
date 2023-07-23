@@ -55,4 +55,8 @@ class DoTooItemsRepositoryImpl @Inject constructor(
         return doToosDao.delete(doTooItem.toDoTooItemEntity(projectId))
     }
 
+    override suspend fun deleteAllByProjectId(projectId: String) {
+        return doToosDao.deleteAllByProjectId(projectId = projectId)
+    }
+
 }

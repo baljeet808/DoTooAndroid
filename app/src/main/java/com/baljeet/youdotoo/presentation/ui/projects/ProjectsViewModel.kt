@@ -38,6 +38,7 @@ class ProjectsViewModel @Inject constructor(
     private val getProjectsWithDoToosUseCase: GetProjectsWithDoToosUseCase,
     private val getDoTooByIdUseCase: GetDoTooByIdUseCase,
     private val deleteDoToosUseCase: DeleteDoTooUseCase,
+    private val deleteTasksByProjectId: DeleteTasksByProjectIdUseCase,
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
@@ -213,6 +214,11 @@ class ProjectsViewModel @Inject constructor(
                                         dotoos = doToos,
                                         projectId = onlineProject.id
                                     )
+                                }
+                            }
+                            if(e != null){
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    deleteTasksByProjectId(onlineProject.id)
                                 }
                             }
                         }

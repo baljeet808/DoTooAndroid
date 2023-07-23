@@ -27,6 +27,9 @@ interface DoTooItemDao {
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
 
+    @Query("DELETE FROM todos where projectId = :projectId")
+    fun deleteAllByProjectId(projectId : String)
+
     @Query("SELECT * FROM todos WHERE dueDate = :yesterdayDateInLong")
     fun getYesterdayTasks(yesterdayDateInLong : Long): Flow<List<DoTooItemEntity>>
 

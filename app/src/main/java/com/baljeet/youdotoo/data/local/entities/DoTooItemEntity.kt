@@ -1,9 +1,20 @@
 package com.baljeet.youdotoo.data.local.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "todos")
+@Entity(
+    tableName = "todos",
+    foreignKeys = [
+        ForeignKey(
+            entity = ProjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["projectId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class DoTooItemEntity(
     @PrimaryKey
     val id : String,
