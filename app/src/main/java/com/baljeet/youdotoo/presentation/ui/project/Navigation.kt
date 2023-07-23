@@ -27,7 +27,7 @@ fun NavGraphBuilder.addProjectViewDestination(
                 type = NavType.StringType
             }
         )
-    ){backStackEntry ->
+    ){ backStackEntry ->
 
         val projectId = backStackEntry.arguments?.getString("projectId")
 

@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.common
 
+import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
@@ -127,7 +128,18 @@ fun getSampleInteractions(): ArrayList<String> {
 
 fun getSampleIds(): List<String> {
     return listOf(
-        "iz8dz6PufNPGbw9DzWUiZyoTHn62",
-        "NuZXwLl3a8O3mXRcXFsJzHQgB172"
+        getRandomId(),
+        getRandomId()
+    )
+}
+
+fun getSampleInvitation(): InvitationEntity{
+    return InvitationEntity(
+        id = getRandomId(),
+        invitedId = getRandomId(),
+        inviteeId = getRandomId(),
+        projectId = getRandomId(),
+        status = Random.nextInt(from = 0, 2),
+        accessType = Random.nextInt(from = 0, 1)
     )
 }
