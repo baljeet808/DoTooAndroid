@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 
-const val DestinationInvitationRoute = "invitation/{projectId}"
+const val DestinationInvitationRoute = "invitations/{projectId}"
 
 fun NavGraphBuilder.addInvitationViewDestination(
     navController: NavController

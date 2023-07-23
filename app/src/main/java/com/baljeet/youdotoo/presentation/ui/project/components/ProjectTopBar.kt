@@ -26,6 +26,7 @@ fun ProjectTopBar(
     onFavoriteClick: () -> Unit,
     onNotificationItemClicked: () -> Unit,
     onDeleteItemClicked: () -> Unit,
+    onClickInvite: () -> Unit,
     modifier: Modifier
 ) {
 
@@ -65,9 +66,7 @@ fun ProjectTopBar(
              * Button to add more person to the project
              * **/
             IconButton(
-                onClick = {
-
-                },
+                onClick = onClickInvite,
                 modifier = Modifier
                     .weight(0.2f)
             ) {
@@ -132,6 +131,7 @@ fun PreviewProjectTopBar() {
         notificationsState = true,
         onFavoriteClick = {},
         onNotificationItemClicked = {},
-        onDeleteItemClicked = {}
+        onDeleteItemClicked = {},
+        onClickInvite = {}
     )
 }

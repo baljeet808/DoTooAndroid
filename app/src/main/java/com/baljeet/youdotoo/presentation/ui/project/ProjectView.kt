@@ -39,7 +39,8 @@ fun ProjectView(
     navigateToCreateTask : (projectOwner : Boolean) -> Unit,
     deleteTask : (DoTooItem) -> Unit,
     deleteProject : () -> Unit,
-    upsertProject : (Project)  -> Unit
+    upsertProject : (Project)  -> Unit,
+    onClickInvite : () -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -99,7 +100,8 @@ fun ProjectView(
                     }
                 },
                 toggleFavorite = {},
-                toggleNotificationSetting = {}
+                toggleNotificationSetting = {},
+                onClickInvite = onClickInvite
             )
 
             /**
@@ -142,6 +144,7 @@ fun PreviewProjectView() {
         users = listOf(getSampleProfile().toUserEntity()),
         deleteTask = {},
         deleteProject = {},
-        upsertProject = {}
+        upsertProject = {},
+        onClickInvite = {}
     )
 }

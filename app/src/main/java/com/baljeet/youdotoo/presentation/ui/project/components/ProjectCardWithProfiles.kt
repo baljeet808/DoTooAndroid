@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -49,7 +48,8 @@ fun ProjectCardWithProfiles(
     updateProjectTitle: (title: String) -> Unit,
     updateProjectDescription: (title: String) -> Unit,
     toggleFavorite: () -> Unit,
-    toggleNotificationSetting: () -> Unit
+    toggleNotificationSetting: () -> Unit,
+    onClickInvite: () -> Unit
 ) {
 
     var showEditTitleBox by remember {
@@ -125,6 +125,7 @@ fun ProjectCardWithProfiles(
                 onFavoriteClick = { /*TODO*/ },
                 onNotificationItemClicked = { /*TODO*/ },
                 onDeleteItemClicked = onItemDeleteClick,
+                onClickInvite = onClickInvite,
                 modifier = Modifier
             )
         }
@@ -263,6 +264,7 @@ fun PreviewProjectCardWithProfiles() {
         toggleFavorite = {},
         updateProjectDescription = {},
         updateProjectTitle = {},
-        toggleNotificationSetting = {}
+        toggleNotificationSetting = {},
+        onClickInvite = {}
     )
 }

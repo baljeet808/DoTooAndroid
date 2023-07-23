@@ -63,6 +63,9 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             upsertProject = { updatedProject ->
                 viewModel.upsertProject(updatedProject)
+            },
+            onClickInvite = {
+                navController.navigate("invitations/".plus(projectId))
             }
         )
     }
