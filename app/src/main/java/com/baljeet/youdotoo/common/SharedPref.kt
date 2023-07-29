@@ -43,6 +43,8 @@ object SharedPref {
             it.putString("userName",userName)
         }
 
+
+
     var userAvatar: String
         get() = sharedPref.getString("userAvatar","")!!
         set(userAvatar) = sharedPref.edit {
