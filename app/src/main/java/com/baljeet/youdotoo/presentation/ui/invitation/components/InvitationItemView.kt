@@ -34,9 +34,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @Composable
 fun InvitationItemView(
     userInvitation: UserInvitation,
-    isUserAdmin : Boolean,
+    isUserAdmin: Boolean,
     onClickButton: () -> Unit,
-    onEditAccess : () -> Unit
+    onEditAccess: () -> Unit
 ) {
 
     val hapticFeedback = LocalHapticFeedback.current
@@ -138,6 +138,29 @@ fun InvitationItemView(
                 )
             }
 
+            AnimatedVisibility(visible = (userInvitation.invitationEntity != null && userInvitation.invitationEntity?.status in 0 .. 2)) {
+                Text(
+                    text = when (userInvitation.invitationEntity?.status) {
+                        InvitationPending -> "Not accepted yet"
+                        InvitationDeclined -> "Invitation Declined"
+                        InvitationAccepted -> "Added to project"
+                        else -> ""
+                    },
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    color = if (userInvitation.invitationEntity!!.status == InvitationAccepted) {
+                        Color(EnumProjectColors.Green.longValue)
+                    } else {
+                        Color(EnumProjectColors.Red.longValue)
+                    },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    textAlign = TextAlign.Start
+                )
+            }
+
             AnimatedVisibility(visible = (userInvitation.invitationEntity != null)) {
                 Row(
                     modifier = Modifier
@@ -175,9 +198,9 @@ fun InvitationItemView(
 
             }
 
-            if(isUserAdmin && userInvitation.invitationEntity == null){
+            if (isUserAdmin && userInvitation.invitationEntity == null) {
                 Text(
-                    text ="Admin",
+                    text = "Admin",
                     fontSize = 12.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     color = if (isSystemInDarkTheme()) {
@@ -199,7 +222,7 @@ fun InvitationItemView(
         /**
          * Add and remove button along with access modifier
          * **/
-        if(isUserAdmin.not()) {
+        if (isUserAdmin.not()) {
             Column(
                 modifier = Modifier.padding(top = 15.dp),
                 verticalArrangement = Arrangement.Center
