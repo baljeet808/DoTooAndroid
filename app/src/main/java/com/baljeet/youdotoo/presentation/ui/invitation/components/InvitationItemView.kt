@@ -139,7 +139,6 @@ fun InvitationItemView(
                     modifier = Modifier
                         .clickable(
                             onClick = onEditAccess
-
                         )
                 ) {
                     Text(

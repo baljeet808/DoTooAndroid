@@ -8,6 +8,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.baljeet.youdotoo.common.InvitationAccepted
+import com.baljeet.youdotoo.common.InvitationDeclined
+import com.baljeet.youdotoo.common.InvitationPending
 
 const val DestinationInvitationRoute = "invitations/{projectId}"
 
@@ -35,11 +38,28 @@ fun NavGraphBuilder.addInvitationViewDestination(
             onBackPressed = {
                 navController.popBackStack()
             },
-            onUpdateAccess = { userInvitation, accesstype ->
-
+            onUpdateAccess = { userInvitation, accessType ->
+                viewModel.updateUserAccessType(userInvitation,accessType)
             },
             onClickActionButton = { userInvitation ->
-
+                if(userInvitation.invitationEntity == null){
+                    userInvitation.user?.let {user ->
+                        viewModel.sendInvite(
+                            email = user.email,
+                            accessType = 2
+                        )
+                    }
+                }else if(userInvitation.invitationEntity?.status == InvitationPending){
+                    viewModel.deleteInvitation(
+                        userInvitation.invitationEntity!!
+                    )
+                } else if (userInvitation.invitationEntity?.status == InvitationAccepted){
+                    viewModel.removeUserFromProject(userInvitation)
+                } else if(userInvitation.invitationEntity?.status == InvitationDeclined){
+                    viewModel.resendInvitation(
+                        userInvitation.invitationEntity!!
+                    )
+                }
             },
             sendInvite = { email, accessType ->
                 viewModel.sendInvite(email, accessType)

@@ -239,8 +239,8 @@ fun InvitationsView(
                     InvitationItemView(
                         userInvitation = userInvitation,
                         onEditAccess = {
-                            updateAccessType = userInvitation.invitationEntity?.accessType?:1
                             selectedUserInvitation = userInvitation
+                            updateAccessType = userInvitation.invitationEntity?.accessType?:1
                             openSheet()
                         },
                         onClickButton = {
