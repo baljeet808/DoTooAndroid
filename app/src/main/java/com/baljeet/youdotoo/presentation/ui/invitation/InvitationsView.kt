@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.AccessTypeEditor
+import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getUsersInvitations
@@ -54,12 +56,14 @@ import kotlinx.coroutines.launch
 fun InvitationsView(
     invitations: List<InvitationEntity>,
     users: List<UserEntity>,
-    project : ProjectEntity?,
-    onClickActionButton : (userInvitation : UserInvitation) -> Unit,
-    onUpdateAccess: (userInvitation : UserInvitation, accessType : Int) -> Unit,
-    sendInvite : (email : String, accessType : Int) -> Unit,
+    project: ProjectEntity?,
+    onClickActionButton: (userInvitation: UserInvitation) -> Unit,
+    onUpdateAccess: (userInvitation: UserInvitation, accessType: Int) -> Unit,
+    sendInvite: (email: String, accessType: Int) -> Unit,
     onBackPressed: () -> Unit
 ) {
+
+    val hapticFeedback = LocalHapticFeedback.current
 
     var emailAddress by remember {
         mutableStateOf("")
@@ -73,9 +77,9 @@ fun InvitationsView(
         mutableStateOf("")
     }
 
-    val usersInvitations = getUsersInvitations(searchQuery,users, invitations)
+    val usersInvitations = getUsersInvitations(searchQuery, users, invitations)
 
-    var selectedUserInvitation : UserInvitation? = null
+    var selectedUserInvitation: UserInvitation? = null
 
     val darkTheme = isSystemInDarkTheme()
 
@@ -126,16 +130,16 @@ fun InvitationsView(
             SelectAccessTypeSheet(
                 access = selectedUserInvitation?.let {
                     updateAccessType
-                }?: kotlin.run {
+                } ?: kotlin.run {
                     invitationAccessType
                 },
                 onAccessChanged = { selectedAccess ->
                     selectedUserInvitation?.let {
                         updateAccessType = selectedAccess
                         onUpdateAccess(
-                            it,updateAccessType
+                            it, updateAccessType
                         )
-                    }?: kotlin.run {
+                    } ?: kotlin.run {
                         invitationAccessType = selectedAccess
                     }
                     closeSheet()
@@ -159,16 +163,17 @@ fun InvitationsView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
+
             /**
              * Header
              * **/
-            InvitePeopleHeading()
+            InvitePeopleHeading(showSubHeading = (usersInvitations.size > 4  || searchQuery.isNotBlank()).not())
 
 
             /**
              * Search box
              * **/
-            AnimatedVisibility(visible = ( users.size > 5)) {
+            AnimatedVisibility(visible = (usersInvitations.size > 4  || searchQuery.isNotBlank()) ) {
                 OutlinedTextField(
                     value = searchQuery,
                     onValueChange = { query ->
@@ -242,16 +247,16 @@ fun InvitationsView(
                         userInvitation = userInvitation,
                         onEditAccess = {
                             selectedUserInvitation = userInvitation
-                            updateAccessType = userInvitation.invitationEntity?.accessType?:1
+                            updateAccessType = userInvitation.invitationEntity?.accessType ?: 1
                             openSheet()
                         },
                         onClickButton = {
                             onClickActionButton(userInvitation)
                         },
                         isUserAdmin = if (userInvitation.user != null && project != null) {
-                                userInvitation.user?.id == project.ownerId
-                            }else {
-                                false
+                            userInvitation.user?.id == project.ownerId
+                        } else {
+                            false
                         }
                     )
                 }
@@ -290,7 +295,11 @@ fun InvitationsView(
                  * Edit box for access type
                  * **/
                 OutlinedTextField(
-                    value = if(invitationAccessType == 1){"Editor"} else {"Viewer"},
+                    value = if (invitationAccessType == 1) {
+                        "Editor"
+                    } else {
+                        "Viewer"
+                    },
                     onValueChange = { _ ->
                         //Do Nothing
                     },
@@ -300,9 +309,9 @@ fun InvitationsView(
                         fontSize = 13.sp,
                         fontFamily = FontFamily(Nunito.Bold.font),
                         letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
-                        color = if (isSystemInDarkTheme()){
+                        color = if (isSystemInDarkTheme()) {
                             Color.White
-                        }else{
+                        } else {
                             Color.Black
                         }
                     ),
@@ -324,9 +333,9 @@ fun InvitationsView(
                         Icon(
                             Icons.Filled.ArrowDropDown,
                             contentDescription = "Send invite button",
-                            tint = if(isSystemInDarkTheme()){
+                            tint = if (isSystemInDarkTheme()) {
                                 Color.White
-                            }else{
+                            } else {
                                 Color.Black
                             }
                         )
@@ -354,73 +363,79 @@ fun InvitationsView(
                 }
 
 
-                    /**
-                     * Text field
-                     * **/
-                    OutlinedTextField(
-                        value = emailAddress,
-                        onValueChange = { email ->
-                            if(showEmailNotValidError){
-                                showEmailNotValidError = false
-                            }
-                            emailAddress = email
-                        },
-                        label = {
-                            androidx.compose.material3.Text(
-                                text = "Invite by email",
-                                fontFamily = FontFamily(Nunito.Normal.font),
-                                color = searchBarThemeColor,
-                                fontSize = 14.sp,
-                            )
-                        },
-                        textStyle = TextStyle(
-                            fontSize = 15.sp,
-                            fontFamily = FontFamily(Nunito.Bold.font),
-                            letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
-                            color = if (isSystemInDarkTheme()){
-                                Color.White
-                            }else{
-                                Color.Black
-                            }
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 5.dp, end = 5.dp),
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = searchBarThemeColor,
-                            focusedBorderColor = searchBarThemeColor
-                        ),
-                        trailingIcon = {
-                            IconButton(
-                                onClick = {
-                                    val emailIsValid = isEmailValid(emailAddress)
-                                    showEmailNotValidError = emailIsValid.not()
-                                    if(emailIsValid){
-                                        sendInvite(
-                                            emailAddress,
-                                            invitationAccessType
-                                        )
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    Icons.Filled.Send,
-                                    contentDescription = "Send invite button",
-                                    tint = NightDotooBrightBlue
-                                )
-                            }
+                /**
+                 * Text field
+                 * **/
+                OutlinedTextField(
+                    value = emailAddress,
+                    onValueChange = { email ->
+                        if (showEmailNotValidError) {
+                            showEmailNotValidError = false
                         }
-                    )
+                        emailAddress = email
+                    },
+                    label = {
+                        androidx.compose.material3.Text(
+                            text = "Invite by email",
+                            fontFamily = FontFamily(Nunito.Normal.font),
+                            color = searchBarThemeColor,
+                            fontSize = 14.sp,
+                        )
+                    },
+                    textStyle = TextStyle(
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
+                        color = if (isSystemInDarkTheme()) {
+                            Color.White
+                        } else {
+                            Color.Black
+                        }
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 5.dp, end = 5.dp),
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = searchBarThemeColor,
+                        focusedBorderColor = searchBarThemeColor
+                    ),
+                    trailingIcon = {
+                        IconButton(
+                            onClick = {
+                                val emailIsValid = isEmailValid(emailAddress)
+                                showEmailNotValidError = emailIsValid.not()
+                                if (emailIsValid) {
+                                    sendInvite(
+                                        emailAddress,
+                                        invitationAccessType
+                                    )
+                                    emailAddress = ""
+                                }
+                                addHapticFeedback(hapticFeedback)
+                            }
+                        ) {
+                            Icon(
+                                Icons.Filled.Send,
+                                contentDescription = "Send invite button",
+                                tint = if (isSystemInDarkTheme()) {
+                                    NightDotooBrightPink
+                                } else {
+                                    NightDotooBrightBlue
+                                }
+                            )
+                        }
+                    }
+                )
 
                 Spacer(modifier = Modifier.height(20.dp))
                 TextButton(
-                    onClick = {  },
+                    onClick = {
+                        addHapticFeedback(hapticFeedback)
+                        onBackPressed()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(
-                            onClick = onBackPressed
-                        ),
                 ) {
                     Text(
                         text = "Close",
@@ -438,7 +453,6 @@ fun InvitationsView(
             }
         }
     }
-
 
 
 }
@@ -463,9 +477,9 @@ fun PreviewInvitationsView() {
             getSampleProfile().toUserEntity()
         ),
         onBackPressed = {},
-        sendInvite = {_,_ ->},
+        sendInvite = { _, _ -> },
         onClickActionButton = {},
-        onUpdateAccess = {_,_->},
+        onUpdateAccess = { _, _ -> },
         project = null
     )
 }

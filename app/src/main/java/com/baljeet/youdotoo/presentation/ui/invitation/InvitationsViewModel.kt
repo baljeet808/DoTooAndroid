@@ -2,7 +2,6 @@ package com.baljeet.youdotoo.presentation.ui.invitation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.AccessTypeAdmin
 import com.baljeet.youdotoo.common.AccessTypeEditor
 import com.baljeet.youdotoo.common.AccessTypeViewer
@@ -174,7 +173,7 @@ class InvitationsViewModel @Inject constructor(
             .document(invitation.id)
             .delete()
             .addOnSuccessListener {
-                viewModelScope.launch {
+                CoroutineScope(Dispatchers.IO).launch {
                     deleteInvitationUseCase(invitation)
                 }
             }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +38,8 @@ fun InvitationItemView(
     onClickButton: () -> Unit,
     onEditAccess : () -> Unit
 ) {
+
+    val hapticFeedback = LocalHapticFeedback.current
 
     //null if user is not invited yet
     val userInvitationStatus: Int? = userInvitation.invitationEntity?.status
@@ -139,11 +142,14 @@ fun InvitationItemView(
                 Row(
                     modifier = Modifier
                         .clickable(
-                            onClick = onEditAccess
+                            onClick = {
+                                addHapticFeedback(hapticFeedback)
+                                onEditAccess()
+                            }
                         )
                 ) {
                     Text(
-                        text = when (userInvitation.invitationEntity!!.accessType) {
+                        text = when (userInvitation.invitationEntity?.accessType) {
                             0 -> "Admin"
                             1 -> "Editor"
                             2 -> "Visitor"
@@ -249,7 +255,10 @@ fun InvitationItemView(
                             shape = RoundedCornerShape(5.dp)
                         )
                         .clickable(
-                            onClick = onClickButton
+                            onClick = {
+                                addHapticFeedback(hapticFeedback)
+                                onClickButton()
+                            }
                         )
                         .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                     textAlign = TextAlign.Start

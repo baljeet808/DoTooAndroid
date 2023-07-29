@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.invitation.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -23,7 +24,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
 
 @Composable
-fun InvitePeopleHeading() {
+fun InvitePeopleHeading(
+    showSubHeading : Boolean
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -69,28 +72,31 @@ fun InvitePeopleHeading() {
         /**
          * Helper text
          * **/
-        Text(
-            text = "Quickly invite from members, with whom you collaborated earlier",
-            fontFamily = FontFamily(Nunito.Bold.font),
-            fontSize = 15.sp,
-            color = if (isSystemInDarkTheme()) {
-                LightDotooFooterTextColor
-            } else {
-                Color.Gray
-            },
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-
+        AnimatedVisibility(visible = showSubHeading) {
+            Text(
+                text = "Quickly invite from members, with whom you collaborated earlier",
+                fontFamily = FontFamily(Nunito.Bold.font),
+                fontSize = 15.sp,
+                color = if (isSystemInDarkTheme()) {
+                    LightDotooFooterTextColor
+                } else {
+                    Color.Gray
+                },
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+        }
     }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun PreviewInvitePeopleHeading() {
-    InvitePeopleHeading()
+    InvitePeopleHeading(
+        showSubHeading = true
+    )
 }
 
