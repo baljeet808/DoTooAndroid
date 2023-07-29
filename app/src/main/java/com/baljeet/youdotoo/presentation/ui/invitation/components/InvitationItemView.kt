@@ -70,7 +70,7 @@ fun InvitationItemView(
                 AsyncImage(
                     model = user.avatarUrl,
                     contentDescription = "avatarImage",
-                    placeholder = painterResource(id = R.drawable.feeling_good),
+                    placeholder = painterResource(id = R.drawable.youdotoo_app_icon),
                     modifier = Modifier
                         .width(56.dp)
                         .height(56.dp)
@@ -78,7 +78,7 @@ fun InvitationItemView(
                 )
             } ?: kotlin.run {
                 Image(
-                    painterResource(id = R.drawable.cute_face),
+                    painterResource(id = R.drawable.youdotoo_app_icon),
                     contentDescription = "Placeholder image",
                     modifier = Modifier
                         .width(56.dp)
