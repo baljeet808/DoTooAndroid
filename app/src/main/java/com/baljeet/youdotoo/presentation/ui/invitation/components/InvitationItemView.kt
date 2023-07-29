@@ -169,6 +169,8 @@ fun InvitationItemView(
             }
         }
 
+        Spacer(modifier = Modifier.width(10.dp))
+
         /**
          * Add and remove button along with access modifier
          * **/
@@ -189,7 +191,7 @@ fun InvitationItemView(
                         "Resend"
                     }
                     else -> {
-                        "Add"
+                        "  Add  "
                     }
                 },
                 fontFamily = FontFamily(Nunito.Bold.font),

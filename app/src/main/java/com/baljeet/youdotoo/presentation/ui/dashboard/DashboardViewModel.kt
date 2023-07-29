@@ -199,7 +199,7 @@ class DashboardViewModel @Inject constructor(
                                 val user = User(
                                     id = data.getString("id") ?: "",
                                     name = data.getString("name") ?: "",
-                                    email = data.getString("description") ?: "",
+                                    email = data.getString("email") ?: "",
                                     avatarUrl = data.getString("avatarUrl") ?: "",
                                     joined = data.getLong("joined") ?: 0L
                                 )

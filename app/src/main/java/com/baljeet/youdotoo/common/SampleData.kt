@@ -28,7 +28,7 @@ fun getSampleProfile(): User {
     return User(
         id = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
         name = "Baljeet Singh",
-        email = "baljeet@gmail.com",
+        email = "baljeet88sandhu@gmail.com",
         joined = 82782L,
         avatarUrl = getRandomAvatar()
     )
