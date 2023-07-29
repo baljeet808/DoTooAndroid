@@ -140,6 +140,7 @@ fun getSampleInvitation(): InvitationEntity{
         inviteeId = getRandomId(),
         projectId = getRandomId(),
         status = Random.nextInt(from = 0, 2),
-        accessType = Random.nextInt(from = 0, 1)
+        accessType = Random.nextInt(from = 0, 1),
+        invitedEmail = getSampleProfile().email
     )
 }

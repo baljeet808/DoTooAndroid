@@ -1,8 +1,11 @@
 package com.baljeet.youdotoo.common
 
 import androidx.compose.foundation.lazy.LazyListState
+import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.domain.models.UserInvitation
 import kotlinx.datetime.*
 import java.time.Instant
 import java.time.LocalDate
@@ -127,5 +130,26 @@ fun Project.getUserIds(): List<String>{
     return ids
 }
 
+
+fun getUsersInvitations(users : List<UserEntity>, invitations : List<InvitationEntity>) : List<UserInvitation> {
+    val resultingList = arrayListOf<UserInvitation>()
+    users.forEach { user ->
+        resultingList.add(
+            UserInvitation(
+                user = user,
+                invitationEntity = invitations.firstOrNull { invite -> invite.invitedId == user.id }
+            )
+        )
+    }
+    invitations.filter { invite -> resultingList.none { r -> r.invitationEntity?.id == invite.id } }.forEach {invitation ->
+        resultingList.add(
+            UserInvitation(
+                invitationEntity = invitation,
+                user = users.firstOrNull { user -> user.id == invitation.invitedId }
+            )
+        )
+    }
+    return resultingList
+}
 
 

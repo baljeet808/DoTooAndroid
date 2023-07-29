@@ -24,6 +24,17 @@ const val maxTitleCharsAllowed = 60
 const val maxDescriptionCharsAllowed = 120
 const val maxTitleCharsAllowedForProject = 40
 
+
+
+const val InvitationPending = 0
+const val InvitationAccepted = 1
+const val InvitationDeclined = 2
+val InvitationNotSent = null
+
+const val AccessTypeAdmin = 0
+const val AccessTypeEditor = 1
+const val AccessTypeVisitor = 2
+
 val menuItems = arrayListOf(
     MenuItem(
         id = DestinationAccountRoute,

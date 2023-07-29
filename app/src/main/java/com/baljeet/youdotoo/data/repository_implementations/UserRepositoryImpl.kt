@@ -16,8 +16,8 @@ class UserRepositoryImpl @Inject constructor(
 
     private val userDao = localDB.userDao
 
-    override suspend fun getUsers(): List<User> {
-        return userDao.getAllUsers().map { it.toUser() }
+    override fun getUsers(): Flow<List<UserEntity>> {
+        return userDao.getAllUsers()
     }
 
     override suspend fun getUserById(userId: String): User? {

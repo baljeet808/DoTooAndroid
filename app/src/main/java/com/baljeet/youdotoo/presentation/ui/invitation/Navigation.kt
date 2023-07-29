@@ -27,11 +27,25 @@ fun NavGraphBuilder.addInvitationViewDestination(
 
         val viewModel : InvitationsViewModel  = hiltViewModel()
         val invitations by viewModel.getAllInvitationsByProjectId().collectAsState(initial = listOf())
+        val users by viewModel.getAllUsers().collectAsState(initial = listOf())
 
         InvitationsView(
             invitations = invitations,
+            users = users,
             onBackPressed = {
                 navController.popBackStack()
+            },
+            onSearchQueryChanged = { query ->
+
+            },
+            onUpdateAccess = { userInvitation, accesstype ->
+
+            },
+            onClickActionButton = { userInvitation ->
+
+            },
+            sendInvite = { email, accessType ->
+
             }
         )
 

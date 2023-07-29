@@ -15,7 +15,7 @@ interface UserDao {
     suspend fun upsertAll(users : List<UserEntity>)
 
     @Query("SELECT * FROM users")
-    suspend fun getAllUsers() : List<UserEntity>
+    fun getAllUsers() : Flow<List<UserEntity>>
 
     @Query("SELECT * FROM users where id = :userId ")
     suspend fun getUserById(userId : String) : UserEntity?

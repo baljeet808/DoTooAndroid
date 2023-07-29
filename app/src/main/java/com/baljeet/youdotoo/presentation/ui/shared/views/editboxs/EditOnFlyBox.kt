@@ -23,7 +23,6 @@ import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
-import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 
 @Composable
 fun EditOnFlyBox(
