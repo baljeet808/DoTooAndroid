@@ -16,6 +16,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.UserInvitation
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetAllInvitationsByProjectIdUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersUseCase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,6 +33,7 @@ class InvitationsViewModel @Inject constructor(
     private val getAllInvitationsByProjectId: GetAllInvitationsByProjectIdUseCase,
     private val getUsersUseCase: GetUsersUseCase,
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
+    private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val deleteInvitationUseCase: DeleteInvitationUseCase
 ) : ViewModel() {
 
@@ -39,6 +41,8 @@ class InvitationsViewModel @Inject constructor(
     private val projectId: String = checkNotNull(savedStateHandle["projectId"])
 
     private var project : ProjectEntity? = null
+
+    fun getProject(): Flow<ProjectEntity> = getProjectByIdAsFlowUseCase(projectId)
 
     private var invitationsReference = FirebaseFirestore
         .getInstance()
@@ -55,7 +59,6 @@ class InvitationsViewModel @Inject constructor(
             project = getProjectByIdUseCase(projectId)
         }
     }
-
 
     fun getAllInvitationsByProjectId() : Flow<List<InvitationEntity>> = getAllInvitationsByProjectId(projectId)
 

@@ -33,6 +33,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @Composable
 fun InvitationItemView(
     userInvitation: UserInvitation,
+    isUserAdmin : Boolean,
     onClickButton: () -> Unit,
     onEditAccess : () -> Unit
 ) {
@@ -134,7 +135,7 @@ fun InvitationItemView(
                 )
             }
 
-            AnimatedVisibility(visible = userInvitation.invitationEntity != null) {
+            AnimatedVisibility(visible = (userInvitation.invitationEntity != null)) {
                 Row(
                     modifier = Modifier
                         .clickable(
@@ -167,6 +168,24 @@ fun InvitationItemView(
                 }
 
             }
+
+            if(isUserAdmin && userInvitation.invitationEntity == null){
+                Text(
+                    text ="Admin",
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    color = if (isSystemInDarkTheme()) {
+                        LightDotooFooterTextColor
+                    } else {
+                        Color.Gray
+                    },
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier,
+                    textAlign = TextAlign.Start,
+                )
+            }
+
         }
 
         Spacer(modifier = Modifier.width(10.dp))
@@ -174,63 +193,68 @@ fun InvitationItemView(
         /**
          * Add and remove button along with access modifier
          * **/
-        Column(
-            modifier = Modifier.padding(top = 15.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
+        if(isUserAdmin.not()) {
+            Column(
+                modifier = Modifier.padding(top = 15.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
 
-            Text(
-                text = when (userInvitationStatus) {
-                    InvitationPending -> {
-                        "Cancel"
-                    }
-                    InvitationAccepted -> {
-                        "Remove"
-                    }
-                    InvitationDeclined -> {
-                        "Resend"
-                    }
-                    else -> {
-                        "  Add  "
-                    }
-                },
-                fontFamily = FontFamily(Nunito.Bold.font),
-                color = if (userInvitationStatus in 0..2) {
-                    DoTooRed
-                } else {
-                    if (isSystemInDarkTheme()) {
-                        LightDotooFooterTextColor
+                Text(
+                    text = when (userInvitationStatus) {
+                        InvitationPending -> {
+                            "Cancel"
+                        }
+
+                        InvitationAccepted -> {
+                            "Remove"
+                        }
+
+                        InvitationDeclined -> {
+                            "Resend"
+                        }
+
+                        else -> {
+                            "  Add  "
+                        }
+                    },
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    color = if (userInvitationStatus in 0..2) {
+                        DoTooRed
                     } else {
-                        Color.Gray
-                    }
-                },
-                fontSize = 13.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .background(
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
+                        if (isSystemInDarkTheme()) {
+                            LightDotooFooterTextColor
                         } else {
-                            Color.White
-                        },
-                        shape = RoundedCornerShape(5.dp)
-                    )
-                    .border(
-                        width = 1.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
-                        } else {
-                            DotooGray
-                        },
-                        shape = RoundedCornerShape(5.dp)
-                    )
-                    .clickable(
-                        onClick = onClickButton
-                    )
-                    .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
-                textAlign = TextAlign.Start
-            )
+                            Color.Gray
+                        }
+                    },
+                    fontSize = 13.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .background(
+                            color = if (isSystemInDarkTheme()) {
+                                NightDotooDarkBlue
+                            } else {
+                                Color.White
+                            },
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            color = if (isSystemInDarkTheme()) {
+                                NightDotooDarkBlue
+                            } else {
+                                DotooGray
+                            },
+                            shape = RoundedCornerShape(5.dp)
+                        )
+                        .clickable(
+                            onClick = onClickButton
+                        )
+                        .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
+                    textAlign = TextAlign.Start
+                )
+            }
         }
     }
 
@@ -242,9 +266,10 @@ fun PreviewInvitationItemView() {
     InvitationItemView(
         userInvitation = UserInvitation(
             user = getSampleProfile().toUserEntity(),
-            invitationEntity = getSampleInvitation()
+            invitationEntity = null
         ),
         onEditAccess = {},
-        onClickButton = {}
+        onClickButton = {},
+        isUserAdmin = true
     )
 }

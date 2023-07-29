@@ -31,6 +31,7 @@ fun NavGraphBuilder.addInvitationViewDestination(
         val viewModel : InvitationsViewModel  = hiltViewModel()
         val invitations by viewModel.getAllInvitationsByProjectId().collectAsState(initial = listOf())
         val users by viewModel.getAllUsers().collectAsState(initial = listOf())
+        val project by viewModel.getProject().collectAsState(initial = null)
 
         InvitationsView(
             invitations = invitations,
@@ -63,7 +64,8 @@ fun NavGraphBuilder.addInvitationViewDestination(
             },
             sendInvite = { email, accessType ->
                 viewModel.sendInvite(email, accessType)
-            }
+            },
+            project = project
         )
 
     }

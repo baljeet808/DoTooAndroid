@@ -38,6 +38,7 @@ import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getUsersInvitations
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.UserInvitation
@@ -53,6 +54,7 @@ import kotlinx.coroutines.launch
 fun InvitationsView(
     invitations: List<InvitationEntity>,
     users: List<UserEntity>,
+    project : ProjectEntity?,
     onClickActionButton : (userInvitation : UserInvitation) -> Unit,
     onUpdateAccess: (userInvitation : UserInvitation, accessType : Int) -> Unit,
     sendInvite : (email : String, accessType : Int) -> Unit,
@@ -245,6 +247,11 @@ fun InvitationsView(
                         },
                         onClickButton = {
                             onClickActionButton(userInvitation)
+                        },
+                        isUserAdmin = if (userInvitation.user != null && project != null) {
+                                userInvitation.user?.id == project.ownerId
+                            }else {
+                                false
                         }
                     )
                 }
@@ -460,6 +467,7 @@ fun PreviewInvitationsView() {
         onBackPressed = {},
         sendInvite = {_,_ ->},
         onClickActionButton = {},
-        onUpdateAccess = {_,_->}
+        onUpdateAccess = {_,_->},
+        project = null
     )
 }
