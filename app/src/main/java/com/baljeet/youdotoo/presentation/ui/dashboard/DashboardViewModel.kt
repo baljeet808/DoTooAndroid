@@ -17,10 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DashboardViewModel @Inject constructor (
+class DashboardViewModel @Inject constructor(
     private val getAllTasksUseCase: GetAllTasksUseCase,
     private val upsertAllInvitationsUseCase: UpsertAllInvitationsUseCase
-    ): ViewModel() {
+) : ViewModel() {
 
     /**
      * fetch the all tasks from local database
@@ -33,16 +33,31 @@ class DashboardViewModel @Inject constructor (
 
     private var invitationsQuery: Query = invitationsReference.where(
         Filter.or(
-            Filter.arrayContains("inviteeId", SharedPref.userId),
-            Filter.arrayContains("invitedId", SharedPref.userId)
+            Filter.equalTo("inviteeId", SharedPref.userId),
+            Filter.equalTo("invitedEmail", SharedPref.userEmail)
         )
     )
 
     init {
-        invitationsQuery.addSnapshotListener { snapshot, error ->
-            if(snapshot!= null && error == null){
+        invitationsReference.addSnapshotListener { snapshot, error ->
+            if (snapshot != null && error == null) {
                 CoroutineScope(Dispatchers.IO).launch {
-                    upsertAllInvitationsUseCase(snapshot.toObjects(InvitationEntity::class.java))
+                    val invitations = arrayListOf<InvitationEntity>()
+                    for (invitation in snapshot) {
+                        invitations.add(
+                            InvitationEntity(
+                                id = invitation.getString("id") ?: "",
+                                inviteeId = invitation.getString("inviteeId") ?: "",
+                                inviteeName = invitation.getString("inviteeName") ?: "",
+                                invitedEmail = invitation.getString("invitedEmail") ?: "",
+                                projectId = invitation.getString("projectId") ?: "",
+                                projectName = invitation.getString("projectName") ?: "",
+                                accessType = (invitation.getLong("accessType") ?: 0).toInt(),
+                                status = (invitation.getLong("status") ?: 0).toInt()
+                            )
+                        )
+                    }
+                    upsertAllInvitationsUseCase(invitations)
                 }
             }
         }
