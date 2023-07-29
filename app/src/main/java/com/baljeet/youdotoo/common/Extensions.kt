@@ -131,13 +131,19 @@ fun Project.getUserIds(): List<String>{
 }
 
 
+/**
+ *This function will return
+ * - user and his/her invitation if they have one else it will be null
+ * - invitation and its user if they have one in local db else it will be null
+ * - all of above will be filtered by email using search query before return, if search query is empty then return all with out filtering
+ * **/
 fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitations : List<InvitationEntity>) : List<UserInvitation> {
     val resultingList = arrayListOf<UserInvitation>()
     users.forEach { user ->
         resultingList.add(
             UserInvitation(
                 user = user,
-                invitationEntity = invitations.firstOrNull { invite -> invite.invitedId == user.id }
+                invitationEntity = invitations.firstOrNull { invite -> invite.invitedEmail == user.email }
             )
         )
     }
@@ -145,7 +151,7 @@ fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitatio
         resultingList.add(
             UserInvitation(
                 invitationEntity = invitation,
-                user = users.firstOrNull { user -> user.id == invitation.invitedId }
+                user = users.firstOrNull { user -> user.email == invitation.invitedEmail }
             )
         )
     }

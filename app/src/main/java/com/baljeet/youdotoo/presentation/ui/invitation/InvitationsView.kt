@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -88,8 +89,12 @@ fun InvitationsView(
         Color.Black
     }
 
-    var accessType by remember {
-        mutableStateOf(AccessTypeEditor)
+    var invitationAccessType by remember {
+        mutableIntStateOf(AccessTypeEditor)
+    }
+
+    var updateAccessType by remember {
+        mutableIntStateOf(AccessTypeEditor)
     }
 
     val sheetState = rememberStandardBottomSheetState(
@@ -117,12 +122,19 @@ fun InvitationsView(
     BottomSheetScaffold(
         sheetContent = {
             SelectAccessTypeSheet(
-                access = accessType,
+                access = selectedUserInvitation?.let {
+                    updateAccessType
+                }?: kotlin.run {
+                    invitationAccessType
+                },
                 onAccessChanged = { selectedAccess ->
                     selectedUserInvitation?.let {
-                        //TODO: update invitation access type
+                        updateAccessType = selectedAccess
+                        onUpdateAccess(
+                            it,updateAccessType
+                        )
                     }?: kotlin.run {
-                        accessType = selectedAccess
+                        invitationAccessType = selectedAccess
                     }
                     closeSheet()
                 }
@@ -227,12 +239,12 @@ fun InvitationsView(
                     InvitationItemView(
                         userInvitation = userInvitation,
                         onEditAccess = {
-                            accessType = userInvitation.invitationEntity?.accessType?:1
+                            updateAccessType = userInvitation.invitationEntity?.accessType?:1
                             selectedUserInvitation = userInvitation
                             openSheet()
                         },
                         onClickButton = {
-
+                            onClickActionButton(userInvitation)
                         }
                     )
                 }
@@ -294,10 +306,12 @@ fun InvitationsView(
                      * Edit box for access type
                      * **/
                     OutlinedTextField(
-                        value = if(accessType == 1){"Editor"} else {"Viewer"},
-                        onValueChange = { access ->
+                        value = if(invitationAccessType == 1){"Editor"} else {"Viewer"},
+                        onValueChange = { _ ->
+                            //Do Nothing
                         },
                         label = {},
+                        enabled = false,
                         textStyle = TextStyle(
                             fontSize = 13.sp,
                             fontFamily = FontFamily(Nunito.Bold.font),
@@ -378,7 +392,10 @@ fun InvitationsView(
                                     val emailIsValid = isEmailValid(emailAddress)
                                     showEmailNotValidError = emailIsValid.not()
                                     if(emailIsValid){
-                                        //TODO: send invitation
+                                        sendInvite(
+                                            emailAddress,
+                                            invitationAccessType
+                                        )
                                     }
                                 }
                             ) {
@@ -391,7 +408,28 @@ fun InvitationsView(
                         }
                     )
                 }
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(20.dp))
+                TextButton(
+                    onClick = {  },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable(
+                            onClick = onBackPressed
+                        ),
+                ) {
+                    Text(
+                        text = "Close",
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooBrightPink
+                        } else {
+                            NightDotooBrightBlue
+                        },
+                        textDecoration = TextDecoration.Underline,
+                        textAlign = TextAlign.Center,
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        fontSize = 16.sp
+                    )
+                }
             }
         }
     }

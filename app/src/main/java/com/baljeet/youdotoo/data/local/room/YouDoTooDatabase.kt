@@ -19,7 +19,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
         UserEntity::class,
         InvitationEntity::class
     ],
-    version = 9
+    version = 10
 )
 abstract class YouDoTooDatabase  : RoomDatabase(){
     abstract val projectDao : ProjectDao

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
 
 @Composable
 fun InvitePeopleHeading() {
@@ -37,7 +38,7 @@ fun InvitePeopleHeading() {
             Icons.Outlined.Rsvp,
             contentDescription = "RSVP icon",
             tint = if (isSystemInDarkTheme()) {
-                NightDotooBrightBlue
+                NightDotooBrightPink
             } else {
                 NightDotooBrightBlue
             },

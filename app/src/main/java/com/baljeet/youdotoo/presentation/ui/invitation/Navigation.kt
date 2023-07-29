@@ -42,7 +42,7 @@ fun NavGraphBuilder.addInvitationViewDestination(
 
             },
             sendInvite = { email, accessType ->
-
+                viewModel.sendInvite(email, accessType)
             }
         )
 

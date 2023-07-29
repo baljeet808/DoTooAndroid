@@ -33,7 +33,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @Composable
 fun InvitationItemView(
     userInvitation: UserInvitation,
-    onClickButton: (status: Int?) -> Unit,
+    onClickButton: () -> Unit,
     onEditAccess : () -> Unit
 ) {
 
@@ -225,9 +225,7 @@ fun InvitationItemView(
                         shape = RoundedCornerShape(5.dp)
                     )
                     .clickable(
-                        onClick = {
-                            onClickButton(userInvitationStatus)
-                        }
+                        onClick = onClickButton
                     )
                     .padding(start = 10.dp, end = 10.dp, top = 5.dp, bottom = 5.dp),
                 textAlign = TextAlign.Start

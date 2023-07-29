@@ -19,9 +19,10 @@ data class InvitationEntity(
     @PrimaryKey
     val id : String,
     val inviteeId : String,
-    val invitedId : String,
+    val inviteeName : String,
     val invitedEmail : String,
     val projectId : String,
+    val projectName : String,
     val status : Int,
     val accessType : Int
 )
