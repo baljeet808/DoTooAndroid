@@ -285,6 +285,54 @@ fun InvitationsView(
                         .padding(start = 5.dp, end = 5.dp),
                     textAlign = TextAlign.Start
                 )
+
+                /**
+                 * Edit box for access type
+                 * **/
+                OutlinedTextField(
+                    value = if(invitationAccessType == 1){"Editor"} else {"Viewer"},
+                    onValueChange = { _ ->
+                        //Do Nothing
+                    },
+                    label = {},
+                    enabled = false,
+                    textStyle = TextStyle(
+                        fontSize = 13.sp,
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
+                        color = if (isSystemInDarkTheme()){
+                            Color.White
+                        }else{
+                            Color.Black
+                        }
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 5.dp, end = 5.dp)
+                        .clickable(
+                            onClick = {
+                                selectedUserInvitation = null
+                                openSheet()
+                            }
+                        ),
+                    maxLines = 1,
+                    colors = OutlinedTextFieldDefaults.colors(
+                        unfocusedBorderColor = searchBarThemeColor,
+                        focusedBorderColor = searchBarThemeColor
+                    ),
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.ArrowDropDown,
+                            contentDescription = "Send invite button",
+                            tint = if(isSystemInDarkTheme()){
+                                Color.White
+                            }else{
+                                Color.Black
+                            }
+                        )
+                    }
+                )
+
                 Spacer(modifier = Modifier.height(5.dp))
                 AnimatedVisibility(visible = showEmailNotValidError) {
                     androidx.compose.material3.Text(
@@ -305,56 +353,6 @@ fun InvitationsView(
                     )
                 }
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    /**
-                     * Edit box for access type
-                     * **/
-                    OutlinedTextField(
-                        value = if(invitationAccessType == 1){"Editor"} else {"Viewer"},
-                        onValueChange = { _ ->
-                            //Do Nothing
-                        },
-                        label = {},
-                        enabled = false,
-                        textStyle = TextStyle(
-                            fontSize = 13.sp,
-                            fontFamily = FontFamily(Nunito.Bold.font),
-                            letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
-                            color = if (isSystemInDarkTheme()){
-                                Color.White
-                            }else{
-                                Color.Black
-                            }
-                        ),
-                        modifier = Modifier
-                            .width(125.dp)
-                            .padding(start = 5.dp, end = 5.dp)
-                            .clickable(
-                                onClick = {
-                                    selectedUserInvitation = null
-                                    openSheet()
-                                }
-                            ),
-                        maxLines = 1,
-                        colors = OutlinedTextFieldDefaults.colors(
-                            unfocusedBorderColor = searchBarThemeColor,
-                            focusedBorderColor = searchBarThemeColor
-                        ),
-                        trailingIcon = {
-                            Icon(
-                                Icons.Filled.ArrowDropDown,
-                                contentDescription = "Send invite button",
-                                tint = if(isSystemInDarkTheme()){
-                                    Color.White
-                                }else{
-                                    Color.Black
-                                }
-                            )
-                        }
-                    )
 
                     /**
                      * Text field
@@ -386,7 +384,7 @@ fun InvitationsView(
                             }
                         ),
                         modifier = Modifier
-                            .weight(1f)
+                            .fillMaxWidth()
                             .padding(start = 5.dp, end = 5.dp),
                         maxLines = 1,
                         colors = OutlinedTextFieldDefaults.colors(
@@ -414,7 +412,7 @@ fun InvitationsView(
                             }
                         }
                     )
-                }
+
                 Spacer(modifier = Modifier.height(20.dp))
                 TextButton(
                     onClick = {  },
