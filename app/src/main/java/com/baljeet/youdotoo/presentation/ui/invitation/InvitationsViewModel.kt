@@ -30,4 +30,5 @@ class InvitationsViewModel @Inject constructor(
 
     fun getAllUsers(): Flow<List<UserEntity>> = getUsersUseCase()
 
+
 }

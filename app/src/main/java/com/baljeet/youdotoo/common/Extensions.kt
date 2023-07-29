@@ -131,7 +131,7 @@ fun Project.getUserIds(): List<String>{
 }
 
 
-fun getUsersInvitations(users : List<UserEntity>, invitations : List<InvitationEntity>) : List<UserInvitation> {
+fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitations : List<InvitationEntity>) : List<UserInvitation> {
     val resultingList = arrayListOf<UserInvitation>()
     users.forEach { user ->
         resultingList.add(
@@ -149,7 +149,13 @@ fun getUsersInvitations(users : List<UserEntity>, invitations : List<InvitationE
             )
         )
     }
-    return resultingList
+
+    val filteredList = resultingList.filter { invitation ->
+        (invitation.user?.email?.startsWith(searchQuery,ignoreCase = true) == true)
+                || (invitation.invitationEntity?.invitedEmail?.startsWith(searchQuery, ignoreCase = true) == true)
+    }
+
+    return if(searchQuery.isNotBlank()) filteredList else resultingList
 }
 
 

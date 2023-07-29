@@ -35,9 +35,6 @@ fun NavGraphBuilder.addInvitationViewDestination(
             onBackPressed = {
                 navController.popBackStack()
             },
-            onSearchQueryChanged = { query ->
-
-            },
             onUpdateAccess = { userInvitation, accesstype ->
 
             },

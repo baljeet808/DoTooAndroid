@@ -55,8 +55,7 @@ fun InvitationsView(
     onClickActionButton : (userInvitation : UserInvitation) -> Unit,
     onUpdateAccess: (userInvitation : UserInvitation, accessType : Int) -> Unit,
     sendInvite : (email : String, accessType : Int) -> Unit,
-    onBackPressed: () -> Unit,
-    onSearchQueryChanged : (query : String) -> Unit
+    onBackPressed: () -> Unit
 ) {
 
     var emailAddress by remember {
@@ -67,7 +66,11 @@ fun InvitationsView(
         mutableStateOf(false)
     }
 
-    val usersInvitations = getUsersInvitations(users, invitations)
+    var searchQuery by remember {
+        mutableStateOf("")
+    }
+
+    val usersInvitations = getUsersInvitations(searchQuery,users, invitations)
 
     var selectedUserInvitation : UserInvitation? = null
 
@@ -109,9 +112,6 @@ fun InvitationsView(
         }
     }
 
-    var searchQuery by remember {
-        mutableStateOf("")
-    }
 
 
     BottomSheetScaffold(
@@ -188,7 +188,7 @@ fun InvitationsView(
                     },
                     placeholder = {
                         Text(
-                            text = "Search by name...",
+                            text = "Search by email...",
                             fontFamily = FontFamily(Nunito.Normal.font),
                             color = searchBarThemeColor,
                             fontSize = 16.sp
@@ -422,7 +422,6 @@ fun PreviewInvitationsView() {
         onBackPressed = {},
         sendInvite = {_,_ ->},
         onClickActionButton = {},
-        onUpdateAccess = {_,_->},
-        onSearchQueryChanged = {}
+        onUpdateAccess = {_,_->}
     )
 }
