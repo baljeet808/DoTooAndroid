@@ -39,7 +39,7 @@ class DashboardViewModel @Inject constructor(
     )
 
     init {
-        invitationsReference.addSnapshotListener { snapshot, error ->
+        invitationsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
                 CoroutineScope(Dispatchers.IO).launch {
                     val invitations = arrayListOf<InvitationEntity>()
