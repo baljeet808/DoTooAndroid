@@ -90,7 +90,14 @@ class InvitationsViewModel @Inject constructor(
      * method will reincarnate that invitation
      * **/
     fun resendInvitation(invitation: InvitationEntity){
-
+        if(SharedPref.isUserAPro) {
+            val updatedInvitation = invitation.copy(
+                status = InvitationPending
+            )
+            invitationsReference
+                .document(updatedInvitation.id)
+                .set(updatedInvitation)
+        }
     }
 
     /**
@@ -99,7 +106,25 @@ class InvitationsViewModel @Inject constructor(
      * after which that notification will live in user's local data
      * **/
     fun removeUserFromProject(userInvitation: UserInvitation){
+        if(SharedPref.isUserAPro){
+            project?.let { projectEntity ->
+                val editorIDs = projectEntity.collaboratorIds.split(",").toCollection(ArrayList())
+                editorIDs.remove(userInvitation.user?.id ?: "")
 
+                val viewerIDs = projectEntity.viewerIds.split(",").toCollection(ArrayList())
+                viewerIDs.remove(userInvitation.user?.id ?: "")
+
+                val updatedProject = projectEntity.copy(
+                    viewerIds = viewerIDs.joinToString(separator = ","),
+                    collaboratorIds = editorIDs.joinToString(separator = ",")
+                )
+
+                projectReference.set(updatedProject)
+            }
+            userInvitation.invitationEntity?.let { invitation ->
+                deleteInvitation(invitation)
+            }
+        }
     }
 
     /**
