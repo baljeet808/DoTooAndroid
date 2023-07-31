@@ -17,7 +17,9 @@ class InvitationNotificationService (
 
     fun showNotification(invitation : InvitationEntity){
 
-        val mainActivityIntent = Intent(context,MainActivity::class.java)
+        val mainActivityIntent = Intent(context,MainActivity::class.java).apply {
+            putExtra(INVITATION_ID_KEY,invitation.id)
+        }
 
         val onClickPendingIntent =  PendingIntent.getActivity(context,1,mainActivityIntent,PendingIntent.FLAG_IMMUTABLE)
 
@@ -39,5 +41,6 @@ class InvitationNotificationService (
         const val CHANNEL_ID = "ChannelIDForInvitations"
         const val CHANNEL_NAME = "Invitation Request Notifications"
         const val CHANNEL_DESC = "Shows notification when someone send you a project invite."
+        const val INVITATION_ID_KEY = "invitation_id_key"
     }
 }
