@@ -34,9 +34,6 @@ const val AccessTypeAdmin = 0
 const val AccessTypeEditor = 1
 const val AccessTypeViewer = 2
 
-const val AppNotificationChannelID = "YouDoTooMainChannel"
-
-
 val menuItems = arrayListOf(
     MenuItem(
         id = DestinationAccountRoute,

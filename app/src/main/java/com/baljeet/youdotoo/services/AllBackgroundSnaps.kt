@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.baljeet.youdotoo.R
-import com.baljeet.youdotoo.common.AppNotificationChannelID
 
 
 class AllBackgroundSnaps : Service() {
@@ -32,11 +31,12 @@ class AllBackgroundSnaps : Service() {
     private fun start(){
         val notification = NotificationCompat.Builder(
             this,
-            AppNotificationChannelID
+            SyncNotificationService.CHANNEL_ID_FOR_SYNC
         )
             .setSmallIcon(R.drawable.youdotoo_app_icon)
             .setContentTitle("Sync is on.")
             .setContentText("Keeping your tasks synced with server.")
+            .setOngoing(true)
             .build()
         startForeground(1,notification)
     }

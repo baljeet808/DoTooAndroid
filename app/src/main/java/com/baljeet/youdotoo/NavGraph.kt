@@ -1,7 +1,7 @@
 package com.baljeet.youdotoo
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
@@ -22,6 +22,8 @@ fun NavGraph(
     onSignInAttempt : OnAttemptLoginViaGoogle,
     signInState : SignInState
 ) {
+
+    val viewModel : MainViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
