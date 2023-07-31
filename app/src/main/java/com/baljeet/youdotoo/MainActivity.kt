@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
@@ -25,6 +26,7 @@ import com.baljeet.youdotoo.data.remote.GoogleAuthClient
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
+import com.baljeet.youdotoo.services.AllBackgroundSnaps
 import com.google.android.gms.auth.api.identity.Identity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -114,6 +116,15 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
     override fun resetLoginState() {
         loginState.value = SignInState()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        Intent(applicationContext,AllBackgroundSnaps::class.java).also {
+            it.action = AllBackgroundSnaps.ServiceActions.START.toString()
+            startService(it)
+        }
     }
 
 }
