@@ -10,7 +10,7 @@ import javax.inject.Singleton
 class GetInvitationByIdUseCase @Inject constructor(
     private val repository: InvitationsRepository
 ){
-    suspend operator fun invoke(id : String): InvitationEntity {
+    suspend operator fun invoke(id : String): InvitationEntity? {
         return repository.getInvitationById(id)
     }
 }

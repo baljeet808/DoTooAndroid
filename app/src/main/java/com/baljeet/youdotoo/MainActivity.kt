@@ -63,6 +63,8 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
             val viewModel: MainViewModel = hiltViewModel()
             val dialogQueue = viewModel.visiblePermissionDialogQueue
 
+
+
             val notificationPermissionResultLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
                 onResult = { isGranted ->
@@ -147,6 +149,8 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
                     val state by loginState
 
+                    viewModel.initiateInvitationsSnapshot(applicationContext)
+
                     NavGraph(
                         navController = navController,
                         onSignInAttempt = this@MainActivity,
@@ -188,7 +192,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
     override fun onStart() {
         super.onStart()
 
-        if(SharedPref.isSyncOn.not()) {
+        if(!SharedPref.isSyncOn) {
             Intent(applicationContext, AllBackgroundSnaps::class.java).also {
                 it.action = AllBackgroundSnaps.ServiceActions.START.toString()
                 startService(it)

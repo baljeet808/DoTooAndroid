@@ -18,7 +18,6 @@ class AllBackgroundSnaps : Service() {
         when(intent?.action){
             ServiceActions.START.toString() -> start()
             ServiceActions.STOP.toString() -> {
-                SharedPref.isSyncOn = false
                 stopSelf()
             }
         }
@@ -26,7 +25,15 @@ class AllBackgroundSnaps : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        SharedPref.isSyncOn = true
+    }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        SharedPref.isSyncOn = false
+    }
 
     enum class ServiceActions{
         START,STOP
@@ -42,7 +49,6 @@ class AllBackgroundSnaps : Service() {
             .setContentText("Keeping your tasks synced with server.")
             .setOngoing(true)
             .build()
-        SharedPref.isSyncOn = true
         startForeground(1,notification)
     }
 

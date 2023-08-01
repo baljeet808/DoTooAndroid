@@ -9,7 +9,7 @@ interface InvitationsRepository {
 
      fun getAllInvitationsByProjectID(projectId : String): Flow<List<InvitationEntity>>
 
-     suspend fun getInvitationById(id : String): InvitationEntity
+     suspend fun getInvitationById(id : String): InvitationEntity?
 
      suspend fun upsertAll(invitations : List<InvitationEntity>)
 

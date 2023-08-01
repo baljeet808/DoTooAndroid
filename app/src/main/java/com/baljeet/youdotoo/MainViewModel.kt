@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo
 
+import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
@@ -12,10 +13,12 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteTasksByProjectIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
+import com.baljeet.youdotoo.services.InvitationNotificationService
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -36,7 +39,8 @@ class MainViewModel @Inject constructor(
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
     private val getUserByIdUseCase: GetUserByIdUseCase,
-    private val upsertUserUseCase: UpsertUserUseCase
+    private val upsertUserUseCase: UpsertUserUseCase,
+    private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
 ) : ViewModel() {
 
 
@@ -151,6 +155,11 @@ class MainViewModel @Inject constructor(
             }
         }
 
+    }
+
+
+    fun initiateInvitationsSnapshot(context : Context){
+
         invitationsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
                 CoroutineScope(Dispatchers.IO).launch {
@@ -169,8 +178,18 @@ class MainViewModel @Inject constructor(
                             )
                         )
                     }
-                    SharedPref.userId
                     delay(100)
+
+                    invitations.forEach {  invite  ->
+                        getInvitationByIdUseCase(invite.id)?.let { oldInvite ->
+                            if(invite.status != oldInvite.status){
+                                InvitationNotificationService(context).showNotification(invite)
+                            }
+                        }?: kotlin.run {
+                            InvitationNotificationService(context).showNotification(invite)
+                        }
+                    }
+
                     upsertAllInvitationsUseCase(invitations)
                 }
             }

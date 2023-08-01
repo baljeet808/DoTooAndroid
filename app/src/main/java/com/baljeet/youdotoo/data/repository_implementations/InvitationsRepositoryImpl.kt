@@ -21,7 +21,7 @@ class InvitationsRepositoryImpl @Inject constructor(
         return invitationDao.getAllInvitationsByProjectID(projectId)
     }
 
-    override suspend fun getInvitationById(id: String): InvitationEntity {
+    override suspend fun getInvitationById(id: String): InvitationEntity? {
         return invitationDao.getInvitationById(id)
     }
 
