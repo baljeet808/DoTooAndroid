@@ -1,7 +1,5 @@
 package com.baljeet.youdotoo.permissions.dialogs
 
-import android.Manifest
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -20,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
-import org.w3c.dom.Text
 
 
 @Composable
@@ -42,11 +39,7 @@ fun PermissionDialog(
             Text(
                 text = permissionTextProvider.getDescription(isPermanentlyDeclined),
                 fontFamily = FontFamily(Nunito.Normal.font),
-                color = if(darkTheme){
-                    Color.White
-                }else{
-                    Color.Black
-                }
+                color = Color.Gray
             )
         },
         buttons = {
@@ -81,7 +74,11 @@ fun PermissionDialog(
             Text(
                 text = "Permission required",
                 fontFamily = FontFamily(Nunito.Bold.font),
-                color = Color.Gray
+                color = if(darkTheme){
+                    Color.White
+                }else{
+                    Color.Black
+                }
             )
         },
         backgroundColor = if (darkTheme){
