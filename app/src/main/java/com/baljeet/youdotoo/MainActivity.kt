@@ -149,8 +149,6 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
                     val state by loginState
 
-                    viewModel.initiateInvitationsSnapshot(applicationContext)
-
                     NavGraph(
                         navController = navController,
                         onSignInAttempt = this@MainActivity,
