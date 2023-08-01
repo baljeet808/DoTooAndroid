@@ -1,8 +1,14 @@
 package com.baljeet.youdotoo
 
-import android.content.Context
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
+import com.baljeet.youdotoo.common.AccessTypeAdmin
+import com.baljeet.youdotoo.common.AccessTypeEditor
+import com.baljeet.youdotoo.common.AccessTypeViewer
+import com.baljeet.youdotoo.common.InvitationAccepted
+import com.baljeet.youdotoo.common.InvitationArchived
+import com.baljeet.youdotoo.common.InvitationDeclined
+import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDateInLong
@@ -13,6 +19,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteTasksByProjectIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
@@ -41,6 +48,8 @@ class MainViewModel @Inject constructor(
     private val getUserByIdUseCase: GetUserByIdUseCase,
     private val upsertUserUseCase: UpsertUserUseCase,
     private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
+    private val deleteInvitationUseCase: DeleteInvitationUseCase,
+    private val invitationsNotificationService: InvitationNotificationService
 ) : ViewModel() {
 
 
@@ -155,10 +164,6 @@ class MainViewModel @Inject constructor(
             }
         }
 
-    }
-
-
-    fun initiateInvitationsSnapshot(context : Context){
 
         invitationsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
@@ -183,10 +188,52 @@ class MainViewModel @Inject constructor(
                     invitations.forEach {  invite  ->
                         getInvitationByIdUseCase(invite.id)?.let { oldInvite ->
                             if(invite.status != oldInvite.status){
-                                InvitationNotificationService(context).showNotification(invite)
+                                when(invite.status){
+                                    InvitationPending -> {
+                                        if(invite.invitedEmail == SharedPref.userEmail){
+                                            invitationsNotificationService.showInviteNotification(invite)
+                                        }
+                                    }
+                                    InvitationAccepted -> {
+                                        if(invite.inviteeId == SharedPref.userId){
+                                            invitationsNotificationService.showInvitationResponseNotification(invite,"accepted")
+                                        }
+                                    }
+                                    InvitationDeclined -> {
+                                        if(invite.inviteeId == SharedPref.userId){
+                                            invitationsNotificationService.showInvitationResponseNotification(invite, "declined")
+                                        }
+                                    }
+                                    InvitationArchived -> {
+                                        if(invite.invitedEmail == SharedPref.userEmail){
+                                            deleteInvitationUseCase(invite)
+                                        }
+                                    }
+                                }
                             }
+
+                            if(invite.accessType != oldInvite.accessType){
+                                if(invite.invitedEmail == SharedPref.userEmail) {
+                                   val accessName = when (invite.accessType) {
+                                        AccessTypeAdmin -> {
+                                            "Admin"
+                                        }
+
+                                        AccessTypeEditor -> {
+                                            "Editor"
+                                        }
+
+                                        AccessTypeViewer -> {
+                                            "Viewer"
+                                        }
+                                       else -> return@forEach
+                                    }
+                                    invitationsNotificationService.showAccessUpdateNotification(invite,accessName)
+                                }
+                            }
+
                         }?: kotlin.run {
-                            InvitationNotificationService(context).showNotification(invite)
+                            invitationsNotificationService.showInviteNotification(invite)
                         }
                     }
 
@@ -194,6 +241,7 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+
     }
 
 

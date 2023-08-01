@@ -6,6 +6,7 @@ import com.baljeet.youdotoo.common.AccessTypeAdmin
 import com.baljeet.youdotoo.common.AccessTypeEditor
 import com.baljeet.youdotoo.common.AccessTypeViewer
 import com.baljeet.youdotoo.common.InvitationAccepted
+import com.baljeet.youdotoo.common.InvitationArchived
 import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
@@ -122,7 +123,7 @@ class InvitationsViewModel @Inject constructor(
                 projectReference.set(updatedProject)
             }
             userInvitation.invitationEntity?.let { invitation ->
-                deleteInvitation(invitation)
+                archiveInvitation(invitation)
             }
         }
     }
@@ -193,9 +194,19 @@ class InvitationsViewModel @Inject constructor(
     /**
      * Delete the given invitation and notify invited user about it
      * **/
-    fun deleteInvitation(invitation : InvitationEntity){
+    fun archiveInvitation(invitation : InvitationEntity){
+        val archivedInvite = invitation.copy(
+            status = InvitationArchived
+        )
+        /**
+         * marking archived before deleting will update local database of invited user
+         * **/
         invitationsReference
-            .document(invitation.id)
+            .document(archivedInvite.id)
+            .set(archivedInvite)
+
+        invitationsReference
+            .document(archivedInvite.id)
             .delete()
             .addOnSuccessListener {
                 CoroutineScope(Dispatchers.IO).launch {

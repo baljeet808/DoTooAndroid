@@ -51,7 +51,7 @@ fun NavGraphBuilder.addInvitationViewDestination(
                         )
                     }
                 }else if(userInvitation.invitationEntity?.status == InvitationPending){
-                    viewModel.deleteInvitation(
+                    viewModel.archiveInvitation(
                         userInvitation.invitationEntity!!
                     )
                 } else if (userInvitation.invitationEntity?.status == InvitationAccepted){

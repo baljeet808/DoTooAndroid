@@ -1,43 +1,71 @@
 package com.baljeet.youdotoo.services
 
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import androidx.core.app.NotificationCompat
 import com.baljeet.youdotoo.MainActivity
-import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class InvitationNotificationService (
-    private val context : Context
-){
+class InvitationNotificationService @Inject constructor(
+    @ApplicationContext val context: Context,
+) : DoTooNotification() {
 
-    private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-    fun showNotification(invitation : InvitationEntity){
-
-        val mainActivityIntent = Intent(context,MainActivity::class.java).apply {
-            putExtra(INVITATION_ID_KEY,invitation.id)
+    fun showInviteNotification(invitation: InvitationEntity) {
+        val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(INVITATION_ID_KEY, invitation.id)
         }
+        val onClickPendingIntent =
+            PendingIntent.getActivity(context, 1, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
 
-        val onClickPendingIntent =  PendingIntent.getActivity(context,1,mainActivityIntent,PendingIntent.FLAG_IMMUTABLE)
-
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(R.drawable.youdotoo_app_icon)
-            .setContentTitle("Project Invitation.")
-            .setContentText("${invitation.inviteeName} has invited you to a project : ' ${invitation.projectName} '. See more details about project in app.")
-            .setStyle(NotificationCompat.BigTextStyle())
-            .setContentIntent(onClickPendingIntent)
-            .build()
-
-        notificationManager.notify(
+        showNotification(
+            title = "Project Invitation.",
+            contentText = "${invitation.inviteeName} has invited you to a project : ' ${invitation.projectName} '. See more details about project in app.",
+            pendingIntent = onClickPendingIntent,
             1,
-            notification
+            context
         )
     }
 
-    companion object{
+    fun showInvitationResponseNotification(invitation: InvitationEntity, status : String) {
+        val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(INVITATION_ID_KEY, invitation.id)
+        }
+        val onClickPendingIntent =
+            PendingIntent.getActivity(context, 1, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        showNotification(
+            title = "Invitation $status.",
+            contentText = "${invitation.invitedEmail} has $status your invitation.",
+            pendingIntent = onClickPendingIntent,
+            1,
+            context
+        )
+    }
+
+
+    fun showAccessUpdateNotification(invitation: InvitationEntity, access : String) {
+        val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
+            putExtra(INVITATION_ID_KEY, invitation.id)
+        }
+        val onClickPendingIntent =
+            PendingIntent.getActivity(context, 1, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
+
+        showNotification(
+            title = "Project access updated to '$access'",
+            contentText = "${invitation.inviteeName} has made you $access of project - ${invitation.projectName}.",
+            pendingIntent = onClickPendingIntent,
+            1,
+            context
+        )
+
+    }
+
+
+
+    companion object {
         const val CHANNEL_ID = "ChannelIDForInvitations"
         const val CHANNEL_NAME = "Invitation Request Notifications"
         const val CHANNEL_DESC = "Shows notification when someone send you a project invite."

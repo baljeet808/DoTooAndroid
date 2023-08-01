@@ -29,6 +29,7 @@ const val maxTitleCharsAllowedForProject = 40
 const val InvitationPending = 0
 const val InvitationAccepted = 1
 const val InvitationDeclined = 2
+const val InvitationArchived = 3
 
 const val AccessTypeAdmin = 0
 const val AccessTypeEditor = 1
