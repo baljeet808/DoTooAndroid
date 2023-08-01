@@ -10,11 +10,13 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,7 +33,7 @@ import java.time.LocalDate
 fun TopBar(
     notificationsState : Boolean,
     onMenuItemClick: () -> Unit,
-    onNotificationItemClicked: () -> Unit,
+    onNotificationsClicked: () -> Unit,
     modifier: Modifier
 ) {
 
@@ -72,7 +74,9 @@ fun TopBar(
                 text = LocalDate.now().formatNicelyWithoutYear(),
                 color = LightAppBarIconsColor,
                 fontFamily = FontFamily(Nunito.Normal.font),
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
 
 
@@ -81,12 +85,43 @@ fun TopBar(
              * **/
             IconButton(
                 onClick = {
-                    onNotificationItemClicked()
+                    onNotificationsClicked()
                 },
                 modifier = Modifier
             ) {
                 Icon(
                     Icons.Outlined.Message,
+                    contentDescription = "Menu button to open Chat",
+                    tint = LightAppBarIconsColor
+                )
+                AnimatedVisibility(visible = notificationsState) {
+                    Box(
+                        modifier = Modifier
+                            .height(6.dp)
+                            .width(6.dp)
+                            .background(
+                                color = NightDotooBrightPink,
+                                shape = RoundedCornerShape(5.dp)
+                            )
+                    )
+                    Spacer(modifier = Modifier
+                        .height(15.dp)
+                        .width(14.dp))
+                }
+
+            }
+
+            /**
+             * Menu button to open Notifications
+             * **/
+            IconButton(
+                onClick = {
+                    onNotificationsClicked()
+                },
+                modifier = Modifier
+            ) {
+                Icon(
+                    Icons.Outlined.Notifications,
                     contentDescription = "Menu button to open Chat",
                     tint = LightAppBarIconsColor
                 )
@@ -122,6 +157,6 @@ fun PreviewTopAppBar() {
        modifier = Modifier,
         notificationsState = true,
         onMenuItemClick = {},
-        onNotificationItemClicked = {},
+        onNotificationsClicked = {},
     )
 }

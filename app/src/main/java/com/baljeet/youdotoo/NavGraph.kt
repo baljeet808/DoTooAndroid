@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
@@ -11,6 +10,7 @@ import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestinatio
 import com.baljeet.youdotoo.presentation.ui.login.DestinationLoginRoute
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.login.addLoginDestination
+import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
 import com.baljeet.youdotoo.presentation.ui.signup.addSignupDestination
 
 /**
@@ -34,6 +34,7 @@ fun NavGraph(
     ){
         addLoginDestination(navController, onSignInAttempt, signInState)
         addSignupDestination(navController)
-        addDashboardViewDestination()
+        addDashboardViewDestination(navController)
+        addNotificationViewDestination(navController)
     }
 }

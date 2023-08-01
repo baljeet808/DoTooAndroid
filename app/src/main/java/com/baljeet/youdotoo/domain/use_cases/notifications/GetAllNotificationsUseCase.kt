@@ -8,7 +8,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class GetAllNotificationsUseCase @Inject constructor(
+class GetAllNotificationsAsFlowUseCase @Inject constructor(
     private val repository: NotificationRepository
 ){
     operator fun invoke(): Flow<List<NotificationEntity>> {

@@ -42,7 +42,9 @@ import kotlinx.coroutines.launch
  * **/
 @Composable
 fun DashboardView(
-    allTasks: List<DoTooItemEntity>
+    allTasks: List<DoTooItemEntity>,
+    userData : UserData,
+    onClickNotifications: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -67,7 +69,7 @@ fun DashboardView(
             } else {
                 NightDotooNormalBlue
             }
-        }
+        }, label = ""
     )
 
     systemUiController.setSystemBarsColor(color = statusBarColor)
@@ -77,7 +79,7 @@ fun DashboardView(
             1f
         } else {
             0.8f
-        }
+        }, label = ""
     )
 
     val roundness = animateDpAsState(
@@ -85,7 +87,7 @@ fun DashboardView(
             0.dp
         } else {
             40.dp
-        }
+        }, label = ""
     )
 
     val offSetX = animateDpAsState(
@@ -93,7 +95,7 @@ fun DashboardView(
             0.dp
         } else {
             250.dp
-        }
+        }, label = ""
     )
 
     Scaffold(
@@ -107,12 +109,7 @@ fun DashboardView(
                 modifier = Modifier.fillMaxSize()
             ) {
                 NavigationDrawer(
-                    userData = UserData(
-                        userId = SharedPref.userId ?: "",
-                        userName = SharedPref.userName,
-                        userEmail = SharedPref.userEmail,
-                        profilePictureUrl = SharedPref.userAvatar
-                    ),
+                    userData = userData,
                     menuItems = menuItems,
                     onMenuItemClick = { menuId ->
                         when (menuId.id) {
@@ -163,7 +160,8 @@ fun DashboardView(
                 )
             }
         }
-    ) {
+    ) { padding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -173,7 +171,7 @@ fun DashboardView(
                     } else {
                         NightDotooNormalBlue
                     }
-                )
+                ).padding(padding)
         ) {
 
 
@@ -209,9 +207,7 @@ fun DashboardView(
                         }
                         maximizeCurrentScreen = false
                     },
-                    onNotificationItemClicked = {
-                        //Navigate to notifications
-                    }
+                    onNotificationsClicked = onClickNotifications
                 )
 
 
@@ -239,6 +235,13 @@ fun PreviewDashboardView() {
     DashboardView(
         allTasks = listOf(
             getSampleDotooItem().toDoTooItemEntity("")
-        )
+        ),
+        userData = UserData(
+            userEmail = "",
+            userId = "",
+            userName = "",
+            profilePictureUrl = ""
+        ),
+        onClickNotifications = {}
     )
 }

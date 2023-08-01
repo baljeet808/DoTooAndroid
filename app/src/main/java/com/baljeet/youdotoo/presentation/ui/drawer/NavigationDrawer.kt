@@ -59,10 +59,10 @@ fun NavigationDrawer(
             delayMillis = 1500,
             durationMillis = 1500,
             easing = LinearEasing
-        )
+        ), label = ""
     ).value
 
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "")
 
     val offsetX by transition.animateValue(
         initialValue = (-40).dp,
@@ -71,7 +71,7 @@ fun NavigationDrawer(
             animation = tween(durationMillis = 10000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
     val offsetY by transition.animateValue(
         initialValue = (300).dp,
@@ -80,7 +80,7 @@ fun NavigationDrawer(
             animation = tween(durationMillis = 30000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
 
     val offsetX1 by transition.animateValue(
@@ -90,7 +90,7 @@ fun NavigationDrawer(
             animation = tween(durationMillis = 30000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
     val offsetY1 by transition.animateValue(
         initialValue = 450.dp,
@@ -99,7 +99,7 @@ fun NavigationDrawer(
             animation = tween(durationMillis = 20000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
 
 
