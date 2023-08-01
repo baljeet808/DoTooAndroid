@@ -23,7 +23,6 @@ fun NavGraph(
     signInState : SignInState
 ) {
 
-    val viewModel : MainViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,

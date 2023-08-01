@@ -1,5 +1,9 @@
 package com.baljeet.youdotoo.common
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.foundation.lazy.LazyListState
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
@@ -162,6 +166,17 @@ fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitatio
     }
 
     return if(searchQuery.isNotBlank()) filteredList else resultingList
+}
+
+
+
+fun Activity.openAppSettings(){
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package",packageName,null)
+    ).also {
+        startActivity(it)
+    }
 }
 
 

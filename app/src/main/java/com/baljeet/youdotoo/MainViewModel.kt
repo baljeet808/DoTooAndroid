@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
@@ -206,5 +207,22 @@ class MainViewModel @Inject constructor(
         }
 
     }
+
+
+    val visiblePermissionDialogQueue = mutableStateListOf<String>()
+
+    fun dismissDialog(){
+        visiblePermissionDialogQueue.removeLast()
+    }
+
+    fun onPermissionResult(
+        permission : String,
+        isGranted : Boolean
+    ){
+        if(isGranted.not()){
+            visiblePermissionDialogQueue.add(0,permission)
+        }
+    }
+
 
 }

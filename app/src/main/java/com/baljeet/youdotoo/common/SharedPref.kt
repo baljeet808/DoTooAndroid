@@ -31,6 +31,13 @@ object SharedPref {
         set(value) = sharedPref.edit {
             it.putBoolean("isUserLoggedIn",value)
         }
+
+    var isSyncOn: Boolean
+        get() = sharedPref.getBoolean("isSyncOn",false)
+        set(value) = sharedPref.edit {
+            it.putBoolean("isSyncOn",value)
+        }
+
     var userId: String?
         get() = sharedPref.getString("userId",null)
         set(userId) = sharedPref.edit {
