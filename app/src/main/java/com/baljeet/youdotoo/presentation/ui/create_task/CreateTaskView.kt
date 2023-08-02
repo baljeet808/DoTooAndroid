@@ -75,7 +75,7 @@ fun CreateTaskView(
             animation = tween(durationMillis = 100),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Float.VectorConverter
+        typeConverter = Float.VectorConverter, label = ""
     )
 
     var showTitleErrorAnimation by remember{

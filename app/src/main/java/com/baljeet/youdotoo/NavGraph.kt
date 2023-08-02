@@ -7,6 +7,7 @@ import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
+import com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation.addProjectInvitationDestination
 import com.baljeet.youdotoo.presentation.ui.login.DestinationLoginRoute
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.login.addLoginDestination
@@ -36,5 +37,6 @@ fun NavGraph(
         addSignupDestination(navController)
         addDashboardViewDestination(navController)
         addNotificationViewDestination(navController)
+        addProjectInvitationDestination(navController)
     }
 }

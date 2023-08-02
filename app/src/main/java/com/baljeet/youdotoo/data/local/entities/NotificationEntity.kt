@@ -3,9 +3,7 @@ package com.baljeet.youdotoo.data.local.entities
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
 import com.baljeet.youdotoo.common.EnumNotificationType
-import com.baljeet.youdotoo.data.local.converters.NotificationTypeConverter
 
 @Entity(
     tableName = "notifications",
@@ -18,7 +16,6 @@ import com.baljeet.youdotoo.data.local.converters.NotificationTypeConverter
         )
     ]
 )
-@TypeConverters(NotificationTypeConverter::class)
 data class NotificationEntity(
     @PrimaryKey
     val id : String,

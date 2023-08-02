@@ -25,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +41,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun NotificationsView(
@@ -51,6 +52,17 @@ fun NotificationsView(
     onClickSettings:() -> Unit,
     onClose: () -> Unit
 ) {
+
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = if (isSystemInDarkTheme()) {
+            NightDotooNormalBlue
+        } else {
+            DotooGray
+        }
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,7 +85,7 @@ fun NotificationsView(
         ) {
 
             /**
-             * Drawer close icon button
+             * Close icon button
              * **/
             IconButton(
                 onClick = onClose,
@@ -93,11 +105,11 @@ fun NotificationsView(
             ) {
                 Icon(
                     Icons.Default.ArrowBackIos,
-                    contentDescription = "Button to close side drawer.",
+                    contentDescription = "Button to close current screen.",
                     tint = if (isSystemInDarkTheme()) {
-                        NightDotooTextColor
+                        Color.White
                     } else {
-                        LightDotooFooterTextColor
+                        Color.Black
                     }
                 )
             }
@@ -113,9 +125,9 @@ fun NotificationsView(
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooTextColor
+                    Color.White
                 } else {
-                    LightDotooFooterTextColor
+                    Color.Black
                 }
             )
 
@@ -141,9 +153,9 @@ fun NotificationsView(
                     Icons.Outlined.EditNotifications,
                     contentDescription = "Menu button to open notification settings",
                     tint = if (isSystemInDarkTheme()) {
-                        NightDotooTextColor
+                        Color.White
                     } else {
-                        LightDotooFooterTextColor
+                        Color.Black
                     }
                 )
             }
@@ -160,9 +172,7 @@ fun NotificationsView(
                     onDeleteNotification = {
 
                     },
-                    onItemClick = {
-
-                    }
+                    onItemClick ={ onNotificationClick(notification) }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }

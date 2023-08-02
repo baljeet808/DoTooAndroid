@@ -9,6 +9,7 @@ import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationArchived
 import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
@@ -77,7 +78,8 @@ class InvitationsViewModel @Inject constructor(
                 accessType = accessType,
                 status = InvitationPending,
                 inviteeId = SharedPref.userId!!,
-                projectDetail = project?.description?:""
+                projectDetail = project?.description?:"",
+                projectColor = project?.color?: getRandomColor()
             )
 
             invitationsReference

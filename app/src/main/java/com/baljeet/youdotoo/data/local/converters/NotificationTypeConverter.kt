@@ -1,11 +1,9 @@
 package com.baljeet.youdotoo.data.local.converters
 
-import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
 import com.baljeet.youdotoo.common.EnumNotificationType
 
 
-@ProvidedTypeConverter
 class NotificationTypeConverter {
     @TypeConverter
     fun notificationTypToInt(value: EnumNotificationType): Int {

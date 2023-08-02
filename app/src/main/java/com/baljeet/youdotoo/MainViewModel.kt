@@ -186,7 +186,9 @@ class MainViewModel @Inject constructor(
                                 projectName = invitation.getString("projectName") ?: "",
                                 accessType = (invitation.getLong("accessType") ?: 0).toInt(),
                                 status = (invitation.getLong("status") ?: 0).toInt(),
-                                projectDetail = invitation.getString("projectDetail") ?: ""
+                                projectDetail = invitation.getString("projectDetail") ?: "",
+                                projectColor =  invitation.getLong("projectColor")
+                                    ?: getRandomColor()
                             )
                         )
                     }

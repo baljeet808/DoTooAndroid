@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.invitation
+package com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -11,7 +11,6 @@ import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdAsFlowUseCase
-import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -19,19 +18,17 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectInvitationDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getInvitationByIdAsFlowUseCase: GetInvitationByIdAsFlowUseCase,
-    private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase
+    private val getInvitationByIdAsFlowUseCase: GetInvitationByIdAsFlowUseCase
 ) : ViewModel() {
 
+    private val onlineDB = FirebaseFirestore.getInstance() 
 
     private val invitationId: String = checkNotNull(savedStateHandle["invitationId"])
 
     fun getInvitationByIdAsFlow() = getInvitationByIdAsFlowUseCase(invitationId)
 
-    fun getProjectByIdAsFlow(projectId: String) = getProjectByIdAsFlowUseCase(projectId)
-
     private val invitationReference =
-        FirebaseFirestore.getInstance().collection("invitations").document(invitationId)
+        onlineDB.collection("invitations").document(invitationId)
 
     fun acceptInvitation(invitation: InvitationEntity) {
         val updatedInvitation = invitation.copy(
@@ -54,8 +51,7 @@ class ProjectInvitationDetailViewModel @Inject constructor(
 
     private fun addUserToProject(projectId: String, accessType: Int) {
 
-        val projectReference = FirebaseFirestore
-            .getInstance()
+        val projectReference = onlineDB
             .collection("projects")
             .document(projectId)
 

@@ -94,7 +94,7 @@ fun getSampleProjectWithTasks(): ProjectWithDoToos {
 }
 
 fun getRandomColor(): Long {
-    val randomInt = Random.nextInt(from = 0, 11)
+    val randomInt = Random.nextInt(from = 0, 9)
     return EnumProjectColors.values()[randomInt].longValue
 }
 
@@ -144,7 +144,8 @@ fun getSampleInvitation(): InvitationEntity{
         invitedEmail = getSampleProfile().email,
         inviteeName = "Baljeet singh",
         projectName = "App error list.",
-        projectDetail = "List of all app errors which need some fixing."
+        projectDetail = "List of all app errors which need some fixing.",
+        projectColor = getRandomColor()
     )
 }
 

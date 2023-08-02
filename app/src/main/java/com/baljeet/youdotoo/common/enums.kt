@@ -57,12 +57,12 @@ enum class EnumProjectColors(val longValue : Long){
     Orange(4294935846),
     Lime(4281178457),
     Red(4294261839),
-    Cyan(4287356926),
+    //Cyan(4287356926),
     Yellow(4294935846),
     Purple(4290677246),
     Graphite(4281347373),
     Peach(4293428895),
-    Teal(4289130720),
+    //Teal(4289130720),
     Brown(4289014314),
     Pink(4294928820)
 }
