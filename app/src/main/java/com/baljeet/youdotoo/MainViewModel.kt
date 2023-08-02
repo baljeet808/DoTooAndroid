@@ -26,7 +26,6 @@ import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.notifications.UpsertNotificationsUseCase
-import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
@@ -55,8 +54,7 @@ class MainViewModel @Inject constructor(
     private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
     private val deleteInvitationUseCase: DeleteInvitationUseCase,
     private val invitationsNotificationService: InvitationNotificationService,
-    private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
-    private val getProjectByIdUseCase: GetProjectByIdUseCase
+    private val upsertNotificationsUseCase: UpsertNotificationsUseCase
 ) : ViewModel() {
 
 
@@ -216,7 +214,7 @@ class MainViewModel @Inject constructor(
                                                         taskId = null,
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
-                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        projectColor = invite.projectColor,
                                                         isNew = true,
                                                         notificationType = EnumNotificationType.INVITATION
                                                     )
@@ -249,7 +247,7 @@ class MainViewModel @Inject constructor(
                                                         taskId = null,
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
-                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        projectColor = invite.projectColor,
                                                         isNew = true,
                                                         notificationType = EnumNotificationType.INVITATION
                                                     )
@@ -283,7 +281,7 @@ class MainViewModel @Inject constructor(
                                                         taskId = null,
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
-                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        projectColor = invite.projectColor,
                                                         isNew = true,
                                                         notificationType = EnumNotificationType.INVITATION
                                                     )
@@ -349,7 +347,7 @@ class MainViewModel @Inject constructor(
                                             taskId = null,
                                             messageId = null,
                                             createdAt = getSampleDateInLong(),
-                                            projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                            projectColor = invite.projectColor,
                                             isNew = true,
                                             notificationType = EnumNotificationType.INVITATION
                                         )

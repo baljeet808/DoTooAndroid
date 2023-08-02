@@ -24,7 +24,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
         InvitationEntity::class,
         NotificationEntity::class
     ],
-    version = 14
+    version = 16
 )
 @TypeConverters(NotificationTypeConverter::class)
 abstract class YouDoTooDatabase  : RoomDatabase(){

@@ -55,41 +55,41 @@ class ProjectInvitationDetailViewModel @Inject constructor(
             .collection("projects")
             .document(projectId)
 
-            projectReference.get().addOnSuccessListener { projectSnapshot ->
-                val project = Project(
-                    id = projectSnapshot.getString("id") ?: "",
-                    name = projectSnapshot.getString("name") ?: "",
-                    description = projectSnapshot.getString("description") ?: "",
-                    ownerId = projectSnapshot.getString("ownerId") ?: "",
-                    viewerIds = (projectSnapshot.get("viewerIds") as List<String>),
-                    collaboratorIds = (projectSnapshot.get("collaboratorIds") as List<String>),
-                    update = projectSnapshot.getString("update") ?: "",
-                    color = projectSnapshot.getLong("color") ?: 4278215265,
-                    updatedAt = projectSnapshot.getLong("updatedAt") ?: getSampleDateInLong()
-                )
+        projectReference.get().addOnSuccessListener { projectSnapshot ->
+            val project = Project(
+                id = projectSnapshot.getString("id") ?: "",
+                name = projectSnapshot.getString("name") ?: "",
+                description = projectSnapshot.getString("description") ?: "",
+                ownerId = projectSnapshot.getString("ownerId") ?: "",
+                viewerIds = (projectSnapshot.get("viewerIds") as List<String>),
+                collaboratorIds = (projectSnapshot.get("collaboratorIds") as List<String>),
+                update = projectSnapshot.getString("update") ?: "",
+                color = projectSnapshot.getLong("color") ?: 4278215265,
+                updatedAt = projectSnapshot.getLong("updatedAt") ?: getSampleDateInLong()
+            )
 
-                var editorIDs = arrayListOf<String>()
-                var viewerIDs = arrayListOf<String>()
+            var editorIDs = arrayListOf<String>()
+            var viewerIDs = arrayListOf<String>()
 
-                when (accessType) {
-                    AccessTypeViewer -> {
-                        viewerIDs = project.viewerIds.toCollection(ArrayList())
-                        viewerIDs.add(SharedPref.userId!!)
-                    }
-
-                    AccessTypeEditor -> {
-                        editorIDs = project.collaboratorIds.toCollection(ArrayList())
-                        editorIDs.add(SharedPref.userId!!)
-
-                    }
+            when (accessType) {
+                AccessTypeViewer -> {
+                    viewerIDs = project.viewerIds.toCollection(ArrayList())
+                    viewerIDs.add(SharedPref.userId!!)
                 }
 
-                val updatedProject = project.copy(
-                    viewerIds = viewerIDs.toList(),
-                    collaboratorIds = editorIDs.toList()
-                )
+                AccessTypeEditor -> {
+                    editorIDs = project.collaboratorIds.toCollection(ArrayList())
+                    editorIDs.add(SharedPref.userId!!)
 
-                projectReference.set(updatedProject)
+                }
             }
+
+            val updatedProject = project.copy(
+                viewerIds = viewerIDs.toList(),
+                collaboratorIds = editorIDs.toList()
+            )
+
+            projectReference.set(updatedProject)
+        }
     }
 }

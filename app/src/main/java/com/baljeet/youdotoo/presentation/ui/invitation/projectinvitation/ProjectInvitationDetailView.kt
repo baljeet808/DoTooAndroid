@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -43,6 +46,9 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.AccessTypeEditor
 import com.baljeet.youdotoo.common.AccessTypeViewer
+import com.baljeet.youdotoo.common.InvitationAccepted
+import com.baljeet.youdotoo.common.InvitationDeclined
+import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -77,20 +83,15 @@ fun ProjectInvitationDetailView(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooNormalBlue
+                    NightDotooDarkBlue
                 } else {
-                    DotooGray
+                    NightDotooNormalBlue
                 }
             ),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = Color(invitation?.projectColor ?: 4278215265))
-        ) {
 
             /**
              * Top heading row
@@ -98,19 +99,6 @@ fun ProjectInvitationDetailView(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
-                        } else {
-                            NightDotooNormalBlue
-                        },
-                        shape = RoundedCornerShape(
-                            topStart = 0.dp,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp,
-                            bottomStart = 30.dp
-                        )
-                    )
                     .padding(20.dp),
                 verticalArrangement = Arrangement.SpaceAround,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -163,14 +151,14 @@ fun ProjectInvitationDetailView(
 
                     Spacer(modifier = Modifier.width(50.dp))
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(50.dp))
                 Image(
                     painterResource(id = R.drawable.announcment_illust),
                     contentDescription = "Illustration"
                 )
 
                 val annotatedString = buildAnnotatedString {
-                    val inviteeName = "${invitation?.inviteeName} "
+                    val inviteeName = "@${invitation?.inviteeName?.replace(" ","")} "
                     val restText = "has invited you to this project as a "
                     val accessType = when (invitation?.accessType) {
                         AccessTypeEditor -> {
@@ -218,107 +206,175 @@ fun ProjectInvitationDetailView(
                     text = annotatedString,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp),
+                        .padding(top = 20.dp),
                     fontSize = 14.sp,
-                    letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
+                    letterSpacing = TextUnit(value = 2f, TextUnitType.Sp),
+                    textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
             }
-        }
 
 
-        /**
-         * Project detail Card
-         * **/
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .weight(1f)
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooDarkBlue
-                    } else {
+                    color = if (isSystemInDarkTheme()){
                         NightDotooNormalBlue
+                    }else{
+                        DotooGray
                     },
                     shape = RoundedCornerShape(
                         topStart = 30.dp,
-                        topEnd = 0.dp,
-                        bottomEnd = 30.dp,
-                        bottomStart = 30.dp
+                        topEnd = 30.dp
                     )
-                )
+                ),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
+
+            /**
+             * Project detail Card
+             * **/
             ProjectInvitationCard(
                 invitation = invitation,
                 modifier = Modifier
                     .clip(
                         shape = RoundedCornerShape(
-                            topStart = 0.dp,
+                            topStart = 30.dp,
                             topEnd = 30.dp,
                             bottomEnd = 30.dp,
                             bottomStart = 30.dp
                         )
                     )
             )
-        }
 
-        Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
 
-        /**
-         * Buttons
-         * **/
+            /**
+             * Buttons
+             * **/
 
-        Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f))
 
-        Button(
-            onClick = {
-                acceptInvitation(invitation!!)
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(90.dp)
-                .padding(20.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
-                } else {
-                    NightDotooNormalBlue
+
+            AnimatedVisibility(visible = invitation?.status == InvitationPending) {
+                Button(
+                    onClick = {
+                        acceptInvitation(invitation!!)
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(90.dp)
+                        .padding(20.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isSystemInDarkTheme()) {
+                            NightDotooDarkBlue
+                        } else {
+                            NightDotooNormalBlue
+                        }
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    enabled = invitation != null
+                ) {
+                    Text(
+                        text = "Accept",
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        color = Color.White,
+                        fontSize = 16.sp
+                    )
                 }
-            ),
-            shape = RoundedCornerShape(20.dp),
-            enabled = invitation != null
-        ) {
-            Text(
-                text = "Accept",
-                fontFamily = FontFamily(Nunito.Bold.font),
-                color = Color.White,
-                fontSize = 16.sp
-            )
-        }
-        TextButton(
-            onClick = {
-                declineInvitation(invitation!!)
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = invitation != null
-        ) {
-            Text(
-                text = "Decline",
-                fontFamily = FontFamily(Nunito.Bold.font),
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooBrightPink
-                } else {
-                    NightDotooBrightBlue
-                },
-                textDecoration = TextDecoration.Underline,
-                fontSize = 16.sp
-            )
-        }
+            }
+            AnimatedVisibility(visible = invitation?.status == InvitationPending) {
+                TextButton(
+                    onClick = {
+                        declineInvitation(invitation!!)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = invitation != null
+                ) {
+                    Text(
+                        text = "Decline",
+                        fontFamily = FontFamily(Nunito.Bold.font),
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooBrightPink
+                        } else {
+                            NightDotooBrightBlue
+                        },
+                        textDecoration = TextDecoration.Underline,
+                        fontSize = 16.sp
+                    )
+                }
+            }
+            AnimatedVisibility(visible = invitation?.status == InvitationAccepted ) {
+                Icon(
+                    Icons.Default.CheckCircle,
+                    contentDescription = "Accepted Icon",
+                    tint = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        NightDotooDarkBlue
+                    },
+                    modifier = Modifier
+                )
+            }
 
-        Spacer(modifier = Modifier.weight(1f))
+            AnimatedVisibility(visible = invitation?.status == InvitationAccepted ) {
+
+                Text(
+                    text = "You have accepted this Invitation.",
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = 20.sp,
+                    color = if(isSystemInDarkTheme()){
+                        Color.White
+                    }else{
+                        NightDotooDarkBlue
+                    },
+                    lineHeight = TextUnit(29f, TextUnitType.Sp),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+
+            AnimatedVisibility(visible = invitation?.status == InvitationDeclined ) {
+                Icon(
+                    Icons.Filled.Cancel,
+                    contentDescription = "Accepted Icon",
+                    tint = if (isSystemInDarkTheme()) {
+                        Color.White
+                    } else {
+                        NightDotooDarkBlue
+                    },
+                    modifier = Modifier
+                )
+            }
+
+            AnimatedVisibility(visible = invitation?.status == InvitationDeclined ) {
+                Text(
+                    text = "You have declined this Invitation.",
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = 20.sp,
+                    color = if(isSystemInDarkTheme()){
+                        Color.White
+                    }else{
+                        NightDotooDarkBlue
+                    },
+                    lineHeight = TextUnit(29f, TextUnitType.Sp),
+                    textAlign = TextAlign.Center
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+        }
     }
-
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
