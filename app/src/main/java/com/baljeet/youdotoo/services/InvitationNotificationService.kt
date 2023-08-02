@@ -13,7 +13,7 @@ class InvitationNotificationService @Inject constructor(
 ) : DoTooNotification() {
 
 
-    fun showInviteNotification(invitation: InvitationEntity) {
+    fun showInviteNotification(invitation: InvitationEntity, title: String, contentText: String) {
         val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
             putExtra(INVITATION_ID_KEY, invitation.id)
         }
@@ -21,15 +21,15 @@ class InvitationNotificationService @Inject constructor(
             PendingIntent.getActivity(context, 1, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
 
         showNotification(
-            title = "Project Invitation.",
-            contentText = "${invitation.inviteeName} has invited you to a project : ' ${invitation.projectName} '. See more details about project in app.",
+            title = title,
+            contentText = contentText,
             pendingIntent = onClickPendingIntent,
             1,
             context
         )
     }
 
-    fun showInvitationResponseNotification(invitation: InvitationEntity, status : String) {
+    fun showInvitationResponseNotification(invitation: InvitationEntity, title : String, contentText : String ,status : String) {
         val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
             putExtra(INVITATION_ID_KEY, invitation.id)
         }
@@ -37,8 +37,8 @@ class InvitationNotificationService @Inject constructor(
             PendingIntent.getActivity(context, 1, mainActivityIntent, PendingIntent.FLAG_IMMUTABLE)
 
         showNotification(
-            title = "Invitation $status.",
-            contentText = "${invitation.invitedEmail} has $status your invitation.",
+            title = title,
+            contentText = contentText,
             pendingIntent = onClickPendingIntent,
             1,
             context

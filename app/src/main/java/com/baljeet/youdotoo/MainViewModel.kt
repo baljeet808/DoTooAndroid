@@ -11,9 +11,11 @@ import com.baljeet.youdotoo.common.InvitationDeclined
 import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
+import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
@@ -22,6 +24,8 @@ import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
+import com.baljeet.youdotoo.domain.use_cases.notifications.UpsertNotificationsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
@@ -49,9 +53,10 @@ class MainViewModel @Inject constructor(
     private val upsertUserUseCase: UpsertUserUseCase,
     private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
     private val deleteInvitationUseCase: DeleteInvitationUseCase,
-    private val invitationsNotificationService: InvitationNotificationService
+    private val invitationsNotificationService: InvitationNotificationService,
+    private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
+    private val getProjectByIdUseCase: GetProjectByIdUseCase
 ) : ViewModel() {
-
 
 
     private var db = Firebase.firestore
@@ -74,7 +79,6 @@ class MainViewModel @Inject constructor(
         .collection("projects")
 
     private var projectsQuery: Query = projectsReference
-
 
 
     init {
@@ -117,7 +121,7 @@ class MainViewModel @Inject constructor(
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
                         color = project.getLong("color") ?: 4278215265,
-                        updatedAt = project.getLong("updatedAt")?: getSampleDateInLong()
+                        updatedAt = project.getLong("updatedAt") ?: getSampleDateInLong()
                     )
 
                     // save all online projects to local db
@@ -142,7 +146,8 @@ class MainViewModel @Inject constructor(
                                             priority = doToo.getString("priority") ?: "High",
                                             updatedBy = doToo.getString("updatedBy") ?: "",
                                             done = doToo.getBoolean("done") ?: false,
-                                            projectColor = doToo.getLong("projectColor") ?: getRandomColor()
+                                            projectColor = doToo.getLong("projectColor")
+                                                ?: getRandomColor()
                                         )
                                     )
                                 }
@@ -153,7 +158,7 @@ class MainViewModel @Inject constructor(
                                     )
                                 }
                             }
-                            if(e != null){
+                            if (e != null) {
                                 CoroutineScope(Dispatchers.IO).launch {
                                     deleteTasksByProjectId(onlineProject.id)
                                 }
@@ -185,36 +190,119 @@ class MainViewModel @Inject constructor(
                     }
                     delay(100)
 
-                    invitations.forEach {  invite  ->
+                    invitations.forEach { invite ->
                         getInvitationByIdUseCase(invite.id)?.let { oldInvite ->
-                            if(invite.status != oldInvite.status){
-                                when(invite.status){
+                            if (invite.status != oldInvite.status) {
+                                when (invite.status) {
                                     InvitationPending -> {
-                                        if(invite.invitedEmail == SharedPref.userEmail){
-                                            invitationsNotificationService.showInviteNotification(invite)
+                                        if (invite.invitedEmail == SharedPref.userEmail) {
+                                            val title = "Project Invitation."
+                                            val contextText =
+                                                "${invite.inviteeName} has invited you to a project." +
+                                                        "Tap to ee more details about project."
+
+                                            upsertNotificationsUseCase(
+                                                listOf(
+                                                    NotificationEntity(
+                                                        id = getRandomId(),
+                                                        title = title,
+                                                        contentText = contextText,
+                                                        invitationId = invite.id,
+                                                        projectId = invite.projectId,
+                                                        taskId = null,
+                                                        messageId = null,
+                                                        createdAt = getSampleDateInLong(),
+                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        isNew = true
+                                                    )
+                                                )
+                                            )
+
+                                            invitationsNotificationService.showInviteNotification(
+                                                invite,
+                                                title = title,
+                                                contentText = contextText
+                                            )
                                         }
                                     }
+
                                     InvitationAccepted -> {
-                                        if(invite.inviteeId == SharedPref.userId){
-                                            invitationsNotificationService.showInvitationResponseNotification(invite,"accepted")
+                                        if (invite.inviteeId == SharedPref.userId) {
+                                            val status = "accepted"
+                                            val title = "Invitation $status."
+                                            val contextText =
+                                                "${invite.invitedEmail} has $status your invitation."
+
+                                            upsertNotificationsUseCase(
+                                                listOf(
+                                                    NotificationEntity(
+                                                        id = getRandomId(),
+                                                        title = title,
+                                                        contentText = contextText,
+                                                        invitationId = invite.id,
+                                                        projectId = invite.projectId,
+                                                        taskId = null,
+                                                        messageId = null,
+                                                        createdAt = getSampleDateInLong(),
+                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        isNew = true
+                                                    )
+                                                )
+                                            )
+
+                                            invitationsNotificationService.showInvitationResponseNotification(
+                                                invite,
+                                                title = title,
+                                                contentText = contextText,
+                                                status
+                                            )
                                         }
                                     }
+
                                     InvitationDeclined -> {
-                                        if(invite.inviteeId == SharedPref.userId){
-                                            invitationsNotificationService.showInvitationResponseNotification(invite, "declined")
+                                        if (invite.inviteeId == SharedPref.userId) {
+                                            val status = "declined"
+                                            val title = "Invitation $status."
+                                            val contextText =
+                                                "${invite.invitedEmail} has $status your invitation."
+
+                                            upsertNotificationsUseCase(
+                                                listOf(
+                                                    NotificationEntity(
+                                                        id = getRandomId(),
+                                                        title = title,
+                                                        contentText = contextText,
+                                                        invitationId = invite.id,
+                                                        projectId = invite.projectId,
+                                                        taskId = null,
+                                                        messageId = null,
+                                                        createdAt = getSampleDateInLong(),
+                                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                                        isNew = true
+                                                    )
+                                                )
+                                            )
+
+                                            invitationsNotificationService.showInvitationResponseNotification(
+                                                invite,
+                                                title = title,
+                                                contentText = contextText,
+                                                status
+                                            )
                                         }
                                     }
+
                                     InvitationArchived -> {
-                                        if(invite.invitedEmail == SharedPref.userEmail){
+                                        if (invite.invitedEmail == SharedPref.userEmail) {
                                             deleteInvitationUseCase(invite)
                                         }
                                     }
                                 }
                             }
 
-                            if(invite.accessType != oldInvite.accessType){
-                                if(invite.invitedEmail == SharedPref.userEmail) {
-                                   val accessName = when (invite.accessType) {
+                            if (invite.accessType != oldInvite.accessType) {
+                                if (invite.invitedEmail == SharedPref.userEmail) {
+                                    val accessName = when (invite.accessType) {
                                         AccessTypeAdmin -> {
                                             "Admin"
                                         }
@@ -226,14 +314,45 @@ class MainViewModel @Inject constructor(
                                         AccessTypeViewer -> {
                                             "Viewer"
                                         }
-                                       else -> return@forEach
+
+                                        else -> return@forEach
                                     }
-                                    invitationsNotificationService.showAccessUpdateNotification(invite,accessName)
+                                    invitationsNotificationService.showAccessUpdateNotification(
+                                        invite,
+                                        accessName
+                                    )
                                 }
                             }
 
-                        }?: kotlin.run {
-                            invitationsNotificationService.showInviteNotification(invite)
+                        } ?: kotlin.run {
+
+                            val title = "Project Invitation."
+                            val contextText =
+                                "${invite.inviteeName} has invited you to a project." +
+                                        "Tap to ee more details about project."
+
+                            upsertNotificationsUseCase(
+                                listOf(
+                                    NotificationEntity(
+                                        id = getRandomId(),
+                                        title = title,
+                                        contentText = contextText,
+                                        invitationId = invite.id,
+                                        projectId = invite.projectId,
+                                        taskId = null,
+                                        messageId = null,
+                                        createdAt = getSampleDateInLong(),
+                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                        isNew = true
+                                    )
+                                )
+                            )
+
+                            invitationsNotificationService.showInviteNotification(
+                                invite,
+                                title = title,
+                                contentText = contextText
+                            )
                         }
                     }
 
@@ -278,16 +397,16 @@ class MainViewModel @Inject constructor(
 
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
-    fun dismissDialog(){
+    fun dismissDialog() {
         visiblePermissionDialogQueue.removeLast()
     }
 
     fun onPermissionResult(
-        permission : String,
-        isGranted : Boolean
-    ){
-        if(isGranted.not()){
-            visiblePermissionDialogQueue.add(0,permission)
+        permission: String,
+        isGranted: Boolean
+    ) {
+        if (isGranted.not()) {
+            visiblePermissionDialogQueue.add(0, permission)
         }
     }
 

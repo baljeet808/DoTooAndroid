@@ -71,4 +71,7 @@ enum class EnumDashboardTasksTabs{
     Today,Tomorrow,Yesterday,Pending,AllOther
 }
 
+enum class EnumNotificationType{
+    INVITATION, PROJECT_UPDATE, TASK_UPDATE, MESSAGE, GENERAL
+}
 

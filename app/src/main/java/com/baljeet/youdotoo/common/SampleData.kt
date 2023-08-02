@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.common
 
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
@@ -143,5 +144,34 @@ fun getSampleInvitation(): InvitationEntity{
         invitedEmail = getSampleProfile().email,
         inviteeName = "Baljeet singh",
         projectName = "App error list."
+    )
+}
+
+fun getSampleMessageNotification() : NotificationEntity{
+    return NotificationEntity(
+        id = "",
+        title = "Message from Baljeet Singh",
+        contentText = "Hi there guys, hope you are seeing notifications all well. Please write more suggestion for this task in chat here.",
+        invitationId = null,
+        projectId = "",
+        taskId = "",
+        messageId = "",
+        createdAt = getSampleDateInLong(),
+        projectColor = getRandomColor(),
+        isNew = true
+    )
+}
+fun getSampleInvitationNotification() : NotificationEntity{
+    return NotificationEntity(
+        id = "",
+        title = "Project Invitation",
+        contentText = "Karandeep kaur has invited you to a project. Tap to see more details about project",
+        invitationId = "",
+        projectId = "",
+        taskId = null,
+        messageId = null,
+        createdAt = getSampleDateInLong(),
+        projectColor = getRandomColor(),
+        isNew = true
     )
 }

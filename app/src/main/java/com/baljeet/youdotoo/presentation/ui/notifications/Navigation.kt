@@ -35,6 +35,9 @@ fun NavGraphBuilder.addNotificationViewDestination(
             },
             onClickSettings ={
 
+            },
+            onClose = {
+                navController.popBackStack()
             }
         )
 
