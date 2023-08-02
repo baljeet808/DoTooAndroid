@@ -76,7 +76,8 @@ class InvitationsViewModel @Inject constructor(
                 invitedEmail = email,
                 accessType = accessType,
                 status = InvitationPending,
-                inviteeId = SharedPref.userId!!
+                inviteeId = SharedPref.userId!!,
+                projectDetail = project?.description?:""
             )
 
             invitationsReference

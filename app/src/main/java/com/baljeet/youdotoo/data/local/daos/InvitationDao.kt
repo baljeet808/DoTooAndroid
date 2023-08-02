@@ -23,6 +23,9 @@ interface InvitationDao {
     @Query("SELECT * FROM invitations where id = :id")
     suspend fun getInvitationById(id : String) : InvitationEntity?
 
+    @Query("SELECT * FROM invitations where id = :id")
+    fun getInvitationByIdAsFlow(id : String) : Flow<InvitationEntity?>
+
     @Delete
     fun delete(invitation : InvitationEntity)
 

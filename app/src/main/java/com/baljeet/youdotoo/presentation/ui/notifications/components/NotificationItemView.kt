@@ -11,20 +11,7 @@ fun NotificationItemView(
     onItemClick: () -> Unit
 ) {
 
-    val notificationType = if (notification.messageId != null) {
-        EnumNotificationType.MESSAGE
-    } else if (notification.taskId != null) {
-        EnumNotificationType.TASK_UPDATE
-    } else if (notification.projectId != null) {
-        EnumNotificationType.PROJECT_UPDATE
-    } else if (notification.invitationId != null) {
-        EnumNotificationType.INVITATION
-    } else {
-        EnumNotificationType.GENERAL
-    }
-
-
-    when (notificationType) {
+    when (notification.notificationType) {
         EnumNotificationType.INVITATION -> {
             InvitationNotificationItemView(
                 notification = notification,

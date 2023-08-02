@@ -11,8 +11,11 @@ import androidx.navigation.navArgument
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationDeclined
 import com.baljeet.youdotoo.common.InvitationPending
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.presentation.ui.invitation.components.ProjectInvitationDetailView
 
 const val DestinationInvitationRoute = "invitations/{projectId}"
+const val DestinationProjectInvitationDetailRoute = "projectInvitationDetail/"
 
 fun NavGraphBuilder.addInvitationViewDestination(
     navController: NavController
@@ -66,6 +69,39 @@ fun NavGraphBuilder.addInvitationViewDestination(
                 viewModel.sendInvite(email, accessType)
             },
             project = project
+        )
+
+    }
+    composable(
+        route = DestinationProjectInvitationDetailRoute.plus("{invitationId}"),
+        arguments = listOf(
+            navArgument("invitationId"){
+                type = NavType.StringType
+            }
+        )
+    ){
+
+        val viewModel : ProjectInvitationDetailViewModel  = hiltViewModel()
+
+        val invitation by viewModel.getInvitationByIdAsFlow().collectAsState(initial = null)
+
+        var project : ProjectEntity? = null
+
+        if(invitation != null){
+           val projectEntity by viewModel.getProjectByIdAsFlow(invitation!!.projectId).collectAsState(initial = null)
+            project = projectEntity
+        }
+
+
+        ProjectInvitationDetailView(
+            invitation = invitation,
+            project = project,
+            acceptInvitation = {
+                viewModel.acceptInvitation(it)
+            },
+            declineInvitation = {
+                viewModel.declineInvitation(it)
+            }
         )
 
     }

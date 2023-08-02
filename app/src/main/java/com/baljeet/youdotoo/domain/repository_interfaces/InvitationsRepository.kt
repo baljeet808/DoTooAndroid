@@ -9,6 +9,8 @@ interface InvitationsRepository {
 
      fun getAllInvitationsByProjectID(projectId : String): Flow<List<InvitationEntity>>
 
+     fun getInvitationByIdAsFlow(id : String): Flow<InvitationEntity?>
+
      suspend fun getInvitationById(id : String): InvitationEntity?
 
      suspend fun upsertAll(invitations : List<InvitationEntity>)

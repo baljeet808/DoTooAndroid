@@ -22,7 +22,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
         InvitationEntity::class,
         NotificationEntity::class
     ],
-    version = 12
+    version = 13
 )
 abstract class YouDoTooDatabase  : RoomDatabase(){
     abstract val projectDao : ProjectDao

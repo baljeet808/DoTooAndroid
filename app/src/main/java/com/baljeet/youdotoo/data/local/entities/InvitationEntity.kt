@@ -23,6 +23,7 @@ data class InvitationEntity(
     val invitedEmail : String,
     val projectId : String,
     val projectName : String,
+    val projectDetail : String,
     val status : Int,
     val accessType : Int
 )

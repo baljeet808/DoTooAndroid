@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.AccessTypeAdmin
 import com.baljeet.youdotoo.common.AccessTypeEditor
 import com.baljeet.youdotoo.common.AccessTypeViewer
+import com.baljeet.youdotoo.common.EnumNotificationType
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationArchived
 import com.baljeet.youdotoo.common.InvitationDeclined
@@ -184,7 +185,8 @@ class MainViewModel @Inject constructor(
                                 projectId = invitation.getString("projectId") ?: "",
                                 projectName = invitation.getString("projectName") ?: "",
                                 accessType = (invitation.getLong("accessType") ?: 0).toInt(),
-                                status = (invitation.getLong("status") ?: 0).toInt()
+                                status = (invitation.getLong("status") ?: 0).toInt(),
+                                projectDetail = invitation.getString("projectDetail") ?: ""
                             )
                         )
                     }
@@ -213,7 +215,8 @@ class MainViewModel @Inject constructor(
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = getProjectByIdUseCase(invite.projectId).color,
-                                                        isNew = true
+                                                        isNew = true,
+                                                        notificationType = EnumNotificationType.INVITATION
                                                     )
                                                 )
                                             )
@@ -245,7 +248,8 @@ class MainViewModel @Inject constructor(
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = getProjectByIdUseCase(invite.projectId).color,
-                                                        isNew = true
+                                                        isNew = true,
+                                                        notificationType = EnumNotificationType.INVITATION
                                                     )
                                                 )
                                             )
@@ -278,7 +282,8 @@ class MainViewModel @Inject constructor(
                                                         messageId = null,
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = getProjectByIdUseCase(invite.projectId).color,
-                                                        isNew = true
+                                                        isNew = true,
+                                                        notificationType = EnumNotificationType.INVITATION
                                                     )
                                                 )
                                             )
@@ -343,7 +348,8 @@ class MainViewModel @Inject constructor(
                                         messageId = null,
                                         createdAt = getSampleDateInLong(),
                                         projectColor = getProjectByIdUseCase(invite.projectId).color,
-                                        isNew = true
+                                        isNew = true,
+                                        notificationType = EnumNotificationType.INVITATION
                                     )
                                 )
                             )

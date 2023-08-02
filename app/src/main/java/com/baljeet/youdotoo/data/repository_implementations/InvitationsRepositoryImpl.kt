@@ -20,6 +20,9 @@ class InvitationsRepositoryImpl @Inject constructor(
     override fun getAllInvitationsByProjectID(projectId: String): Flow<List<InvitationEntity>> {
         return invitationDao.getAllInvitationsByProjectID(projectId)
     }
+    override fun getInvitationByIdAsFlow(id: String): Flow<InvitationEntity?> {
+        return invitationDao.getInvitationByIdAsFlow(id)
+    }
 
     override suspend fun getInvitationById(id: String): InvitationEntity? {
         return invitationDao.getInvitationById(id)

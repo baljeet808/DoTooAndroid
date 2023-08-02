@@ -143,7 +143,8 @@ fun getSampleInvitation(): InvitationEntity{
         accessType = Random.nextInt(from = 0, 1),
         invitedEmail = getSampleProfile().email,
         inviteeName = "Baljeet singh",
-        projectName = "App error list."
+        projectName = "App error list.",
+        projectDetail = "List of all app errors which need some fixing."
     )
 }
 
@@ -158,7 +159,8 @@ fun getSampleMessageNotification() : NotificationEntity{
         messageId = "",
         createdAt = getSampleDateInLong(),
         projectColor = getRandomColor(),
-        isNew = true
+        isNew = true,
+        notificationType = EnumNotificationType.MESSAGE
     )
 }
 fun getSampleInvitationNotification() : NotificationEntity{
@@ -172,6 +174,7 @@ fun getSampleInvitationNotification() : NotificationEntity{
         messageId = null,
         createdAt = getSampleDateInLong(),
         projectColor = getRandomColor(),
-        isNew = true
+        isNew = true,
+        notificationType = EnumNotificationType.INVITATION
     )
 }
