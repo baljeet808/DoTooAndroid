@@ -21,7 +21,7 @@ class ProjectInvitationDetailViewModel @Inject constructor(
     private val getInvitationByIdAsFlowUseCase: GetInvitationByIdAsFlowUseCase
 ) : ViewModel() {
 
-    private val onlineDB = FirebaseFirestore.getInstance() 
+    private val onlineDB = FirebaseFirestore.getInstance()
 
     private val invitationId: String = checkNotNull(savedStateHandle["invitationId"])
 
