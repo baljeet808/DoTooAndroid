@@ -332,35 +332,36 @@ class MainViewModel @Inject constructor(
                             }
 
                         } ?: kotlin.run {
+                            if(invite.invitedEmail == SharedPref.userEmail) {
+                                val title = "Project Invitation."
+                                val contextText =
+                                    "${invite.inviteeName} has invited you to a project." +
+                                            "Tap to ee more details about project."
 
-                            val title = "Project Invitation."
-                            val contextText =
-                                "${invite.inviteeName} has invited you to a project." +
-                                        "Tap to ee more details about project."
-
-                            upsertNotificationsUseCase(
-                                listOf(
-                                    NotificationEntity(
-                                        id = getRandomId(),
-                                        title = title,
-                                        contentText = contextText,
-                                        invitationId = invite.id,
-                                        projectId = invite.projectId,
-                                        taskId = null,
-                                        messageId = null,
-                                        createdAt = getSampleDateInLong(),
-                                        projectColor = getProjectByIdUseCase(invite.projectId).color,
-                                        isNew = true,
-                                        notificationType = EnumNotificationType.INVITATION
+                                upsertNotificationsUseCase(
+                                    listOf(
+                                        NotificationEntity(
+                                            id = getRandomId(),
+                                            title = title,
+                                            contentText = contextText,
+                                            invitationId = invite.id,
+                                            projectId = invite.projectId,
+                                            taskId = null,
+                                            messageId = null,
+                                            createdAt = getSampleDateInLong(),
+                                            projectColor = getProjectByIdUseCase(invite.projectId).color,
+                                            isNew = true,
+                                            notificationType = EnumNotificationType.INVITATION
+                                        )
                                     )
                                 )
-                            )
 
-                            invitationsNotificationService.showInviteNotification(
-                                invite,
-                                title = title,
-                                contentText = contextText
-                            )
+                                invitationsNotificationService.showInviteNotification(
+                                    invite,
+                                    title = title,
+                                    contentText = contextText
+                                )
+                            }
                         }
                     }
 
