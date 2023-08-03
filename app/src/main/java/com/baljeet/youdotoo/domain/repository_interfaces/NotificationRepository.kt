@@ -10,4 +10,5 @@ interface NotificationRepository {
      suspend fun upsertAllNotifications(notifications : List<NotificationEntity>)
      suspend fun getNotificationById(notificationId : String): NotificationEntity
      suspend fun deleteNotification(notification : NotificationEntity)
+     suspend fun deleteAllNotifications()
 }

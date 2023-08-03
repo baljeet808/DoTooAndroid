@@ -15,22 +15,28 @@ const val DestinationNotificationRoute = "Notification"
 
 fun NavGraphBuilder.addNotificationViewDestination(
     navController: NavController
-){
+) {
 
     composable(
         route = DestinationNotificationRoute
-    ){
+    ) {
 
 
-        val viewModel : NotificationsViewModel = hiltViewModel()
-        val notifications by viewModel.getAllNotificationsAsFlow().collectAsState(initial = listOf())
+        val viewModel: NotificationsViewModel = hiltViewModel()
+        val notifications by viewModel.getAllNotificationsAsFlow()
+            .collectAsState(initial = listOf())
         NotificationsView(
             notifications = notifications,
             onNotificationClick = { notification ->
-                when(notification.notificationType){
+                when (notification.notificationType) {
                     EnumNotificationType.INVITATION -> {
-                        navController.navigate(DestinationProjectInvitationDetailRoute.plus(notification.invitationId))
+                        navController.navigate(
+                            DestinationProjectInvitationDetailRoute.plus(
+                                notification.invitationId
+                            )
+                        )
                     }
+
                     EnumNotificationType.PROJECT_UPDATE -> TODO()
                     EnumNotificationType.TASK_UPDATE -> TODO()
                     EnumNotificationType.MESSAGE -> TODO()
@@ -41,9 +47,9 @@ fun NavGraphBuilder.addNotificationViewDestination(
                 viewModel.deleteNotification(notification)
             },
             onClearAll = {
-
+                viewModel.deleteAllNotifications()
             },
-            onClickSettings ={
+            onClickSettings = {
 
             },
             onClose = {

@@ -28,13 +28,13 @@ class ProjectInvitationDetailViewModel @Inject constructor(
     fun getInvitationByIdAsFlow() = getInvitationByIdAsFlowUseCase(invitationId)
 
     private val invitationReference =
-        onlineDB.collection("invitations").document(invitationId)
+        onlineDB.collection("invitations")
 
     fun acceptInvitation(invitation: InvitationEntity) {
-        val updatedInvitation = invitation.copy(
-            status = InvitationAccepted
-        )
+        val updatedInvitation = invitation.copy()
+        updatedInvitation.status = InvitationAccepted
         invitationReference
+            .document(invitation.id)
             .set(updatedInvitation)
             .addOnSuccessListener {
                 addUserToProject(invitation.projectId, invitation.accessType)
@@ -46,6 +46,7 @@ class ProjectInvitationDetailViewModel @Inject constructor(
             status = InvitationDeclined
         )
         invitationReference
+            .document(invitation.id)
             .set(updatedInvitation)
     }
 
@@ -53,9 +54,9 @@ class ProjectInvitationDetailViewModel @Inject constructor(
 
         val projectReference = onlineDB
             .collection("projects")
-            .document(projectId)
 
-        projectReference.get().addOnSuccessListener { projectSnapshot ->
+
+        projectReference.document(projectId).get().addOnSuccessListener { projectSnapshot ->
             val project = Project(
                 id = projectSnapshot.getString("id") ?: "",
                 name = projectSnapshot.getString("name") ?: "",
@@ -80,7 +81,6 @@ class ProjectInvitationDetailViewModel @Inject constructor(
                 AccessTypeEditor -> {
                     editorIDs = project.collaboratorIds.toCollection(ArrayList())
                     editorIDs.add(SharedPref.userId!!)
-
                 }
             }
 
@@ -89,7 +89,7 @@ class ProjectInvitationDetailViewModel @Inject constructor(
                 collaboratorIds = editorIDs.toList()
             )
 
-            projectReference.set(updatedProject)
+            projectReference.document(projectId).set(updatedProject)
         }
     }
 }

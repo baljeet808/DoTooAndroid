@@ -159,6 +159,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         }
     }
 
+
     private fun onSignInResult(result: SignInResult) {
         result.errorMessage?.let {
             loginState.value = loginState.value.copy(

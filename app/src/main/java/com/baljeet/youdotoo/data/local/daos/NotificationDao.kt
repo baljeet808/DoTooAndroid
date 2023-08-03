@@ -26,5 +26,7 @@ interface NotificationDao {
 
     @Delete
     fun delete(notification : NotificationEntity)
+    @Query("Delete FROM notifications")
+    suspend fun deleteAllNotifications()
 
 }

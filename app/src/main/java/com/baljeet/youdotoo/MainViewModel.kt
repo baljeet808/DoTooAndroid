@@ -38,7 +38,6 @@ import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -171,28 +170,28 @@ class MainViewModel @Inject constructor(
 
         invitationsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
-                CoroutineScope(Dispatchers.IO).launch {
-                    val invitations = arrayListOf<InvitationEntity>()
-                    for (invitation in snapshot) {
-                        invitations.add(
-                            InvitationEntity(
-                                id = invitation.getString("id") ?: "",
-                                inviteeId = invitation.getString("inviteeId") ?: "",
-                                inviteeName = invitation.getString("inviteeName") ?: "",
-                                invitedEmail = invitation.getString("invitedEmail") ?: "",
-                                projectId = invitation.getString("projectId") ?: "",
-                                projectName = invitation.getString("projectName") ?: "",
-                                accessType = (invitation.getLong("accessType") ?: 0).toInt(),
-                                status = (invitation.getLong("status") ?: 0).toInt(),
-                                projectDetail = invitation.getString("projectDetail") ?: "",
-                                projectColor =  invitation.getLong("projectColor")
-                                    ?: getRandomColor()
-                            )
-                        )
-                    }
-                    delay(100)
 
-                    invitations.forEach { invite ->
+                val invitations = arrayListOf<InvitationEntity>()
+                for (invitation in snapshot) {
+                    invitations.add(
+                        InvitationEntity(
+                            id = invitation.getString("id") ?: "",
+                            inviteeId = invitation.getString("inviteeId") ?: "",
+                            inviteeName = invitation.getString("inviteeName") ?: "",
+                            invitedEmail = invitation.getString("invitedEmail") ?: "",
+                            projectId = invitation.getString("projectId") ?: "",
+                            projectName = invitation.getString("projectName") ?: "",
+                            accessType = (invitation.getLong("accessType") ?: 0).toInt(),
+                            status = (invitation.getLong("status") ?: 0).toInt(),
+                            projectDetail = invitation.getString("projectDetail") ?: "",
+                            projectColor = invitation.getLong("projectColor")
+                                ?: getRandomColor()
+                        )
+                    )
+                }
+
+                invitations.forEach { invite ->
+                    CoroutineScope(Dispatchers.IO).launch {
                         getInvitationByIdUseCase(invite.id)?.let { oldInvite ->
                             if (invite.status != oldInvite.status) {
                                 when (invite.status) {
@@ -320,7 +319,7 @@ class MainViewModel @Inject constructor(
                                             "Viewer"
                                         }
 
-                                        else -> return@forEach
+                                        else -> return@launch
                                     }
                                     invitationsNotificationService.showAccessUpdateNotification(
                                         invite,
@@ -329,8 +328,8 @@ class MainViewModel @Inject constructor(
                                 }
                             }
 
-                        } ?: kotlin.run {
-                            if(invite.invitedEmail == SharedPref.userEmail) {
+                        } ?: kotlin.run{
+                            if (invite.invitedEmail == SharedPref.userEmail) {
                                 val title = "Project Invitation."
                                 val contextText =
                                     "${invite.inviteeName} has invited you to a project." +
@@ -362,7 +361,8 @@ class MainViewModel @Inject constructor(
                             }
                         }
                     }
-
+                }
+                CoroutineScope(Dispatchers.IO).launch {
                     upsertAllInvitationsUseCase(invitations)
                 }
             }

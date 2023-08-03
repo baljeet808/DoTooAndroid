@@ -151,7 +151,7 @@ fun getSampleInvitation(): InvitationEntity{
 
 fun getSampleMessageNotification() : NotificationEntity{
     return NotificationEntity(
-        id = "",
+        id = getRandomId(),
         title = "Message from Baljeet Singh",
         contentText = "Hi there guys, hope you are seeing notifications all well. Please write more suggestion for this task in chat here.",
         invitationId = null,
@@ -166,7 +166,7 @@ fun getSampleMessageNotification() : NotificationEntity{
 }
 fun getSampleInvitationNotification() : NotificationEntity{
     return NotificationEntity(
-        id = "",
+        id = getRandomId(),
         title = "Project Invitation",
         contentText = "Karandeep kaur has invited you to a project. Tap to see more details about project",
         invitationId = "",

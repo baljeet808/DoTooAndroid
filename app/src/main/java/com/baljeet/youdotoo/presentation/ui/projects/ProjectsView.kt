@@ -91,7 +91,7 @@ fun ProjectsView(
             animation = tween(durationMillis = 20000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
     val offsetY by transition.animateValue(
         initialValue = (450).dp,
@@ -100,7 +100,7 @@ fun ProjectsView(
             animation = tween(durationMillis = 30000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
 
     val offsetX1 by transition.animateValue(
@@ -110,7 +110,7 @@ fun ProjectsView(
             animation = tween(durationMillis = 30000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
     val offsetY1 by transition.animateValue(
         initialValue = 550.dp,
@@ -119,7 +119,7 @@ fun ProjectsView(
             animation = tween(durationMillis = 20000),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Dp.VectorConverter
+        typeConverter = Dp.VectorConverter, label = ""
     )
     Scaffold(
         floatingActionButton = {
@@ -135,7 +135,7 @@ fun ProjectsView(
                 )
             }
         }
-    ) {
+    ) { padding ->
 
         Box(
             modifier = Modifier

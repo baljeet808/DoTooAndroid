@@ -7,7 +7,6 @@ import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 @Composable
 fun NotificationItemView(
     notification: NotificationEntity,
-    onDeleteNotification: () -> Unit,
     onItemClick: () -> Unit
 ) {
 
