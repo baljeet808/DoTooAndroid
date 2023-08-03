@@ -35,6 +35,8 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.baljeet.youdotoo.services.AllBackgroundSnaps
 import com.google.android.gms.auth.api.identity.Identity
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -191,11 +193,11 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
     override fun onStart() {
         super.onStart()
 
-        if(!SharedPref.isSyncOn) {
-            Intent(applicationContext, AllBackgroundSnaps::class.java).also {
-                it.action = AllBackgroundSnaps.ServiceActions.START.toString()
-                startService(it)
-            }
+        val currentUser = Firebase.auth.currentUser
+        if (currentUser != null) {
+            val intent = Intent(this@MainActivity,DashBoard::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
