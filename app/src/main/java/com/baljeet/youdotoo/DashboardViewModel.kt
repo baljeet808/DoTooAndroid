@@ -1,6 +1,5 @@
 package com.baljeet.youdotoo
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.AccessTypeAdmin
 import com.baljeet.youdotoo.common.AccessTypeEditor
@@ -256,8 +255,7 @@ class DashboardViewModel @Inject constructor(
                                             invitationsNotificationService.showInvitationResponseNotification(
                                                 invite,
                                                 title = title,
-                                                contentText = contextText,
-                                                status
+                                                contentText = contextText
                                             )
                                         }
                                     }
@@ -290,8 +288,7 @@ class DashboardViewModel @Inject constructor(
                                             invitationsNotificationService.showInvitationResponseNotification(
                                                 invite,
                                                 title = title,
-                                                contentText = contextText,
-                                                status
+                                                contentText = contextText
                                             )
                                         }
                                     }

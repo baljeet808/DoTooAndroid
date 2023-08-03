@@ -24,12 +24,12 @@ class InvitationNotificationService @Inject constructor(
             title = title,
             contentText = contentText,
             pendingIntent = onClickPendingIntent,
-            1,
+            2,
             context
         )
     }
 
-    fun showInvitationResponseNotification(invitation: InvitationEntity, title : String, contentText : String ,status : String) {
+    fun showInvitationResponseNotification(invitation: InvitationEntity, title : String, contentText : String) {
         val mainActivityIntent = Intent(context, MainActivity::class.java).apply {
             putExtra(INVITATION_ID_KEY, invitation.id)
         }
@@ -40,7 +40,7 @@ class InvitationNotificationService @Inject constructor(
             title = title,
             contentText = contentText,
             pendingIntent = onClickPendingIntent,
-            1,
+            2,
             context
         )
     }
@@ -57,7 +57,7 @@ class InvitationNotificationService @Inject constructor(
             title = "Project access updated to '$access'",
             contentText = "${invitation.inviteeName} has made you $access of project - ${invitation.projectName}.",
             pendingIntent = onClickPendingIntent,
-            1,
+            2,
             context
         )
 

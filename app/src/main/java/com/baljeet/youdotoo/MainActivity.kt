@@ -33,7 +33,6 @@ import com.baljeet.youdotoo.permissions.dialogs.PermissionDialog
 import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
-import com.baljeet.youdotoo.services.AllBackgroundSnaps
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -122,7 +121,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                 )
             }
 
-            YouDoTooTheme() {
+            YouDoTooTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
