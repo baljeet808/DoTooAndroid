@@ -1,7 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.login
 
 import android.content.res.Configuration
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -12,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,16 +35,8 @@ import com.google.accompanist.pager.rememberPagerState
 fun SignInView(
     navigateToPolicy: () -> Unit,
     navigateToTermOfUse: () -> Unit,
-    attemptToLogin: () -> Unit,
-    state: SignInState
+    attemptToLogin: () -> Unit
 ) {
-    val context = LocalContext.current
-
-
-    if (state.signInError != null) {
-        Toast.makeText(context, state.signInError, Toast.LENGTH_SHORT).show()
-    }
-
     val pagerState = rememberPagerState()
     val list = getOnBoardPagerContentList()
 
@@ -187,8 +177,7 @@ fun SignInPreview() {
     SignInView(
         navigateToPolicy = {},
         navigateToTermOfUse = {},
-        attemptToLogin = { },
-        state = SignInState()
+        attemptToLogin = { }
     )
 }
 

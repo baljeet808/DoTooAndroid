@@ -5,5 +5,4 @@ package com.baljeet.youdotoo.common
  * **/
 interface OnAttemptLoginViaGoogle {
     fun attemptLoginViaGoogle()
-    fun resetLoginState()
 }

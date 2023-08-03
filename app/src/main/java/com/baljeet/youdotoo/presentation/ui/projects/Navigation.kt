@@ -27,6 +27,7 @@ fun NavGraphBuilder.addProjectsViewDestination(
 
         val viewModel : ProjectsViewModel = hiltViewModel()
 
+
         val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
         val pendingTasks by viewModel.pendingTasks().collectAsState(initial = arrayListOf())
         val yesterdayTasks by viewModel.yesterdayTasks().collectAsState(initial = arrayListOf())

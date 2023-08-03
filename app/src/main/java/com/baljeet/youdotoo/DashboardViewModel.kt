@@ -397,4 +397,8 @@ class DashboardViewModel @Inject constructor(
         }
 
     }
+
+    fun engageFun(){
+
+    }
 }

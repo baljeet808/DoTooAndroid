@@ -4,14 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
-import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
-import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
-import com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation.addProjectInvitationDestination
 import com.baljeet.youdotoo.presentation.ui.login.DestinationLoginRoute
-import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.login.addLoginDestination
-import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
 import com.baljeet.youdotoo.presentation.ui.signup.addSignupDestination
 
 /**
@@ -20,23 +14,14 @@ import com.baljeet.youdotoo.presentation.ui.signup.addSignupDestination
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    onSignInAttempt : OnAttemptLoginViaGoogle,
-    signInState : SignInState
+    onSignInAttempt : OnAttemptLoginViaGoogle
 ) {
-
 
     NavHost(
         navController = navController,
-        startDestination = if(SharedPref.isUserLoggedIn){
-            DestinationDashboardRoute
-        }else{
-            DestinationLoginRoute
-        }
+        startDestination = DestinationLoginRoute
     ){
-        addLoginDestination(navController, onSignInAttempt, signInState)
+        addLoginDestination(navController, onSignInAttempt)
         addSignupDestination(navController)
-        addDashboardViewDestination(navController)
-        addNotificationViewDestination(navController)
-        addProjectInvitationDestination(navController)
     }
 }

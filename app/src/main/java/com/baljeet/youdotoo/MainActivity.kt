@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
@@ -26,11 +26,9 @@ import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.openAppSettings
-import com.baljeet.youdotoo.data.dto.SignInResult
 import com.baljeet.youdotoo.data.remote.GoogleAuthClient
 import com.baljeet.youdotoo.permissions.dialogs.NotificationPermissionTextProvider
 import com.baljeet.youdotoo.permissions.dialogs.PermissionDialog
-import com.baljeet.youdotoo.presentation.ui.login.SignInState
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.google.android.gms.auth.api.identity.Identity
@@ -42,8 +40,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
-
-    private var loginState = mutableStateOf(SignInState())
 
 
     private val googleAuthClient by lazy {
@@ -62,9 +58,19 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         setContent {
 
             val viewModel: MainViewModel = hiltViewModel()
+
+            val loginState by viewModel.state
+
+            loginState.signInError?.let {
+                Toast.makeText(applicationContext,it,Toast.LENGTH_SHORT).show()
+            }
+
+            loginState.userData?.let {
+                moveToDashboard()
+            }
+
+
             val dialogQueue = viewModel.visiblePermissionDialogQueue
-
-
 
             val notificationPermissionResultLauncher = rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.RequestPermission(),
@@ -142,35 +148,25 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                                     val signInResult = googleAuthClient.signInWithIntent(
                                         intent = result.data ?: return@launch
                                     )
-                                    onSignInResult(signInResult)
+                                    signInResult.errorMessage?.let {
+                                        Toast.makeText(applicationContext,it,Toast.LENGTH_SHORT).show()
+                                    }
+                                    signInResult.data?.let {
+                                        viewModel.updateUser(
+                                            userData = it
+                                        )
+                                    }
                                 }
                             }
                         }
                     )
 
-                    val state by loginState
-
                     NavGraph(
                         navController = navController,
-                        onSignInAttempt = this@MainActivity,
-                        signInState = state
+                        onSignInAttempt = this@MainActivity
                     )
                 }
             }
-        }
-    }
-
-
-    private fun onSignInResult(result: SignInResult) {
-        result.errorMessage?.let {
-            loginState.value = loginState.value.copy(
-                signInError = result.errorMessage
-            )
-        }
-        result.data?.let {
-            loginState.value = loginState.value.copy(
-                userData = it
-            )
         }
     }
 
@@ -185,19 +181,17 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         }
     }
 
-    override fun resetLoginState() {
-        loginState.value = SignInState()
-    }
-
     override fun onStart() {
         super.onStart()
-
-        val currentUser = Firebase.auth.currentUser
-        if (currentUser != null) {
-            val intent = Intent(this@MainActivity,DashBoard::class.java)
-            startActivity(intent)
-            finish()
+        if (Firebase.auth.currentUser != null) {
+            moveToDashboard()
         }
+    }
+
+    private fun moveToDashboard() {
+        val intent = Intent(this@MainActivity,DashBoard::class.java)
+        startActivity(intent)
+        finish()
     }
 
 }
