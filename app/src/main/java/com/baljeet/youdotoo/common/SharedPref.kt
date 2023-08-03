@@ -26,12 +26,6 @@ object SharedPref {
             it.putBoolean("isAlertEnabled",value)
         }
 
-    var isUserLoggedIn: Boolean
-        get() = sharedPref.getBoolean("isUserLoggedIn",false)
-        set(value) = sharedPref.edit {
-            it.putBoolean("isUserLoggedIn",value)
-        }
-
     var isSyncOn: Boolean
         get() = sharedPref.getBoolean("isSyncOn",false)
         set(value) = sharedPref.edit {
@@ -69,12 +63,6 @@ object SharedPref {
         set(userJoined) = sharedPref.edit {
             it.putLong("userJoined",userJoined)
         }
-//
-//    var previouslyUsedDueDateOption: String
-//        get() = sharedPref.getString("previouslyUsedDueDateOption",DueDates.INDEFINITE.name)!!
-//        set(value) = sharedPref.edit {
-//            it.putString("previouslyUsedDueDateOption",value)
-//        }
 
 
     var isUserAPro : Boolean
@@ -89,5 +77,8 @@ object SharedPref {
         get() = sharedPref.getBoolean("subscribedYearly", false)
         set(value) = sharedPref.edit{ it.putBoolean("subscribedYearly", value)}
 
+    fun clearAll(){
+        sharedPref.edit().clear().apply()
+    }
 
 }

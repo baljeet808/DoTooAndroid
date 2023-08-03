@@ -7,7 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.EnumNotificationType
-import com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation.DestinationProjectInvitationDetailRoute
+import com.baljeet.youdotoo.presentation.ui.projectinvitation.DestinationProjectInvitationDetailRoute
 
 
 const val DestinationNotificationRoute = "Notification"

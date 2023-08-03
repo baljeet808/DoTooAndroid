@@ -75,7 +75,6 @@ class SignupViewModel @Inject constructor() : ViewModel() {
         db.collection("users")
             .document(userId)
             .set(newUser.asHashMap()).addOnSuccessListener {
-                SharedPref.isUserLoggedIn = true
                 SharedPref.userId = userId
                 SharedPref.userName = name
                 SharedPref.userJoined = currentTime

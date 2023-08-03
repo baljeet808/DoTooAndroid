@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation
+package com.baljeet.youdotoo.presentation.ui.projectinvitation
 
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue

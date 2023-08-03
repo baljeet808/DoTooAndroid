@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation
+package com.baljeet.youdotoo.presentation.ui.projectinvitation
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility

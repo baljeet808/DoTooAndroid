@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -48,6 +50,7 @@ fun NavigationDrawer(
     menuItems: List<MenuItem>,
     onMenuItemClick: (MenuItem) -> Unit,
     closeDrawer : () -> Unit,
+    logout: () -> Unit,
     modifier: Modifier,
     allTasks : List<DoTooItemEntity>
 ) {
@@ -329,6 +332,42 @@ fun NavigationDrawer(
                     }
                 }
             }
+
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            /**
+             *Logout button
+             * **/
+            Row(
+                modifier = Modifier
+                    .widthIn(max = 280.dp, min = 150.dp)
+                    .background(
+                        color = NightTransparentWhiteColor,
+                        shape = RoundedCornerShape(20.dp)
+                    )
+                    .padding(start = 10.dp, top = 10.dp, bottom = 10.dp, end = 10.dp)
+                    .clickable(
+                        onClick = logout
+                    )
+                ,
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+            ){
+
+                Text(
+                    text = "Logout",
+                    color = Color.White,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                Icon(
+                    Icons.Default.Logout,
+                    contentDescription = "LogoUt Button",
+                    tint = Color.White
+                )
+            }
         }
     }
 }
@@ -346,6 +385,7 @@ fun PreviewNavigationDrawer() {
         menuItems = menuItems,
         onMenuItemClick = {},
         closeDrawer = {},
+        logout = {},
         modifier = Modifier,
         allTasks = listOf(
             getSampleDotooItem().toDoTooItemEntity("0")

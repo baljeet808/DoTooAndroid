@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.invitation.projectinvitation
+package com.baljeet.youdotoo.presentation.ui.projectinvitation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

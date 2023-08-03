@@ -60,6 +60,7 @@ import kotlinx.coroutines.launch
 fun DashboardView(
     allTasks: List<DoTooItemEntity>,
     userData : UserData,
+    logout : () -> Unit,
     onClickNotifications: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -155,6 +156,13 @@ fun DashboardView(
                             scaffoldState.drawerState.close()
                         }
                         maximizeCurrentScreen = true
+                    },
+                    logout = {
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                        maximizeCurrentScreen = true
+                        logout()
                     },
                     modifier = Modifier.width(250.dp),
                     allTasks = allTasks
@@ -258,6 +266,7 @@ fun PreviewDashboardView() {
             userName = "",
             profilePictureUrl = ""
         ),
-        onClickNotifications = {}
+        onClickNotifications = {},
+        logout = {}
     )
 }

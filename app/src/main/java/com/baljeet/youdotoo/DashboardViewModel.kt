@@ -19,6 +19,7 @@ import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteTasksByProjectIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
@@ -52,8 +53,10 @@ class DashboardViewModel @Inject constructor(
     private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
     private val deleteInvitationUseCase: DeleteInvitationUseCase,
     private val invitationsNotificationService: InvitationNotificationService,
-    private val upsertNotificationsUseCase: UpsertNotificationsUseCase
+    private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
+    private val deleteAllTablesUseCase: DeleteAllTablesUseCase
 ) : ViewModel() {
+
 
 
     private var db = Firebase.firestore
@@ -364,10 +367,7 @@ class DashboardViewModel @Inject constructor(
                 }
             }
         }
-
     }
-
-
     private fun getUserProfilesAndUpdateDatabase(project: Project) {
 
         val ids = project.getUserIds()
@@ -398,7 +398,10 @@ class DashboardViewModel @Inject constructor(
 
     }
 
-    fun engageFun(){
-
+    fun clearEverything(){
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteAllTablesUseCase()
+        }
     }
+
 }

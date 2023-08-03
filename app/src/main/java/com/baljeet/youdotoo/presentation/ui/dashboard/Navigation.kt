@@ -17,7 +17,10 @@ import com.baljeet.youdotoo.presentation.ui.notifications.DestinationNotificatio
 const val DestinationDashboardRoute = "Dashboard"
 
 
-fun NavGraphBuilder.addDashboardViewDestination(navController: NavHostController) {
+fun NavGraphBuilder.addDashboardViewDestination(
+    navController: NavHostController,
+    logout : () -> Unit
+) {
     composable(
         route = DestinationDashboardRoute
     ){
@@ -35,7 +38,8 @@ fun NavGraphBuilder.addDashboardViewDestination(navController: NavHostController
             ),
             onClickNotifications = {
                 navController.navigate(DestinationNotificationRoute)
-            }
+            },
+            logout = logout
         )
     }
 }

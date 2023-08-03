@@ -3,11 +3,13 @@ package com.baljeet.youdotoo.di
 import android.app.Application
 import androidx.room.Room
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
+import com.baljeet.youdotoo.data.repository_implementations.DatabaseOperationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.DoTooItemsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.InvitationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.NotificationRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.ProjectRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.UserRepositoryImpl
+import com.baljeet.youdotoo.domain.repository_interfaces.DatabaseOperationsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.InvitationsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.NotificationRepository
@@ -45,6 +47,11 @@ object AppModule {
     @Singleton
     fun providesInvitationRepository(localDB : YouDoTooDatabase): InvitationsRepository {
         return InvitationsRepositoryImpl(localDB)
+    }
+    @Provides
+    @Singleton
+    fun providesDatabaseOperationsRepository(localDB : YouDoTooDatabase): DatabaseOperationsRepository {
+        return DatabaseOperationsRepositoryImpl(localDB)
     }
     @Provides
     @Singleton

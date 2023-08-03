@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
-
 data class SignInState(
     val userData: UserData? = null,
     val signInError: String? = null
@@ -21,9 +20,7 @@ data class SignInState(
 
 
 @HiltViewModel
-class MainViewModel @Inject constructor(
-
-): ViewModel() {
+class MainViewModel @Inject constructor(): ViewModel() {
 
     var state = mutableStateOf(SignInState())
         private set
@@ -57,7 +54,6 @@ class MainViewModel @Inject constructor(
         db.collection("users")
             .document(userData.userId)
             .set(newUser).addOnSuccessListener {
-                SharedPref.isUserLoggedIn = true
                 SharedPref.userId = userData.userId
                 SharedPref.userName =userData.userName?:"Unknown"
                 SharedPref.userJoined = getSampleDateInLong()

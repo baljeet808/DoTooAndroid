@@ -12,6 +12,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
@@ -20,9 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
 import com.baljeet.youdotoo.common.OnAttemptLoginViaGoogle
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.openAppSettings
@@ -41,6 +42,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
+    val viewModel : MainViewModel by viewModels()
 
     private val googleAuthClient by lazy {
         GoogleAuthClient(
@@ -57,7 +59,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         installSplashScreen()
         setContent {
 
-            val viewModel: MainViewModel = hiltViewModel()
+
 
             val loginState by viewModel.state
 
@@ -184,7 +186,17 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
     override fun onStart() {
         super.onStart()
         if (Firebase.auth.currentUser != null) {
+            updateUser()
             moveToDashboard()
+        }
+    }
+
+    private fun updateUser(){
+        Firebase.auth.currentUser?.let{
+            SharedPref.userId = it.uid
+            SharedPref.userName = it.displayName?:"Unknown"
+            SharedPref.userAvatar = it.photoUrl?.toString()?:ConstSampleAvatarUrl
+            SharedPref.userEmail = it.email?:"Not given"
         }
     }
 
