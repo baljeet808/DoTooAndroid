@@ -5,14 +5,28 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Groups
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.ProgressIndicatorDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,20 +38,23 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 
 
 @Composable
-fun ProjectCardView(
+fun DummyProjectCardView(
     project: ProjectWithDoToos,
     role: String,
     onItemClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    backgroundColor: Color = Color(getRandomColor()),
+    textColor: Color = Color.White,
+    leftAlign: Boolean
 ) {
 
     val animatedProgress = animateFloatAsState(
@@ -49,14 +66,40 @@ fun ProjectCardView(
         modifier = modifier
             .widthIn(max = 220.dp)
             .heightIn(max = 160.dp)
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
-            .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
+            .shadow(
+                elevation = 5.dp, shape = if (leftAlign) {
+                    RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 20.dp,
+                        bottomEnd = 20.dp,
+                        bottomStart = 0.dp
+                    )
                 } else {
-                    Color.White
-                },
-                shape = RoundedCornerShape(20.dp)
+                    RoundedCornerShape(
+                        topStart = 20.dp,
+                        topEnd = 0.dp,
+                        bottomEnd = 0.dp,
+                        bottomStart = 20.dp
+                    )
+                }
+            )
+            .background(
+                color = backgroundColor,
+                shape = if (leftAlign) {
+                    RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 20.dp,
+                        bottomEnd = 20.dp,
+                        bottomStart = 0.dp
+                    )
+                } else {
+                    RoundedCornerShape(
+                        topStart = 20.dp,
+                        topEnd = 0.dp,
+                        bottomEnd = 0.dp,
+                        bottomStart = 20.dp
+                    )
+                }
             ),
     ) {
 
@@ -110,7 +153,7 @@ fun ProjectCardView(
 
             Text(
                 text = project.project.name,
-                color = MaterialTheme.colorScheme.secondary,
+                color = textColor,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 20.sp,
                 maxLines = 2,
@@ -135,11 +178,14 @@ fun ProjectCardView(
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun DefaultProjectCardPreview() {
-    ProjectCardView(
+fun PreviewDummyProjectCardPreview() {
+    DummyProjectCardView(
         modifier = Modifier,
         project = getSampleProjectWithTasks(),
         onItemClick = {},
-        role = "Blocked"
+        role = "Blocked",
+        backgroundColor = Color(getRandomColor()),
+        textColor = Color.White,
+        leftAlign = true
     )
 }
