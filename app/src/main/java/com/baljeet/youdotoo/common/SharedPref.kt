@@ -25,6 +25,17 @@ object SharedPref {
         set(value) = sharedPref.edit {
             it.putBoolean("isAlertEnabled",value)
         }
+    var themeDarkColor: Long
+        get() = sharedPref.getLong("themeDarkColor", 0xFF0A0A0A)
+        set(value) = sharedPref.edit {
+            it.putLong("themeDarkColor",value)
+        }
+
+    var themeLightColor: Long
+        get() = sharedPref.getLong("themeLightColor", 0xFF0A0A0A)
+        set(value) = sharedPref.edit {
+            it.putLong("themeLightColor",value)
+        }
 
     var isSyncOn: Boolean
         get() = sharedPref.getBoolean("isSyncOn",false)

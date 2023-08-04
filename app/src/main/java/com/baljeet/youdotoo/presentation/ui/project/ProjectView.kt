@@ -70,7 +70,7 @@ fun ProjectView(
                 .fillMaxSize()
                 .background(
                     color = if (isSystemInDarkTheme()) {
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     } else {
                         DotooGray
                     }

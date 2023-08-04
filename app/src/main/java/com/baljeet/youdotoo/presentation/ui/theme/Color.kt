@@ -22,8 +22,8 @@ val LightAppBarIconsColor = Color(0xFF959DB8)
 
 
 //used in dark theme
-val NightDotooDarkBlue = Color(0xFF041955)
-val NightDotooNormalBlue = Color(0xFF3450A1)
+val NightDarkThemeColor = Color(0xFF0A0A0A) //Color(0xFF041955)
+val NightNormalThemeColor = Color(0xFF282A29) //Color(0xFF3450A1)
 val NightDotooBrightPink = Color(0xFFEB06FF)
 val NightDotooBrightBlue = Color(0xFF0C71FF)
 val NightDotooLightBlue = Color(0xFF4D7199)
@@ -34,6 +34,8 @@ val NightTransparentWhiteColor = Color(0x11FFFFFF)
 val LessTransparentWhiteColor = Color(0x99FFFFFF)
 val LessTransparentBlueColor = Color(0x11041955)
 
+val NightDotooEerieBlack = Color(0xFF0A0A0A)
+val NightDotooJet = Color(0xFF282A29)
 
 val DoTooYellow = Color(0xFFFF8526)
 val DoTooRed = Color(0xFFF53C4F)

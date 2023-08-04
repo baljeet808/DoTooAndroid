@@ -62,7 +62,7 @@ fun InvitationItemView(
                 .padding(0.dp)
                 .background(
                     color = if (isSystemInDarkTheme()) {
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     } else {
                         Color.White
                     },
@@ -262,7 +262,7 @@ fun InvitationItemView(
                     modifier = Modifier
                         .background(
                             color = if (isSystemInDarkTheme()) {
-                                NightDotooDarkBlue
+                                NightDarkThemeColor
                             } else {
                                 Color.White
                             },
@@ -271,7 +271,7 @@ fun InvitationItemView(
                         .border(
                             width = 1.dp,
                             color = if (isSystemInDarkTheme()) {
-                                NightDotooDarkBlue
+                                NightDarkThemeColor
                             } else {
                                 DotooGray
                             },

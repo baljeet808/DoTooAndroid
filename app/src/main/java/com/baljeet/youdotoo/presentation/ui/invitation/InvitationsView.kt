@@ -154,7 +154,7 @@ fun InvitationsView(
                 .fillMaxSize()
                 .background(
                     color = if (darkTheme) {
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     } else {
                         DotooGray
                     }

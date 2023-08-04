@@ -142,7 +142,7 @@ fun ProjectsView(
                 .fillMaxSize()
                 .background(
                     color = if (isSystemInDarkTheme()) {
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     } else {
                         DotooGray
                     }
@@ -228,9 +228,9 @@ fun ProjectsView(
                             onClick = navigateToCreateProject,
                             colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = if (isSystemInDarkTheme()) {
-                                    NightDotooDarkBlue
+                                    NightDarkThemeColor
                                 } else {
-                                    NightDotooNormalBlue
+                                    NightNormalThemeColor
                                 }
                             ),
                             modifier = Modifier

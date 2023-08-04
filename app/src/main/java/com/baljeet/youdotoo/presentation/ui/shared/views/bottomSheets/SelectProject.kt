@@ -27,7 +27,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 
 @Composable
@@ -41,7 +41,7 @@ fun SelectProjectBottomSheet(
             .fillMaxWidth()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
                     Color.White
                 },

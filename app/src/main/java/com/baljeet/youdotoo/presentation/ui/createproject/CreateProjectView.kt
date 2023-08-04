@@ -91,7 +91,7 @@ fun CreateProjectView(
         modifier = Modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooNormalBlue
+                    NightNormalThemeColor
                 } else {
                     DotooGray
                 }

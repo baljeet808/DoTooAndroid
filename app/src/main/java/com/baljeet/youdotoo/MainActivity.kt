@@ -30,7 +30,7 @@ import com.baljeet.youdotoo.common.openAppSettings
 import com.baljeet.youdotoo.data.remote.GoogleAuthClient
 import com.baljeet.youdotoo.permissions.dialogs.NotificationPermissionTextProvider
 import com.baljeet.youdotoo.permissions.dialogs.PermissionDialog
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.ktx.auth
@@ -135,7 +135,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                     modifier = Modifier
                         .fillMaxSize(),
                     color = if (isSystemInDarkTheme()) {
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     } else {
                         Color.White
                     }

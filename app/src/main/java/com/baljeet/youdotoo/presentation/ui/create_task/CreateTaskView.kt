@@ -217,7 +217,7 @@ fun CreateTaskView(
         modifier = Modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
                     Color.White
                 },
@@ -233,7 +233,7 @@ fun CreateTaskView(
             modifier = Modifier
                 .background(
                     color = if (isSystemInDarkTheme()) {
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     } else {
                         DotooGray
                     }

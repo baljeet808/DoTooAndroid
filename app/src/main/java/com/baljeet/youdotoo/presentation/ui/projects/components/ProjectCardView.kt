@@ -29,7 +29,7 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 
 
 @Composable
@@ -52,7 +52,7 @@ fun ProjectCardView(
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
                     Color.White
                 },

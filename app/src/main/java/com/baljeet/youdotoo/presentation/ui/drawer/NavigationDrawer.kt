@@ -112,9 +112,9 @@ fun NavigationDrawer(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
-                    NightDotooNormalBlue
+                    NightNormalThemeColor
                 }
             )
             .padding(20.dp)

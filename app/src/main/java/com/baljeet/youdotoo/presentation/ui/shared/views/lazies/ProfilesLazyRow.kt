@@ -23,7 +23,7 @@ import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 
 @Composable
 fun ProfilesLazyRow(
@@ -70,7 +70,7 @@ fun ProfilesLazyRow(
                         .clip(shape = RoundedCornerShape(20.dp))
                         .background(
                             color = if (isSystemInDarkTheme()) {
-                                NightDotooNormalBlue
+                                NightNormalThemeColor
                             } else {
                                 Color.White
                             }

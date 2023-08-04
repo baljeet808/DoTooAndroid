@@ -53,7 +53,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -76,7 +76,7 @@ fun NotificationsView(
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
         color = if (isSystemInDarkTheme()) {
-            NightDotooNormalBlue
+            NightNormalThemeColor
         } else {
             DotooGray
         }
@@ -87,7 +87,7 @@ fun NotificationsView(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooNormalBlue
+                    NightNormalThemeColor
                 } else {
                     DotooGray
                 }

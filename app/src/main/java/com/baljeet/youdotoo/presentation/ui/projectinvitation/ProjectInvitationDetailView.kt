@@ -57,9 +57,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -72,9 +72,9 @@ fun ProjectInvitationDetailView(
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
         color = if (isSystemInDarkTheme()) {
-            NightDotooDarkBlue
+            NightDarkThemeColor
         } else {
-            NightDotooNormalBlue
+            NightNormalThemeColor
         }
     )
 
@@ -83,9 +83,9 @@ fun ProjectInvitationDetailView(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
-                    NightDotooNormalBlue
+                    NightNormalThemeColor
                 }
             ),
         verticalArrangement = Arrangement.Top,
@@ -221,7 +221,7 @@ fun ProjectInvitationDetailView(
                 .weight(1f)
                 .background(
                     color = if (isSystemInDarkTheme()){
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     }else{
                         DotooGray
                     },
@@ -272,9 +272,9 @@ fun ProjectInvitationDetailView(
                         .padding(20.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isSystemInDarkTheme()) {
-                            NightDotooDarkBlue
+                            NightDarkThemeColor
                         } else {
-                            NightDotooNormalBlue
+                            NightNormalThemeColor
                         }
                     ),
                     shape = RoundedCornerShape(20.dp),
@@ -316,7 +316,7 @@ fun ProjectInvitationDetailView(
                     tint = if (isSystemInDarkTheme()) {
                         Color.White
                     } else {
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     },
                     modifier = Modifier
                 )
@@ -334,7 +334,7 @@ fun ProjectInvitationDetailView(
                     color = if(isSystemInDarkTheme()){
                         Color.White
                     }else{
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     },
                     lineHeight = TextUnit(29f, TextUnitType.Sp),
                     textAlign = TextAlign.Center
@@ -349,7 +349,7 @@ fun ProjectInvitationDetailView(
                     tint = if (isSystemInDarkTheme()) {
                         Color.White
                     } else {
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     },
                     modifier = Modifier
                 )
@@ -366,7 +366,7 @@ fun ProjectInvitationDetailView(
                     color = if(isSystemInDarkTheme()){
                         Color.White
                     }else{
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     },
                     lineHeight = TextUnit(29f, TextUnitType.Sp),
                     textAlign = TextAlign.Center

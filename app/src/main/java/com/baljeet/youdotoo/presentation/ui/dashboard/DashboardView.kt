@@ -48,8 +48,8 @@ import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooNormalBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -76,15 +76,15 @@ fun DashboardView(
     val statusBarColor by animateColorAsState(
         if (maximizeCurrentScreen) {
             if (isSystemInDarkTheme()) {
-                NightDotooNormalBlue
+                NightNormalThemeColor
             } else {
                 DotooGray
             }
         } else {
             if (darkTheme) {
-                NightDotooDarkBlue
+                NightDarkThemeColor
             } else {
-                NightDotooNormalBlue
+                NightNormalThemeColor
             }
         }, label = ""
     )
@@ -191,9 +191,9 @@ fun DashboardView(
                 .fillMaxSize()
                 .background(
                     color = if (darkTheme) {
-                        NightDotooDarkBlue
+                        NightDarkThemeColor
                     } else {
-                        NightDotooNormalBlue
+                        NightNormalThemeColor
                     }
                 ).padding(padding)
         ) {
@@ -209,7 +209,7 @@ fun DashboardView(
                     .scale(scale.value)
                     .background(
                         color = if (isSystemInDarkTheme()) {
-                            NightDotooNormalBlue
+                            NightNormalThemeColor
                         } else {
                             DotooGray
                         },

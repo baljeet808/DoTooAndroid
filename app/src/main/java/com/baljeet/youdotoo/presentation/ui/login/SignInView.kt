@@ -45,7 +45,7 @@ fun SignInView(
         modifier = Modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDotooDarkBlue
+                    NightDarkThemeColor
                 } else {
                     Color.White
                 }

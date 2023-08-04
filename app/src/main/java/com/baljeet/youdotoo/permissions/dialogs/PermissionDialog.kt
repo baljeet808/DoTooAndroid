@@ -17,7 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooDarkBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 
 
 @Composable
@@ -82,7 +82,7 @@ fun PermissionDialog(
             )
         },
         backgroundColor = if (darkTheme){
-            NightDotooDarkBlue
+            NightDarkThemeColor
         }else{
             DotooGray
         }
