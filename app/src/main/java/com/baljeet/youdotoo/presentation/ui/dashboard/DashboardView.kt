@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.common.DestinationAccountRoute
 import com.baljeet.youdotoo.common.DestinationSettingsRoute
@@ -50,8 +52,6 @@ import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
-import com.baljeet.youdotoo.presentation.ui.themechooser.DestinationThemeChooserRoute
-import com.baljeet.youdotoo.presentation.ui.themechooser.addThemeChooserViewDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -63,11 +63,15 @@ fun DashboardView(
     allTasks: List<DoTooItemEntity>,
     userData : UserData,
     logout : () -> Unit,
-    onClickNotifications: () -> Unit
+    onClickNotifications: () -> Unit,
+    onClickSettings : () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
 
@@ -143,7 +147,7 @@ fun DashboardView(
                                     scaffoldState.drawerState.close()
                                 }
                                 maximizeCurrentScreen = true
-                                navController.navigate(DestinationThemeChooserRoute)
+                                onClickSettings()
                             }
                             DestinationProjectsRoute -> {
                                 scope.launch {
@@ -198,7 +202,8 @@ fun DashboardView(
                     } else {
                         NightNormalThemeColor
                     }
-                ).padding(padding)
+                )
+                .padding(padding)
         ) {
 
 
@@ -222,20 +227,24 @@ fun DashboardView(
                 verticalArrangement = Arrangement.SpaceBetween,
             ) {
 
+
                 /**
                  * Top app bar
                  * **/
-                TopBar(
-                    modifier = Modifier.height(60.dp),
-                    notificationsState = true,
-                    onMenuItemClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                        maximizeCurrentScreen = false
-                    },
-                    onNotificationsClicked = onClickNotifications
-                )
+                AnimatedVisibility(visible = navBackStackEntry?.destination?.route == DestinationProjectsRoute) {
+                    TopBar(
+                        modifier = Modifier.height(60.dp),
+                        notificationsState = true,
+                        onMenuItemClick = {
+                            scope.launch {
+                                scaffoldState.drawerState.open()
+                            }
+                            maximizeCurrentScreen = false
+                        },
+                        onNotificationsClicked = onClickNotifications
+                    )
+                }
+
 
 
                 NavHost(
@@ -249,12 +258,12 @@ fun DashboardView(
                     addCreateTaskViewDestination(navController)
                     addChatViewDestination()
                     addInvitationViewDestination(navController)
-                    addThemeChooserViewDestination(navController)
                 }
             }
         }
     }
 }
+
 
 
 @Preview(showBackground = true)
@@ -271,6 +280,7 @@ fun PreviewDashboardView() {
             profilePictureUrl = ""
         ),
         onClickNotifications = {},
-        logout = {}
+        logout = {},
+        onClickSettings = {}
     )
 }

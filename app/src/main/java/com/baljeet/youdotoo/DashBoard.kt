@@ -13,6 +13,7 @@ import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestinatio
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
 import com.baljeet.youdotoo.presentation.ui.projectinvitation.addProjectInvitationDestination
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
+import com.baljeet.youdotoo.presentation.ui.themechooser.addThemeChooserViewDestination
 import com.baljeet.youdotoo.services.AllBackgroundSnaps
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
@@ -61,6 +62,8 @@ class DashBoard : ComponentActivity() {
                     )
                     addNotificationViewDestination(navController)
                     addProjectInvitationDestination(navController)
+                    addThemeChooserViewDestination(navController)
+
                 }
             }
         }

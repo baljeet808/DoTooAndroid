@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.presentation.ui.notifications.DestinationNotificationRoute
+import com.baljeet.youdotoo.presentation.ui.themechooser.DestinationThemeChooserRoute
 
 /**
  * Updated by Baljeet singh.
@@ -39,7 +40,10 @@ fun NavGraphBuilder.addDashboardViewDestination(
             onClickNotifications = {
                 navController.navigate(DestinationNotificationRoute)
             },
-            logout = logout
+            logout = logout,
+            onClickSettings = {
+                navController.navigate(DestinationThemeChooserRoute)
+            }
         )
     }
 }

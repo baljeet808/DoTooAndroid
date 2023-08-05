@@ -59,8 +59,6 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         installSplashScreen()
         setContent {
 
-
-
             val loginState by viewModel.state
 
             loginState.signInError?.let {
