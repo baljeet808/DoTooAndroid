@@ -2,8 +2,11 @@ package com.baljeet.youdotoo.presentation.ui.projects
 
 import android.content.res.Configuration
 import android.util.Log
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -64,6 +67,7 @@ fun ProjectsView(
     val startingTabIndex = 0
 
     val pagerState = rememberPagerState(initialPage = startingTabIndex)
+/*
 
     val pendingLazyListState = rememberLazyListState()
     val yesterdayLazyListState = rememberLazyListState()
@@ -79,8 +83,9 @@ fun ProjectsView(
         allOtherLazyListState,
         pagerState
     )
+*/
 
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "")
 
     val darkTheme = isSystemInDarkTheme()
 
@@ -146,7 +151,7 @@ fun ProjectsView(
                     } else {
                         DotooGray
                     }
-                )
+                ).padding(paddingValues = padding)
         ) {
 
 
@@ -192,91 +197,97 @@ fun ProjectsView(
                 verticalArrangement = Arrangement.Top
             ) {
 
-                /**
-                 * Top Row for greeting and Add project button
-                 * **/
-                AnimatedVisibility(visible = isTopCardsVisible) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
+
+                AnimatedVisibility(visible = true /*isTopCardsVisible*/) {
+                    Column(modifier = Modifier.fillMaxWidth()) {
 
                         /**
-                         * Greeting text
+                         * Top Row for greeting and Add project button
+                         * **/
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 20.dp, start = 10.dp, end = 10.dp, bottom = 5.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+
+                            /**
+                             * Greeting text
+                             * **/
+                            Text(
+                                text = if (userName.length > 8) {
+                                    "Hi, $userName!"
+                                } else {
+                                    "What's up, $userName!"
+                                },
+                                modifier = Modifier
+                                    .padding(5.dp)
+                                    .weight(1f),
+                                fontFamily = FontFamily(Nunito.ExtraBold.font),
+                                fontSize = 38.sp,
+                                color = MaterialTheme.colorScheme.secondary
+                            )
+
+                            /**
+                             * Create Project Button
+                             * **/
+                            FilledIconButton(
+                                onClick = navigateToCreateProject,
+                                colors = IconButtonDefaults.filledIconButtonColors(
+                                    containerColor = if (isSystemInDarkTheme()) {
+                                        NightDarkThemeColor
+                                    } else {
+                                        NightNormalThemeColor
+                                    }
+                                ),
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .width(40.dp)
+
+                            ) {
+                                Icon(
+                                    Icons.Default.Add,
+                                    contentDescription = "Add list button",
+                                    tint = Color.White
+                                )
+                            }
+                        }
+
+
+                        /**
+                         * Simple Projects heading
                          * **/
                         Text(
-                            text = if (userName.length > 8) {
-                                "Hi, $userName!"
-                            } else {
-                                "What's up, $userName!"
-                            },
+                            text = "Projects".uppercase(),
+                            color = LightAppBarIconsColor,
+                            fontFamily = FontFamily(Nunito.Normal.font),
+                            fontSize = 16.sp,
                             modifier = Modifier
-                                .padding(5.dp)
-                                .weight(1f),
-                            fontFamily = FontFamily(Nunito.ExtraBold.font),
-                            fontSize = 38.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp),
+                            letterSpacing = TextUnit(2f, TextUnitType.Sp)
                         )
 
-                        /**
-                         * Create Project Button
-                         * **/
-                        FilledIconButton(
-                            onClick = navigateToCreateProject,
-                            colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = if (isSystemInDarkTheme()) {
-                                    NightDarkThemeColor
-                                } else {
-                                    NightNormalThemeColor
-                                }
-                            ),
-                            modifier = Modifier
-                                .height(40.dp)
-                                .width(40.dp)
 
-                        ) {
-                            Icon(
-                                Icons.Default.Add,
-                                contentDescription = "Add list button",
-                                tint = Color.White
-                            )
-                        }
+                        /**
+                         * Horizontal list of all projects
+                         * **/
+                        ProjectsLazyRow(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            projects = projects.sortedBy { p ->  p.project.updatedAt }.reversed(),
+                            navigateToDoToos = navigateToDoToos,
+                            userId = userId,
+                            listState = projectsListState
+                        )
                     }
                 }
 
-                /**
-                 * Simple Projects heading
-                 * **/
-                AnimatedVisibility(visible = isTopCardsVisible) {
-                    Text(
-                        text = "Projects".uppercase(),
-                        color = LightAppBarIconsColor,
-                        fontFamily = FontFamily(Nunito.Normal.font),
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                        letterSpacing = TextUnit(2f, TextUnitType.Sp)
-                    )
-                }
 
 
-                /**
-                 * Horizontal list of all projects
-                 * **/
-                AnimatedVisibility(visible = isTopCardsVisible) {
-                    ProjectsLazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        projects = projects.sortedBy { p ->  p.project.updatedAt }.reversed(),
-                        navigateToDoToos = navigateToDoToos,
-                        userId = userId,
-                        listState = projectsListState
-                    )
-                }
+
+
 
                 /**
                  * Box with tasks view layer and empty view layer
@@ -352,133 +363,169 @@ fun ProjectsView(
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            when (tasksTabs[pagerState.currentPage]) {
-                                EnumDashboardTasksTabs.Yesterday -> {
-                                    AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
-                                        DoTooItemsLazyColumn(
-                                            doToos = yesterdayTasks,
-                                            onToggleDoToo = { doToo ->
-                                                onToggleTask(doToo)
-                                                listMoveScope.launch {
-                                                    delay(moveAnimationDelay)
-                                                    projectsListState.animateScrollToItem(0)
+                            AnimatedContent(
+                                targetState = tasksTabs[pagerState.currentPage],
+                                transitionSpec = {
+                                                 slideIntoContainer(
+                                                     animationSpec = tween(400, easing = EaseIn),
+                                                     towards = AnimatedContentTransitionScope.SlideDirection.Up
+                                                 ).togetherWith(
+                                                     slideOutOfContainer(
+                                                         animationSpec = tween(400, easing = EaseOut),
+                                                         towards = AnimatedContentTransitionScope.SlideDirection.Down
+                                                     )
+                                                 )
+                                },
+                                label = "Tab switching animations"
+                            ) { targetState ->
+                                when (targetState) {
+                                    EnumDashboardTasksTabs.Yesterday -> {
+                                        AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
+                                            DoTooItemsLazyColumn(
+                                                doToos = yesterdayTasks,
+                                                onToggleDoToo = { doToo ->
+                                                    onToggleTask(doToo)
+                                                    listMoveScope.launch {
+                                                        delay(moveAnimationDelay)
+                                                        projectsListState.animateScrollToItem(0)
+                                                    }
+                                                },
+                                                onNavigateClick = { doToo ->
+                                                    navigateToTask(doToo)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                                    .padding(
+                                                        top = 10.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    ),
+                                              //  lazyListState = yesterdayLazyListState,
+                                               onItemDelete = { task ->
+                                                    Log.v("Log for - ", "reached projects view")
+                                                    deleteTask(task)
                                                 }
-                                            },
-                                            onNavigateClick = { doToo ->
-                                                navigateToTask(doToo)
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                            lazyListState = yesterdayLazyListState,
-                                            onItemDelete = { task ->
-                                                Log.v("Log for - ", "reached projects view")
-                                                deleteTask(task)
-                                            }
-                                        )
+                                            )
+                                        }
                                     }
-                                }
-                                EnumDashboardTasksTabs.Today -> {
-                                    AnimatedVisibility(visible = todayTasks.isNotEmpty()) {
-                                        DoTooItemsLazyColumn(
-                                            doToos = todayTasks,
-                                            onToggleDoToo = { doToo ->
-                                                onToggleTask(doToo)
-                                                listMoveScope.launch {
-                                                    delay(moveAnimationDelay)
-                                                    projectsListState.animateScrollToItem(0)
+                                    EnumDashboardTasksTabs.Today -> {
+                                        AnimatedVisibility(visible = todayTasks.isNotEmpty()) {
+                                            DoTooItemsLazyColumn(
+                                                doToos = todayTasks,
+                                                onToggleDoToo = { doToo ->
+                                                    onToggleTask(doToo)
+                                                    listMoveScope.launch {
+                                                        delay(moveAnimationDelay)
+                                                        projectsListState.animateScrollToItem(0)
+                                                    }
+                                                },
+                                                onNavigateClick = { doToo ->
+                                                    navigateToTask(doToo)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                                    .padding(
+                                                        top = 10.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    ),
+                                               // lazyListState = todayLazyListState,
+                                                onItemDelete = { task ->
+                                                    Log.v("Log for - ", "reached projects view")
+                                                    deleteTask(task)
                                                 }
-                                            },
-                                            onNavigateClick = { doToo ->
-                                                navigateToTask(doToo)
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                            lazyListState = todayLazyListState,
-                                            onItemDelete = { task ->
-                                                Log.v("Log for - ", "reached projects view")
-                                                deleteTask(task)
-                                            }
-                                        )
+                                            )
+                                        }
                                     }
-                                }
-                                EnumDashboardTasksTabs.Tomorrow -> {
-                                    AnimatedVisibility(visible = tomorrowTasks.isNotEmpty()) {
-                                        DoTooItemsLazyColumn(
-                                            doToos = tomorrowTasks,
-                                            onToggleDoToo = { doToo ->
-                                                onToggleTask(doToo)
-                                                listMoveScope.launch {
-                                                    delay(moveAnimationDelay)
-                                                    projectsListState.animateScrollToItem(0)
+                                    EnumDashboardTasksTabs.Tomorrow -> {
+                                        AnimatedVisibility(visible = tomorrowTasks.isNotEmpty()) {
+                                            DoTooItemsLazyColumn(
+                                                doToos = tomorrowTasks,
+                                                onToggleDoToo = { doToo ->
+                                                    onToggleTask(doToo)
+                                                    listMoveScope.launch {
+                                                        delay(moveAnimationDelay)
+                                                        projectsListState.animateScrollToItem(0)
+                                                    }
+                                                },
+                                                onNavigateClick = { doToo ->
+                                                    navigateToTask(doToo)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                                    .padding(
+                                                        top = 10.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    ),
+                                              //  lazyListState = tomorrowLazyListState,
+                                                onItemDelete = { task ->
+                                                    deleteTask(task)
                                                 }
-                                            },
-                                            onNavigateClick = { doToo ->
-                                                navigateToTask(doToo)
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                            lazyListState = tomorrowLazyListState,
-                                            onItemDelete = { task ->
-                                                deleteTask(task)
-                                            }
-                                        )
+                                            )
+                                        }
                                     }
-                                }
-                                EnumDashboardTasksTabs.Pending -> {
-                                    AnimatedVisibility(visible = pendingTasks.isNotEmpty()) {
-                                        DoTooItemsLazyColumn(
-                                            doToos = pendingTasks,
-                                            onToggleDoToo = { doToo ->
-                                                onToggleTask(doToo)
-                                                listMoveScope.launch {
-                                                    delay(moveAnimationDelay)
-                                                    projectsListState.animateScrollToItem(0)
+                                    EnumDashboardTasksTabs.Pending -> {
+                                        AnimatedVisibility(visible = pendingTasks.isNotEmpty()) {
+                                            DoTooItemsLazyColumn(
+                                                doToos = pendingTasks,
+                                                onToggleDoToo = { doToo ->
+                                                    onToggleTask(doToo)
+                                                    listMoveScope.launch {
+                                                        delay(moveAnimationDelay)
+                                                        projectsListState.animateScrollToItem(0)
+                                                    }
+                                                },
+                                                onNavigateClick = { doToo ->
+                                                    navigateToTask(doToo)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                                    .padding(
+                                                        top = 10.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    ),
+                                              //  lazyListState = pendingLazyListState,
+                                                onItemDelete = { task ->
+                                                    Log.v("Log for - ", "reached projects view")
+                                                    deleteTask(task)
                                                 }
-                                            },
-                                            onNavigateClick = { doToo ->
-                                                navigateToTask(doToo)
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                            lazyListState = pendingLazyListState,
-                                            onItemDelete = { task ->
-                                                Log.v("Log for - ", "reached projects view")
-                                                deleteTask(task)
-                                            }
-                                        )
+                                            )
+                                        }
                                     }
-                                }
-                                EnumDashboardTasksTabs.AllOther -> {
-                                    AnimatedVisibility(visible = allOtherTasks.isNotEmpty()) {
-                                        DoTooItemsLazyColumn(
-                                            doToos = allOtherTasks,
-                                            onToggleDoToo = { doToo ->
-                                                onToggleTask(doToo)
-                                                listMoveScope.launch {
-                                                    delay(moveAnimationDelay)
-                                                    projectsListState.animateScrollToItem(0)
+                                    EnumDashboardTasksTabs.AllOther -> {
+                                        AnimatedVisibility(visible = allOtherTasks.isNotEmpty()) {
+                                            DoTooItemsLazyColumn(
+                                                doToos = allOtherTasks,
+                                                onToggleDoToo = { doToo ->
+                                                    onToggleTask(doToo)
+                                                    listMoveScope.launch {
+                                                        delay(moveAnimationDelay)
+                                                        projectsListState.animateScrollToItem(0)
+                                                    }
+                                                },
+                                                onNavigateClick = { doToo ->
+                                                    navigateToTask(doToo)
+                                                },
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .weight(1f)
+                                                    .padding(
+                                                        top = 10.dp,
+                                                        start = 10.dp,
+                                                        end = 10.dp
+                                                    ),
+                                              //  lazyListState = allOtherLazyListState,
+                                                onItemDelete = { task ->
+                                                    deleteTask(task)
                                                 }
-                                            },
-                                            onNavigateClick = { doToo ->
-                                                navigateToTask(doToo)
-                                            },
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .weight(1f)
-                                                .padding(top = 10.dp, start = 10.dp, end = 10.dp),
-                                            lazyListState = allOtherLazyListState,
-                                            onItemDelete = { task ->
-                                                deleteTask(task)
-                                            }
-                                        )
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -502,16 +549,16 @@ fun isTopCardVisible(
     pagerState: PagerState
 ): Boolean {
     when (pagerState.currentPage) {
-        0 -> {
+        3 -> {
             return pendingLazyListState.isScrolled.not()
         }
-        1 -> {
+        2 -> {
             return yesterdayLazyListState.isScrolled.not()
         }
-        2 -> {
+        0 -> {
             return todayLazyListState.isScrolled.not()
         }
-        3 -> {
+        1 -> {
             return tomorrowLazyListState.isScrolled.not()
         }
         4 -> {

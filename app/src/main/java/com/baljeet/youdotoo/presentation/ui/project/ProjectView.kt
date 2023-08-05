@@ -63,7 +63,7 @@ fun ProjectView(
                 )
             }
         }
-    ) {
+    ) { padding ->
 
         Column(
             modifier = Modifier
@@ -74,7 +74,7 @@ fun ProjectView(
                     } else {
                         DotooGray
                     }
-                ),
+                ).padding(padding),
             verticalArrangement = Arrangement.Top
         ) {
 
@@ -108,7 +108,7 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-                lazyListState = lazyListState,
+               // lazyListState = lazyListState,
                 doToos = tasks.map { it.toDoTooItem() },
                 onToggleDoToo = {doToo->
                     project?.let {
