@@ -36,6 +36,11 @@ object SharedPref {
         set(value) = sharedPref.edit {
             it.putLong("themeLightColor",value)
         }
+    var lastColorsFetchDate: Long
+        get() = sharedPref.getLong("lastColorsFetchDate", 0)
+        set(value) = sharedPref.edit {
+            it.putLong("lastColorsFetchDate",value)
+        }
 
     var isSyncOn: Boolean
         get() = sharedPref.getBoolean("isSyncOn",false)

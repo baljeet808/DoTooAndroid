@@ -46,6 +46,7 @@ fun DummyDoTooItemView(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
+            .padding(top = 5.dp, bottom = 8.dp)
             .shadow(
                 elevation = 5.dp,
                 shape = RoundedCornerShape(

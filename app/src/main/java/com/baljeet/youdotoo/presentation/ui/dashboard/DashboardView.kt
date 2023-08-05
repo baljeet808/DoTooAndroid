@@ -50,6 +50,8 @@ import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.themechooser.DestinationThemeChooserRoute
+import com.baljeet.youdotoo.presentation.ui.themechooser.addThemeChooserViewDestination
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -141,6 +143,7 @@ fun DashboardView(
                                     scaffoldState.drawerState.close()
                                 }
                                 maximizeCurrentScreen = true
+                                navController.navigate(DestinationThemeChooserRoute)
                             }
                             DestinationProjectsRoute -> {
                                 scope.launch {
@@ -246,6 +249,7 @@ fun DashboardView(
                     addCreateTaskViewDestination(navController)
                     addChatViewDestination()
                     addInvitationViewDestination(navController)
+                    addThemeChooserViewDestination(navController)
                 }
             }
         }

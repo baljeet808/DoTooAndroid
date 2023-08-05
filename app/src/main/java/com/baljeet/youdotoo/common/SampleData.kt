@@ -1,16 +1,21 @@
 package com.baljeet.youdotoo.common
 
+import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
-import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 import kotlin.random.Random
 
 
@@ -61,7 +66,7 @@ fun getSampleDotooItem(): DoTooItem {
         description = "To see the preview comment code related to viewModel",
         dueDate = 90L,
         createDate = 789L,
-        done = true,
+        done = Random.nextInt(from = 0, 1) == 0,
         priority = "High",
         updatedBy = "Baljeet create this doToo item.",
         projectColor = getRandomColor()
@@ -71,7 +76,7 @@ fun getSampleDotooItem(): DoTooItem {
 fun getSampleProject(): Project {
     return Project(
         id = getRandomId(),
-        name = "Project name should have only 20 characters.",
+        name = "Daily Chores",
         description = "This project is about the irritating stuff which always gets forgotten.",
         ownerId = "",
         collaboratorIds = getSampleIds(),
@@ -177,5 +182,18 @@ fun getSampleInvitationNotification() : NotificationEntity{
         projectColor = getRandomColor(),
         isNew = true,
         notificationType = EnumNotificationType.INVITATION
+    )
+}
+
+
+fun getSampleColorPalette(): ColorPaletteEntity{
+    return ColorPaletteEntity(
+        id = getRandomId(),
+        paletteName = "Randomized",
+        nightDark = getRandomColor(),
+        nightLight = getRandomColor(),
+        dayDark = getRandomColor(),
+        dayLight = getRandomColor(),
+        isApplied = Random.nextInt(0,1) == 0
     )
 }

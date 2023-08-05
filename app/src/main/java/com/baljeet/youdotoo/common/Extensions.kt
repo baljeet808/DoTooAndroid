@@ -24,9 +24,13 @@ fun User.asHashMap(): HashMap<String, Any> {
     )
 }
 
-fun Long.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
+fun Long.toLocalDateTime(): LocalDateTime {
     return Instant.ofEpochSecond(this).toKotlinInstant()
-        .toLocalDateTime(TimeZone.currentSystemDefault()).toNiceDateTimeFormat(onlyShowTime)
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+}
+
+fun Long.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
+    return this.toLocalDateTime().toNiceDateTimeFormat(onlyShowTime)
 }
 
 fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {

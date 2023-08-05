@@ -3,12 +3,14 @@ package com.baljeet.youdotoo.di
 import android.app.Application
 import androidx.room.Room
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
+import com.baljeet.youdotoo.data.repository_implementations.ColorPaletteRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.DatabaseOperationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.DoTooItemsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.InvitationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.NotificationRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.ProjectRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.UserRepositoryImpl
+import com.baljeet.youdotoo.domain.repository_interfaces.ColorPaletteRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.DatabaseOperationsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.InvitationsRepository
@@ -41,6 +43,12 @@ object AppModule {
     @Singleton
     fun providesUserRepository(localDB : YouDoTooDatabase): UserRepository {
         return UserRepositoryImpl(localDB)
+    }
+
+    @Provides
+    @Singleton
+    fun providesColorPaletteRepository(localDB : YouDoTooDatabase): ColorPaletteRepository {
+        return ColorPaletteRepositoryImpl(localDB)
     }
 
     @Provides
