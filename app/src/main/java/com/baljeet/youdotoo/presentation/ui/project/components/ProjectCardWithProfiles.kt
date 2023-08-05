@@ -7,12 +7,21 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +34,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleProfile
+import com.baljeet.youdotoo.common.getSampleProject
+import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
+import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
@@ -43,7 +56,6 @@ fun ProjectCardWithProfiles(
     project: Project?,
     users: List<User>,
     tasks: List<DoTooItem>,
-    lazyListState: LazyListState,
     onItemDeleteClick: () -> Unit,
     updateProjectTitle: (title: String) -> Unit,
     updateProjectDescription: (title: String) -> Unit,
@@ -51,6 +63,10 @@ fun ProjectCardWithProfiles(
     toggleNotificationSetting: () -> Unit,
     onClickInvite: () -> Unit
 ) {
+
+    var showAll by remember {
+        mutableStateOf(true)
+    }
 
     var showEditTitleBox by remember {
         mutableStateOf(false)
@@ -119,7 +135,7 @@ fun ProjectCardWithProfiles(
             }
         })
 
-        AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (users.isNotEmpty()))) {
+        AnimatedVisibility(visible = showAll) {
             ProjectTopBar(
                 notificationsState = true,
                 onFavoriteClick = { /*TODO*/ },
@@ -130,7 +146,7 @@ fun ProjectCardWithProfiles(
             )
         }
 
-        AnimatedVisibility(visible = (lazyListState.isScrolled.not() && (users.isNotEmpty()))) {
+        AnimatedVisibility(visible = showAll) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -192,7 +208,8 @@ fun ProjectCardWithProfiles(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(10.dp),
+            horizontalAlignment = Alignment.End
         ) {
             AnimatedVisibility(visible = showEditTitleBox.not()) {
                 Text(
@@ -232,17 +249,44 @@ fun ProjectCardWithProfiles(
                     lines = 2
                 )
             }
-            AnimatedVisibility(visible = lazyListState.isScrolled.not()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
                     text = tasks.size.toString().plus(" Tasks"),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(start = 5.dp, end = 5.dp),
                     color = LessTransparentWhiteColor,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
                 )
+
+                TextButton(
+                    onClick = { showAll = showAll.not() },
+                    modifier = Modifier.padding(end = 10.dp)
+                ) {
+                    Text(
+                        text = if (showAll) {
+                            "Show less"
+                        } else {
+                            "Show more"
+                        },
+                        fontFamily = FontFamily(Nunito.Normal.font)
+                    )
+                    Icon(
+                        if (showAll) {
+                            Icons.Default.ExpandLess
+                        } else {
+                            Icons.Default.ExpandMore
+                        },
+                        contentDescription = "show less or more button"
+                    )
+                }
+
             }
         }
     }
@@ -253,7 +297,6 @@ fun ProjectCardWithProfiles(
 fun PreviewProjectCardWithProfiles() {
     ProjectCardWithProfiles(
         project = getSampleProject(),
-        lazyListState = LazyListState(),
         tasks = listOf(
             getSampleDotooItem()
         ),

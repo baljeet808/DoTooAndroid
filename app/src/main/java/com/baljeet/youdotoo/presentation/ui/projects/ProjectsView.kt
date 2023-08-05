@@ -15,6 +15,8 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -60,30 +62,18 @@ fun ProjectsView(
 
     val projectsListState = rememberLazyListState()
     val listMoveScope = rememberCoroutineScope()
-    val moveAnimationDelay : Long = 200
+    val moveAnimationDelay: Long = 200
 
     val tasksTabs = EnumDashboardTasksTabs.values()
 
     val startingTabIndex = 0
 
     val pagerState = rememberPagerState(initialPage = startingTabIndex)
-/*
 
-    val pendingLazyListState = rememberLazyListState()
-    val yesterdayLazyListState = rememberLazyListState()
-    val todayLazyListState = rememberLazyListState()
-    val tomorrowLazyListState = rememberLazyListState()
-    val allOtherLazyListState = rememberLazyListState()
 
-    val isTopCardsVisible = isTopCardVisible(
-        pendingLazyListState,
-        yesterdayLazyListState,
-        todayLazyListState,
-        tomorrowLazyListState,
-        allOtherLazyListState,
-        pagerState
-    )
-*/
+    var showTopInfo by remember {
+        mutableStateOf(true)
+    }
 
     val transition = rememberInfiniteTransition(label = "")
 
@@ -151,7 +141,8 @@ fun ProjectsView(
                     } else {
                         DotooGray
                     }
-                ).padding(paddingValues = padding)
+                )
+                .padding(paddingValues = padding)
         ) {
 
 
@@ -198,7 +189,7 @@ fun ProjectsView(
             ) {
 
 
-                AnimatedVisibility(visible = true /*isTopCardsVisible*/) {
+                AnimatedVisibility(visible = showTopInfo) {
                     Column(modifier = Modifier.fillMaxWidth()) {
 
                         /**
@@ -276,17 +267,13 @@ fun ProjectsView(
                         ProjectsLazyRow(
                             modifier = Modifier
                                 .fillMaxWidth(),
-                            projects = projects.sortedBy { p ->  p.project.updatedAt }.reversed(),
+                            projects = projects.sortedBy { p -> p.project.updatedAt }.reversed(),
                             navigateToDoToos = navigateToDoToos,
                             userId = userId,
                             listState = projectsListState
                         )
                     }
                 }
-
-
-
-
 
 
                 /**
@@ -307,18 +294,23 @@ fun ProjectsView(
                         0 -> {
                             todayTasks.isEmpty()
                         }
+
                         1 -> {
                             tomorrowTasks.isEmpty()
                         }
+
                         2 -> {
                             yesterdayTasks.isEmpty()
                         }
+
                         3 -> {
                             pendingTasks.isEmpty()
                         }
+
                         4 -> {
                             allOtherTasks.isEmpty()
                         }
+
                         else -> allOtherTasks.isEmpty()
                     }
 
@@ -337,8 +329,31 @@ fun ProjectsView(
                      * **/
                     Column(
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.End
                     ) {
+
+                        TextButton(
+                            onClick = { showTopInfo = showTopInfo.not() },
+                            modifier = Modifier.padding(end = 10.dp)
+                        ) {
+                            Text(
+                                text = if (showTopInfo) {
+                                    "Show less"
+                                } else {
+                                    "Show more"
+                                },
+                                fontFamily = FontFamily(Nunito.Normal.font)
+                            )
+                            Icon(
+                                if (showTopInfo) {
+                                    Icons.Default.ExpandLess
+                                } else {
+                                    Icons.Default.ExpandMore
+                                },
+                                contentDescription = "show less or more button"
+                            )
+                        }
 
                         /**
                          *Tab row view
@@ -366,15 +381,15 @@ fun ProjectsView(
                             AnimatedContent(
                                 targetState = tasksTabs[pagerState.currentPage],
                                 transitionSpec = {
-                                                 slideIntoContainer(
-                                                     animationSpec = tween(400, easing = EaseIn),
-                                                     towards = AnimatedContentTransitionScope.SlideDirection.Up
-                                                 ).togetherWith(
-                                                     slideOutOfContainer(
-                                                         animationSpec = tween(400, easing = EaseOut),
-                                                         towards = AnimatedContentTransitionScope.SlideDirection.Down
-                                                     )
-                                                 )
+                                    slideIntoContainer(
+                                        animationSpec = tween(400, easing = EaseIn),
+                                        towards = AnimatedContentTransitionScope.SlideDirection.Up
+                                    ).togetherWith(
+                                        slideOutOfContainer(
+                                            animationSpec = tween(400, easing = EaseOut),
+                                            towards = AnimatedContentTransitionScope.SlideDirection.Down
+                                        )
+                                    )
                                 },
                                 label = "Tab switching animations"
                             ) { targetState ->
@@ -401,14 +416,14 @@ fun ProjectsView(
                                                         start = 10.dp,
                                                         end = 10.dp
                                                     ),
-                                              //  lazyListState = yesterdayLazyListState,
-                                               onItemDelete = { task ->
+                                                onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
                                                 }
                                             )
                                         }
                                     }
+
                                     EnumDashboardTasksTabs.Today -> {
                                         AnimatedVisibility(visible = todayTasks.isNotEmpty()) {
                                             DoTooItemsLazyColumn(
@@ -431,7 +446,6 @@ fun ProjectsView(
                                                         start = 10.dp,
                                                         end = 10.dp
                                                     ),
-                                               // lazyListState = todayLazyListState,
                                                 onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
@@ -439,6 +453,7 @@ fun ProjectsView(
                                             )
                                         }
                                     }
+
                                     EnumDashboardTasksTabs.Tomorrow -> {
                                         AnimatedVisibility(visible = tomorrowTasks.isNotEmpty()) {
                                             DoTooItemsLazyColumn(
@@ -461,13 +476,13 @@ fun ProjectsView(
                                                         start = 10.dp,
                                                         end = 10.dp
                                                     ),
-                                              //  lazyListState = tomorrowLazyListState,
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
                                                 }
                                             )
                                         }
                                     }
+
                                     EnumDashboardTasksTabs.Pending -> {
                                         AnimatedVisibility(visible = pendingTasks.isNotEmpty()) {
                                             DoTooItemsLazyColumn(
@@ -490,7 +505,6 @@ fun ProjectsView(
                                                         start = 10.dp,
                                                         end = 10.dp
                                                     ),
-                                              //  lazyListState = pendingLazyListState,
                                                 onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
@@ -498,6 +512,7 @@ fun ProjectsView(
                                             )
                                         }
                                     }
+
                                     EnumDashboardTasksTabs.AllOther -> {
                                         AnimatedVisibility(visible = allOtherTasks.isNotEmpty()) {
                                             DoTooItemsLazyColumn(
@@ -520,7 +535,6 @@ fun ProjectsView(
                                                         start = 10.dp,
                                                         end = 10.dp
                                                     ),
-                                              //  lazyListState = allOtherLazyListState,
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
                                                 }
@@ -535,37 +549,6 @@ fun ProjectsView(
                 }
 
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalPagerApi::class)
-fun isTopCardVisible(
-    pendingLazyListState: LazyListState,
-    yesterdayLazyListState: LazyListState,
-    todayLazyListState: LazyListState,
-    tomorrowLazyListState: LazyListState,
-    allOtherLazyListState: LazyListState,
-    pagerState: PagerState
-): Boolean {
-    when (pagerState.currentPage) {
-        3 -> {
-            return pendingLazyListState.isScrolled.not()
-        }
-        2 -> {
-            return yesterdayLazyListState.isScrolled.not()
-        }
-        0 -> {
-            return todayLazyListState.isScrolled.not()
-        }
-        1 -> {
-            return tomorrowLazyListState.isScrolled.not()
-        }
-        4 -> {
-            return allOtherLazyListState.isScrolled.not()
-        }
-        else -> {
-            return true
         }
     }
 }

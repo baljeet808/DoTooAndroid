@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
@@ -18,16 +17,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.common.getRandomId
+import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleProfile
+import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
-import com.baljeet.youdotoo.data.mappers.*
+import com.baljeet.youdotoo.data.mappers.toDoTooItem
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toProject
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
+import com.baljeet.youdotoo.data.mappers.toUser
+import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 
 @Composable
 fun ProjectView(
@@ -42,8 +51,6 @@ fun ProjectView(
     upsertProject : (Project)  -> Unit,
     onClickInvite : () -> Unit
 ) {
-
-    val lazyListState = rememberLazyListState()
 
     Scaffold(
         floatingActionButton = {
@@ -85,7 +92,6 @@ fun ProjectView(
                 project = project?.toProject(),
                 users = users.map { it.toUser() },
                 tasks = tasks.map { it.toDoTooItem() },
-                lazyListState = lazyListState,
                 onItemDeleteClick = deleteProject,
                 updateProjectTitle = { title ->
                     project?.copy()?.toProject()?.let { projectCopy ->
@@ -108,7 +114,6 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-               // lazyListState = lazyListState,
                 doToos = tasks.map { it.toDoTooItem() },
                 onToggleDoToo = {doToo->
                     project?.let {
