@@ -9,6 +9,5 @@ interface ColorPaletteRepository {
      fun getAllPalettesAsFlow(): Flow<List<ColorPaletteEntity>>
      suspend fun getAllPalettes(): List<ColorPaletteEntity>
      suspend fun getColorPaletteById(paletteId : String): ColorPaletteEntity?
-     fun getAppliedPaletteAsFlow(): Flow<List<ColorPaletteEntity>>
      suspend fun delete(palette : ColorPaletteEntity)
 }

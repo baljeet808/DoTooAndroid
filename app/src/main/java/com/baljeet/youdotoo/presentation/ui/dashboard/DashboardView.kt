@@ -50,9 +50,10 @@ import com.baljeet.youdotoo.presentation.ui.invitation.addInvitationViewDestinat
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.launch
 
@@ -82,17 +83,9 @@ fun DashboardView(
 
     val statusBarColor by animateColorAsState(
         if (maximizeCurrentScreen) {
-            if (isSystemInDarkTheme()) {
-                NightNormalThemeColor
-            } else {
-                DotooGray
-            }
+            getLightThemeColor()
         } else {
-            if (darkTheme) {
-                NightDarkThemeColor
-            } else {
-                NightNormalThemeColor
-            }
+            getDarkThemeColor()
         }, label = ""
     )
 
@@ -199,9 +192,9 @@ fun DashboardView(
                 .fillMaxSize()
                 .background(
                     color = if (darkTheme) {
-                        NightDarkThemeColor
+                        getNightDarkColor()
                     } else {
-                        NightNormalThemeColor
+                        getNightLightColor()
                     }
                 )
                 .padding(padding)
@@ -217,11 +210,7 @@ fun DashboardView(
                     )
                     .scale(scale.value)
                     .background(
-                        color = if (isSystemInDarkTheme()) {
-                            NightNormalThemeColor
-                        } else {
-                            DotooGray
-                        },
+                        color = getLightThemeColor(),
                         shape = RoundedCornerShape(roundness.value)
                     )
                     .clip(shape = RoundedCornerShape(roundness.value)),

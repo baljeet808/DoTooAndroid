@@ -32,7 +32,7 @@ import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.playWooshSound
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -53,11 +53,7 @@ fun DoTooItemView(
             .height(80.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
-                } else {
-                    Color.White
-                },
+                color = getDarkThemeColor(),
                 shape = RoundedCornerShape(20.dp)
             ),
         horizontalAlignment = Alignment.CenterHorizontally,

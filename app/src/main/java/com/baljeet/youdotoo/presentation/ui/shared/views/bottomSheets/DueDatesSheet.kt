@@ -4,7 +4,14 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
@@ -23,8 +30,8 @@ import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun DueDatesSheet(
@@ -36,11 +43,7 @@ fun DueDatesSheet(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
-                } else {
-                    Color.White
-                },
+                color = getDarkThemeColor(),
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(10.dp)
@@ -124,6 +127,6 @@ fun DueDatesSheet(
 
 @Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun dueDateSheetPreview() {
+fun PreviewDueDateSheet() {
     DueDatesSheet(dueDate = DueDates.TODAY, onDatePickerSelected = { }, onDateSelected = {})
 }

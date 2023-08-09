@@ -1,11 +1,34 @@
 package com.baljeet.youdotoo.presentation.ui.drawer
 
 import android.content.res.Configuration
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -38,7 +61,15 @@ import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooLightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import java.lang.Float.max
 
 /**
@@ -112,9 +143,9 @@ fun NavigationDrawer(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
+                    getNightDarkColor()
                 } else {
-                    NightNormalThemeColor
+                    getNightLightColor()
                 }
             )
             .padding(20.dp)

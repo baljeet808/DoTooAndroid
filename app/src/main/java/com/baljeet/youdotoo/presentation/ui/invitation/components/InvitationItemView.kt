@@ -2,8 +2,20 @@ package com.baljeet.youdotoo.presentation.ui.invitation.components
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -24,11 +36,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.R
-import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.common.EnumProjectColors
+import com.baljeet.youdotoo.common.InvitationAccepted
+import com.baljeet.youdotoo.common.InvitationDeclined
+import com.baljeet.youdotoo.common.InvitationPending
+import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.UserInvitation
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
+import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 
 
 @Composable
@@ -61,11 +82,7 @@ fun InvitationItemView(
                 .height(60.dp)
                 .padding(0.dp)
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightDarkThemeColor
-                    } else {
-                        Color.White
-                    },
+                    color = getDarkThemeColor(),
                     shape = RoundedCornerShape(30.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -261,19 +278,15 @@ fun InvitationItemView(
                     overflow = TextOverflow.Ellipsis,
                     modifier = Modifier
                         .background(
-                            color = if (isSystemInDarkTheme()) {
-                                NightDarkThemeColor
-                            } else {
-                                Color.White
-                            },
+                            color = getDarkThemeColor(),
                             shape = RoundedCornerShape(5.dp)
                         )
                         .border(
                             width = 1.dp,
                             color = if (isSystemInDarkTheme()) {
-                                NightDarkThemeColor
+                                getNightDarkColor()
                             } else {
-                                DotooGray
+                                getDayLightColor()
                             },
                             shape = RoundedCornerShape(5.dp)
                         )

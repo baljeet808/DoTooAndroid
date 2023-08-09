@@ -153,11 +153,7 @@ fun InvitationsView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = if (darkTheme) {
-                        NightNormalThemeColor
-                    } else {
-                        DotooGray
-                    }
+                    color = getLightThemeColor()
                 ),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally

@@ -105,7 +105,7 @@ fun getRandomColor(): Long {
 
 
 fun getRandomColorEnum(): EnumProjectColors {
-    val randomInt = Random.nextInt(from = 0, 11)
+    val randomInt = Random.nextInt(from = 0, 9)
     return EnumProjectColors.values()[randomInt]
 }
 
@@ -193,7 +193,6 @@ fun getSampleColorPalette(): ColorPaletteEntity{
         nightDark = getRandomColor(),
         nightLight = getRandomColor(),
         dayDark = getRandomColor(),
-        dayLight = getRandomColor(),
-        isApplied = Random.nextInt(0,1) == 0
+        dayLight = getRandomColor()
     )
 }

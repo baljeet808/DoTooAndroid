@@ -25,16 +25,31 @@ object SharedPref {
         set(value) = sharedPref.edit {
             it.putBoolean("isAlertEnabled",value)
         }
-    var themeDarkColor: Long
-        get() = sharedPref.getLong("themeDarkColor", 0xFF0A0A0A)
+    var themeNightDarkColor: Long
+        get() = sharedPref.getLong("themeNightDarkColor", 4278848010)
         set(value) = sharedPref.edit {
-            it.putLong("themeDarkColor",value)
+            it.putLong("themeNightDarkColor",value)
+        }
+    var themeNightLightColor: Long
+        get() = sharedPref.getLong("themeNightLightColor", 4280822313)
+        set(value) = sharedPref.edit {
+            it.putLong("themeNightLightColor",value)
+        }
+    var selectedColorPalette: String
+        get() = sharedPref.getString("selectedColorPalette", "Eerie Black")!!
+        set(value) = sharedPref.edit {
+            it.putString("selectedColorPalette",value)
         }
 
-    var themeLightColor: Long
-        get() = sharedPref.getLong("themeLightColor", 0xFF0A0A0A)
+    var themeDayLightColor: Long
+        get() = sharedPref.getLong("themeDayLightColor", 4294046456)
         set(value) = sharedPref.edit {
-            it.putLong("themeLightColor",value)
+            it.putLong("themeDayLightColor",value)
+        }
+    var themeDayDarkColor: Long
+        get() = sharedPref.getLong("themeDayDarkColor", 4294967295)
+        set(value) = sharedPref.edit {
+            it.putLong("themeDayDarkColor",value)
         }
     var lastColorsFetchDate: Long
         get() = sharedPref.getLong("lastColorsFetchDate", 0)

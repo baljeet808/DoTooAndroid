@@ -4,7 +4,11 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -20,7 +24,7 @@ import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
-import com.baljeet.youdotoo.presentation.ui.theme.getCardColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun ChatViewMainContent(
@@ -40,7 +44,7 @@ fun ChatViewMainContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = getCardColor()),
+            .background(color = getDarkThemeColor()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         /**
@@ -164,7 +168,7 @@ fun ChatViewMainContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(0.8F)
-                .padding(bottom = 5.dp, top =5.dp)
+                .padding(bottom = 5.dp, top = 5.dp)
             ,
             verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
             reverseLayout = true

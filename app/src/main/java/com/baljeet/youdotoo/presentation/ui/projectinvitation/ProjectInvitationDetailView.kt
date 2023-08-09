@@ -52,14 +52,15 @@ import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -72,9 +73,9 @@ fun ProjectInvitationDetailView(
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
         color = if (isSystemInDarkTheme()) {
-            NightDarkThemeColor
+            getNightDarkColor()
         } else {
-            NightNormalThemeColor
+            getNightLightColor()
         }
     )
 
@@ -83,9 +84,9 @@ fun ProjectInvitationDetailView(
             .fillMaxSize()
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
+                    getNightDarkColor()
                 } else {
-                    NightNormalThemeColor
+                    getNightLightColor()
                 }
             ),
         verticalArrangement = Arrangement.Top,
@@ -220,11 +221,7 @@ fun ProjectInvitationDetailView(
             modifier = Modifier
                 .weight(1f)
                 .background(
-                    color = if (isSystemInDarkTheme()){
-                        NightNormalThemeColor
-                    }else{
-                        DotooGray
-                    },
+                    color = getLightThemeColor(),
                     shape = RoundedCornerShape(
                         topStart = 30.dp,
                         topEnd = 30.dp
@@ -272,9 +269,9 @@ fun ProjectInvitationDetailView(
                         .padding(20.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isSystemInDarkTheme()) {
-                            NightDarkThemeColor
+                            getNightDarkColor()
                         } else {
-                            NightNormalThemeColor
+                            getNightLightColor()
                         }
                     ),
                     shape = RoundedCornerShape(20.dp),
@@ -314,9 +311,9 @@ fun ProjectInvitationDetailView(
                     Icons.Default.CheckCircle,
                     contentDescription = "Accepted Icon",
                     tint = if (isSystemInDarkTheme()) {
-                        Color.White
+                        getDayDarkColor()
                     } else {
-                        NightDarkThemeColor
+                        getNightDarkColor()
                     },
                     modifier = Modifier
                 )
@@ -331,10 +328,10 @@ fun ProjectInvitationDetailView(
                         .fillMaxWidth(),
                     fontFamily = FontFamily(Nunito.ExtraBold.font),
                     fontSize = 20.sp,
-                    color = if(isSystemInDarkTheme()){
-                        Color.White
-                    }else{
-                        NightDarkThemeColor
+                    color = if (isSystemInDarkTheme()) {
+                        getDayDarkColor()
+                    } else {
+                        getNightDarkColor()
                     },
                     lineHeight = TextUnit(29f, TextUnitType.Sp),
                     textAlign = TextAlign.Center
@@ -347,9 +344,9 @@ fun ProjectInvitationDetailView(
                     Icons.Filled.Cancel,
                     contentDescription = "Accepted Icon",
                     tint = if (isSystemInDarkTheme()) {
-                        Color.White
+                        getDayDarkColor()
                     } else {
-                        NightDarkThemeColor
+                        getNightDarkColor()
                     },
                     modifier = Modifier
                 )
@@ -363,10 +360,10 @@ fun ProjectInvitationDetailView(
                         .fillMaxWidth(),
                     fontFamily = FontFamily(Nunito.ExtraBold.font),
                     fontSize = 20.sp,
-                    color = if(isSystemInDarkTheme()){
-                        Color.White
-                    }else{
-                        NightDarkThemeColor
+                    color = if (isSystemInDarkTheme()) {
+                        getDayDarkColor()
+                    } else {
+                        getNightDarkColor()
                     },
                     lineHeight = TextUnit(29f, TextUnitType.Sp),
                     textAlign = TextAlign.Center

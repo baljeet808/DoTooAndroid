@@ -13,13 +13,11 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
@@ -30,8 +28,8 @@ import com.baljeet.youdotoo.common.openAppSettings
 import com.baljeet.youdotoo.data.remote.GoogleAuthClient
 import com.baljeet.youdotoo.permissions.dialogs.NotificationPermissionTextProvider
 import com.baljeet.youdotoo.permissions.dialogs.PermissionDialog
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -132,11 +130,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
                 Surface(
                     modifier = Modifier
                         .fillMaxSize(),
-                    color = if (isSystemInDarkTheme()) {
-                        NightDarkThemeColor
-                    } else {
-                        Color.White
-                    }
+                    color = getDarkThemeColor()
                 ) {
                     val navController = rememberNavController()
 

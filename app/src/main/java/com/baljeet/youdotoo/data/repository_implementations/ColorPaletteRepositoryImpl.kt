@@ -29,10 +29,6 @@ class ColorPaletteRepositoryImpl @Inject constructor(
         return paletteDao.getColorPaletteById(paletteId)
     }
 
-    override fun getAppliedPaletteAsFlow(): Flow<List<ColorPaletteEntity>> {
-        return paletteDao.getAppliedPaletteAsFlow()
-    }
-
     override suspend fun delete(palette: ColorPaletteEntity) {
         paletteDao.delete(palette)
     }

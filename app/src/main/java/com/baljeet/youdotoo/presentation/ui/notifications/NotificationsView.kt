@@ -49,11 +49,10 @@ import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.presentation.ui.notifications.components.NotificationItemView
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,22 +74,14 @@ fun NotificationsView(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = if (isSystemInDarkTheme()) {
-            NightNormalThemeColor
-        } else {
-            DotooGray
-        }
+        color = getLightThemeColor()
     )
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightNormalThemeColor
-                } else {
-                    DotooGray
-                }
+                color = getLightThemeColor()
             )
             .padding(20.dp),
         verticalArrangement = Arrangement.Top,

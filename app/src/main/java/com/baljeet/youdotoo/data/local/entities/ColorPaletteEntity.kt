@@ -12,6 +12,5 @@ data class ColorPaletteEntity(
     var nightDark : Long,
     var nightLight : Long,
     var dayDark: Long,
-    var dayLight: Long ,
-    var isApplied : Boolean
+    var dayLight: Long
 )

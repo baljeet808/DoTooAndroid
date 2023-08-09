@@ -22,9 +22,6 @@ interface ColorPaletteDao {
     @Query("SELECT * FROM palettes where id = :paletteId ")
     suspend fun getColorPaletteById(paletteId : String) : ColorPaletteEntity?
 
-    @Query("SELECT * FROM palettes where isApplied")
-    fun getAppliedPaletteAsFlow(): Flow<List<ColorPaletteEntity>>
-
     @Delete
     suspend fun delete(palette : ColorPaletteEntity)
 

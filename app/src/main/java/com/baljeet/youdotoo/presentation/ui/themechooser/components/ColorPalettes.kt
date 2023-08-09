@@ -21,10 +21,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
@@ -100,7 +100,7 @@ fun ColorPalettes(
                     .width(30.dp)
                     .padding(0.dp),
             ) {
-                if (palette.isApplied) {
+                if (palette.paletteName == SharedPref.selectedColorPalette) {
                     Icon(
                         Icons.Filled.CheckCircle,
                         contentDescription = "Checked circular icon",

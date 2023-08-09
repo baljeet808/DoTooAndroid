@@ -6,6 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.baljeet.youdotoo.common.SharedPref
 
 /**
  * Updated by Baljeet singh.
@@ -24,16 +25,15 @@ fun NavGraphBuilder.addThemeChooserViewDestination(
 
         val allPalette by viewModel.getColorPalettes().collectAsState(initial = listOf())
 
-        val appliedPalette by viewModel.getApplied().collectAsState(initial = listOf())
 
         ThemeChooserView (
             onClose ={
                 navController.popBackStack()
             },
-            appliedPalette = appliedPalette.firstOrNull(),
+            appliedPalette = allPalette.firstOrNull { p -> p.paletteName == SharedPref.selectedColorPalette },
             palettes = allPalette,
-            onSelectColorPalette = { new , old ->
-                viewModel.updateSelectedColor(new, old)
+            onSelectColorPalette = { new ->
+                viewModel.updateSelectedColor(new)
             }
         )
 

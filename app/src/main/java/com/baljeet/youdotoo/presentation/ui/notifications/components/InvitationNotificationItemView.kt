@@ -32,8 +32,8 @@ import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun InvitationNotificationItemView(
@@ -45,11 +45,7 @@ fun InvitationNotificationItemView(
             .fillMaxWidth()
             .clickable(onClick = onItemClick)
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
-                } else {
-                    Color.White
-                },
+                color = getDarkThemeColor(),
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(10.dp),

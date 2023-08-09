@@ -78,13 +78,13 @@ import com.baljeet.youdotoo.presentation.ui.projects.components.TasksSchedulesTa
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -201,11 +201,7 @@ fun ProjectsView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightNormalThemeColor
-                    } else {
-                        DotooGray
-                    }
+                    color = getLightThemeColor()
                 )
                 .blur(
                     radius = if (showBlur) {
@@ -299,9 +295,9 @@ fun ProjectsView(
                                 onClick = navigateToCreateProject,
                                 colors = IconButtonDefaults.filledIconButtonColors(
                                     containerColor = if (isSystemInDarkTheme()) {
-                                        NightDarkThemeColor
+                                        getNightDarkColor()
                                     } else {
-                                        NightNormalThemeColor
+                                        getNightLightColor()
                                     }
                                 ),
                                 modifier = Modifier

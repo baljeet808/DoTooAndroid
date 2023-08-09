@@ -66,7 +66,7 @@ fun CreateTaskView(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "")
 
     val rotation = transition.animateValue(
         initialValue = -3f,
@@ -217,9 +217,9 @@ fun CreateTaskView(
         modifier = Modifier
             .background(
                 color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
+                    getNightDarkColor()
                 } else {
-                    Color.White
+                    getDayDarkColor()
                 },
                 shape = RoundedCornerShape(20.dp)
             ),
@@ -232,11 +232,7 @@ fun CreateTaskView(
         Column(
             modifier = Modifier
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightNormalThemeColor
-                    } else {
-                        DotooGray
-                    }
+                    color = getLightThemeColor()
                 )
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Top
@@ -516,11 +512,7 @@ fun CreateTaskView(
                     placeholder = {
                         Text(
                             text = "Enter new task",
-                            color = if (isSystemInDarkTheme()) {
-                                DotooGray
-                            } else {
-                                Color.Black
-                            },
+                            color = getTextColor(),
                             fontSize = 24.sp,
                             fontFamily = FontFamily(Nunito.SemiBold.font),
                             modifier = Modifier
@@ -534,11 +526,7 @@ fun CreateTaskView(
                         )
                     },
                     textStyle = TextStyle(
-                        color = if (isSystemInDarkTheme()) {
-                            DotooGray
-                        } else {
-                            Color.Black
-                        },
+                        color = getTextColor(),
                         fontSize = 24.sp,
                         fontFamily = FontFamily(Nunito.SemiBold.font)
                     ),
@@ -607,21 +595,13 @@ fun CreateTaskView(
                         placeholder = {
                             Text(
                                 text = "Enter description here",
-                                color = if (isSystemInDarkTheme()) {
-                                    DotooGray
-                                } else {
-                                    Color.Black
-                                },
+                                color = getTextColor(),
                                 fontSize = 16.sp,
                                 fontFamily = FontFamily(Nunito.SemiBold.font)
                             )
                         },
                         textStyle = TextStyle(
-                            color = if (isSystemInDarkTheme()) {
-                                DotooGray
-                            } else {
-                                Color.Black
-                            },
+                            color = getTextColor(),
                             fontSize = 16.sp,
                             fontFamily = FontFamily(Nunito.SemiBold.font)
                         ),
@@ -660,11 +640,7 @@ fun CreateTaskView(
                     modifier = Modifier
                         .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                         .background(
-                            color = if (isSystemInDarkTheme()) {
-                                DotooGray
-                            } else {
-                                NightDotooBrightBlue
-                            },
+                            color = NightDotooBrightBlue,
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)

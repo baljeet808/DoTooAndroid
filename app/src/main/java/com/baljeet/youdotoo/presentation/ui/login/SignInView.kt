@@ -44,11 +44,7 @@ fun SignInView(
     Box(
         modifier = Modifier
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightDarkThemeColor
-                } else {
-                    Color.White
-                }
+                color = getDarkThemeColor()
             )
             .fillMaxSize()
     ) {

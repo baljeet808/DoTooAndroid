@@ -3,7 +3,12 @@ package com.baljeet.youdotoo.presentation.ui.shared.views.lazies
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +28,7 @@ import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 
 @Composable
 fun ProfilesLazyRow(
@@ -69,11 +74,7 @@ fun ProfilesLazyRow(
                         .height(imagesWidthAndHeight.dp)
                         .clip(shape = RoundedCornerShape(20.dp))
                         .background(
-                            color = if (isSystemInDarkTheme()) {
-                                NightNormalThemeColor
-                            } else {
-                                Color.White
-                            }
+                            color = getLightThemeColor()
                         ),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally

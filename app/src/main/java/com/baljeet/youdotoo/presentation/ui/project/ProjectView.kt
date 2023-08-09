@@ -2,7 +2,6 @@ package com.baljeet.youdotoo.presentation.ui.project
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -34,9 +33,8 @@ import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 
 @Composable
 fun ProjectView(
@@ -77,11 +75,7 @@ fun ProjectView(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightNormalThemeColor
-                    } else {
-                        DotooGray
-                    }
+                    color = getLightThemeColor()
                 ).padding(padding),
             verticalArrangement = Arrangement.Top
         ) {

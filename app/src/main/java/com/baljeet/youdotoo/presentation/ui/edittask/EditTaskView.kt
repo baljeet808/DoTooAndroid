@@ -2,7 +2,6 @@ package com.baljeet.youdotoo.presentation.ui.edittask
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,7 +18,7 @@ import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun EditTaskView(
@@ -42,11 +41,7 @@ fun EditTaskView(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = if (isSystemInDarkTheme()) {
-                        NightDarkThemeColor
-                    } else {
-                        Color.White
-                    }
+                    color = getDarkThemeColor()
                 ),
             onSubmit = { title ->
                 task?.let {

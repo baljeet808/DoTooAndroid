@@ -43,13 +43,15 @@ import com.baljeet.youdotoo.presentation.ui.dotoo.DummyDoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.DummyProjectCardView
 import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalettes
 
 
@@ -58,7 +60,7 @@ fun ThemeChooserView(
     onClose: () -> Unit,
     palettes: List<ColorPaletteEntity>,
     appliedPalette: ColorPaletteEntity?,
-    onSelectColorPalette: (newPalette : ColorPaletteEntity, oldPalette : ColorPaletteEntity?) -> Unit
+    onSelectColorPalette: (newPalette : ColorPaletteEntity) -> Unit
 ) {
 
 
@@ -66,11 +68,7 @@ fun ThemeChooserView(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    NightNormalThemeColor
-                } else {
-                    DotooGray
-                }
+                color = getLightThemeColor()
             ),
         verticalArrangement = Arrangement.Top
     ) {
@@ -176,7 +174,7 @@ fun ThemeChooserView(
                         .background(
                             color = appliedPalette?.nightLight?.let {
                                 Color(it)
-                            } ?: NightNormalThemeColor,
+                            } ?: getNightLightColor(),
                             shape = RoundedCornerShape(
                                 topEnd = 20.dp,
                                 topStart = 0.dp,
@@ -210,7 +208,7 @@ fun ThemeChooserView(
                         role = getSampleProject().getUserRole(userId = getRandomId()),
                         backgroundColor = appliedPalette?.nightDark?.let {
                             Color(it)
-                        } ?: NightDarkThemeColor,
+                        } ?: getNightDarkColor(),
                         leftAlign = false,
                         textColor = Color.White
                     )
@@ -236,7 +234,7 @@ fun ThemeChooserView(
                         textColor = Color.White,
                         backgroundColor = appliedPalette?.nightDark?.let {
                             Color(it)
-                        } ?: NightDarkThemeColor
+                        } ?: getNightDarkColor()
                     )
 
                 }
@@ -258,7 +256,7 @@ fun ThemeChooserView(
                         .background(
                             color = appliedPalette?.dayLight?.let {
                                 Color(it)
-                            } ?: DotooGray,
+                            } ?: getDayDarkColor(),
                             shape = RoundedCornerShape(
                                 topEnd = 0.dp,
                                 topStart = 20.dp,
@@ -293,7 +291,7 @@ fun ThemeChooserView(
                         role = getSampleProject().getUserRole(userId = getRandomId()),
                         backgroundColor = appliedPalette?.dayDark?.let {
                             Color(it)
-                        } ?: Color.White,
+                        } ?: getDayLightColor(),
                         leftAlign = false,
                         textColor = Color.Black
                     )
@@ -320,7 +318,7 @@ fun ThemeChooserView(
                         textColor = Color.Black,
                         backgroundColor = appliedPalette?.dayDark?.let {
                             Color(it)
-                        } ?: Color.White
+                        } ?: getDayLightColor()
                     )
 
                 }
@@ -385,7 +383,7 @@ fun ThemeChooserView(
                     palette = palette,
                     onSelectPalette = {
                         onSelectColorPalette(
-                            palette, appliedPalette
+                            palette
                         )
                     }
                 )
@@ -411,6 +409,6 @@ fun PreviewThemeChooserView() {
             getSampleColorPalette(),
             getSampleColorPalette()
         ),
-        onSelectColorPalette = {_,_ ->}
+        onSelectColorPalette = {}
     )
 }
