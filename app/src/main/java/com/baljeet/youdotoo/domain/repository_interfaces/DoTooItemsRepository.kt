@@ -12,6 +12,8 @@ interface DoTooItemsRepository {
 
      suspend fun getDoTooById(doTooId : String): DoTooItemEntity
 
+     fun getTaskByIdAsAFlow(taskId : String): Flow<DoTooItemEntity>
+
      fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>>
 
      fun getTodayTasks(todayDateInLong: Long): Flow<List<DoTooItemEntity>>

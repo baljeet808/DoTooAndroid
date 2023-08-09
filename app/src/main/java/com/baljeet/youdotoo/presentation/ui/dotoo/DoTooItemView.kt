@@ -1,8 +1,9 @@
 package com.baljeet.youdotoo.presentation.ui.dotoo
 
 import android.content.res.Configuration
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,17 +34,20 @@ import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemView(
     doToo: DoTooItem,
     onNavigateClick: () -> Unit,
-    onToggleDone: () -> Unit
+    navigateToEditDotoo : () -> Unit,
+    onToggleDone: () -> Unit,
+    lastItem : Boolean
 ) {
 
     val context = LocalContext.current
     val hapticFeedback = LocalHapticFeedback.current
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .height(80.dp)
@@ -56,12 +60,19 @@ fun DoTooItemView(
                 },
                 shape = RoundedCornerShape(20.dp)
             ),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .clickable(onClick = onNavigateClick)
+                .combinedClickable(
+                    onClick = onNavigateClick,
+                    onLongClick = {
+                        addHapticFeedback(hapticFeedback = hapticFeedback)
+                        navigateToEditDotoo()
+                    }
+                )
                 .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -130,6 +141,10 @@ fun DoTooItemView(
 
         }
 
+        if(lastItem){
+            Spacer(modifier = Modifier.height(80.dp))
+        }
+
     }
 }
 
@@ -139,6 +154,8 @@ fun PreviewDoTooItemView() {
     DoTooItemView(
         doToo = getSampleDotooItem(),
         onToggleDone = {},
-        onNavigateClick = {}
+        onNavigateClick = {},
+        lastItem = true,
+        navigateToEditDotoo = {}
     )
 }

@@ -174,6 +174,30 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
+    fun updateTaskTitle(doTooItem: DoTooItem, title : String) {
+        val newDoToo = doTooItem.copy(
+            title = title
+        )
+        newDoToo.updatedBy = SharedPref.userName.plus(" has updated task title.")
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val task = getDoTooByIdUseCase(doTooItem.id)
+            val project = getProjectByIdUseCase(projectId = task.projectId)
+            if (SharedPref.isUserAPro || isProjectIsSharedToUser(project)) {
+                projectsReference
+                    .document(project.id)
+                    .collection("todos")
+                    .document(newDoToo.id)
+                    .set(newDoToo)
+
+            }else{
+                upsertDoToosUseCase(listOf(newDoToo), project.id)
+            }
+            upsertProject(project)
+        }
+    }
+
+
     private fun upsertProject(project : ProjectEntity){
         val newProject = project.copy()
         newProject.updatedAt = getSampleDateInLong()

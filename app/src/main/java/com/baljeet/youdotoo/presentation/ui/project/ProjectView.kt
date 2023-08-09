@@ -49,7 +49,8 @@ fun ProjectView(
     deleteTask : (DoTooItem) -> Unit,
     deleteProject : () -> Unit,
     upsertProject : (Project)  -> Unit,
-    onClickInvite : () -> Unit
+    onClickInvite : () -> Unit,
+    navigateToEditTask : (task : DoTooItem) -> Unit
 ) {
 
     Scaffold(
@@ -124,7 +125,10 @@ fun ProjectView(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
-                onItemDelete = deleteTask
+                onItemDelete = deleteTask,
+                navigateToEditTask = { task ->
+                    navigateToEditTask(task)
+                }
             )
 
         }
@@ -150,6 +154,7 @@ fun PreviewProjectView() {
         deleteTask = {},
         deleteProject = {},
         upsertProject = {},
-        onClickInvite = {}
+        onClickInvite = {},
+        navigateToEditTask = {}
     )
 }

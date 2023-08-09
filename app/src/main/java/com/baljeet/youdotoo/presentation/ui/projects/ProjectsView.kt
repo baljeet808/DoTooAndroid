@@ -5,29 +5,70 @@ import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.*
-import com.baljeet.youdotoo.common.*
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
+import com.baljeet.youdotoo.common.getRandomColor
+import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
@@ -36,12 +77,21 @@ import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.projects.components.TasksSchedulesTabRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
-import com.baljeet.youdotoo.presentation.ui.theme.*
-import com.google.accompanist.pager.*
+import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
+import com.baljeet.youdotoo.presentation.ui.theme.DotooGray
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightNormalThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
@@ -57,19 +107,25 @@ fun ProjectsView(
     navigateToTask: (DoTooItem) -> Unit,
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
-    deleteTask: (task: DoTooItem) -> Unit
+    deleteTask: (task: DoTooItem) -> Unit,
+    updateTaskTitle : (task : DoTooItem, title : String) -> Unit
 ) {
+
+    var taskToEdit : DoTooItem?  = null
 
     val projectsListState = rememberLazyListState()
     val listMoveScope = rememberCoroutineScope()
     val moveAnimationDelay: Long = 200
+
+    var showBlur by remember {
+        mutableStateOf(false)
+    }
 
     val tasksTabs = EnumDashboardTasksTabs.values()
 
     val startingTabIndex = 0
 
     val pagerState = rememberPagerState(initialPage = startingTabIndex)
-
 
     var showTopInfo by remember {
         mutableStateOf(true)
@@ -116,6 +172,13 @@ fun ProjectsView(
         ),
         typeConverter = Dp.VectorConverter, label = ""
     )
+
+    val keyBoardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember {
+        FocusRequester()
+    }
+    val focusScope = rememberCoroutineScope()
+
     Scaffold(
         floatingActionButton = {
             androidx.compose.material.FloatingActionButton(
@@ -132,6 +195,8 @@ fun ProjectsView(
         }
     ) { padding ->
 
+
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -140,6 +205,13 @@ fun ProjectsView(
                         NightNormalThemeColor
                     } else {
                         DotooGray
+                    }
+                )
+                .blur(
+                    radius = if (showBlur) {
+                        20.dp
+                    } else {
+                        0.dp
                     }
                 )
                 .padding(paddingValues = padding)
@@ -419,6 +491,16 @@ fun ProjectsView(
                                                 onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
+                                                },
+                                                navigateToEditTask = {
+                                                    //navigateToEditTask(it)
+                                                    taskToEdit = it
+                                                    keyBoardController?.show()
+                                                    showBlur = true
+                                                    focusScope.launch {
+                                                        delay(500)
+                                                        focusRequester.requestFocus()
+                                                    }
                                                 }
                                             )
                                         }
@@ -449,6 +531,16 @@ fun ProjectsView(
                                                 onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
+                                                },
+                                                navigateToEditTask = {
+                                                    //navigateToEditTask(it)
+                                                    taskToEdit = it
+                                                    keyBoardController?.show()
+                                                    showBlur = true
+                                                    focusScope.launch {
+                                                        delay(500)
+                                                        focusRequester.requestFocus()
+                                                    }
                                                 }
                                             )
                                         }
@@ -478,6 +570,16 @@ fun ProjectsView(
                                                     ),
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
+                                                },
+                                                navigateToEditTask = {
+                                                   // navigateToEditTask(it)
+                                                    taskToEdit = it
+                                                    keyBoardController?.show()
+                                                    showBlur = true
+                                                    focusScope.launch {
+                                                        delay(500)
+                                                        focusRequester.requestFocus()
+                                                    }
                                                 }
                                             )
                                         }
@@ -508,6 +610,16 @@ fun ProjectsView(
                                                 onItemDelete = { task ->
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
+                                                },
+                                                navigateToEditTask = {
+                                                   // navigateToEditTask(it)
+                                                    taskToEdit = it
+                                                    keyBoardController?.show()
+                                                    showBlur = true
+                                                    focusScope.launch {
+                                                        delay(500)
+                                                        focusRequester.requestFocus()
+                                                    }
                                                 }
                                             )
                                         }
@@ -537,6 +649,16 @@ fun ProjectsView(
                                                     ),
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
+                                                },
+                                                navigateToEditTask = {
+                                                   // navigateToEditTask(it)
+                                                    taskToEdit = it
+                                                    keyBoardController?.show()
+                                                    showBlur = true
+                                                    focusScope.launch {
+                                                        delay(500)
+                                                        focusRequester.requestFocus()
+                                                    }
                                                 }
                                             )
                                         }
@@ -550,6 +672,63 @@ fun ProjectsView(
 
             }
         }
+
+
+        AnimatedVisibility(
+            visible = showBlur && taskToEdit != null,
+            enter = slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseIn
+                ),
+                initialOffsetY = {
+                    it/2
+                }
+            ),
+            exit = slideOutVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseOut
+                ),
+                targetOffsetY = {
+                    it/2
+                }
+            )
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = padding)
+                    .clickable(
+                        onClick = {
+                            showBlur = false
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                EditOnFlyBoxRound(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    onSubmit = { title ->
+                        updateTaskTitle(taskToEdit!!,title)
+                        keyBoardController?.hide()
+                        showBlur = false
+                    },
+                    placeholder = taskToEdit?.title?:"",
+                    label = "Edit Task",
+                    maxCharLength = maxTitleCharsAllowed,
+                    onCancel = {
+                        showBlur = false
+                    },
+                    themeColor = Color(taskToEdit?.projectColor?: getRandomColor()),
+                    lines = 2
+                )
+
+            }
+        }
+
     }
 }
 
@@ -609,6 +788,7 @@ fun DefaultProjectPreview() {
         navigateToTask = {},
         navigateToCreateTask = {},
         navigateToCreateProject = {},
-        deleteTask = {}
+        deleteTask = {},
+        updateTaskTitle = {_,_->}
     )
 }

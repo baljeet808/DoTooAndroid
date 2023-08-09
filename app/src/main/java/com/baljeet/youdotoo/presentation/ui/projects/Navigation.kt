@@ -74,6 +74,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             deleteTask = { task ->
                 viewModel.deleteTask(task)
+            },
+            updateTaskTitle = { task , title ->
+                viewModel.updateTaskTitle(task,title)
             }
         )
     }

@@ -24,6 +24,9 @@ interface DoTooItemDao {
     @Query("SELECT * FROM todos where id = :doTooId")
     suspend fun getDoTooById(doTooId : String) : DoTooItemEntity
 
+    @Query("SELECT * FROM todos where id = :taskId")
+    fun getTaskByIdAsAFlow(taskId : String) : Flow<DoTooItemEntity>
+
     @Delete
     fun delete(doTooItem : DoTooItemEntity)
 

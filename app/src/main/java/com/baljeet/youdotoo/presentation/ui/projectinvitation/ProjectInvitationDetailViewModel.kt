@@ -85,8 +85,8 @@ class ProjectInvitationDetailViewModel @Inject constructor(
             }
 
             val updatedProject = project.copy(
-                viewerIds = viewerIDs.toList(),
-                collaboratorIds = editorIDs.toList()
+                viewerIds = viewerIDs,
+                collaboratorIds = editorIDs
             )
 
             projectReference.document(projectId).set(updatedProject)

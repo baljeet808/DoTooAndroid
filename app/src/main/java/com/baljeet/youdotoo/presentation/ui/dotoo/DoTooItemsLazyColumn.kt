@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -54,6 +53,7 @@ fun DoTooItemsLazyColumn(
     doToos: List<DoTooItem>,
     onToggleDoToo: (doToo: DoTooItem) -> Unit,
     onNavigateClick: (doToo: DoTooItem) -> Unit,
+    navigateToEditTask : (task: DoTooItem) -> Unit,
     onItemDelete: (doToo: DoTooItem) -> Unit,
     modifier: Modifier
 ) {
@@ -151,11 +151,12 @@ fun DoTooItemsLazyColumn(
                         },
                         onToggleDone = {
                             onToggleDoToo(dotoo)
+                        },
+                        lastItem = doToos.last() == dotoo,
+                        navigateToEditDotoo = {
+                            navigateToEditTask(dotoo)
                         }
                     )
-                    if (doToos.last() == dotoo) {
-                        Spacer(modifier = Modifier.height(80.dp))
-                    }
                 },
                 directions = setOf(DismissDirection.EndToStart))
         }
@@ -179,6 +180,7 @@ fun PreviewDoTooItemsLazyColumn() {
         onNavigateClick = {},
         onToggleDoToo = {},
         modifier = Modifier,
-        onItemDelete = {}
+        onItemDelete = {},
+        navigateToEditTask = {}
     )
 }

@@ -63,7 +63,6 @@ class DashBoard : ComponentActivity() {
                     addNotificationViewDestination(navController)
                     addProjectInvitationDestination(navController)
                     addThemeChooserViewDestination(navController)
-
                 }
             }
         }

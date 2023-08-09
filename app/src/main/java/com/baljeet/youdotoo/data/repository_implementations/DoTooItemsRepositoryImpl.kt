@@ -27,6 +27,10 @@ class DoTooItemsRepositoryImpl @Inject constructor(
         return doToosDao.getDoTooById(doTooId)
     }
 
+    override fun getTaskByIdAsAFlow(taskId: String): Flow<DoTooItemEntity> {
+        return doToosDao.getTaskByIdAsAFlow(taskId)
+    }
+
     override fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>> {
         return doToosDao.getYesterdayTasks(yesterdayDateInLong)
     }

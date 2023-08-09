@@ -45,6 +45,7 @@ import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
+import com.baljeet.youdotoo.presentation.ui.edittask.addEditTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.invitation.addInvitationViewDestination
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
@@ -258,6 +259,7 @@ fun DashboardView(
                     addCreateTaskViewDestination(navController)
                     addChatViewDestination()
                     addInvitationViewDestination(navController)
+                    addEditTaskViewDestination(navController)
                 }
             }
         }

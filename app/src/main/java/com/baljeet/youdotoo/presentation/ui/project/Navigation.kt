@@ -66,6 +66,9 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             onClickInvite = {
                 navController.navigate("invitations/".plus(projectId))
+            },
+            navigateToEditTask = {
+
             }
         )
     }
