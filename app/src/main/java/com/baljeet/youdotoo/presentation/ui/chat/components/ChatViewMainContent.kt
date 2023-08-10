@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
 import com.baljeet.youdotoo.common.isScrolled
-import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
@@ -28,7 +27,6 @@ import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun ChatViewMainContent(
-    doToo: DoTooWithProfiles,
     messages: List<Message>,
     sendMessage: (messageString: String) -> Unit,
     toggleIsDone: () -> Unit,
@@ -187,7 +185,7 @@ fun ChatViewMainContent(
                 if(isThisFromMe){
                     SenderMessageBubbleView(
                         message = message,
-                        doToo = doToo,
+                        doToo = getSampleDoTooWithProfiles(),
                         onLongPress = {
                             openEmoticons(message)
                         },
@@ -196,7 +194,7 @@ fun ChatViewMainContent(
                 }else{
                     ThereMessageBubbleView(
                         message = message,
-                        doToo = doToo,
+                        doToo = getSampleDoTooWithProfiles(),
                         onLongPress = {
                             openEmoticons(message)
                         },
@@ -227,7 +225,6 @@ fun ChatViewMainContent(
 @Composable
 fun PreviewChatView() {
     ChatViewMainContent(
-        doToo = getSampleDoTooWithProfiles(),
         messages = listOf(),
         sendMessage = {},
         toggleIsDone = {},

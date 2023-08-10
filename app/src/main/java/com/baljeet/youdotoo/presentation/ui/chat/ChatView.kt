@@ -2,14 +2,23 @@
 
 package com.baljeet.youdotoo.presentation.ui.chat
 
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
-import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
 import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
@@ -18,15 +27,17 @@ import kotlinx.coroutines.launch
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 10:00 AM.
  * **/
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatView(
-    doToo: DoTooWithProfiles,
     messages: List<Message>,
     sendMessage: (message: String) -> Unit,
     toggleIsDone: () -> Unit,
     showAttachments: (messages: ArrayList<Message>) -> Unit,
     interactOnMessage : (message : Message, emoticon : String) -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     var selectedMessage : Message? by remember {
         mutableStateOf(null)
@@ -71,7 +82,7 @@ fun ChatView(
                                     interactOnMessage( msg,emoticon )
                                     closeSheet()
                                 },
-                                profiles = doToo.profiles?.toCollection(ArrayList())?: arrayListOf()
+                                profiles = arrayListOf(getSampleProfile())
                             )
                         }
                     }
@@ -83,7 +94,6 @@ fun ChatView(
         }
     ) {
         ChatViewMainContent(
-            doToo = doToo,
             messages = messages,
             sendMessage = sendMessage,
             toggleIsDone = toggleIsDone,

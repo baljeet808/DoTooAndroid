@@ -8,6 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Icon
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.playWooshSound
@@ -38,12 +40,13 @@ import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 @Composable
 fun DoTooItemView(
     doToo: DoTooItem,
-    onNavigateClick: () -> Unit,
-    navigateToEditDotoo : () -> Unit,
+    navigateToTaskEdit: () -> Unit,
+    navigateToQuickEditDotoo : () -> Unit,
     onToggleDone: () -> Unit,
     lastItem : Boolean
 ) {
 
+    SharedPref.init(LocalContext.current)
     val context = LocalContext.current
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -63,13 +66,13 @@ fun DoTooItemView(
             modifier = Modifier
                 .fillMaxSize()
                 .combinedClickable(
-                    onClick = onNavigateClick,
+                    onClick = navigateToTaskEdit,
                     onLongClick = {
                         addHapticFeedback(hapticFeedback = hapticFeedback)
-                        navigateToEditDotoo()
+                        navigateToQuickEditDotoo()
                     }
                 )
-                .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 10.dp),
+                .padding(start = 10.dp, end = 0.dp, top = 10.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -89,29 +92,18 @@ fun DoTooItemView(
                     .width(30.dp)
                     .padding(0.dp),
             ) {
-                if (doToo.done) {
-                    Icon(
-                        Icons.Filled.CheckCircle,
-                        contentDescription = "Checked circular icon",
-                        tint = /*if (isSystemInDarkTheme()) {
-                            Color.White
-                        } else {
-                            LightAppBarIconsColor
-                        }*/ Color(doToo.projectColor),
-                        modifier = Modifier
-                            .height(30.dp)
-                            .width(30.dp)
-                    )
-                } else {
-                    Icon(
-                        Icons.Outlined.Circle,
-                        contentDescription = "Checked circular icon",
-                        tint = /*NightDotooBrightBlue*/ Color(doToo.projectColor),
-                        modifier = Modifier
-                            .height(30.dp)
-                            .width(30.dp)
-                    )
-                }
+                Icon(
+                    if (doToo.done) {
+                        Icons.Filled.CheckCircle
+                    } else {
+                        Icons.Outlined.Circle
+                    },
+                    contentDescription = "Checked circular icon",
+                    tint = Color(doToo.projectColor),
+                    modifier = Modifier
+                        .height(30.dp)
+                        .width(30.dp)
+                )
             }
             Spacer(modifier = Modifier.width(10.dp))
 
@@ -135,6 +127,12 @@ fun DoTooItemView(
                     .weight(0.9f)
             )
 
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription ="Navigate to chat button",
+                tint = Color(doToo.projectColor)
+            )
+
         }
 
         if(lastItem){
@@ -150,8 +148,8 @@ fun PreviewDoTooItemView() {
     DoTooItemView(
         doToo = getSampleDotooItem(),
         onToggleDone = {},
-        onNavigateClick = {},
+        navigateToTaskEdit = {},
         lastItem = true,
-        navigateToEditDotoo = {}
+        navigateToQuickEditDotoo = {}
     )
 }

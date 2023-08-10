@@ -69,6 +69,11 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             navigateToEditTask = {
 
+            },
+            navigateToChat = {
+                navController.navigate(
+                    "messages/${projectId}"
+                )
             }
         )
     }

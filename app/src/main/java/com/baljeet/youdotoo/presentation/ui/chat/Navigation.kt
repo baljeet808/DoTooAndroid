@@ -3,43 +3,43 @@ package com.baljeet.youdotoo.presentation.ui.chat
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 
 /**
  * Updated by Baljeet singh.
  * **/
 
-const val DestinationMessageRoute = "messages"
+const val DestinationMessageRoute = "messages/{projectId}"
 
 fun NavGraphBuilder.addChatViewDestination(){
     composable(
-        route = DestinationMessageRoute
-    ){
+        route = DestinationMessageRoute,
+        arguments = listOf(
+            navArgument("projectId"){
+                type = NavType.StringType
+            }
+        )
+    ){ backStackEntry ->
+
+        val projectId = backStackEntry.arguments?.getString("projectId")
+
         val viewModel : ChatViewModel = hiltViewModel()
         val messages by viewModel.messagesState
-      //  viewModel.init()
-     /*   ChatView(
-            doToo = ,
+
+        ChatView(
             messages = messages,
             sendMessage = {messageString ->
-                viewModel.sendMessage(
-                    projectId = ,
-                    doTooId = ,
-                    messageString = messageString
-                )
+
             },
             toggleIsDone = {
-                viewModel.toggleIsDone()
+
             },
             showAttachments = {},
             interactOnMessage = { message, emoticon ->
-                viewModel.interactWithMessage(
-                    projectId = ,
-                    doTooId =  ,
-                    message = message,
-                    emoticon = emoticon
-                )
+
             }
-        )*/
+        )
     }
 }

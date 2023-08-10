@@ -49,11 +49,10 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemsLazyColumn(
-   // lazyListState: LazyListState,
     doToos: List<DoTooItem>,
     onToggleDoToo: (doToo: DoTooItem) -> Unit,
-    onNavigateClick: (doToo: DoTooItem) -> Unit,
-    navigateToEditTask : (task: DoTooItem) -> Unit,
+    navigateToQuickEditTask : (task: DoTooItem) -> Unit,
+    navigateToEditTask : (task : DoTooItem) -> Unit,
     onItemDelete: (doToo: DoTooItem) -> Unit,
     modifier: Modifier
 ) {
@@ -146,15 +145,15 @@ fun DoTooItemsLazyColumn(
                 dismissContent = {
                     DoTooItemView(
                         doToo = dotoo,
-                        onNavigateClick = {
-                            onNavigateClick(dotoo)
-                        },
                         onToggleDone = {
                             onToggleDoToo(dotoo)
                         },
                         lastItem = doToos.last() == dotoo,
-                        navigateToEditDotoo = {
+                        navigateToQuickEditDotoo = {
                             navigateToEditTask(dotoo)
+                        },
+                        navigateToTaskEdit = {
+
                         }
                     )
                 },
@@ -177,10 +176,10 @@ fun PreviewDoTooItemsLazyColumn() {
             getSampleDotooItem(),
             sampleTaskItem
         ),
-        onNavigateClick = {},
         onToggleDoToo = {},
         modifier = Modifier,
         onItemDelete = {},
-        navigateToEditTask = {}
+        navigateToEditTask = {},
+        navigateToQuickEditTask = {}
     )
 }

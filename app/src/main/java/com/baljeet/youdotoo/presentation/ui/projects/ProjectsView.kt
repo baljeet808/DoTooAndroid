@@ -473,7 +473,7 @@ fun ProjectsView(
                                                         projectsListState.animateScrollToItem(0)
                                                     }
                                                 },
-                                                onNavigateClick = { doToo ->
+                                                navigateToEditTask = { doToo ->
                                                     navigateToTask(doToo)
                                                 },
                                                 modifier = Modifier
@@ -488,8 +488,8 @@ fun ProjectsView(
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
                                                 },
-                                                navigateToEditTask = {
-                                                    //navigateToEditTask(it)
+                                                navigateToQuickEditTask = {
+                                                    //navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -513,7 +513,7 @@ fun ProjectsView(
                                                         projectsListState.animateScrollToItem(0)
                                                     }
                                                 },
-                                                onNavigateClick = { doToo ->
+                                                navigateToEditTask = { doToo ->
                                                     navigateToTask(doToo)
                                                 },
                                                 modifier = Modifier
@@ -528,8 +528,8 @@ fun ProjectsView(
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
                                                 },
-                                                navigateToEditTask = {
-                                                    //navigateToEditTask(it)
+                                                navigateToQuickEditTask = {
+                                                    //navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -553,7 +553,7 @@ fun ProjectsView(
                                                         projectsListState.animateScrollToItem(0)
                                                     }
                                                 },
-                                                onNavigateClick = { doToo ->
+                                                navigateToEditTask = { doToo ->
                                                     navigateToTask(doToo)
                                                 },
                                                 modifier = Modifier
@@ -567,8 +567,8 @@ fun ProjectsView(
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
                                                 },
-                                                navigateToEditTask = {
-                                                   // navigateToEditTask(it)
+                                                navigateToQuickEditTask = {
+                                                   // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -592,7 +592,7 @@ fun ProjectsView(
                                                         projectsListState.animateScrollToItem(0)
                                                     }
                                                 },
-                                                onNavigateClick = { doToo ->
+                                                navigateToEditTask = { doToo ->
                                                     navigateToTask(doToo)
                                                 },
                                                 modifier = Modifier
@@ -607,8 +607,8 @@ fun ProjectsView(
                                                     Log.v("Log for - ", "reached projects view")
                                                     deleteTask(task)
                                                 },
-                                                navigateToEditTask = {
-                                                   // navigateToEditTask(it)
+                                                navigateToQuickEditTask = {
+                                                   // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -632,7 +632,7 @@ fun ProjectsView(
                                                         projectsListState.animateScrollToItem(0)
                                                     }
                                                 },
-                                                onNavigateClick = { doToo ->
+                                                navigateToEditTask = { doToo ->
                                                     navigateToTask(doToo)
                                                 },
                                                 modifier = Modifier
@@ -646,8 +646,8 @@ fun ProjectsView(
                                                 onItemDelete = { task ->
                                                     deleteTask(task)
                                                 },
-                                                navigateToEditTask = {
-                                                   // navigateToEditTask(it)
+                                                navigateToQuickEditTask = {
+                                                   // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true

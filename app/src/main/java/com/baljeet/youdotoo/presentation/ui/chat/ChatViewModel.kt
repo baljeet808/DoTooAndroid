@@ -1,32 +1,40 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.domain.models.*
+import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
+import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.domain.models.MessageDto
+import com.baljeet.youdotoo.domain.models.toMessage
+import com.baljeet.youdotoo.domain.models.updateInteraction
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 /**
  * Updated by Baljeet singh on 23rd June, 2023 at 5:15PM.
  * **/
 @HiltViewModel
-class ChatViewModel @Inject constructor() : ViewModel() {
+class ChatViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+
+    private val projectId : String = checkNotNull(savedStateHandle["projectId"])
 
     var messagesState = mutableStateOf<List<Message>>(listOf())
         private set
 
     private var chatRef = FirebaseFirestore.getInstance().collection("projects")
 
-    fun init(dotoo: DoTooWithProfiles) {
-        chatRef.document(dotoo.project.id)
-            .collection("todos")
-            .document(dotoo.doToo.id)
+    init {
+        chatRef.document(projectId)
             .collection("messages")
             .addSnapshotListener { snapshot, error ->
                 if (snapshot != null && error == null) {
