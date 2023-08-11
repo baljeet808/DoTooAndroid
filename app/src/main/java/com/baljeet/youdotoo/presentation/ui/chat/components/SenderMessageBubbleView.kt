@@ -18,10 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.getInteractions
-import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
 import com.baljeet.youdotoo.common.getSampleMessage
+import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
+import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
@@ -34,7 +36,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 @Composable
 fun SenderMessageBubbleView(
     message: MessageEntity,
-    doToo: DoTooWithProfiles?,
+    users : List<UserEntity>,
     onLongPress: () -> Unit,
     showSenderInfo: Boolean = true
 ) {
@@ -74,7 +76,7 @@ fun SenderMessageBubbleView(
                             .padding(top = 4.dp)
                     )
                     Text(
-                        text = doToo?.profiles?.getUserName(message.senderId) ?: "Unknown",
+                        text = users.getUserName(message.senderId),
                         fontFamily = FontFamily(Nunito.Bold.font),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -140,7 +142,7 @@ fun SenderMessageBubbleView(
                     .padding(3.dp)
             ){
                 AsyncImage(
-                    model = doToo?.profiles?.getUserProfilePicture(message.senderId),
+                    model = users.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
                     modifier = Modifier
                         .width(30.dp)
@@ -159,15 +161,19 @@ fun SenderMessageBubbleView(
 fun PreviewSenderMessageBubble() {
     SenderMessageBubbleView(
         message = getSampleMessage(),
-        doToo = getSampleDoTooWithProfiles(),
+        users = listOf(
+            getSampleProfile(),
+            getSampleProfile(),
+            getSampleProfile()
+        ).map { it.toUserEntity() },
         onLongPress = { }
     )
 }
 
-fun List<User>.getUserProfilePicture(userId: String): String {
+fun List<UserEntity>.getUserProfilePicture(userId: String): String {
     return this.first { user -> user.id == userId }.avatarUrl
 }
 
-fun List<User>.getUserName(userId: String): String {
+fun List<UserEntity>.getUserName(userId: String): String {
     return this.first { user -> user.id == userId }.name
 }

@@ -20,19 +20,18 @@ import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
+import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
 import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
 import kotlinx.coroutines.launch
 
-/**
- * Updated by Baljeet singh on 18th June, 2023 at 10:00 AM.
- * **/
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatView(
+    participants : List<UserEntity>,
     messages: List<MessageEntity>,
     sendMessage: (message: String) -> Unit,
-    toggleIsDone: () -> Unit,
     showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
     interactOnMessage : (message : MessageEntity, emoticon : String) -> Unit
 ) {
@@ -96,7 +95,6 @@ fun ChatView(
         ChatViewMainContent(
             messages = messages,
             sendMessage = sendMessage,
-            toggleIsDone = toggleIsDone,
             openEmoticons = { message ->
                 selectedMessage = message
                 currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
@@ -117,7 +115,8 @@ fun ChatView(
             openCustomEmoticons = {
                 currentBottomSheet = ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS
                 openSheet()
-            }
+            },
+            participants = participants
         )
     }
 

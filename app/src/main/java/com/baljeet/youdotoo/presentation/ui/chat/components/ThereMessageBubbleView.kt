@@ -18,10 +18,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.getInteractions
-import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
 import com.baljeet.youdotoo.common.getSampleMessage
+import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
+import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -31,7 +33,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @Composable
 fun ThereMessageBubbleView(
     message: MessageEntity,
-    doToo: DoTooWithProfiles?,
+    users : List<UserEntity>,
     onLongPress: () -> Unit,
     showSenderInfo: Boolean = true
 ) {
@@ -66,7 +68,7 @@ fun ThereMessageBubbleView(
                     .padding(3.dp)
             ) {
                 AsyncImage(
-                    model = doToo?.profiles?.getUserProfilePicture(message.senderId),
+                    model = users.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
                     modifier = Modifier
                         .width(30.dp)
@@ -100,7 +102,7 @@ fun ThereMessageBubbleView(
                 ) {
 
                     Text(
-                        text = doToo?.profiles?.getUserName(message.senderId) ?: "Unknown",
+                        text = users.getUserName(message.senderId),
                         fontFamily = FontFamily(Nunito.Bold.font),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -168,7 +170,11 @@ fun ThereMessageBubbleView(
 fun PreviewThereMessageBubble() {
     ThereMessageBubbleView(
         message = getSampleMessage(),
-        doToo = getSampleDoTooWithProfiles(),
+        users = listOf(
+            getSampleProfile(),
+            getSampleProfile(),
+            getSampleProfile()
+        ).map { it.toUserEntity() },
         onLongPress = { }
     )
 }
