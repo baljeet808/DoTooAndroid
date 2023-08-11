@@ -7,6 +7,7 @@ import com.baljeet.youdotoo.data.repository_implementations.ColorPaletteReposito
 import com.baljeet.youdotoo.data.repository_implementations.DatabaseOperationsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.DoTooItemsRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.InvitationsRepositoryImpl
+import com.baljeet.youdotoo.data.repository_implementations.MessageRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.NotificationRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.ProjectRepositoryImpl
 import com.baljeet.youdotoo.data.repository_implementations.UserRepositoryImpl
@@ -14,6 +15,7 @@ import com.baljeet.youdotoo.domain.repository_interfaces.ColorPaletteRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.DatabaseOperationsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.DoTooItemsRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.InvitationsRepository
+import com.baljeet.youdotoo.domain.repository_interfaces.MessageRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.NotificationRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.ProjectRepository
 import com.baljeet.youdotoo.domain.repository_interfaces.UserRepository
@@ -43,6 +45,11 @@ object AppModule {
     @Singleton
     fun providesUserRepository(localDB : YouDoTooDatabase): UserRepository {
         return UserRepositoryImpl(localDB)
+    }
+    @Provides
+    @Singleton
+    fun providesMessageRepository(localDB : YouDoTooDatabase): MessageRepository {
+        return MessageRepositoryImpl(localDB)
     }
 
     @Provides

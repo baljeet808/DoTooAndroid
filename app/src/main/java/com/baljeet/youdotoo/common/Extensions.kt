@@ -36,11 +36,11 @@ fun Long.toLocalDateTime(): LocalDateTime {
         .toLocalDateTime(TimeZone.currentSystemDefault())
 }
 
-fun Long.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
+fun Long.toNiceDateTimeFormat(onlyShowTime: Boolean = false): String {
     return this.toLocalDateTime().toNiceDateTimeFormat(onlyShowTime)
 }
 
-fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
+fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime: Boolean = false): String {
     this.let { dateTime ->
 
         val hours = if (hour > 12) {
@@ -56,7 +56,7 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
         val givenDateTIme = dateTime.toJavaLocalDateTime().toLocalDate()
         val currentDate = LocalDate.now()
 
-        if(onlyShowTime.not()) {
+        if (onlyShowTime.not()) {
             if (givenDateTIme.isEqual(currentDate)) {
                 dateString = dateString.plus("Today ")
             } else if (givenDateTIme.isEqual(currentDate.minusDays(1))) {
@@ -84,7 +84,7 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime : Boolean = false): String {
     }
 }
 
-fun LocalDate.toNiceDateFormat(showYear : Boolean = true): String {
+fun LocalDate.toNiceDateFormat(showYear: Boolean = true): String {
     this.let { dateTime ->
 
         var dateString = ""
@@ -102,7 +102,7 @@ fun LocalDate.toNiceDateFormat(showYear : Boolean = true): String {
                 .plus(month.name)
         }
 
-        if(showYear) {
+        if (showYear) {
             dateString = dateString.plus(", ").plus(year.toString())
         }
 
@@ -111,7 +111,7 @@ fun LocalDate.toNiceDateFormat(showYear : Boolean = true): String {
 }
 
 fun LocalDate.formatNicelyWithoutYear(): String {
-        return dayOfMonth.toString().plus(" ").plus(month.name).plus(", ").plus(dayOfWeek.name)
+    return dayOfMonth.toString().plus(" ").plus(month.name).plus(", ").plus(dayOfWeek.name)
 }
 
 fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
@@ -127,12 +127,11 @@ fun kotlinx.datetime.LocalDate.getExactDateTimeInSecondsFrom1970(): Long {
 }
 
 
-
 val LazyListState.isScrolled: Boolean
     get() = firstVisibleItemIndex > 2 || firstVisibleItemScrollOffset > 0
 
 
-fun Project.getUserIds(): List<String>{
+fun Project.getUserIds(): List<String> {
     val ids = if (this.collaboratorIds.isNotEmpty()) {
         this.collaboratorIds.filter { id -> id.isNotBlank() }.toCollection(ArrayList())
     } else {
@@ -142,6 +141,9 @@ fun Project.getUserIds(): List<String>{
         ids.addAll(this.viewerIds.filter { id -> id.isNotBlank() })
     }
     ids.add(SharedPref.userId!!)
+    if (ids.none { id -> id == this.ownerId }) {
+        ids.add(this.ownerId)
+    }
     return ids
 }
 
@@ -152,7 +154,11 @@ fun Project.getUserIds(): List<String>{
  * - invitation and its user if they have one in local db else it will be null
  * - all of above will be filtered by email using search query before return, if search query is empty then return all with out filtering
  * **/
-fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitations : List<InvitationEntity>) : List<UserInvitation> {
+fun getUsersInvitations(
+    searchQuery: String,
+    users: List<UserEntity>,
+    invitations: List<InvitationEntity>
+): List<UserInvitation> {
     val resultingList = arrayListOf<UserInvitation>()
     users.forEach { user ->
         resultingList.add(
@@ -162,34 +168,36 @@ fun getUsersInvitations(searchQuery : String,users : List<UserEntity>, invitatio
             )
         )
     }
-    invitations.filter { invite -> resultingList.none { r -> r.invitationEntity?.id == invite.id } }.forEach {invitation ->
-        resultingList.add(
-            UserInvitation(
-                invitationEntity = invitation,
-                user = users.firstOrNull { user -> user.email == invitation.invitedEmail }
+    invitations.filter { invite -> resultingList.none { r -> r.invitationEntity?.id == invite.id } }
+        .forEach { invitation ->
+            resultingList.add(
+                UserInvitation(
+                    invitationEntity = invitation,
+                    user = users.firstOrNull { user -> user.email == invitation.invitedEmail }
+                )
             )
-        )
-    }
+        }
 
     val filteredList = resultingList.filter { invitation ->
-        (invitation.user?.email?.startsWith(searchQuery,ignoreCase = true) == true)
-                || (invitation.invitationEntity?.invitedEmail?.startsWith(searchQuery, ignoreCase = true) == true)
+        (invitation.user?.email?.startsWith(searchQuery, ignoreCase = true) == true)
+                || (invitation.invitationEntity?.invitedEmail?.startsWith(
+            searchQuery,
+            ignoreCase = true
+        ) == true)
     }
 
-    return if(searchQuery.isNotBlank()) filteredList else resultingList
+    return if (searchQuery.isNotBlank()) filteredList else resultingList
 }
 
 
-
-fun Activity.openAppSettings(){
+fun Activity.openAppSettings() {
     Intent(
         Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-        Uri.fromParts("package",packageName,null)
+        Uri.fromParts("package", packageName, null)
     ).also {
         startActivity(it)
     }
 }
-
 
 
 fun String.getInteractions(): ArrayList<Interaction> {
@@ -208,7 +216,11 @@ fun String.getInteractions(): ArrayList<Interaction> {
 
 fun MessageEntity.updateInteraction(interactionName: String) {
     val interactionId = SharedPref.userId.plus(",").plus(interactionName)
-    val interactions =  this.interactions.split(" | ").toCollection(ArrayList())
+    val interactions = if (this.interactions.isNotBlank()) {
+        this.interactions.split(" | ").toCollection(ArrayList())
+    } else {
+        arrayListOf()
+    }
     if (interactions.any { i -> i == interactionId }) {
         interactions.remove(interactionId)
     } else {

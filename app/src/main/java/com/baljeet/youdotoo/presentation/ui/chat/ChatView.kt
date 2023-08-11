@@ -2,6 +2,8 @@
 
 package com.baljeet.youdotoo.presentation.ui.chat
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
@@ -18,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
@@ -29,16 +30,15 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatView(
-    participants : List<UserEntity>,
+    participants: List<UserEntity>,
     messages: List<MessageEntity>,
     sendMessage: (message: String) -> Unit,
     showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
-    interactOnMessage : (message : MessageEntity, emoticon : String) -> Unit
+    interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
-
-    var selectedMessage : MessageEntity? by remember {
+    var selectedMessage: MessageEntity? by remember {
         mutableStateOf(null)
     }
 
@@ -74,53 +74,55 @@ fun ChatView(
             currentBottomSheet?.let {
                 when (it) {
                     ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS -> {
-                        selectedMessage?.let {selectedMessage->
+                        selectedMessage?.let { selectedMessage ->
                             EmoticonsControllerView(
                                 message = selectedMessage,
                                 onItemSelected = { emoticon, msg ->
-                                    interactOnMessage( msg,emoticon )
+                                    interactOnMessage(msg, emoticon)
                                     closeSheet()
                                 },
-                                profiles = arrayListOf(getSampleProfile())
+                                profiles = participants
                             )
                         }
                     }
+
                     ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS -> TODO()
                     ChatScreenBottomSheetTypes.PERSON_TAGGER -> TODO()
                     ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN -> TODO()
                 }
             }
         }
-    ) {
-        ChatViewMainContent(
-            messages = messages,
-            sendMessage = sendMessage,
-            openEmoticons = { message ->
-                selectedMessage = message
-                currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
-                openSheet()
-            },
-            showAttachments = showAttachments,
-            openCollaboratorsScreen = {
-                currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
-                openSheet()
-            },
-            openPersonTagger = {
-                currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
-                openSheet()
-            },
-            openAttachments = {
+    ) { padding ->
+        AnimatedVisibility(visible = participants.isNotEmpty()) {
+            ChatViewMainContent(
+                modifier = Modifier.padding(padding),
+                messages = messages,
+                sendMessage = sendMessage,
+                openEmoticons = { message ->
+                    selectedMessage = message
+                    currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
+                    openSheet()
+                },
+                showAttachments = showAttachments,
+                openCollaboratorsScreen = {
+                    currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
+                    openSheet()
+                },
+                openPersonTagger = {
+                    currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
+                    openSheet()
+                },
+                openAttachments = {
 
-            },
-            openCustomEmoticons = {
-                currentBottomSheet = ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS
-                openSheet()
-            },
-            participants = participants
-        )
+                },
+                openCustomEmoticons = {
+                    currentBottomSheet = ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS
+                    openSheet()
+                },
+                participants = participants
+            )
+        }
     }
-
-
 }
 
 

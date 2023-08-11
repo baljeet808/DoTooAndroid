@@ -27,15 +27,20 @@ fun NavGraphBuilder.addChatViewDestination(){
     ){
 
         val viewModel : ChatViewModel = hiltViewModel()
-        val messages by viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
+
         val project by viewModel.getProjectById().collectAsState(initial = null)
         val participants = project?.let {
             viewModel.getUserProfiles(it.toProject().getUserIds()).collectAsState(initial = listOf())
+        }?.value
+
+        val messages = participants?.let {
+            viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
         }?.value?: listOf()
 
+
         ChatView(
-            participants = participants,
-            messages = messages,
+            participants = participants?:listOf(),
+            messages = messages.reversed(),
             sendMessage = { messageString ->
                 viewModel.sendMessage(
                     messageString = messageString,

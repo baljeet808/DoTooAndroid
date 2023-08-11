@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getAllEmoticons
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
-import com.baljeet.youdotoo.domain.models.User
+import com.baljeet.youdotoo.data.local.entities.UserEntity
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
@@ -35,7 +35,7 @@ import java.time.LocalDateTime
 fun EmoticonsControllerView(
     onItemSelected : (emoticonName : String, message : MessageEntity) -> Unit,
     message: MessageEntity,
-    profiles : ArrayList<User>
+    profiles : List<UserEntity>
 ) {
     val context = LocalContext.current
     Column(
@@ -87,14 +87,14 @@ fun PreviewEmoticonControllerView(){
             projectId = getRandomId()
         ),
         profiles = arrayListOf(
-            User(
+            UserEntity(
                 id = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
                 name = "Baljeet Singh",
                 email = "baljeet@gmail.com",
                 joined = 82782L,
                 avatarUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2Fdo2.png?alt=media&token=701d3864-68e3-445c-9c75-66bc06d44d09"
             ),
-            User(
+            UserEntity(
                 id = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
                 name = "Karandeep Kaur",
                 email = "baljeet@gmail.com",

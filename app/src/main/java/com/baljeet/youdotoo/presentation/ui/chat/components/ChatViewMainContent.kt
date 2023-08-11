@@ -32,12 +32,13 @@ fun ChatViewMainContent(
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
     openAttachments: () -> Unit,
-    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit
+    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
+    modifier: Modifier
 ) {
     val lazyListState = rememberLazyListState()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(color = getDarkThemeColor()),
         verticalArrangement = Arrangement.SpaceBetween
@@ -121,6 +122,7 @@ fun PreviewChatView() {
         participants = listOf(
             getSampleProfile(),
             getSampleProfile(),
-        ).map { it.toUserEntity() }
+        ).map { it.toUserEntity() },
+        modifier = Modifier
     )
 }

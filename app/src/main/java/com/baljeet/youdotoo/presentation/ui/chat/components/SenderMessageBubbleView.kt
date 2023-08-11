@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getInteractions
 import com.baljeet.youdotoo.common.getSampleMessage
 import com.baljeet.youdotoo.common.getSampleProfile
@@ -171,9 +172,15 @@ fun PreviewSenderMessageBubble() {
 }
 
 fun List<UserEntity>.getUserProfilePicture(userId: String): String {
+    if(userId == SharedPref.userId){
+        return SharedPref.userAvatar
+    }
     return this.first { user -> user.id == userId }.avatarUrl
 }
 
 fun List<UserEntity>.getUserName(userId: String): String {
+    if(userId == SharedPref.userId){
+        return SharedPref.userName
+    }
     return this.first { user -> user.id == userId }.name
 }

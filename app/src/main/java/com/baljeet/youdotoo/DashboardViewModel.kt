@@ -203,6 +203,8 @@ class DashboardViewModel @Inject constructor(
                                 }
                             }
                         }
+
+
                     getUserProfilesAndUpdateDatabase(onlineProject)
                 }
             }
