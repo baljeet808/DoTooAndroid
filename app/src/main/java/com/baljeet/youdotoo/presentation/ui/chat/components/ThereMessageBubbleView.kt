@@ -17,9 +17,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.baljeet.youdotoo.common.getInteractions
 import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
 import com.baljeet.youdotoo.common.getSampleMessage
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.domain.models.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.*
@@ -28,7 +30,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.*
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ThereMessageBubbleView(
-    message: Message,
+    message: MessageEntity,
     doToo: DoTooWithProfiles?,
     onLongPress: () -> Unit,
     showSenderInfo: Boolean = true

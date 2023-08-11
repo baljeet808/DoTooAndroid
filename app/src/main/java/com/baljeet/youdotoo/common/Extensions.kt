@@ -6,11 +6,18 @@ import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.lazy.LazyListState
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.domain.models.Interaction
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.models.UserInvitation
-import kotlinx.datetime.*
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toJavaLocalDateTime
+import kotlinx.datetime.toKotlinInstant
+import kotlinx.datetime.toLocalDateTime
 import java.time.Instant
 import java.time.LocalDate
 
@@ -183,4 +190,30 @@ fun Activity.openAppSettings(){
     }
 }
 
+
+
+fun String.getInteractions(): ArrayList<Interaction> {
+    val interactions = arrayListOf<Interaction>()
+    this.split(" | ").forEach { interactionString ->
+        val interactionArray = interactionString.split(",")
+        interactions.add(
+            Interaction(
+                userId = interactionArray[0],
+                emoticonName = interactionArray[1]
+            )
+        )
+    }
+    return interactions
+}
+
+fun MessageEntity.updateInteraction(interactionName: String) {
+    val interactionId = SharedPref.userId.plus(",").plus(interactionName)
+    val interactions =  this.interactions.split(" | ").toCollection(ArrayList())
+    if (interactions.any { i -> i == interactionId }) {
+        interactions.remove(interactionId)
+    } else {
+        interactions.add(interactionId)
+    }
+    this.interactions = interactions.joinToString(" | ")
+}
 

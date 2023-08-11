@@ -1,12 +1,12 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.updateInteraction
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
-import com.baljeet.youdotoo.domain.models.Message
-import com.baljeet.youdotoo.domain.models.updateInteraction
+import com.baljeet.youdotoo.domain.use_cases.messages.GetAllMessagesByProjectIDAsFlowUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.TimeZone
@@ -20,16 +20,17 @@ import javax.inject.Inject
  * **/
 @HiltViewModel
 class ChatViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val getAllMessagesByProjectIDAsFlowUseCase: GetAllMessagesByProjectIDAsFlowUseCase
 ) : ViewModel() {
 
 
     private val projectId : String = checkNotNull(savedStateHandle["projectId"])
 
-    var messagesState = mutableStateOf<List<Message>>(listOf())
-        private set
 
     private var chatRef = FirebaseFirestore.getInstance().collection("projects")
+
+    fun getAllMessagesOfThisProject() = getAllMessagesByProjectIDAsFlowUseCase(projectId)
 
 
     fun toggleIsDone(doToo: DoTooWithProfiles) {
@@ -47,7 +48,7 @@ class ChatViewModel @Inject constructor(
     fun interactWithMessage(
         projectId: String,
         doTooId: String,
-        message: Message,
+        message: MessageEntity,
         emoticon: String
     ) {
         val newMessage = message.copy()
@@ -70,7 +71,7 @@ class ChatViewModel @Inject constructor(
         updateMessage: String = ""
     ) {
         val newMessageID = UUID.randomUUID().toString()
-        val newMessage = Message(
+        val newMessage = MessageEntity(
             id = newMessageID,
             message = if (isUpdate) {
                 updateMessage

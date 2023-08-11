@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProfile
-import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
 import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
 import kotlinx.coroutines.launch
@@ -30,16 +30,16 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatView(
-    messages: List<Message>,
+    messages: List<MessageEntity>,
     sendMessage: (message: String) -> Unit,
     toggleIsDone: () -> Unit,
-    showAttachments: (messages: ArrayList<Message>) -> Unit,
-    interactOnMessage : (message : Message, emoticon : String) -> Unit
+    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
+    interactOnMessage : (message : MessageEntity, emoticon : String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
 
-    var selectedMessage : Message? by remember {
+    var selectedMessage : MessageEntity? by remember {
         mutableStateOf(null)
     }
 

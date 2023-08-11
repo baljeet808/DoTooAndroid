@@ -20,22 +20,22 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDoTooWithProfiles
 import com.baljeet.youdotoo.common.isScrolled
-import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun ChatViewMainContent(
-    messages: List<Message>,
+    messages: List<MessageEntity>,
     sendMessage: (messageString: String) -> Unit,
     toggleIsDone: () -> Unit,
-    openEmoticons: (message: Message) -> Unit,
+    openEmoticons: (message: MessageEntity) -> Unit,
     openCustomEmoticons: () -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
     openAttachments: () -> Unit,
-    showAttachments: (messages: ArrayList<Message>) -> Unit
+    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
 

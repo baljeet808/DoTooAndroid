@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getAllEmoticons
 import com.baljeet.youdotoo.common.getRandomId
-import com.baljeet.youdotoo.domain.models.Message
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
@@ -33,8 +33,8 @@ import java.time.LocalDateTime
 @SuppressLint("DiscouragedApi")
 @Composable
 fun EmoticonsControllerView(
-    onItemSelected : (emoticonName : String, message : Message) -> Unit,
-    message: Message,
+    onItemSelected : (emoticonName : String, message : MessageEntity) -> Unit,
+    message: MessageEntity,
     profiles : ArrayList<User>
 ) {
     val context = LocalContext.current
@@ -76,7 +76,7 @@ fun EmoticonsControllerView(
 fun PreviewEmoticonControllerView(){
     EmoticonsControllerView(
         onItemSelected = { _, _ -> },
-        message = Message(
+        message = MessageEntity(
             id = "",
             message = "Hey there, This is a new message about your doToo. What do you think.",
             senderId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",

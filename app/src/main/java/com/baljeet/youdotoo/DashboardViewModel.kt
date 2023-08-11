@@ -15,9 +15,9 @@ import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
-import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
@@ -26,6 +26,9 @@ import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
+import com.baljeet.youdotoo.domain.use_cases.messages.DeleteAllMessagesOfProjectUseCase
+import com.baljeet.youdotoo.domain.use_cases.messages.GetMessageByIdUseCase
+import com.baljeet.youdotoo.domain.use_cases.messages.UpsertMessagesUseCase
 import com.baljeet.youdotoo.domain.use_cases.notifications.UpsertNotificationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
@@ -55,7 +58,10 @@ class DashboardViewModel @Inject constructor(
     private val deleteInvitationUseCase: DeleteInvitationUseCase,
     private val invitationsNotificationService: InvitationNotificationService,
     private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
-    private val deleteAllTablesUseCase: DeleteAllTablesUseCase
+    private val deleteAllTablesUseCase: DeleteAllTablesUseCase,
+    private val upsertMessagesUseCase: UpsertMessagesUseCase,
+    private val getMessageById : GetMessageByIdUseCase,
+    private val deleteAllMessagesOfProjectUseCase: DeleteAllMessagesOfProjectUseCase
 ) : ViewModel() {
 
 
@@ -172,10 +178,10 @@ class DashboardViewModel @Inject constructor(
                         .collection("messages")
                         .addSnapshotListener{ snapShot , e ->
                             if (snapShot != null && e == null) {
-                                val messages = ArrayList<Message>()
+                                val messages = ArrayList<MessageEntity>()
                                 for (message in snapShot) {
                                     messages.add(
-                                        Message(
+                                        MessageEntity(
                                             id = message.getString("id") ?: "",
                                             senderId = message.getString("senderId")?: "",
                                             message = message.getString("message")?: "",
@@ -188,16 +194,15 @@ class DashboardViewModel @Inject constructor(
                                     )
                                 }
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    //add to room database
+                                    upsertMessagesUseCase(messages)
                                 }
                             }
                             if (e != null) {
                                 CoroutineScope(Dispatchers.IO).launch {
-                                    //delete all messages by projectId
+                                    deleteAllMessagesOfProjectUseCase(onlineProject.id)
                                 }
                             }
                         }
-
                     getUserProfilesAndUpdateDatabase(onlineProject)
                 }
             }

@@ -2,13 +2,13 @@ package com.baljeet.youdotoo.common
 
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
-import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
@@ -109,8 +109,8 @@ fun getRandomColorEnum(): EnumProjectColors {
     return EnumProjectColors.values()[randomInt]
 }
 
-fun getSampleMessage(): Message {
-    return Message(
+fun getSampleMessage(): MessageEntity {
+    return MessageEntity(
         id = getRandomId(),
         message = "Hey there, This is a new message about your doToo. What do you think.",
         senderId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",

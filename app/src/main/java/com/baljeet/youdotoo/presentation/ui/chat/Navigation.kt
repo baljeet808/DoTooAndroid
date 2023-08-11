@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
@@ -26,7 +27,7 @@ fun NavGraphBuilder.addChatViewDestination(){
         val projectId = backStackEntry.arguments?.getString("projectId")
 
         val viewModel : ChatViewModel = hiltViewModel()
-        val messages by viewModel.messagesState
+        val messages by viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
 
         ChatView(
             messages = messages,
