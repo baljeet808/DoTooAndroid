@@ -2,22 +2,12 @@ package com.baljeet.youdotoo.domain.models
 
 import android.os.Parcelable
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import kotlinx.parcelize.Parcelize
 
-/**
- * Updated by Baljeet singh on 18th June,2023 at 1:10PM.
- * **/
 
 
-class MessageDto {
-    var id: String = ""
-    var senderId: String = ""
-    var message: String = ""
-    var createdAt: Long = 0
-    var isUpdate: Boolean  = false
-    var attachmentUrl: String? = null
-    var interactions: ArrayList<String> = arrayListOf()
-}
+
 
 @Parcelize
 data class Message(
@@ -27,11 +17,25 @@ data class Message(
     var createdAt: Long,
     var isUpdate: Boolean,
     var attachmentUrl: String?,
-    var interactions: ArrayList<String>
+    var interactions: String,
+    var projectId : String
 ) : Parcelable
 
 
-fun MessageDto.toMessage(): Message{
+fun Message.toMessageEntity(): MessageEntity{
+    return MessageEntity(
+        id = id,
+        senderId = senderId,
+        message = message,
+        createdAt = createdAt,
+        isUpdate = isUpdate,
+        attachmentUrl = attachmentUrl,
+        interactions = interactions,
+        projectId = projectId
+    )
+}
+
+fun MessageEntity.toMessage(): Message{
     return Message(
         id = id,
         senderId = senderId,
@@ -39,14 +43,17 @@ fun MessageDto.toMessage(): Message{
         createdAt = createdAt,
         isUpdate = isUpdate,
         attachmentUrl = attachmentUrl,
-        interactions = interactions
+        interactions = interactions,
+        projectId = projectId
     )
 }
 
 
-fun List<String>.getInteractions(): ArrayList<Interaction> {
+
+
+fun String.getInteractions(): ArrayList<Interaction> {
     val interactions = arrayListOf<Interaction>()
-    this.forEach { interactionString ->
+    this.split(" | ").forEach { interactionString ->
         val interactionArray = interactionString.split(",")
         interactions.add(
             Interaction(
@@ -60,9 +67,11 @@ fun List<String>.getInteractions(): ArrayList<Interaction> {
 
 fun Message.updateInteraction(interactionName: String) {
     val interactionId = SharedPref.userId.plus(",").plus(interactionName)
-    if (this.interactions.any { i -> i == interactionId }) {
-        this.interactions.remove(interactionId)
+    val interactions =  this.interactions.split(" | ").toCollection(ArrayList())
+    if (interactions.any { i -> i == interactionId }) {
+        interactions.remove(interactionId)
     } else {
-        this.interactions.add(interactionId)
+        interactions.add(interactionId)
     }
+    this.interactions = interactions.joinToString(" | ")
 }

@@ -117,7 +117,8 @@ fun getSampleMessage(): Message {
         createdAt = getSampleDateInLong(),
         isUpdate = false,
         attachmentUrl = null,
-        interactions = getSampleInteractions()
+        interactions = getSampleInteractions().joinToString(" | "),
+        projectId = getRandomId()
     )
 }
 

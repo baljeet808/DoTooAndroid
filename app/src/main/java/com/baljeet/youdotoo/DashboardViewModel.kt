@@ -17,6 +17,7 @@ import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
@@ -164,6 +165,39 @@ class DashboardViewModel @Inject constructor(
                                 }
                             }
                         }
+
+
+                    projectsReference
+                        .document(onlineProject.id)
+                        .collection("messages")
+                        .addSnapshotListener{ snapShot , e ->
+                            if (snapShot != null && e == null) {
+                                val messages = ArrayList<Message>()
+                                for (message in snapShot) {
+                                    messages.add(
+                                        Message(
+                                            id = message.getString("id") ?: "",
+                                            senderId = message.getString("senderId")?: "",
+                                            message = message.getString("message")?: "",
+                                            createdAt = message.getLong("createdAt") ?: getSampleDateInLong(),
+                                            isUpdate = message.getBoolean("isUpdate")?: false,
+                                            attachmentUrl = message.getString("attachmentUrl"),
+                                            interactions = message.getString("interactions")?:"",
+                                            projectId = message.getString("projectId")?: ""
+                                        )
+                                    )
+                                }
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    //add to room database
+                                }
+                            }
+                            if (e != null) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    //delete all messages by projectId
+                                }
+                            }
+                        }
+
                     getUserProfilesAndUpdateDatabase(onlineProject)
                 }
             }

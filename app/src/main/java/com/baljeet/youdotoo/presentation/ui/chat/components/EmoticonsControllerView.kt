@@ -18,6 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getAllEmoticons
+import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.domain.models.Message
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
@@ -82,11 +83,8 @@ fun PreviewEmoticonControllerView(){
             createdAt = LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             isUpdate = false,
             attachmentUrl = "https://firebasestorage.googleapis.com/v0/b/dotoo-171b4.appspot.com/o/avatar%2F2.png?alt=media&token=f814c406-fa71-4fd7-a37a-e51119a5f107&_gl=1*37amd3*_ga*OTgxMTYwNDY4LjE2ODU2NTc1OTc.*_ga_CW55HF8NVT*MTY4NTY3MDMzMi40LjEuMTY4NTY3MDkwMS4wLjAuMA..",
-            interactions = arrayListOf(
-                "iz8dz6PufNPGbw9DzWUiZyoTHn62,feeling_good",
-                "NuZXwLl3a8O3mXRcXFsJzHQgB172,wow",
-                "NuZXwLl3a8O3mXRcXFsJzHQgB172,sad_face"
-            )
+            interactions = "iz8dz6PufNPGbw9DzWUiZyoTHn62,feeling_good | NuZXwLl3a8O3mXRcXFsJzHQgB172,wow | NuZXwLl3a8O3mXRcXFsJzHQgB172,sad_face",
+            projectId = getRandomId()
         ),
         profiles = arrayListOf(
             User(
