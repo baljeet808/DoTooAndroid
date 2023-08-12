@@ -42,8 +42,7 @@ fun DoTooItemView(
     doToo: DoTooItem,
     navigateToTaskEdit: () -> Unit,
     navigateToQuickEditDotoo : () -> Unit,
-    onToggleDone: () -> Unit,
-    lastItem : Boolean
+    onToggleDone: () -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -132,13 +131,7 @@ fun DoTooItemView(
                 contentDescription ="Navigate to chat button",
                 tint = Color(doToo.projectColor)
             )
-
         }
-
-        if(lastItem){
-            Spacer(modifier = Modifier.height(80.dp))
-        }
-
     }
 }
 
@@ -149,7 +142,6 @@ fun PreviewDoTooItemView() {
         doToo = getSampleDotooItem(),
         onToggleDone = {},
         navigateToTaskEdit = {},
-        lastItem = true,
         navigateToQuickEditDotoo = {}
     )
 }

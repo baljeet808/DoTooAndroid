@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -148,7 +149,6 @@ fun DoTooItemsLazyColumn(
                         onToggleDone = {
                             onToggleDoToo(dotoo)
                         },
-                        lastItem = doToos.last() == dotoo,
                         navigateToQuickEditDotoo = {
                             navigateToEditTask(dotoo)
                         },
@@ -158,6 +158,10 @@ fun DoTooItemsLazyColumn(
                     )
                 },
                 directions = setOf(DismissDirection.EndToStart))
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(80.dp))
         }
     }
 
