@@ -62,12 +62,9 @@ import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
-import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightPink
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooLightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import java.lang.Float.max
@@ -220,11 +217,7 @@ fun NavigationDrawer(
                             .progressSemantics()
                             .size(100.dp),
                         progress = animatedProgress,
-                        trackColor = if (isSystemInDarkTheme()) {
-                            NightDotooLightBlue
-                        } else {
-                            NightDotooFooterTextColor
-                        },
+                        trackColor = getLightThemeColor(),
                         color = NightDotooBrightPink
                     )
                 }
@@ -240,11 +233,7 @@ fun NavigationDrawer(
                         .height(50.dp)
                         .border(
                             width = 1.dp,
-                            color = if (isSystemInDarkTheme()) {
-                                NightDotooFooterTextColor
-                            } else {
-                                LightDotooFooterTextColor
-                            },
+                            color = getLightThemeColor(),
                             shape = RoundedCornerShape(40.dp)
                         )
 
@@ -252,11 +241,7 @@ fun NavigationDrawer(
                     Icon(
                         Icons.Default.ArrowBackIos,
                         contentDescription = "Button to close side drawer.",
-                        tint = if (isSystemInDarkTheme()) {
-                            NightDotooTextColor
-                        } else {
-                            LightDotooFooterTextColor
-                        }
+                        tint = Color.White
                     )
                 }
 
@@ -292,11 +277,7 @@ fun NavigationDrawer(
                 fontSize = 36.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isSystemInDarkTheme()) {
-                    NightDotooTextColor
-                } else {
-                    LightDotooFooterTextColor
-                }
+                color = Color.White
             )
 
             Spacer(modifier = Modifier.height(30.dp))
@@ -346,11 +327,7 @@ fun NavigationDrawer(
                         Icon(
                             menuItem.icon,
                             contentDescription = menuItem.contentDescription,
-                            tint = if (isSystemInDarkTheme()) {
-                                NightDotooFooterTextColor
-                            } else {
-                                LightDotooFooterTextColor
-                            }
+                            tint = LessTransparentWhiteColor
                         )
 
                         Spacer(modifier = Modifier.width(10.dp))
@@ -358,11 +335,7 @@ fun NavigationDrawer(
                         Text(
                             text = menuItem.title,
                             fontFamily = FontFamily(Nunito.Normal.font),
-                            color = if (isSystemInDarkTheme()) {
-                                NightDotooTextColor
-                            } else {
-                                LightDotooFooterTextColor
-                            },
+                            color = Color.White,
                         )
                     }
                 }
