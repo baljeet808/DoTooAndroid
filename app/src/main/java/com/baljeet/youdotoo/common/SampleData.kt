@@ -8,7 +8,6 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.DoTooItem
-import com.baljeet.youdotoo.domain.models.DoTooWithProfiles
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
@@ -106,6 +105,7 @@ fun getSampleMessage(): MessageEntity {
         createdAt = getSampleDateInLong(),
         isUpdate = false,
         attachmentUrl = getRandomAvatar(),
+        attachmentName = null,
         interactions = getSampleInteractions().joinToString(" | "),
         projectId = getRandomId()
     )

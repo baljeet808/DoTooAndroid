@@ -188,6 +188,7 @@ class DashboardViewModel @Inject constructor(
                                             createdAt = message.getLong("createdAt") ?: getSampleDateInLong(),
                                             isUpdate = message.getBoolean("isUpdate")?: false,
                                             attachmentUrl = message.getString("attachmentUrl"),
+                                            attachmentName = message.getString("attachmentName"),
                                             interactions = message.getString("interactions")?:"",
                                             projectId = message.getString("projectId")?: ""
                                         )

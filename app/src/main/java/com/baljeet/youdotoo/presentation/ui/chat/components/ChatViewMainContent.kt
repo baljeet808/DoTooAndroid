@@ -5,7 +5,6 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,7 +30,6 @@ import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
-import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -39,7 +37,7 @@ import kotlinx.coroutines.launch
 fun ChatViewMainContent(
     participants : List<UserEntity>,
     messages: List<MessageEntity>,
-    sendMessage: (messageString: String) -> Unit,
+    sendMessage: (messageString: String, attachments : List<Uri>) -> Unit,
     openEmoticons: (message: MessageEntity) -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
@@ -89,8 +87,7 @@ fun ChatViewMainContent(
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .background(color = getLightThemeColor()),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -144,7 +141,7 @@ fun ChatViewMainContent(
          * **/
         MessageBoxView(
             onClickSend = { message ->
-                sendMessage(message)
+                sendMessage(message, selectedImageUris)
             },
             showEditText =  lazyListState.isScrolled.not(),
             pickAttachments = {
@@ -186,7 +183,7 @@ fun ChatViewMainContent(
 fun PreviewChatView() {
     ChatViewMainContent(
         messages = listOf(),
-        sendMessage = {},
+        sendMessage = {_,_ ->},
         openEmoticons = {},
         openCollaboratorsScreen = {},
         showAttachments = {},

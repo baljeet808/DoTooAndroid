@@ -30,7 +30,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
         ColorPaletteEntity::class,
         MessageEntity::class
     ],
-    version = 19
+    version = 20
 )
 @TypeConverters(NotificationTypeConverter::class)
 abstract class YouDoTooDatabase  : RoomDatabase(){

@@ -2,7 +2,19 @@
 
 package com.baljeet.youdotoo.presentation.ui.chat
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -16,7 +28,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
@@ -24,6 +38,9 @@ import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
 import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import kotlinx.coroutines.launch
 
 
@@ -32,7 +49,7 @@ import kotlinx.coroutines.launch
 fun ChatView(
     participants: List<UserEntity>,
     messages: List<MessageEntity>,
-    sendMessage: (message: String) -> Unit,
+    sendMessage: (message: String, attachments:  List<Uri>) -> Unit,
     showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
     interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit
 ) {
@@ -66,6 +83,52 @@ fun ChatView(
         }
     }
 
+    val transition = rememberInfiniteTransition(label = "")
+
+    val darkTheme = isSystemInDarkTheme()
+
+    val offsetX by transition.animateValue(
+        initialValue = (500).dp,
+        targetValue = 200.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter, label = ""
+    )
+    val offsetY by transition.animateValue(
+        initialValue = (150).dp,
+        targetValue = 550.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter, label = ""
+    )
+
+    val offsetX1 by transition.animateValue(
+        initialValue = 160.dp,
+        targetValue = 310.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 30000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter, label = ""
+    )
+    val offsetY1 by transition.animateValue(
+        initialValue = 550.dp,
+        targetValue = 450.dp,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 20000),
+            repeatMode = RepeatMode.Reverse
+        ),
+        typeConverter = Dp.VectorConverter, label = ""
+    )
+
+
+
+
+
     BottomSheetScaffold(
         modifier = Modifier,
         scaffoldState = sheetScaffoldState,
@@ -93,27 +156,71 @@ fun ChatView(
             }
         }
     ) { padding ->
-        AnimatedVisibility(visible = participants.isNotEmpty()) {
-            ChatViewMainContent(
-                modifier = Modifier.padding(padding),
-                messages = messages,
-                sendMessage = sendMessage,
-                openEmoticons = { message ->
-                    selectedMessage = message
-                    currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
-                    openSheet()
-                },
-                showAttachments = showAttachments,
-                openCollaboratorsScreen = {
-                    currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
-                    openSheet()
-                },
-                openPersonTagger = {
-                    currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
-                    openSheet()
-                },
-                participants = participants
-            )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = getLightThemeColor()
+                )
+        ) {
+            /**
+             * Two Animated Circles in background
+             * **/
+            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+                drawCircle(
+                    color = if (darkTheme) {
+                        NightTransparentWhiteColor
+                    } else {
+                        LessTransparentBlueColor
+                    },
+                    radius = 130.dp.toPx(),
+                    center = Offset(
+                        x = offsetX1.toPx(),
+                        y = offsetY1.toPx()
+                    )
+                )
+            })
+            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
+                drawCircle(
+                    color = if (darkTheme) {
+                        NightTransparentWhiteColor
+                    } else {
+                        LessTransparentBlueColor
+                    },
+                    radius = 180.dp.toPx(),
+                    center = Offset(
+                        x = offsetX.toPx(),
+                        y = offsetY.toPx()
+                    )
+                )
+            })
+
+
+
+
+            AnimatedVisibility(visible = participants.isNotEmpty()) {
+                ChatViewMainContent(
+                    modifier = Modifier.padding(padding),
+                    messages = messages,
+                    sendMessage = sendMessage,
+                    openEmoticons = { message ->
+                        selectedMessage = message
+                        currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
+                        openSheet()
+                    },
+                    showAttachments = showAttachments,
+                    openCollaboratorsScreen = {
+                        currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
+                        openSheet()
+                    },
+                    openPersonTagger = {
+                        currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
+                        openSheet()
+                    },
+                    participants = participants
+                )
+            }
         }
     }
 }

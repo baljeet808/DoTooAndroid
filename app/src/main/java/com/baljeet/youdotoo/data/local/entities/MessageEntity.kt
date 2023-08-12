@@ -13,6 +13,7 @@ data class MessageEntity(
     var createdAt: Long,
     var isUpdate: Boolean,
     var attachmentUrl: String?,
+    var attachmentName: String?,
     var interactions: String,
     var projectId: String
 )

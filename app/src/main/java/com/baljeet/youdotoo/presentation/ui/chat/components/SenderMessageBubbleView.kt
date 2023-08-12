@@ -1,5 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,8 +30,8 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.*
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 /**
  * Updated by Baljeet singh on 18th June, 2023 at 1:05 PM.
@@ -86,13 +88,14 @@ fun SenderMessageBubbleView(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.End,
-                        modifier = Modifier
+                        modifier = Modifier,
+                        color = getTextColor()
                     )
                 }
             }
             Column(modifier = Modifier
                 .background(
-                    color = DotooBlue,
+                    color = getDarkThemeColor(),
                     shape = RoundedCornerShape(
                         topEnd = 0.dp,
                         topStart = 20.dp,
@@ -100,13 +103,19 @@ fun SenderMessageBubbleView(
                         bottomEnd = 20.dp
                     )
                 )
-                .padding(10.dp)
+                .padding(
+                    if (message.attachmentUrl != null) {
+                        5.dp
+                    } else {
+                        10.dp
+                    }
+                )
                 .widthIn(min = 30.dp, max = 200.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 message.attachmentUrl?.let {url ->
                     AsyncImage(
-                        model = url,
+                        model = Uri.parse(url),
                         contentDescription ="Attachment image",
                         modifier = Modifier
                             .height(180.dp)
@@ -115,12 +124,14 @@ fun SenderMessageBubbleView(
                         contentScale = ContentScale.Crop,
                     )
                 }
-                Text(
-                    text = message.message,
-                    fontFamily = FontFamily(Nunito.SemiBold.font),
-                    fontSize = 14.sp,
-                    color = DoTooLightBlue
-                )
+                AnimatedVisibility(visible = message.message.isNotBlank()) {
+                    Text(
+                        text = message.message,
+                        fontFamily = FontFamily(Nunito.SemiBold.font),
+                        fontSize = 14.sp,
+                        color = getTextColor()
+                    )
+                }
             }
             if( message.interactions.isNotEmpty()){
                 EmoticonsSmallPreview(
@@ -137,11 +148,7 @@ fun SenderMessageBubbleView(
                     .height(35.dp)
                     .border(
                         width = 2.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            DoTooLightBlue
-                        } else {
-                            DotooBlue
-                        },
+                        color = getDarkThemeColor(),
                         shape = RoundedCornerShape(40.dp)
                     )
                     .padding(3.dp)
@@ -156,7 +163,9 @@ fun SenderMessageBubbleView(
                 )
             }
         }else{
-            Spacer(modifier = Modifier.width(30.dp).height(30.dp))
+            Spacer(modifier = Modifier
+                .width(30.dp)
+                .height(30.dp))
         }
     }
 }
