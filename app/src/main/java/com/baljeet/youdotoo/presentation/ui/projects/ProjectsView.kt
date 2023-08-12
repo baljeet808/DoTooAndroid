@@ -24,16 +24,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -52,6 +49,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -62,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.DashboardTaskTabs
 import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
@@ -77,11 +76,9 @@ import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
-import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -107,6 +104,8 @@ fun ProjectsView(
     deleteTask: (task: DoTooItem) -> Unit,
     updateTaskTitle: (task: DoTooItem, title: String) -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     var taskToEdit: DoTooItem? = null
 
@@ -197,14 +196,25 @@ fun ProjectsView(
         floatingActionButton = {
             androidx.compose.material.FloatingActionButton(
                 onClick = navigateToCreateTask,
-                modifier = Modifier,
-                backgroundColor = NightDotooBrightBlue
+                modifier = Modifier.height(50.dp),
+                backgroundColor = getDarkThemeColor()
             ) {
-                Icon(
-                    Icons.Outlined.Add,
-                    contentDescription = "Floating button to quickly add a task to this project",
-                    tint = Color.White
-                )
+                Row(
+                    modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        Icons.Outlined.Add,
+                        contentDescription = "Floating button to quickly add a task to this project",
+                        tint = Color.White
+                    )
+                    Text(
+                        text = "Add Task",
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        color = Color.White,
+                        fontSize = 14.sp
+                    )
+                }
             }
         }
     ) { padding ->
@@ -273,6 +283,25 @@ fun ProjectsView(
                 AnimatedVisibility(visible = showTopInfo) {
                     Column(modifier = Modifier.fillMaxWidth()) {
 
+
+                        /**
+                         * Greeting text
+                         * **/
+                        Text(
+                            text = if (userName.length > 8) {
+                                "Hi, $userName!"
+                            } else {
+                                "What's up, $userName!"
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp)
+                            ,
+                            fontFamily = FontFamily(Nunito.ExtraBold.font),
+                            fontSize = 38.sp,
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+
                         /**
                          * Top Row for greeting and Add project button
                          * **/
@@ -285,62 +314,49 @@ fun ProjectsView(
                         ) {
 
                             /**
-                             * Greeting text
+                             * Simple Projects heading
                              * **/
                             Text(
-                                text = if (userName.length > 8) {
-                                    "Hi, $userName!"
-                                } else {
-                                    "What's up, $userName!"
-                                },
+                                text = "Projects".uppercase(),
+                                color = LightAppBarIconsColor,
+                                fontFamily = FontFamily(Nunito.Normal.font),
+                                fontSize = 16.sp,
                                 modifier = Modifier
-                                    .padding(5.dp)
-                                    .weight(1f),
-                                fontFamily = FontFamily(Nunito.ExtraBold.font),
-                                fontSize = 38.sp,
-                                color = MaterialTheme.colorScheme.secondary
+                                    .padding(5.dp),
+                                letterSpacing = TextUnit(2f, TextUnitType.Sp)
                             )
 
                             /**
                              * Create Project Button
                              * **/
-                            FilledIconButton(
-                                onClick = navigateToCreateProject,
-                                colors = IconButtonDefaults.filledIconButtonColors(
-                                    containerColor = if (isSystemInDarkTheme()) {
-                                        getNightDarkColor()
-                                    } else {
-                                        getNightLightColor()
-                                    }
-                                ),
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .width(40.dp)
 
-                            ) {
-                                Icon(
-                                    Icons.Default.Add,
-                                    contentDescription = "Add list button",
-                                    tint = Color.White
-                                )
-                            }
+                                Row(
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                        .background(
+                                            color = getDarkThemeColor(),
+                                            shape = RoundedCornerShape(60.dp)
+                                        )
+                                        .padding(start = 8.dp, end = 8.dp)
+                                        .clickable(onClick = navigateToCreateProject)
+                                    ,
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Outlined.Add,
+                                        contentDescription = "Floating button to add a project",
+                                        tint = Color.White
+                                    )
+                                    Text(
+                                        text = "Add Project",
+                                        fontFamily = FontFamily(Nunito.Normal.font),
+                                        color = Color.White,
+                                        fontSize = 13.sp
+                                    )
+                                }
+
                         }
-
-
-                        /**
-                         * Simple Projects heading
-                         * **/
-                        Text(
-                            text = "Projects".uppercase(),
-                            color = LightAppBarIconsColor,
-                            fontFamily = FontFamily(Nunito.Normal.font),
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 10.dp),
-                            letterSpacing = TextUnit(2f, TextUnitType.Sp)
-                        )
-
 
                         /**
                          * Horizontal list of all projects
