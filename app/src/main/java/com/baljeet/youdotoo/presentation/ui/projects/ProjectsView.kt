@@ -64,6 +64,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.DashboardTaskTabs
 import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDotooItem
@@ -108,10 +109,10 @@ fun ProjectsView(
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
     deleteTask: (task: DoTooItem) -> Unit,
-    updateTaskTitle : (task : DoTooItem, title : String) -> Unit
+    updateTaskTitle: (task: DoTooItem, title: String) -> Unit
 ) {
 
-    var taskToEdit : DoTooItem?  = null
+    var taskToEdit: DoTooItem? = null
 
     val projectsListState = rememberLazyListState()
     val listMoveScope = rememberCoroutineScope()
@@ -121,7 +122,13 @@ fun ProjectsView(
         mutableStateOf(false)
     }
 
-    val tasksTabs = EnumDashboardTasksTabs.values()
+    val tasksTabs = getTaskTabs(
+        allOtherTasks = allOtherTasks,
+        todayTasks = todayTasks,
+        tomorrowTasks = tomorrowTasks,
+        pendingTasks = pendingTasks,
+        yesterdayTasks = yesterdayTasks
+    )
 
     val startingTabIndex = 0
 
@@ -194,7 +201,6 @@ fun ProjectsView(
             }
         }
     ) { padding ->
-
 
 
         Box(
@@ -358,29 +364,7 @@ fun ProjectsView(
                      * Logic to check if need to show empty view or not
                      * **/
                     var showNothingHereView by remember { mutableStateOf(false) }
-                    showNothingHereView = when (pagerState.currentPage) {
-                        0 -> {
-                            todayTasks.isEmpty()
-                        }
-
-                        1 -> {
-                            tomorrowTasks.isEmpty()
-                        }
-
-                        2 -> {
-                            yesterdayTasks.isEmpty()
-                        }
-
-                        3 -> {
-                            pendingTasks.isEmpty()
-                        }
-
-                        4 -> {
-                            allOtherTasks.isEmpty()
-                        }
-
-                        else -> allOtherTasks.isEmpty()
-                    }
+                    showNothingHereView = tasksTabs[pagerState.currentPage].taskCount == 0
 
                     /**
                      * Empty view
@@ -428,12 +412,7 @@ fun ProjectsView(
                          * **/
                         TasksSchedulesTabRow(
                             pagerState = pagerState,
-                            tasksTabs = tasksTabs,
-                            todayTasksCount = todayTasks.size,
-                            tomorrowTasksCount = tomorrowTasks.size,
-                            yesterdayTasksCount = yesterdayTasks.size,
-                            pendingTasksCount = pendingTasks.size,
-                            allOtherTasksCount = allOtherTasks.size
+                            tasksTabs = tasksTabs
                         )
 
                         /**
@@ -461,7 +440,7 @@ fun ProjectsView(
                                 },
                                 label = "Tab switching animations"
                             ) { targetState ->
-                                when (targetState) {
+                                when (targetState.name) {
                                     EnumDashboardTasksTabs.Yesterday -> {
                                         AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
                                             DoTooItemsLazyColumn(
@@ -568,7 +547,7 @@ fun ProjectsView(
                                                     deleteTask(task)
                                                 },
                                                 navigateToQuickEditTask = {
-                                                   // navigateToQuickEditTask(it)
+                                                    // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -608,7 +587,7 @@ fun ProjectsView(
                                                     deleteTask(task)
                                                 },
                                                 navigateToQuickEditTask = {
-                                                   // navigateToQuickEditTask(it)
+                                                    // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -647,7 +626,7 @@ fun ProjectsView(
                                                     deleteTask(task)
                                                 },
                                                 navigateToQuickEditTask = {
-                                                   // navigateToQuickEditTask(it)
+                                                    // navigateToQuickEditTask(it)
                                                     taskToEdit = it
                                                     keyBoardController?.show()
                                                     showBlur = true
@@ -678,7 +657,7 @@ fun ProjectsView(
                     easing = EaseIn
                 ),
                 initialOffsetY = {
-                    it/2
+                    it / 2
                 }
             ),
             exit = slideOutVertically(
@@ -687,7 +666,7 @@ fun ProjectsView(
                     easing = EaseOut
                 ),
                 targetOffsetY = {
-                    it/2
+                    it / 2
                 }
             )
         ) {
@@ -702,23 +681,23 @@ fun ProjectsView(
                         }
                     ),
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 EditOnFlyBoxRound(
                     modifier = Modifier
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     onSubmit = { title ->
-                        updateTaskTitle(taskToEdit!!,title)
+                        updateTaskTitle(taskToEdit!!, title)
                         keyBoardController?.hide()
                         showBlur = false
                     },
-                    placeholder = taskToEdit?.title?:"",
+                    placeholder = taskToEdit?.title ?: "",
                     label = "Edit Task",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showBlur = false
                     },
-                    themeColor = Color(taskToEdit?.projectColor?: getRandomColor()),
+                    themeColor = Color(taskToEdit?.projectColor ?: getRandomColor()),
                     lines = 2
                 )
 
@@ -740,6 +719,76 @@ fun Project.getUserRole(userId: String): String {
         return "Viewer"
     }
     return "Blocked"
+}
+
+
+fun getTaskTabs(
+    pendingTasks: List<DoTooItem>,
+    yesterdayTasks: List<DoTooItem>,
+    todayTasks: List<DoTooItem>,
+    tomorrowTasks: List<DoTooItem>,
+    allOtherTasks: List<DoTooItem>
+): ArrayList<DashboardTaskTabs> {
+
+    val tasksTabs = arrayListOf<DashboardTaskTabs>()
+
+    EnumDashboardTasksTabs.values().forEachIndexed { index, enumDashboardTasksTabs ->
+        when (enumDashboardTasksTabs) {
+            EnumDashboardTasksTabs.Today -> {
+                tasksTabs.add(
+                    DashboardTaskTabs(
+                        name = EnumDashboardTasksTabs.Today,
+                        taskCount = todayTasks.size
+                    )
+                )
+            }
+
+            EnumDashboardTasksTabs.Tomorrow -> {
+                if (tomorrowTasks.isNotEmpty()) {
+                    tasksTabs.add(
+                        DashboardTaskTabs(
+                            name = EnumDashboardTasksTabs.Tomorrow,
+                            taskCount = tomorrowTasks.size
+                        )
+                    )
+                }
+            }
+
+            EnumDashboardTasksTabs.Yesterday -> {
+                if (yesterdayTasks.isNotEmpty()) {
+                    tasksTabs.add(
+                        DashboardTaskTabs(
+                            name = EnumDashboardTasksTabs.Yesterday,
+                            taskCount = yesterdayTasks.size
+                        )
+                    )
+                }
+            }
+
+            EnumDashboardTasksTabs.Pending -> {
+                if (pendingTasks.isNotEmpty()) {
+                    tasksTabs.add(
+                        DashboardTaskTabs(
+                            name = EnumDashboardTasksTabs.Pending,
+                            taskCount = pendingTasks.size
+                        )
+                    )
+                }
+            }
+
+            EnumDashboardTasksTabs.AllOther -> {
+                if (allOtherTasks.isNotEmpty()) {
+                    tasksTabs.add(
+                        DashboardTaskTabs(
+                            name = EnumDashboardTasksTabs.AllOther,
+                            taskCount = allOtherTasks.size
+                        )
+                    )
+                }
+            }
+        }
+    }
+    return tasksTabs
 }
 
 
@@ -785,6 +834,6 @@ fun DefaultProjectPreview() {
         navigateToCreateTask = {},
         navigateToCreateProject = {},
         deleteTask = {},
-        updateTaskTitle = {_,_->}
+        updateTaskTitle = { _, _ -> }
     )
 }

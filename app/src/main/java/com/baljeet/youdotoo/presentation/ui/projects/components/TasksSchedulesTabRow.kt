@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.DashboardTaskTabs
 import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
@@ -31,12 +32,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TasksSchedulesTabRow(
     pagerState: PagerState,
-    tasksTabs : Array<EnumDashboardTasksTabs> ,
-    todayTasksCount : Int,
-    tomorrowTasksCount : Int,
-    yesterdayTasksCount : Int,
-    pendingTasksCount : Int,
-    allOtherTasksCount : Int,
+    tasksTabs : ArrayList<DashboardTaskTabs>
 ) {
 
     val darkTheme = isSystemInDarkTheme()
@@ -84,18 +80,10 @@ fun TasksSchedulesTabRow(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        val tasksCount = when (tasksTabs.indexOf(tasksTab)) {
-                            0 -> todayTasksCount
-                            1 -> tomorrowTasksCount
-                            2 -> yesterdayTasksCount
-                            3 -> pendingTasksCount
-                            4 -> allOtherTasksCount
-                            else -> allOtherTasksCount
-                        }
 
-                        AnimatedVisibility(visible = tasksCount > 0) {
+                        AnimatedVisibility(visible = tasksTab.taskCount > 0) {
                             Text(
-                                text = tasksCount.toString(),
+                                text = tasksTab.taskCount.toString(),
                                 color = color.value,
                                 modifier = Modifier,
                                 textAlign = TextAlign.Center
@@ -103,7 +91,7 @@ fun TasksSchedulesTabRow(
                         }
                         Spacer(modifier = Modifier.width(5.dp))
                         Text(
-                            text = if (tasksTab == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name,
+                            text = if (tasksTab.name == EnumDashboardTasksTabs.AllOther) "All Other" else tasksTab.name.name,
                             color = color.value,
                             fontFamily = FontFamily(Nunito.Normal.font),
                             letterSpacing = TextUnit(1f, TextUnitType.Sp)

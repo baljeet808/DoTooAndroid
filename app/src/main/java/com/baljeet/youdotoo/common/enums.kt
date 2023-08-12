@@ -78,3 +78,8 @@ enum class EnumNotificationType{
     INVITATION, PROJECT_UPDATE, TASK_UPDATE, MESSAGE, GENERAL
 }
 
+data class DashboardTaskTabs (
+    var name: EnumDashboardTasksTabs = EnumDashboardTasksTabs.Today,
+    var taskCount: Int = 0,
+    var index: Int = 0
+    )
