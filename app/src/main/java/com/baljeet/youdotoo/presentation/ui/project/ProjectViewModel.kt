@@ -2,8 +2,6 @@ package com.baljeet.youdotoo.presentation.ui.project
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
@@ -20,6 +18,8 @@ import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -105,13 +105,14 @@ class ProjectViewModel @Inject constructor(
     }
 
     fun deleteProject(project: Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteProjectUseCase(project = project)
+        }
         if(SharedPref.isUserAPro){
             projectsReference
                 .document(projectId)
                 .delete()
         }
-        CoroutineScope(Dispatchers.IO).launch {
-            deleteProjectUseCase(project = project)
-        }
+
     }
 }
