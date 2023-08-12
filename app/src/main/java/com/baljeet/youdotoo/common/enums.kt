@@ -1,6 +1,10 @@
 package com.baljeet.youdotoo.common
 
-import kotlinx.datetime.*
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.plus
+import kotlinx.datetime.toKotlinLocalDate
 
 enum class Priorities(val toString: String) {
     LOW("Low"),
@@ -33,7 +37,6 @@ enum class DueDates(val toString : String) {
                 } else {
                     currentDate.plus(7 - (currentDayOfWeek - 5), DateTimeUnit.DAY)
                 }
-                currentDate
             }
             else -> {
                 currentDate
