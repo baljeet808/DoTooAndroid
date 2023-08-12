@@ -112,13 +112,6 @@ fun ChatView(
                     currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
                     openSheet()
                 },
-                openAttachments = {
-
-                },
-                openCustomEmoticons = {
-                    currentBottomSheet = ChatScreenBottomSheetTypes.CUSTOM_EMOTICONS
-                    openSheet()
-                },
                 participants = participants
             )
         }

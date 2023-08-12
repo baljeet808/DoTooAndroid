@@ -19,23 +19,12 @@ import java.util.UUID
 import kotlin.random.Random
 
 
-fun getSampleDoTooWithProfiles(): DoTooWithProfiles {
-    return DoTooWithProfiles(
-        project = getSampleProject(),
-        doToo = getSampleDotooItem(),
-        profiles = listOf(
-            getSampleProfile(),
-            getSampleProfile()
-        )
-    )
-}
-
 fun getSampleProfile(): User {
     return User(
         id = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
         name = "Baljeet Singh",
         email = "baljeet88sandhu@gmail.com",
-        joined = 82782L,
+        joined = getSampleDateInLong(),
         avatarUrl = getRandomAvatar()
     )
 }
@@ -113,10 +102,10 @@ fun getSampleMessage(): MessageEntity {
     return MessageEntity(
         id = getRandomId(),
         message = "Hey there, This is a new message about your doToo. What do you think.",
-        senderId = "iz8dz6PufNPGbw9DzWUiZyoTHn62",
+        senderId = "NuZXwLl3a8O3mXRcXFsJzHQgB172",
         createdAt = getSampleDateInLong(),
         isUpdate = false,
-        attachmentUrl = null,
+        attachmentUrl = getRandomAvatar(),
         interactions = getSampleInteractions().joinToString(" | "),
         projectId = getRandomId()
     )

@@ -1,12 +1,21 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,9 +28,10 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
-import androidx.compose.material.icons.outlined.EmojiEmotions
-import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.PersonAdd
+import androidx.compose.material.icons.outlined.PhotoLibrary
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +39,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -37,10 +50,14 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 /**
@@ -51,10 +68,15 @@ fun MessageBoxView(
     onClickSend: (String) -> Unit,
     openCollaboratorsScreen : () -> Unit,
     openPersonTagger : () -> Unit,
-    openAttachments : () -> Unit,
-    openCustomEmojis : () -> Unit,
-    showEditText : Boolean
+    pickAttachments : () -> Unit,
+    openCamera : () -> Unit,
+    showEditText : Boolean,
+    attachments : ArrayList<Uri>,
+    removeAttachment : (uri : Uri) -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
+
     var message by remember {
         mutableStateOf("")
     }
@@ -69,6 +91,58 @@ fun MessageBoxView(
                 }
             )
     ) {
+
+
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(2.dp)
+        ){
+
+            items(attachments){attachment ->
+
+                Box(
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(100.dp)
+                        .padding(5.dp)
+                        .background(
+                            color = getDarkThemeColor(),
+                            shape = RoundedCornerShape(10.dp)
+                        ),
+                    contentAlignment = Alignment.TopEnd
+                ) {
+
+                    AsyncImage(
+                        model = attachment,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(5.dp)
+                            .clip(
+                                shape = RoundedCornerShape(10.dp)
+                            )
+                    )
+
+                    Icon(
+                        Icons.Default.Cancel,
+                        contentDescription ="Remove attachment button",
+                        tint = getNightLightColor(),
+                        modifier = Modifier
+                            .clickable(
+                                onClick = {
+                                    removeAttachment(attachment)
+                                }
+                            )
+                    )
+                }
+
+            }
+
+        }
+
+
 
         if(showEditText) {
             TextField(
@@ -112,6 +186,9 @@ fun MessageBoxView(
         }
 
 
+        /**
+         * Bottom row of all buttons
+         * **/
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,10 +198,10 @@ fun MessageBoxView(
         ) {
 
             IconButton(
-                onClick = openAttachments
+                onClick = pickAttachments
             ) {
                 Icon(
-                    Icons.Outlined.Image,
+                    Icons.Outlined.PhotoLibrary,
                     contentDescription = "Attachments Button",
                     tint = Color.Gray
                 )
@@ -151,11 +228,11 @@ fun MessageBoxView(
             }
 
             IconButton(
-                onClick = openCustomEmojis
+                onClick = openCamera
             ) {
                 Icon(
-                    Icons.Outlined.EmojiEmotions,
-                    contentDescription = "Mark done/not done button",
+                    Icons.Outlined.CameraAlt,
+                    contentDescription = "Open Camera button",
                     tint = Color.Gray
                 )
             }
@@ -189,15 +266,17 @@ fun MessageBoxView(
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewMessageBoxView() {
     MessageBoxView(
         onClickSend = {},
         openCollaboratorsScreen = {},
-        openAttachments = {},
+        pickAttachments = {},
         openPersonTagger = {},
-        openCustomEmojis = {},
-        showEditText = true
+        openCamera = {},
+        showEditText = true,
+        attachments = arrayListOf(),
+        removeAttachment = {}
     )
 }

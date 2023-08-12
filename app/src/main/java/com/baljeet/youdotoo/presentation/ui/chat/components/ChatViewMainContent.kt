@@ -1,5 +1,9 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +14,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,14 +36,30 @@ fun ChatViewMainContent(
     messages: List<MessageEntity>,
     sendMessage: (messageString: String) -> Unit,
     openEmoticons: (message: MessageEntity) -> Unit,
-    openCustomEmoticons: () -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
-    openAttachments: () -> Unit,
     showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
     modifier: Modifier
 ) {
     val lazyListState = rememberLazyListState()
+
+    var selectedImageUris by remember {
+        mutableStateOf<List<Uri>>(emptyList())
+    }
+
+    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        onResult = { uris ->
+            val previousImages  = selectedImageUris.toCollection(ArrayList())
+            uris.forEach {
+                if(previousImages.none { uri -> uri == it }){
+                    previousImages.add(it)
+                }
+            }
+            selectedImageUris = previousImages
+        }
+    )
+
 
     Column(
         modifier = modifier
@@ -97,10 +121,26 @@ fun ChatViewMainContent(
                 sendMessage(message)
             },
             showEditText =  lazyListState.isScrolled.not(),
-            openAttachments = openAttachments,
+            pickAttachments = {
+                multiplePhotoPickerLauncher.launch(
+                    PickVisualMediaRequest(
+                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                    )
+                )
+            },
             openCollaboratorsScreen = openCollaboratorsScreen,
             openPersonTagger = openPersonTagger,
-            openCustomEmojis = openCustomEmoticons
+            openCamera = {
+
+            },
+            attachments  = selectedImageUris.toCollection(ArrayList()),
+            removeAttachment = { attachment ->
+                val selectedImages = selectedImageUris.toCollection(ArrayList())
+                if(selectedImages.any { uri -> uri == attachment }){
+                    selectedImages.remove(attachment)
+                }
+                selectedImageUris = selectedImages
+            }
         )
 
     }
@@ -114,9 +154,7 @@ fun PreviewChatView() {
         messages = listOf(),
         sendMessage = {},
         openEmoticons = {},
-        openCustomEmoticons = {},
         openCollaboratorsScreen = {},
-        openAttachments = {},
         showAttachments = {},
         openPersonTagger = {},
         participants = listOf(
