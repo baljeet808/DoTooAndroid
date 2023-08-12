@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.SharedPref
@@ -28,7 +31,9 @@ import com.baljeet.youdotoo.common.isScrolled
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
-import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun ChatViewMainContent(
@@ -47,13 +52,34 @@ fun ChatViewMainContent(
         mutableStateOf<List<Uri>>(emptyList())
     }
 
+    val scope = rememberCoroutineScope()
+
+    var showToast by remember {
+        mutableStateOf(false)
+    }
+
+
+    if(showToast){
+        Toast.makeText(LocalContext.current,"You can only send 4 photos at a time.",Toast.LENGTH_SHORT).show()
+    }
+
     val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(),
+        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = (4)),
         onResult = { uris ->
+            if(uris.size + selectedImageUris.size  > 4){
+                scope.launch {
+                    showToast = true
+                    delay(1000)
+                    showToast = false
+                }
+            }
+
             val previousImages  = selectedImageUris.toCollection(ArrayList())
             uris.forEach {
                 if(previousImages.none { uri -> uri == it }){
-                    previousImages.add(it)
+                    if(previousImages.size < 4) {
+                        previousImages.add(it)
+                    }
                 }
             }
             selectedImageUris = previousImages
@@ -64,7 +90,7 @@ fun ChatViewMainContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = getDarkThemeColor()),
+            .background(color = getLightThemeColor()),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
 
@@ -122,11 +148,19 @@ fun ChatViewMainContent(
             },
             showEditText =  lazyListState.isScrolled.not(),
             pickAttachments = {
-                multiplePhotoPickerLauncher.launch(
-                    PickVisualMediaRequest(
-                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                if(selectedImageUris.size <4) {
+                    multiplePhotoPickerLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
                     )
-                )
+                }else{
+                    scope.launch{
+                        showToast = true
+                        delay(1000)
+                        showToast = false
+                    }
+                }
             },
             openCollaboratorsScreen = openCollaboratorsScreen,
             openPersonTagger = openPersonTagger,

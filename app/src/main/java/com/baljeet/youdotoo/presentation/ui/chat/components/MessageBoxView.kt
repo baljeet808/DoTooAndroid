@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,11 +52,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.DoTooLightBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
-import com.baljeet.youdotoo.presentation.ui.theme.DotooDarkerGray
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 /**
@@ -84,11 +80,7 @@ fun MessageBoxView(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = if (isSystemInDarkTheme()) {
-                    DotooDarkerGray
-                } else {
-                    DoTooLightBlue
-                }
+                color = getDarkThemeColor()
             )
     ) {
 
@@ -106,8 +98,7 @@ fun MessageBoxView(
                         .width(100.dp)
                         .height(100.dp)
                         .padding(5.dp)
-                        .background(
-                            color = getDarkThemeColor(),
+                        .clip(
                             shape = RoundedCornerShape(10.dp)
                         ),
                     contentAlignment = Alignment.TopEnd
@@ -128,8 +119,11 @@ fun MessageBoxView(
                     Icon(
                         Icons.Default.Cancel,
                         contentDescription ="Remove attachment button",
-                        tint = getNightLightColor(),
+                        tint = getLightThemeColor(),
                         modifier = Modifier
+                            .clip(
+                                RoundedCornerShape(30.dp)
+                            )
                             .clickable(
                                 onClick = {
                                     removeAttachment(attachment)
@@ -245,7 +239,7 @@ fun MessageBoxView(
                 modifier = Modifier,
                 shape = RoundedCornerShape(30.dp),
                 colors = ButtonDefaults.buttonColors(
-                    backgroundColor = DotooBlue,
+                    backgroundColor = getLightThemeColor(),
                     disabledBackgroundColor = Color.Gray
                 ),
                 enabled = message.isNotBlank()
@@ -255,7 +249,7 @@ fun MessageBoxView(
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = androidx.compose.material3.MaterialTheme.colorScheme.background
+                    color = getTextColor()
                 )
             }
         }
