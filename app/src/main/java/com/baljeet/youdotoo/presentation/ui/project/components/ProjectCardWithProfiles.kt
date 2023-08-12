@@ -275,7 +275,8 @@ fun ProjectCardWithProfiles(
                         } else {
                             "Show more"
                         },
-                        fontFamily = FontFamily(Nunito.Normal.font)
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        color = Color.White
                     )
                     Icon(
                         if (showAll) {
@@ -283,7 +284,8 @@ fun ProjectCardWithProfiles(
                         } else {
                             Icons.Default.ExpandMore
                         },
-                        contentDescription = "show less or more button"
+                        contentDescription = "show less or more button",
+                        tint = Color.White
                     )
                 }
 

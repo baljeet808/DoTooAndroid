@@ -73,7 +73,7 @@ fun ProjectView(
                     )
                 },
                 modifier = Modifier,
-                backgroundColor = NightDotooBrightBlue
+                backgroundColor = project?.color?.let{Color(it)}?: NightDotooBrightBlue
             ) {
                 Icon(
                     Icons.Outlined.Add,
