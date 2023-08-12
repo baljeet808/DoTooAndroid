@@ -31,7 +31,6 @@ import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -79,6 +78,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
@@ -124,8 +124,6 @@ fun ProjectsView(
         pendingTasks = pendingTasks,
         yesterdayTasks = yesterdayTasks
     )
-
-
 
 
     val startingTabIndex = 0
@@ -295,11 +293,10 @@ fun ProjectsView(
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 10.dp)
-                            ,
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp),
                             fontFamily = FontFamily(Nunito.ExtraBold.font),
                             fontSize = 38.sp,
-                            color = MaterialTheme.colorScheme.secondary
+                            color = getTextColor()
                         )
 
                         /**
@@ -330,31 +327,30 @@ fun ProjectsView(
                              * Create Project Button
                              * **/
 
-                                Row(
-                                    modifier = Modifier
-                                        .height(40.dp)
-                                        .background(
-                                            color = getDarkThemeColor(),
-                                            shape = RoundedCornerShape(60.dp)
-                                        )
-                                        .padding(start = 8.dp, end = 8.dp)
-                                        .clickable(onClick = navigateToCreateProject)
-                                    ,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        Icons.Outlined.Add,
-                                        contentDescription = "Floating button to add a project",
-                                        tint = Color.White
+                            Row(
+                                modifier = Modifier
+                                    .height(40.dp)
+                                    .background(
+                                        color = getDarkThemeColor(),
+                                        shape = RoundedCornerShape(60.dp)
                                     )
-                                    Text(
-                                        text = "Add Project",
-                                        fontFamily = FontFamily(Nunito.Normal.font),
-                                        color = Color.White,
-                                        fontSize = 13.sp
-                                    )
-                                }
+                                    .padding(start = 8.dp, end = 8.dp)
+                                    .clickable(onClick = navigateToCreateProject),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    Icons.Outlined.Add,
+                                    contentDescription = "Floating button to add a project",
+                                    tint = Color.White
+                                )
+                                Text(
+                                    text = "Add Project",
+                                    fontFamily = FontFamily(Nunito.Normal.font),
+                                    color = Color.White,
+                                    fontSize = 13.sp
+                                )
+                            }
 
                         }
 
@@ -403,27 +399,69 @@ fun ProjectsView(
                         horizontalAlignment = Alignment.End
                     ) {
 
-                        TextButton(
-                            onClick = { showTopInfo = showTopInfo.not() },
-                            modifier = Modifier.padding(end = 10.dp)
-                        ) {
-                            Text(
-                                text = if (showTopInfo) {
-                                    "Show less"
-                                } else {
-                                    "Show more"
-                                },
-                                fontFamily = FontFamily(Nunito.Normal.font)
-                            )
-                            Icon(
-                                if (showTopInfo) {
-                                    Icons.Default.ExpandLess
-                                } else {
-                                    Icons.Default.ExpandMore
-                                },
-                                contentDescription = "show less or more button"
-                            )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 10.dp, end = 10.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ){
+
+                            TextButton(
+                                onClick = { showTopInfo = showTopInfo.not() },
+                                modifier = Modifier.padding(end = 10.dp)
+                            ) {
+                                Text(
+                                    text = if (showTopInfo) {
+                                        "Show less"
+                                    } else {
+                                        "Show more"
+                                    },
+                                    fontFamily = FontFamily(Nunito.Normal.font),
+                                    color = getTextColor()
+                                )
+                                Icon(
+                                    if (showTopInfo) {
+                                        Icons.Default.ExpandLess
+                                    } else {
+                                        Icons.Default.ExpandMore
+                                    },
+                                    contentDescription = "show less or more button",
+                                    tint = getTextColor()
+                                )
+                            }
+
+                            AnimatedVisibility(visible = showTopInfo.not()) {
+
+                                /**
+                                 * Create Project Button
+                                 * **/
+                                Row(
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                        .background(
+                                            color = getDarkThemeColor(),
+                                            shape = RoundedCornerShape(60.dp)
+                                        )
+                                        .padding(start = 8.dp, end = 8.dp)
+                                        .clickable(onClick = navigateToCreateProject),
+                                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Outlined.Add,
+                                        contentDescription = "Floating button to add a project",
+                                        tint = Color.White
+                                    )
+                                    Text(
+                                        text = "Add Project",
+                                        fontFamily = FontFamily(Nunito.Normal.font),
+                                        color = Color.White,
+                                        fontSize = 13.sp
+                                    )
+                                }
+                            }
                         }
+
 
                         /**
                          *Tab row view
@@ -467,7 +505,7 @@ fun ProjectsView(
                                                     end = 10.dp
                                                 ),
                                             onItemDelete = { task ->
-                                                if(yesterdayTasks.size == 1 ){
+                                                if (yesterdayTasks.size == 1) {
                                                     focusScope.launch {
                                                         pagerState.scrollToPage(page = 0)
                                                     }
@@ -550,7 +588,7 @@ fun ProjectsView(
                                                     end = 10.dp
                                                 ),
                                             onItemDelete = { task ->
-                                                if(tomorrowTasks.size == 1 ){
+                                                if (tomorrowTasks.size == 1) {
                                                     focusScope.launch {
                                                         pagerState.scrollToPage(page = 0)
                                                     }
@@ -594,7 +632,7 @@ fun ProjectsView(
                                                     end = 10.dp
                                                 ),
                                             onItemDelete = { task ->
-                                                if(pendingTasks.size == 1 ){
+                                                if (pendingTasks.size == 1) {
                                                     focusScope.launch {
                                                         pagerState.scrollToPage(page = 0)
                                                     }
@@ -638,7 +676,7 @@ fun ProjectsView(
                                                     end = 10.dp
                                                 ),
                                             onItemDelete = { task ->
-                                                if(allOtherTasks.size == 1 ){
+                                                if (allOtherTasks.size == 1) {
                                                     focusScope.launch {
                                                         pagerState.scrollToPage(page = 0)
                                                     }
