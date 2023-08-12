@@ -43,6 +43,9 @@ fun NavGraphBuilder.addDashboardViewDestination(
             logout = logout,
             onClickSettings = {
                 navController.navigate(DestinationThemeChooserRoute)
+            },
+            openProfile = {
+                navController.navigate("profile_quick_view/".plus(SharedPref.userId))
             }
         )
     }

@@ -15,12 +15,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getRandomAvatar
+import com.baljeet.youdotoo.common.getSampleMessage
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 
 @Composable
 fun AttachmentViewer(
-    attachmentUrl : String?,
+    message : MessageEntity?,
     goBack : () -> Unit,
     downloadImage : () -> Unit
 ) {
@@ -38,14 +39,16 @@ fun AttachmentViewer(
             )
     ) {
 
-        AsyncImage(
-            model = Uri.parse(attachmentUrl),
-            contentDescription = "Attachment preview",
-            modifier = Modifier
-                .fillMaxSize()
-                .clip(shape = RoundedCornerShape(10.dp)),
-            contentScale = ContentScale.Crop
-        )
+        message?.attachmentUrl?.let {
+            AsyncImage(
+                model = Uri.parse(it),
+                contentDescription = "Attachment preview",
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(shape = RoundedCornerShape(10.dp)),
+                contentScale = ContentScale.Crop
+            )
+        }
     }
 }
 
@@ -54,7 +57,7 @@ fun AttachmentViewer(
 @Composable
 fun PreviewAttachmentViewer(){
     AttachmentViewer(
-        attachmentUrl = getRandomAvatar(),
+        message = getSampleMessage(),
         goBack = {},
         downloadImage = {}
     )

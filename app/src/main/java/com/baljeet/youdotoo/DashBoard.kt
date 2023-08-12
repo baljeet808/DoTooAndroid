@@ -11,6 +11,7 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
+import com.baljeet.youdotoo.presentation.ui.profile_quick_view.addProfileQuickViewDestination
 import com.baljeet.youdotoo.presentation.ui.projectinvitation.addProjectInvitationDestination
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.baljeet.youdotoo.presentation.ui.themechooser.addThemeChooserViewDestination
@@ -63,6 +64,7 @@ class DashBoard : ComponentActivity() {
                     addNotificationViewDestination(navController)
                     addProjectInvitationDestination(navController)
                     addThemeChooserViewDestination(navController)
+                    addProfileQuickViewDestination(navController)
                 }
             }
         }

@@ -24,6 +24,10 @@ class UserRepositoryImpl @Inject constructor(
         return userDao.getUserById(userId)?.toUser()
     }
 
+    override fun getUserByIdAsAFlow(userId: String): Flow<UserEntity?> {
+        return userDao.getUserByIdAsAFlow(userId)
+    }
+
     override suspend fun upsertUsers(users: List<User>) {
         userDao.upsertAll(users = users.map { it.toUserEntity() })
     }

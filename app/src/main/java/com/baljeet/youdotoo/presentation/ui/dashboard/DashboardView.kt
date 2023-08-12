@@ -48,6 +48,7 @@ import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
 import com.baljeet.youdotoo.presentation.ui.edittask.addEditTaskViewDestination
 import com.baljeet.youdotoo.presentation.ui.invitation.addInvitationViewDestination
+import com.baljeet.youdotoo.presentation.ui.profile_quick_view.addProfileQuickViewDestination
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
@@ -56,6 +57,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -67,7 +69,8 @@ fun DashboardView(
     userData : UserData,
     logout : () -> Unit,
     onClickNotifications: () -> Unit,
-    onClickSettings : () -> Unit
+    onClickSettings : () -> Unit,
+    openProfile : () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -167,7 +170,15 @@ fun DashboardView(
                         logout()
                     },
                     modifier = Modifier.width(250.dp),
-                    allTasks = allTasks
+                    allTasks = allTasks,
+                    openProfile = {
+                        scope.launch {
+                            scaffoldState.drawerState.close()
+                            maximizeCurrentScreen = true
+                            delay(500)
+                            openProfile()
+                        }
+                    }
                 )
                 Box(
                     modifier = Modifier
@@ -251,6 +262,7 @@ fun DashboardView(
                     addInvitationViewDestination(navController)
                     addEditTaskViewDestination(navController)
                     addAttachmentViewerDestination(navController)
+                    addProfileQuickViewDestination(navController)
                 }
             }
         }
@@ -274,6 +286,7 @@ fun PreviewDashboardView() {
         ),
         onClickNotifications = {},
         logout = {},
-        onClickSettings = {}
+        onClickSettings = {},
+        openProfile = {}
     )
 }

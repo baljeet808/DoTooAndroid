@@ -21,6 +21,8 @@ interface MessageDao {
 
     @Query("SELECT * FROM messages where id = :messageId ")
     suspend fun getMessageById(messageId: String) : MessageEntity?
+    @Query("SELECT * FROM messages where id = :messageId ")
+    fun getMessageByIdAsFlow(messageId: String) : Flow<MessageEntity?>
 
     @Query("SELECT * FROM messages WHERE projectId = :projectId")
     fun getAllMessagesOfAProjectAsFlow(projectId: String) : Flow<List<MessageEntity>>

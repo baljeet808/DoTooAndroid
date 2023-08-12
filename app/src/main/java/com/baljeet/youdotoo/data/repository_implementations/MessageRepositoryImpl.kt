@@ -28,6 +28,10 @@ class MessageRepositoryImpl @Inject constructor(
         return messageDao.getMessageById(messageId = messageId)
     }
 
+    override fun getMessageByIdAsFlow(messageId: String): Flow<MessageEntity?> {
+        return messageDao.getMessageByIdAsFlow(messageId)
+    }
+
     override fun getAllMessagesOfAProjectAsFlow(projectId: String): Flow<List<MessageEntity>> {
         return messageDao.getAllMessagesOfAProjectAsFlow(projectId)
     }

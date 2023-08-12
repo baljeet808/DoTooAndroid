@@ -83,7 +83,8 @@ fun NavigationDrawer(
     closeDrawer : () -> Unit,
     logout: () -> Unit,
     modifier: Modifier,
-    allTasks : List<DoTooItemEntity>
+    allTasks : List<DoTooItemEntity>,
+    openProfile : () -> Unit
 ) {
 
 
@@ -199,6 +200,9 @@ fun NavigationDrawer(
                     modifier = Modifier
                         .width(100.dp)
                         .height(100.dp)
+                        .clickable(
+                            onClick = openProfile
+                        )
                         .padding(0.dp), contentAlignment = Alignment.Center
                 ) {
                     AsyncImage(
@@ -420,6 +424,7 @@ fun PreviewNavigationDrawer() {
         modifier = Modifier,
         allTasks = listOf(
             getSampleDotooItem().toDoTooItemEntity("0")
-        )
+        ),
+        openProfile = {}
     )
 }

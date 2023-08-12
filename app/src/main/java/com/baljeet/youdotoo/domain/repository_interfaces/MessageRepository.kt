@@ -9,6 +9,7 @@ interface MessageRepository {
      fun getAllMessagesAsFlow() : Flow<List<MessageEntity>>
      suspend fun getAllMessages() : List<MessageEntity>
      suspend fun getMessageById(messageId: String) : MessageEntity?
+     fun getMessageByIdAsFlow(messageId: String) : Flow<MessageEntity?>
      fun getAllMessagesOfAProjectAsFlow(projectId: String) : Flow<List<MessageEntity>>
      suspend fun getAllMessagesOfAProject(projectId: String) : List<MessageEntity>
      suspend fun delete(message: MessageEntity)

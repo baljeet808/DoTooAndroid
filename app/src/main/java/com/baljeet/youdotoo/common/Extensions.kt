@@ -57,14 +57,14 @@ fun LocalDateTime.toNiceDateTimeFormat(onlyShowTime: Boolean = false): String {
         val currentDate = LocalDate.now()
 
         if (onlyShowTime.not()) {
-            if (givenDateTIme.isEqual(currentDate)) {
-                dateString = dateString.plus("Today ")
+            dateString = if (givenDateTIme.isEqual(currentDate)) {
+                dateString.plus("Today ")
             } else if (givenDateTIme.isEqual(currentDate.minusDays(1))) {
-                dateString = dateString.plus("Yesterday ")
+                dateString.plus("Yesterday ")
             } else if (givenDateTIme.isEqual(currentDate.plusDays(1))) {
-                dateString = dateString.plus("Tomorrow ")
+                dateString.plus("Tomorrow ")
             } else {
-                dateString = dateString.plus(dayOfMonth.toString()).plus(" ")
+                dateString.plus(dayOfMonth.toString()).plus(" ")
                     .plus(month.name.plus(", "))
                     .plus(year.toString().plus("   "))
             }
