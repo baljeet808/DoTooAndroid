@@ -3,7 +3,6 @@ package com.baljeet.youdotoo.presentation.ui.themechooser
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,10 +20,15 @@ import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +37,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.common.getSampleDotooItem
@@ -44,14 +49,14 @@ import com.baljeet.youdotoo.presentation.ui.projects.components.DummyProjectCard
 import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalettes
 
 
@@ -59,9 +64,14 @@ import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalette
 fun ThemeChooserView(
     onClose: () -> Unit,
     palettes: List<ColorPaletteEntity>,
-    appliedPalette: ColorPaletteEntity?,
     onSelectColorPalette: (newPalette : ColorPaletteEntity) -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
+
+    var appliedPalette by remember {
+        mutableStateOf(palettes.firstOrNull { palette -> palette.paletteName == SharedPref.selectedColorPalette })
+    }
 
 
     Column(
@@ -92,11 +102,7 @@ fun ThemeChooserView(
                     .height(50.dp)
                     .border(
                         width = 1.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooFooterTextColor
-                        } else {
-                            LightDotooFooterTextColor
-                        },
+                        color = getDarkThemeColor(),
                         shape = RoundedCornerShape(40.dp)
                     )
 
@@ -104,11 +110,7 @@ fun ThemeChooserView(
                 Icon(
                     Icons.Default.ArrowBackIos,
                     contentDescription = "Button to close current screen.",
-                    tint = if (isSystemInDarkTheme()) {
-                        Color.White
-                    } else {
-                        Color.Black
-                    }
+                    tint = getTextColor()
                 )
             }
 
@@ -122,11 +124,7 @@ fun ThemeChooserView(
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isSystemInDarkTheme()) {
-                    Color.White
-                } else {
-                    Color.Black
-                }
+                color = getTextColor()
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
@@ -142,7 +140,7 @@ fun ThemeChooserView(
 
             Text(
                 text = "Preview".uppercase(),
-                color = LightAppBarIconsColor,
+                color = getTextColor(),
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 14.sp,
                 modifier = Modifier
@@ -151,6 +149,8 @@ fun ThemeChooserView(
                 textAlign = TextAlign.Center,
                 letterSpacing = TextUnit(2f, TextUnitType.Sp)
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(
                 modifier = Modifier
@@ -331,7 +331,7 @@ fun ThemeChooserView(
             ) {
                 Text(
                     text = "Dark",
-                    color = LightAppBarIconsColor,
+                    color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 13.sp,
                     modifier = Modifier
@@ -342,7 +342,7 @@ fun ThemeChooserView(
                 )
                 Text(
                     text = "Light",
-                    color = LightAppBarIconsColor,
+                    color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 13.sp,
                     modifier = Modifier
@@ -353,10 +353,12 @@ fun ThemeChooserView(
                 )
             }
 
+            Spacer(modifier = Modifier.height(20.dp))
+
         }
 
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
         Text(
             text = "Select color".uppercase(),
@@ -372,8 +374,7 @@ fun ThemeChooserView(
 
         LazyRow(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
 
@@ -382,6 +383,7 @@ fun ThemeChooserView(
                     modifier = Modifier,
                     palette = palette,
                     onSelectPalette = {
+                        appliedPalette = palette
                         onSelectColorPalette(
                             palette
                         )
@@ -392,6 +394,8 @@ fun ThemeChooserView(
         }
 
 
+        Spacer(modifier = Modifier.weight(1f))
+
     }
 }
 
@@ -401,7 +405,6 @@ fun ThemeChooserView(
 fun PreviewThemeChooserView() {
     ThemeChooserView(
         onClose = {},
-        appliedPalette = getSampleColorPalette(),
         palettes = listOf(
             getSampleColorPalette(),
             getSampleColorPalette(),
