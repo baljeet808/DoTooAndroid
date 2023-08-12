@@ -65,7 +65,6 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -110,7 +109,7 @@ fun CreateProjectView(
             animation = tween(durationMillis = 100),
             repeatMode = RepeatMode.Reverse
         ),
-        typeConverter = Float.VectorConverter
+        typeConverter = Float.VectorConverter, label = ""
     )
 
     var showTitleErrorAnimation by remember{
@@ -592,7 +591,7 @@ fun CreateProjectView(
                 modifier = Modifier
                     .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                     .background(
-                        color = NightDotooBrightBlue,
+                        color = Color(selectedColor.longValue),
                         shape = RoundedCornerShape(30.dp)
                     )
                     .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
@@ -614,11 +613,7 @@ fun CreateProjectView(
             ) {
                 Text(
                     text = "New Project",
-                    color = if (isSystemInDarkTheme()) {
-                        NightDotooBrightBlue
-                    } else {
-                        Color.White
-                    },
+                    color = Color.White,
                     fontSize = 16.sp,
                     fontFamily = FontFamily(Nunito.SemiBold.font),
                     textAlign = TextAlign.Center
@@ -626,12 +621,8 @@ fun CreateProjectView(
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     Icons.Default.ExpandLess,
-                    contentDescription = "Create task button",
-                    tint = if (isSystemInDarkTheme()) {
-                        NightDotooBrightBlue
-                    } else {
-                        Color.White
-                    }
+                    contentDescription = "Create project button",
+                    tint = Color.White
                 )
             }
         }

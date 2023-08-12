@@ -640,7 +640,8 @@ fun CreateTaskView(
                     modifier = Modifier
                         .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                         .background(
-                            color = NightDotooBrightBlue,
+                            color = selectedProject?.color?.let { Color(it) }
+                                ?: NightDotooBrightBlue,
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
@@ -665,11 +666,7 @@ fun CreateTaskView(
                 ) {
                     Text(
                         text = "New Task",
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooBrightBlue
-                        } else {
-                            Color.White
-                        },
+                        color = Color.White,
                         fontSize = 16.sp,
                         fontFamily = FontFamily(Nunito.SemiBold.font),
                         textAlign = TextAlign.Center
@@ -678,11 +675,7 @@ fun CreateTaskView(
                     Icon(
                         Icons.Default.ExpandLess,
                         contentDescription = "Create task button",
-                        tint = if (isSystemInDarkTheme()) {
-                            NightDotooBrightBlue
-                        } else {
-                            Color.White
-                        }
+                        tint = Color.White
                     )
                 }
             }
