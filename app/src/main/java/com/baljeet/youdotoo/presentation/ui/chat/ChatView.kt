@@ -50,7 +50,7 @@ fun ChatView(
     participants: List<UserEntity>,
     messages: List<MessageEntity>,
     sendMessage: (message: String, attachments:  List<Uri>) -> Unit,
-    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
+    showAttachment: (messages: MessageEntity) -> Unit,
     interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit
 ) {
 
@@ -209,7 +209,7 @@ fun ChatView(
                         currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
                         openSheet()
                     },
-                    showAttachments = showAttachments,
+                    showAttachment = showAttachment,
                     openCollaboratorsScreen = {
                         currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
                         openSheet()

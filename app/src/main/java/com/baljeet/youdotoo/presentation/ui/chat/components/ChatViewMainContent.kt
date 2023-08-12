@@ -41,7 +41,7 @@ fun ChatViewMainContent(
     openEmoticons: (message: MessageEntity) -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
-    showAttachments: (messages: ArrayList<MessageEntity>) -> Unit,
+    showAttachment: (messages: MessageEntity) -> Unit,
     modifier: Modifier
 ) {
     val lazyListState = rememberLazyListState()
@@ -122,7 +122,10 @@ fun ChatViewMainContent(
                             openEmoticons(message)
                         },
                         users= participants ,
-                        showSenderInfo  = showUserInfo
+                        showSenderInfo  = showUserInfo,
+                        showAttachment = {
+                            showAttachment(message)
+                        }
                     )
                 }else{
                     ThereMessageBubbleView(
@@ -186,7 +189,7 @@ fun PreviewChatView() {
         sendMessage = {_,_ ->},
         openEmoticons = {},
         openCollaboratorsScreen = {},
-        showAttachments = {},
+        showAttachment = {},
         openPersonTagger = {},
         participants = listOf(
             getSampleProfile(),

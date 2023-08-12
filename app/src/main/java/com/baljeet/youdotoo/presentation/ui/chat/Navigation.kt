@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -19,7 +20,7 @@ import com.baljeet.youdotoo.data.mappers.toProject
 
 const val DestinationMessageRoute = "messages/{projectId}"
 
-fun NavGraphBuilder.addChatViewDestination(){
+fun NavGraphBuilder.addChatViewDestination(navController: NavController){
     composable(
         route = DestinationMessageRoute,
         arguments = listOf(
@@ -69,7 +70,9 @@ fun NavGraphBuilder.addChatViewDestination(){
                     attachments = attachmentsDTOs
                 )
             },
-            showAttachments = {},
+            showAttachment = {
+                navController.navigate(  "attachment_viewer/".plus(it.id))
+            },
             interactOnMessage = { message, emoticon ->
                 viewModel.interactWithMessage(
                     message= message,

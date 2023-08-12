@@ -42,7 +42,8 @@ fun SenderMessageBubbleView(
     message: MessageEntity,
     users : List<UserEntity>,
     onLongPress: () -> Unit,
-    showSenderInfo: Boolean = true
+    showSenderInfo: Boolean = true,
+    showAttachment: () -> Unit
 ) {
 
 
@@ -120,6 +121,9 @@ fun SenderMessageBubbleView(
                         modifier = Modifier
                             .height(180.dp)
                             .clip(shape = RoundedCornerShape(20.dp))
+                            .clickable(
+                                onClick = showAttachment
+                            )
                         ,
                         contentScale = ContentScale.Crop,
                     )
@@ -180,7 +184,8 @@ fun PreviewSenderMessageBubble() {
             getSampleProfile(),
             getSampleProfile()
         ).map { it.toUserEntity() },
-        onLongPress = { }
+        onLongPress = { },
+        showAttachment = {}
     )
 }
 
