@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
 
     val viewModel : MainViewModel by viewModels()
 
+
     private val googleAuthClient by lazy {
         GoogleAuthClient(
             context = applicationContext,
