@@ -49,9 +49,6 @@ fun NavGraphBuilder.addNotificationViewDestination(
             onClearAll = {
                 viewModel.deleteAllNotifications()
             },
-            onClickSettings = {
-
-            },
             onClose = {
                 navController.popBackStack()
             }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,7 +27,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.rememberDismissState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -43,6 +44,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleInvitationNotification
 import com.baljeet.youdotoo.common.getSampleMessageNotification
 import com.baljeet.youdotoo.common.isScrolled
@@ -53,6 +55,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,9 +67,10 @@ fun NotificationsView(
     onNotificationClick : (NotificationEntity) -> Unit,
     onDeleteNotification : (NotificationEntity) -> Unit,
     onClearAll : () -> Unit,
-    onClickSettings:() -> Unit,
     onClose: () -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     val lazyListState  = rememberLazyListState()
 
@@ -124,51 +128,21 @@ fun NotificationsView(
                 )
             }
 
+            Spacer(modifier = Modifier.width(20.dp))
+
             /**
              * Title
              * **/
             Text(
                 text = "Notifications",
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center,
-                fontSize = 18.sp,
+                textAlign = TextAlign.Start,
+                fontSize = 30.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = if (isSystemInDarkTheme()) {
-                    Color.White
-                } else {
-                    Color.Black
-                }
+                color = getTextColor()
             )
 
-            /**
-             * Menu button to open Notifications
-             * **/
-            androidx.compose.material.IconButton(
-                onClick = onClickSettings,
-                modifier = Modifier
-                    .width(50.dp)
-                    .height(50.dp)
-                    .border(
-                        width = 1.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooFooterTextColor
-                        } else {
-                            LightDotooFooterTextColor
-                        },
-                        shape = RoundedCornerShape(40.dp)
-                    )
-            ) {
-                androidx.compose.material.Icon(
-                    Icons.Outlined.EditNotifications,
-                    contentDescription = "Menu button to open notification settings",
-                    tint = if (isSystemInDarkTheme()) {
-                        Color.White
-                    } else {
-                        Color.Black
-                    }
-                )
-            }
 
         }
 
@@ -285,7 +259,6 @@ fun PreviewNotificationsView(){
         onNotificationClick = {},
         onDeleteNotification = {},
         onClearAll = {},
-        onClickSettings = {},
         onClose = {}
     )
 }
