@@ -6,6 +6,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
+import com.baljeet.youdotoo.presentation.ui.settings.DestinationSettingsRoute
 
 /**
  * Updated by Baljeet singh
@@ -17,7 +18,6 @@ const val ConstThirdScreenDescription = "Create multiple DoToos and track there 
 const val ConstSampleAvatarUrl = "https://firebasestorage.googleapis.com/v0/b/youdotoo-81372.appspot.com/o/20.png?alt=media&token=fa1489d4-8951-4ef6-8f96-862938aedb62"
 
 const val DestinationAccountRoute = "account"
-const val DestinationSettingsRoute = "settings"
 
 
 const val maxTitleCharsAllowed = 60

@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.presentation.ui.notifications.DestinationNotificationRoute
-import com.baljeet.youdotoo.presentation.ui.themechooser.DestinationThemeChooserRoute
+import com.baljeet.youdotoo.presentation.ui.settings.DestinationSettingsRoute
 
 /**
  * Updated by Baljeet singh.
@@ -42,7 +42,7 @@ fun NavGraphBuilder.addDashboardViewDestination(
             },
             logout = logout,
             onClickSettings = {
-                navController.navigate(DestinationThemeChooserRoute)
+                navController.navigate(DestinationSettingsRoute)
             },
             openProfile = {
                 navController.navigate("profile_quick_view/".plus(SharedPref.userId))

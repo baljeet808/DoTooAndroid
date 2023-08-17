@@ -35,7 +35,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.common.DestinationAccountRoute
-import com.baljeet.youdotoo.common.DestinationSettingsRoute
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
@@ -52,6 +51,7 @@ import com.baljeet.youdotoo.presentation.ui.profile_quick_view.addProfileQuickVi
 import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
+import com.baljeet.youdotoo.presentation.ui.settings.DestinationSettingsRoute
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor

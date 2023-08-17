@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -31,6 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.presentation.ui.settings.components.AccountSectionView
+import com.baljeet.youdotoo.presentation.ui.settings.components.PersonalisationSectionView
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
@@ -39,7 +42,8 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun SettingsView(
-    onClose : () -> Unit
+    onClose: () -> Unit,
+    onClickThemes: () -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -50,11 +54,15 @@ fun SettingsView(
             .background(
                 color = getLightThemeColor()
             )
-            .padding(20.dp),
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
 
+
+        /**
+         * Top row
+         * **/
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -108,13 +116,48 @@ fun SettingsView(
 
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+
+
+            item {
+                Spacer(modifier = Modifier.height(50.dp))
+            }
+
+            /**
+             * section for account settings
+             * **/
+            item {
+                AccountSectionView ()
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(50.dp))
+            }
+
+            /**
+             * section personalisation
+             * **/
+            item {
+                PersonalisationSectionView (onClickThemes = onClickThemes)
+            }
+
+
+        }
+
     }
 }
 
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewSettingsView(){
+fun PreviewSettingsView() {
     SettingsView(
-        onClose = {}
+        onClose = {},
+        onClickThemes = {}
     )
 }
