@@ -3,6 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.themechooser
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.filled.ColorLens
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,11 +54,7 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
-import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
-import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalettes
 
@@ -64,13 +63,22 @@ import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalette
 fun ThemeChooserView(
     onClose: () -> Unit,
     palettes: List<ColorPaletteEntity>,
-    onSelectColorPalette: (newPalette : ColorPaletteEntity) -> Unit
+    onSelectColorPalette: (newPalette: ColorPaletteEntity) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
 
     var appliedPalette by remember {
-        mutableStateOf(palettes.firstOrNull { palette -> palette.paletteName == SharedPref.selectedColorPalette })
+        mutableStateOf(
+            ColorPaletteEntity(
+                id = SharedPref.themePaletteId,
+                paletteName = SharedPref.selectedColorPalette,
+                nightDark = SharedPref.themeNightDarkColor,
+                nightLight = SharedPref.themeNightLightColor,
+                dayDark = SharedPref.themeDayDarkColor,
+                dayLight = SharedPref.themeDayLightColor,
+            )
+        )
     }
 
 
@@ -80,7 +88,8 @@ fun ThemeChooserView(
             .background(
                 color = getLightThemeColor()
             ),
-        verticalArrangement = Arrangement.Top
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
 
@@ -172,9 +181,7 @@ fun ThemeChooserView(
                             )
                         )
                         .background(
-                            color = appliedPalette?.nightLight?.let {
-                                Color(it)
-                            } ?: getNightLightColor(),
+                            color = Color(appliedPalette.nightLight),
                             shape = RoundedCornerShape(
                                 topEnd = 20.dp,
                                 topStart = 0.dp,
@@ -206,9 +213,7 @@ fun ThemeChooserView(
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
                         role = getSampleProject().getUserRole(userId = getRandomId()),
-                        backgroundColor = appliedPalette?.nightDark?.let {
-                            Color(it)
-                        } ?: getNightDarkColor(),
+                        backgroundColor = Color(appliedPalette.nightDark),
                         leftAlign = false,
                         textColor = Color.White
                     )
@@ -232,9 +237,7 @@ fun ThemeChooserView(
                         ),
                         modifier = Modifier.padding(start = 10.dp, bottom = 20.dp),
                         textColor = Color.White,
-                        backgroundColor = appliedPalette?.nightDark?.let {
-                            Color(it)
-                        } ?: getNightDarkColor()
+                        backgroundColor = Color(appliedPalette.nightDark)
                     )
 
                 }
@@ -254,9 +257,7 @@ fun ThemeChooserView(
                             )
                         )
                         .background(
-                            color = appliedPalette?.dayLight?.let {
-                                Color(it)
-                            } ?: getDayDarkColor(),
+                            color = Color(appliedPalette.dayLight),
                             shape = RoundedCornerShape(
                                 topEnd = 0.dp,
                                 topStart = 20.dp,
@@ -289,9 +290,7 @@ fun ThemeChooserView(
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
                         role = getSampleProject().getUserRole(userId = getRandomId()),
-                        backgroundColor = appliedPalette?.dayDark?.let {
-                            Color(it)
-                        } ?: getDayLightColor(),
+                        backgroundColor = Color(appliedPalette.dayDark),
                         leftAlign = false,
                         textColor = Color.Black
                     )
@@ -316,9 +315,7 @@ fun ThemeChooserView(
                         ),
                         modifier = Modifier.padding(start = 10.dp, bottom = 20.dp),
                         textColor = Color.Black,
-                        backgroundColor = appliedPalette?.dayDark?.let {
-                            Color(it)
-                        } ?: getDayLightColor()
+                        backgroundColor = Color(appliedPalette.dayDark)
                     )
 
                 }
@@ -384,15 +381,50 @@ fun ThemeChooserView(
                     palette = palette,
                     onSelectPalette = {
                         appliedPalette = palette
-                        onSelectColorPalette(
-                            palette
-                        )
-                    }
+                    },
+                    appliedPalette = appliedPalette
                 )
             }
 
         }
 
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        /**
+         *Apply button
+         * **/
+        Row(
+            modifier = Modifier
+                .widthIn(max = 280.dp, min = 150.dp)
+                .background(
+                    color = NightTransparentWhiteColor,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(start = 10.dp, top = 10.dp, bottom = 10.dp, end = 10.dp)
+                .clickable(
+                    onClick = {
+                        onSelectColorPalette(appliedPalette)
+
+                    }
+                ),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+
+            androidx.compose.material.Text(
+                text = "Apply",
+                color = Color.White,
+                fontFamily = FontFamily(Nunito.Bold.font),
+
+                )
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                Icons.Default.ColorLens,
+                contentDescription = "LogoUt Button",
+                tint = Color.White
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

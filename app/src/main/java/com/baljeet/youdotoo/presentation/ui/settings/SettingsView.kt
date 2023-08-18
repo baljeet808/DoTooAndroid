@@ -39,6 +39,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SettingsView(
@@ -47,6 +48,9 @@ fun SettingsView(
 ) {
 
     SharedPref.init(LocalContext.current)
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(color = getLightThemeColor())
 
     Column(
         modifier = Modifier

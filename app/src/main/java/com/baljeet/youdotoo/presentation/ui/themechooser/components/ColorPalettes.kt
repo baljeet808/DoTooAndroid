@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
@@ -35,6 +34,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 fun ColorPalettes(
     modifier: Modifier,
     palette : ColorPaletteEntity,
+    appliedPalette : ColorPaletteEntity,
     circleSize : Int = 50,
     onSelectPalette :() -> Unit
 ) {
@@ -100,7 +100,7 @@ fun ColorPalettes(
                     .width(30.dp)
                     .padding(0.dp),
             ) {
-                if (palette.paletteName == SharedPref.selectedColorPalette) {
+                if (palette.paletteName == appliedPalette.paletteName) {
                     Icon(
                         Icons.Filled.CheckCircle,
                         contentDescription = "Checked circular icon",
@@ -131,6 +131,7 @@ fun PreviewColorPalettes(){
     ColorPalettes(
         modifier = Modifier,
         palette = getSampleColorPalette(),
-        onSelectPalette = {}
+        onSelectPalette = {},
+        appliedPalette = getSampleColorPalette()
     )
 }

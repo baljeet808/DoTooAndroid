@@ -77,13 +77,4 @@ class ColorPalettesViewModel @Inject constructor(
             }
         }
     }
-
-    fun updateSelectedColor(palette : ColorPaletteEntity){
-        SharedPref.themeDayDarkColor = palette.dayDark
-        SharedPref.themeDayLightColor = palette.dayLight
-        SharedPref.themeNightDarkColor = palette.nightDark
-        SharedPref.themeNightLightColor = palette.nightLight
-        SharedPref.selectedColorPalette = palette.paletteName
-    }
-
 }

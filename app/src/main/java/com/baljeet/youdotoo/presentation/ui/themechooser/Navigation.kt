@@ -6,6 +6,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
  * Updated by Baljeet singh.
@@ -24,14 +27,22 @@ fun NavGraphBuilder.addThemeChooserViewDestination(
 
         val allPalette by viewModel.getColorPalettes().collectAsState(initial = listOf())
 
+        val systemUiController = rememberSystemUiController()
+        systemUiController.setSystemBarsColor(color = getLightThemeColor())
 
-        ThemeChooserView (
-            onClose ={
+        ThemeChooserView(
+            onClose = {
                 navController.popBackStack()
             },
             palettes = allPalette,
-            onSelectColorPalette = { new ->
-                viewModel.updateSelectedColor(new)
+            onSelectColorPalette = { palette ->
+                SharedPref.themePaletteId = palette.id
+                SharedPref.themeDayDarkColor = palette.dayDark
+                SharedPref.themeDayLightColor = palette.dayLight
+                SharedPref.themeNightDarkColor = palette.nightDark
+                SharedPref.themeNightLightColor = palette.nightLight
+                SharedPref.selectedColorPalette = palette.paletteName
+                navController.popBackStack()
             }
         )
 
