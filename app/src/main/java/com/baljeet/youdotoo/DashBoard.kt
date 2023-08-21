@@ -83,7 +83,6 @@ class DashBoard : ComponentActivity() {
         }
 
         val firebaseMessaging = FirebaseMessaging.getInstance()
-        firebaseMessaging.subscribeToTopic("dotoo_new_message_notifications")
         firebaseMessaging.subscribeToTopic("dotoo_new_project_notifications")
 
         if(SharedPref.firebaseToken.isBlank()) {
