@@ -95,8 +95,6 @@ fun ProjectsView(
     todayTasks: List<DoTooItem>,
     tomorrowTasks: List<DoTooItem>,
     allOtherTasks: List<DoTooItem>,
-    userId: String,
-    userName: String,
     onToggleTask: (DoTooItem) -> Unit,
     navigateToTask: (DoTooItem) -> Unit,
     navigateToCreateTask: () -> Unit,
@@ -286,10 +284,10 @@ fun ProjectsView(
                          * Greeting text
                          * **/
                         Text(
-                            text = if (userName.length > 8) {
-                                "Hi, $userName!"
+                            text = if (SharedPref.userName.length > 8) {
+                                "Hi, ${SharedPref.userName}!"
                             } else {
-                                "What's up, $userName!"
+                                "What's up, ${SharedPref.userName}!"
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -362,7 +360,6 @@ fun ProjectsView(
                                 .fillMaxWidth(),
                             projects = projects.sortedBy { p -> p.project.updatedAt }.reversed(),
                             navigateToDoToos = navigateToDoToos,
-                            userId = userId,
                             listState = projectsListState
                         )
                     }
@@ -765,15 +762,17 @@ fun ProjectsView(
 }
 
 
-fun Project.getUserRole(userId: String): String {
-    if (this.ownerId == userId) {
-        return "Admin"
-    }
-    if (this.collaboratorIds.contains(userId)) {
-        return "Collaborator"
-    }
-    if (this.viewerIds.contains(userId)) {
-        return "Viewer"
+fun Project.getUserRole(): String {
+   SharedPref.userId?.let {userId ->
+        if (this.ownerId == userId) {
+            return "Admin"
+        }
+        if (this.collaboratorIds.contains(userId)) {
+            return "Collaborator"
+        }
+        if (this.viewerIds.contains(userId)) {
+            return "Viewer"
+        }
     }
     return "Blocked"
 }
@@ -884,8 +883,6 @@ fun DefaultProjectPreview() {
             getSampleDotooItem(),
             getSampleDotooItem()
         ),
-        userId = "",
-        userName = "Karandeep Kaur",
         onToggleTask = {},
         navigateToTask = {},
         navigateToCreateTask = {},

@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProject
@@ -212,7 +211,7 @@ fun ThemeChooserView(
                         ),
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
-                        role = getSampleProject().getUserRole(userId = getRandomId()),
+                        role = getSampleProject().getUserRole(),
                         backgroundColor = Color(appliedPalette.nightDark),
                         leftAlign = false,
                         textColor = Color.White
@@ -289,7 +288,7 @@ fun ThemeChooserView(
                         ),
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
-                        role = getSampleProject().getUserRole(userId = getRandomId()),
+                        role = getSampleProject().getUserRole(),
                         backgroundColor = Color(appliedPalette.dayDark),
                         leftAlign = false,
                         textColor = Color.Black

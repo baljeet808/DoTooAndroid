@@ -8,7 +8,7 @@ import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
-class InvitationNotificationService @Inject constructor(
+class NotificationHelper @Inject constructor(
     @ApplicationContext val context: Context,
 ) : DoTooNotification() {
 

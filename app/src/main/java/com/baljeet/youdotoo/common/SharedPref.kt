@@ -62,10 +62,10 @@ object SharedPref {
             it.putString("themePaletteId",value)
         }
 
-    var isSyncOn: Boolean
-        get() = sharedPref.getBoolean("isSyncOn",false)
+    var firebaseToken : String
+        get() = sharedPref.getString("firebaseToken", "")!!
         set(value) = sharedPref.edit {
-            it.putBoolean("isSyncOn",value)
+            it.putString("firebaseToken",value)
         }
 
     var userId: String?

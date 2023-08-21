@@ -4,7 +4,7 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import com.baljeet.youdotoo.services.InvitationNotificationService
+import com.baljeet.youdotoo.services.NotificationHelper
 import com.baljeet.youdotoo.services.SyncNotificationService
 import dagger.hilt.android.HiltAndroidApp
 
@@ -32,11 +32,11 @@ class DotooApplication : Application() {
 
     private fun createInvitationNotificationChannel(){
         val channel = NotificationChannel(
-            InvitationNotificationService.CHANNEL_ID,
-            InvitationNotificationService.CHANNEL_NAME,
+            NotificationHelper.CHANNEL_ID,
+            NotificationHelper.CHANNEL_NAME,
             NotificationManager.IMPORTANCE_HIGH
         )
-        channel.description = InvitationNotificationService.CHANNEL_DESC
+        channel.description = NotificationHelper.CHANNEL_DESC
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }

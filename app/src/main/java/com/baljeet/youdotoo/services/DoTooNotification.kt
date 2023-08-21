@@ -22,7 +22,7 @@ open class DoTooNotification  {
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(context,
-            InvitationNotificationService.CHANNEL_ID
+            NotificationHelper.CHANNEL_ID
         )
             .setSmallIcon(R.drawable.youdotoo_app_icon)
             .setContentTitle(title)

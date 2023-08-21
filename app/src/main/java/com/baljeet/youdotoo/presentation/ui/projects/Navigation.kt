@@ -9,8 +9,8 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
-import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectViewModel
 import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectView
+import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectViewModel
 
 
 const val DestinationProjectsRoute = "projects"
@@ -44,8 +44,6 @@ fun NavGraphBuilder.addProjectsViewDestination(
             navigateToDoToos = { project ->
                 navController.navigate("project/".plus(project.id))
             },
-            userId = SharedPref.userId!!,
-            userName = SharedPref.userName.split(" ").first(),
             onToggleTask = {
                 viewModel.upsertDoToo(it)
             },

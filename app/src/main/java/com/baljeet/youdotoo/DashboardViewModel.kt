@@ -27,13 +27,11 @@ import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.messages.DeleteAllMessagesOfProjectUseCase
-import com.baljeet.youdotoo.domain.use_cases.messages.GetMessageByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.messages.UpsertMessagesUseCase
 import com.baljeet.youdotoo.domain.use_cases.notifications.UpsertNotificationsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
-import com.baljeet.youdotoo.services.InvitationNotificationService
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -56,11 +54,9 @@ class DashboardViewModel @Inject constructor(
     private val upsertUserUseCase: UpsertUserUseCase,
     private val getInvitationByIdUseCase: GetInvitationByIdUseCase,
     private val deleteInvitationUseCase: DeleteInvitationUseCase,
-    private val invitationsNotificationService: InvitationNotificationService,
     private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
     private val deleteAllTablesUseCase: DeleteAllTablesUseCase,
     private val upsertMessagesUseCase: UpsertMessagesUseCase,
-    private val getMessageById : GetMessageByIdUseCase,
     private val deleteAllMessagesOfProjectUseCase: DeleteAllMessagesOfProjectUseCase
 ) : ViewModel() {
 
@@ -264,11 +260,6 @@ class DashboardViewModel @Inject constructor(
                                                 )
                                             )
 
-                                            invitationsNotificationService.showInviteNotification(
-                                                invite,
-                                                title = title,
-                                                contentText = contextText
-                                            )
                                         }
                                     }
 
@@ -297,11 +288,6 @@ class DashboardViewModel @Inject constructor(
                                                 )
                                             )
 
-                                            invitationsNotificationService.showInvitationResponseNotification(
-                                                invite,
-                                                title = title,
-                                                contentText = contextText
-                                            )
                                         }
                                     }
 
@@ -330,11 +316,6 @@ class DashboardViewModel @Inject constructor(
                                                 )
                                             )
 
-                                            invitationsNotificationService.showInvitationResponseNotification(
-                                                invite,
-                                                title = title,
-                                                contentText = contextText
-                                            )
                                         }
                                     }
 
@@ -363,10 +344,6 @@ class DashboardViewModel @Inject constructor(
 
                                         else -> return@launch
                                     }
-                                    invitationsNotificationService.showAccessUpdateNotification(
-                                        invite,
-                                        accessName
-                                    )
                                 }
                             }
 
@@ -395,11 +372,6 @@ class DashboardViewModel @Inject constructor(
                                     )
                                 )
 
-                                invitationsNotificationService.showInviteNotification(
-                                    invite,
-                                    title = title,
-                                    contentText = contextText
-                                )
                             }
                         }
                     }
@@ -426,7 +398,8 @@ class DashboardViewModel @Inject constructor(
                                     name = data.getString("name") ?: "",
                                     email = data.getString("email") ?: "",
                                     avatarUrl = data.getString("avatarUrl") ?: "",
-                                    joined = data.getLong("joined") ?: 0L
+                                    joined = data.getLong("joined") ?: 0L,
+                                    firebaseToken = data.getString("firebaseToken")?:""
                                 )
                                 //save user in local db
                                 CoroutineScope(Dispatchers.IO).launch {

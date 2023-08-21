@@ -181,6 +181,8 @@ class MainActivity : ComponentActivity(), OnAttemptLoginViaGoogle {
         if (Firebase.auth.currentUser != null) {
             updateUser()
             moveToDashboard()
+        }else{
+            SharedPref.clearAll()
         }
     }
 

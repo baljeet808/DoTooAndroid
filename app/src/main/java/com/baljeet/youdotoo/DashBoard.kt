@@ -2,6 +2,7 @@ package com.baljeet.youdotoo
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -11,7 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
@@ -21,9 +24,12 @@ import com.baljeet.youdotoo.presentation.ui.settings.addSettingsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.themechooser.addThemeChooserViewDestination
-import com.baljeet.youdotoo.services.AllBackgroundSnaps
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -44,18 +50,10 @@ class DashBoard : ComponentActivity() {
 
                 val viewModel: DashboardViewModel = hiltViewModel()
 
-                val serviceIntent = Intent(applicationContext, AllBackgroundSnaps::class.java)
-
-                if (!SharedPref.isSyncOn) {
-                    serviceIntent.action = AllBackgroundSnaps.ServiceActions.START.toString()
-                    startService(serviceIntent)
-                }
 
                 val firebaseAuth = FirebaseAuth.getInstance()
                 val authStateListener = AuthStateListener { auth ->
                     if (auth.currentUser == null) {
-                        serviceIntent.action = AllBackgroundSnaps.ServiceActions.STOP.toString()
-                        stopService(serviceIntent)
                         moveToOnBoarding()
                         viewModel.clearEverything()
                     }
@@ -79,6 +77,52 @@ class DashBoard : ComponentActivity() {
                         addThemeChooserViewDestination(navController)
                         addProfileQuickViewDestination(navController)
                         addSettingsViewDestination(navController)
+                    }
+                }
+            }
+        }
+
+        val firebaseMessaging = FirebaseMessaging.getInstance()
+        firebaseMessaging.subscribeToTopic("dotoo_new_message_notifications")
+        firebaseMessaging.subscribeToTopic("dotoo_new_project_notifications")
+
+        if(SharedPref.firebaseToken.isBlank()) {
+            firebaseMessaging.token.addOnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.d("Log for - ", "Fetching FCM registration token failed", task.exception)
+                    return@addOnCompleteListener
+                }
+                val token = task.result
+                if (token.isNotBlank()) {
+                    SharedPref.firebaseToken = token
+                    val db = FirebaseFirestore.getInstance()
+
+                    Firebase.auth.currentUser?.let {
+                        val newUser = User(
+                            id = it.uid,
+                            name = it.displayName ?: "Unknown",
+                            email = it.email ?: "Not given",
+                            joined = SharedPref.userJoined,
+                            avatarUrl = it.photoUrl?.toString() ?: ConstSampleAvatarUrl,
+                            firebaseToken = token
+                        )
+
+                        db.collection("users")
+                            .document(newUser.id)
+                            .set(newUser)
+                            .addOnSuccessListener {
+                                Log.d("Log for - ", "New token assigned to user.")
+                            }.addOnFailureListener {
+                                Log.d(
+                                    "Log for - ",
+                                    "Failed to upload to new token to user profile."
+                                )
+                            }
+                    } ?: kotlin.run {
+                        Log.d(
+                            "Log for - ",
+                            "Failed to upload to new token to user profile. null auth"
+                        )
                     }
                 }
             }

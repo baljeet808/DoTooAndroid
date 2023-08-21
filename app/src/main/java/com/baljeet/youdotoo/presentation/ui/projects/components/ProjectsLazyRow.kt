@@ -21,7 +21,6 @@ import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 fun ProjectsLazyRow(
     listState : LazyListState,
     modifier: Modifier,
-    userId: String,
     projects: List<ProjectWithDoToos>,
     navigateToDoToos: (project: Project) -> Unit
 ) {
@@ -41,7 +40,7 @@ fun ProjectsLazyRow(
                 ),
                 project = project,
                 onItemClick = { navigateToDoToos(project.project.toProject()) },
-                role = project.project.toProject().getUserRole(userId = userId )
+                role = project.project.toProject().getUserRole()
             )
         }
     }
