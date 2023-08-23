@@ -46,8 +46,12 @@ enum class DueDates(val toString : String) {
 
 }
 
-enum class EnumCreateTaskSheetType() {
+enum class EnumCreateTaskSheetType {
     SELECT_PROJECT, SELECT_DUE_DATE, SELECT_PRIORITY
+}
+
+enum class EnumNotificationType{
+    NewMessage, NewInvitation, ProjectUpdate, TaskUpdate, AccessUpdate, InvitationUpdate, MessageUpdate, General
 }
 
 
@@ -72,10 +76,6 @@ enum class EnumProjectColors(val longValue : Long){
 
 enum class EnumDashboardTasksTabs{
     Today,Tomorrow,Yesterday,Pending,AllOther
-}
-
-enum class EnumNotificationType{
-    INVITATION, PROJECT_UPDATE, TASK_UPDATE, MESSAGE, GENERAL
 }
 
 data class DashboardTaskTabs (

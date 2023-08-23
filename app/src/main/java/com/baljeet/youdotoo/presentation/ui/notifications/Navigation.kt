@@ -29,18 +29,20 @@ fun NavGraphBuilder.addNotificationViewDestination(
             notifications = notifications,
             onNotificationClick = { notification ->
                 when (notification.notificationType) {
-                    EnumNotificationType.INVITATION -> {
+                    EnumNotificationType.NewInvitation -> {
                         navController.navigate(
                             DestinationProjectInvitationDetailRoute.plus(
                                 notification.invitationId
                             )
                         )
                     }
-
-                    EnumNotificationType.PROJECT_UPDATE -> TODO()
-                    EnumNotificationType.TASK_UPDATE -> TODO()
-                    EnumNotificationType.MESSAGE -> TODO()
-                    EnumNotificationType.GENERAL -> TODO()
+                    EnumNotificationType.NewMessage -> TODO()
+                    EnumNotificationType.ProjectUpdate -> TODO()
+                    EnumNotificationType.TaskUpdate -> TODO()
+                    EnumNotificationType.AccessUpdate -> TODO()
+                    EnumNotificationType.InvitationUpdate -> TODO()
+                    EnumNotificationType.MessageUpdate -> TODO()
+                    EnumNotificationType.General -> TODO()
                 }
             },
             onDeleteNotification = { notification ->

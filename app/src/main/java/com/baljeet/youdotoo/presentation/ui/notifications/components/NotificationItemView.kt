@@ -11,35 +11,41 @@ fun NotificationItemView(
 ) {
 
     when (notification.notificationType) {
-        EnumNotificationType.INVITATION -> {
+        EnumNotificationType.NewInvitation -> {
             InvitationNotificationItemView(
                 notification = notification,
                 onItemClick = onItemClick
             )
         }
 
-        EnumNotificationType.PROJECT_UPDATE -> {
+        EnumNotificationType.ProjectUpdate -> {
             ProjectUpdateNotificationItemView(
                 notification = notification,
                 onItemClick = onItemClick
             )
         }
 
-        EnumNotificationType.TASK_UPDATE -> {
+        EnumNotificationType.TaskUpdate -> {
             TaskUpdateNotificationItemView(
                 notification = notification,
                 onItemClick = onItemClick
             )
         }
 
-        EnumNotificationType.MESSAGE -> {
+        EnumNotificationType.NewMessage -> {
             MessageNotificationItemView(
                 notification = notification,
                 onItemClick = onItemClick
             )
         }
 
-        EnumNotificationType.GENERAL -> {
+        EnumNotificationType.General -> {
+            GeneralNotificationItemView(
+                notification = notification,
+                onItemClick = onItemClick
+            )
+        }
+        else -> {
             GeneralNotificationItemView(
                 notification = notification,
                 onItemClick = onItemClick

@@ -9,6 +9,7 @@ import androidx.core.app.NotificationCompat
 import com.baljeet.youdotoo.MainActivity
 import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
+import com.baljeet.youdotoo.common.EnumNotificationType
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.User
 import com.google.firebase.auth.ktx.auth
@@ -51,6 +52,20 @@ class PushNotificationsService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
+
+        val data = message.data
+
+        var notificationType = EnumNotificationType.valueOf(data[MESSAGE_TYPE] ?:"General")
+
+        val projectId = data[PROJECT_ID]?:""
+        val projectColor = data[PROJECT_COLOR]?:0L
+        val senderId = data[SENDER_ID]?:""
+        val senderAvatar = data[SENDER_AVATAR_URL]?:""
+        val senderName = data[SENDER_NAME]?:""
+        val projectDetail = data[PROJECT_DETAIL]?:""
+        val projectName = data[PROJECT_NAME]?:""
+        val invitedEmail = data[INVITED_EMAIL]?:""
+
         message.notification?.let { notificationData ->
 
             val mainActivityIntent = Intent(this, MainActivity::class.java).apply {
@@ -85,6 +100,15 @@ class PushNotificationsService : FirebaseMessagingService() {
 
     companion object {
         const val CHANNEL_ID = "ChannelIDForInvitations"
-        const val PROJECT_ID = "project_id_key"
+        const val PROJECT_ID = "projectId"
+        const val MESSAGE_TYPE = "messageType"
+        const val SENDER_ID = "senderId"
+        const val PROJECT_COLOR = "projectColor"
+        const val SENDER_AVATAR_URL = "senderAvatarUrl"
+        const val SENDER_NAME = "senderName"
+        const val PROJECT_DETAIL = "projectDetail"
+        const val PROJECT_NAME = "projectName"
+        const val INVITED_EMAIL = "invitedEmail"
+
     }
 }

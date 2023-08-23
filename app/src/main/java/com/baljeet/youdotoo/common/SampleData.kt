@@ -156,7 +156,7 @@ fun getSampleMessageNotification() : NotificationEntity{
         createdAt = getSampleDateInLong(),
         projectColor = getRandomColor(),
         isNew = true,
-        notificationType = EnumNotificationType.MESSAGE
+        notificationType = EnumNotificationType.NewMessage
     )
 }
 fun getSampleInvitationNotification() : NotificationEntity{
@@ -171,7 +171,7 @@ fun getSampleInvitationNotification() : NotificationEntity{
         createdAt = getSampleDateInLong(),
         projectColor = getRandomColor(),
         isNew = true,
-        notificationType = EnumNotificationType.INVITATION
+        notificationType = EnumNotificationType.NewInvitation
     )
 }
 

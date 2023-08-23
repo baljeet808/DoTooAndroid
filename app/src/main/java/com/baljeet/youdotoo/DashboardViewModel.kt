@@ -255,7 +255,7 @@ class DashboardViewModel @Inject constructor(
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = invite.projectColor,
                                                         isNew = true,
-                                                        notificationType = EnumNotificationType.INVITATION
+                                                        notificationType = EnumNotificationType.NewInvitation
                                                     )
                                                 )
                                             )
@@ -283,7 +283,7 @@ class DashboardViewModel @Inject constructor(
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = invite.projectColor,
                                                         isNew = true,
-                                                        notificationType = EnumNotificationType.INVITATION
+                                                        notificationType = EnumNotificationType.InvitationUpdate
                                                     )
                                                 )
                                             )
@@ -311,7 +311,7 @@ class DashboardViewModel @Inject constructor(
                                                         createdAt = getSampleDateInLong(),
                                                         projectColor = invite.projectColor,
                                                         isNew = true,
-                                                        notificationType = EnumNotificationType.INVITATION
+                                                        notificationType = EnumNotificationType.InvitationUpdate
                                                     )
                                                 )
                                             )
@@ -367,7 +367,7 @@ class DashboardViewModel @Inject constructor(
                                             createdAt = getSampleDateInLong(),
                                             projectColor = invite.projectColor,
                                             isNew = true,
-                                            notificationType = EnumNotificationType.INVITATION
+                                            notificationType = EnumNotificationType.NewInvitation
                                         )
                                     )
                                 )
