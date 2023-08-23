@@ -4,7 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,17 +14,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Block
-import androidx.compose.material.icons.filled.Groups
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,17 +25,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 
 @Composable
@@ -54,6 +46,8 @@ fun ProjectCardView(
     onItemClick: () -> Unit,
     modifier: Modifier
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     val animatedProgress = animateFloatAsState(
         targetValue = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
@@ -88,32 +82,24 @@ fun ProjectCardView(
 
                 Text(
                     text = project.tasks.size.toString().plus(" Tasks"),
-                    color = if (isSystemInDarkTheme()) {
-                        NightAppBarIconsColor
-                    } else {
-                        LightAppBarIconsColor
-                    },
+                    color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
                     modifier = Modifier
                 )
 
-                Icon(
-                    when (role) {
-                        "Admin" -> Icons.Default.Star
-                        "Collaborator" -> Icons.Default.Groups
-                        "Viewer" -> Icons.Default.Visibility
-                        else -> Icons.Default.Block
+
+                Text(
+                    text = when (role) {
+                        "Admin" -> "Owner"
+                        "Collaborator" -> "Editor"
+                        "Viewer" -> "Viewer"
+                        else -> "Blocked"
                     },
-                    contentDescription = "Icon to show that user is $role of selected project.",
-                    tint = if (isSystemInDarkTheme()) {
-                        Color.White
-                    } else {
-                        LightAppBarIconsColor
-                    },
+                    color = getTextColor(),
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
                     modifier = Modifier
-                        .width(20.dp)
-                        .height(20.dp)
                 )
 
 
@@ -121,7 +107,7 @@ fun ProjectCardView(
 
             Text(
                 text = project.project.name,
-                color = MaterialTheme.colorScheme.secondary,
+                color = getTextColor(),
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 20.sp,
                 maxLines = 2,
@@ -144,7 +130,7 @@ fun ProjectCardView(
 
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
