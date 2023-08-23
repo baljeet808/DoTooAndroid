@@ -133,7 +133,7 @@ fun ProjectsView(
      * Logic to check if need to show empty view or not
      * **/
     var showNothingHereView by remember { mutableStateOf(false) }
-    showNothingHereView = tasksTabs[pagerState.currentPage].taskCount == 0
+    showNothingHereView = ((tasksTabs[0].taskCount == 0) && (pagerState.currentPage == 0))
 
 
     var showTopInfo by remember {
@@ -401,7 +401,7 @@ fun ProjectsView(
                                 .fillMaxWidth()
                                 .padding(start = 10.dp, end = 10.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
-                        ){
+                        ) {
 
                             TextButton(
                                 onClick = { showTopInfo = showTopInfo.not() },
@@ -477,8 +477,8 @@ fun ProjectsView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                        ) {
-                            when (tasksTabs[pagerState.currentPage].name) {
+                        ) {currentIndex ->
+                            when (tasksTabs[currentIndex].name) {
                                 EnumDashboardTasksTabs.Yesterday -> {
                                     AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
                                         DoTooItemsLazyColumn(
@@ -763,7 +763,7 @@ fun ProjectsView(
 
 
 fun Project.getUserRole(): String {
-   SharedPref.userId?.let {userId ->
+    SharedPref.userId?.let { userId ->
         if (this.ownerId == userId) {
             return "Admin"
         }
@@ -793,6 +793,7 @@ fun getTaskTabs(
             EnumDashboardTasksTabs.Today -> {
                 tasksTabs.add(
                     DashboardTaskTabs(
+                        index = index,
                         name = EnumDashboardTasksTabs.Today,
                         taskCount = todayTasks.size
                     )
@@ -800,47 +801,43 @@ fun getTaskTabs(
             }
 
             EnumDashboardTasksTabs.Tomorrow -> {
-                if (tomorrowTasks.isNotEmpty()) {
-                    tasksTabs.add(
-                        DashboardTaskTabs(
-                            name = EnumDashboardTasksTabs.Tomorrow,
-                            taskCount = tomorrowTasks.size
-                        )
+                tasksTabs.add(
+                    DashboardTaskTabs(
+                        index = index,
+                        name = EnumDashboardTasksTabs.Tomorrow,
+                        taskCount = tomorrowTasks.size
                     )
-                }
+                )
             }
 
             EnumDashboardTasksTabs.Yesterday -> {
-                if (yesterdayTasks.isNotEmpty()) {
-                    tasksTabs.add(
-                        DashboardTaskTabs(
-                            name = EnumDashboardTasksTabs.Yesterday,
-                            taskCount = yesterdayTasks.size
-                        )
+                tasksTabs.add(
+                    DashboardTaskTabs(
+                        index = index,
+                        name = EnumDashboardTasksTabs.Yesterday,
+                        taskCount = yesterdayTasks.size
                     )
-                }
+                )
             }
 
             EnumDashboardTasksTabs.Pending -> {
-                if (pendingTasks.isNotEmpty()) {
-                    tasksTabs.add(
-                        DashboardTaskTabs(
-                            name = EnumDashboardTasksTabs.Pending,
-                            taskCount = pendingTasks.size
-                        )
+                tasksTabs.add(
+                    DashboardTaskTabs(
+                        index = index,
+                        name = EnumDashboardTasksTabs.Pending,
+                        taskCount = pendingTasks.size
                     )
-                }
+                )
             }
 
             EnumDashboardTasksTabs.AllOther -> {
-                if (allOtherTasks.isNotEmpty()) {
-                    tasksTabs.add(
-                        DashboardTaskTabs(
-                            name = EnumDashboardTasksTabs.AllOther,
-                            taskCount = allOtherTasks.size
-                        )
+                tasksTabs.add(
+                    DashboardTaskTabs(
+                        index = index,
+                        name = EnumDashboardTasksTabs.AllOther,
+                        taskCount = allOtherTasks.size
                     )
-                }
+                )
             }
         }
     }
