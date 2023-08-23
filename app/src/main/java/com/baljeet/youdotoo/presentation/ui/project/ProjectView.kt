@@ -115,7 +115,6 @@ fun ProjectView(
                         upsertProject(projectCopy)
                     }
                 },
-                toggleFavorite = {},
                 toggleNotificationSetting = {},
                 onClickInvite = onClickInvite
             )

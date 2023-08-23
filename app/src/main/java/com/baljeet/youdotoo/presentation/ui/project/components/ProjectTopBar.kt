@@ -1,21 +1,32 @@
 package com.baljeet.youdotoo.presentation.ui.projects.components
 
 import android.content.res.Configuration
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.DeleteForever
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.rounded.VolumeMute
 import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 
 /**
  * Updated by Baljeet singh.
@@ -23,10 +34,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProjectTopBar(
     notificationsState : Boolean,
-    onFavoriteClick: () -> Unit,
     onNotificationItemClicked: () -> Unit,
     onDeleteItemClicked: () -> Unit,
     onClickInvite: () -> Unit,
+    roleText : String,
     modifier: Modifier
 ) {
 
@@ -44,23 +55,20 @@ fun ProjectTopBar(
         ) {
 
             /**
-             * Back button
+             * Role
              * **/
-            IconButton(
-                onClick = {
-                    onFavoriteClick()
-                },
+            Text(
+                text = "You are ".plus(roleText),
                 modifier = Modifier
-                    .weight(0.2f)
-            ) {
-                Icon(
-                    Icons.Outlined.Favorite,
-                    contentDescription = "Button to mark this project favorite.",
-                    tint = Color.White
-                )
-            }
+                    .padding(start = 5.dp, end = 5.dp),
+                color = LessTransparentWhiteColor,
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Nunito.Bold.font),
+                letterSpacing = TextUnit(value = 2f, TextUnitType.Sp)
+            )
 
-            Spacer(modifier = Modifier.weight(.5f))
+
+            Spacer(modifier = Modifier.weight(.2f))
 
             /**
              * Button to add more person to the project
@@ -129,9 +137,9 @@ fun PreviewProjectTopBar() {
     ProjectTopBar(
        modifier = Modifier,
         notificationsState = true,
-        onFavoriteClick = {},
         onNotificationItemClicked = {},
         onDeleteItemClicked = {},
-        onClickInvite = {}
+        onClickInvite = {},
+        roleText = "Admin"
     )
 }

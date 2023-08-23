@@ -43,6 +43,7 @@ import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
+import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBox
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow
@@ -59,7 +60,6 @@ fun ProjectCardWithProfiles(
     onItemDeleteClick: () -> Unit,
     updateProjectTitle: (title: String) -> Unit,
     updateProjectDescription: (title: String) -> Unit,
-    toggleFavorite: () -> Unit,
     toggleNotificationSetting: () -> Unit,
     onClickInvite: () -> Unit
 ) {
@@ -138,11 +138,11 @@ fun ProjectCardWithProfiles(
         AnimatedVisibility(visible = showAll) {
             ProjectTopBar(
                 notificationsState = true,
-                onFavoriteClick = { /*TODO*/ },
                 onNotificationItemClicked = { /*TODO*/ },
                 onDeleteItemClicked = onItemDeleteClick,
                 onClickInvite = onClickInvite,
-                modifier = Modifier
+                modifier = Modifier,
+                roleText = project?.getUserRole()?:"Blocked"
             )
         }
 
@@ -306,7 +306,6 @@ fun PreviewProjectCardWithProfiles() {
             getSampleProfile()
         ),
         onItemDeleteClick = {},
-        toggleFavorite = {},
         updateProjectDescription = {},
         updateProjectTitle = {},
         toggleNotificationSetting = {},
