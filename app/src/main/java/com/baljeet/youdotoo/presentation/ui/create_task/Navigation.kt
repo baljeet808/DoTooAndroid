@@ -44,7 +44,7 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
             navController.popBackStack()
             viewModel.resetState()
         }
-        CreateTaskView(
+        UpsertTaskView(
             createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDate?, selectedProject : Project ->
                 viewModel.createTask(
                     name = title,

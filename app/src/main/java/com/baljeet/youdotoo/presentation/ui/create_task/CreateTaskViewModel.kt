@@ -19,7 +19,7 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toKotlinLocalDateTime
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 
@@ -67,7 +67,7 @@ class CreateTaskViewModel  @Inject constructor(
                 }
             },
             createDate = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
-            updatedBy = SharedPref.userName.plus(" created this Dotoo."),
+            updatedBy = SharedPref.userName.plus(" created this Task."),
             done = false,
             projectColor = selectedProject.color
         )

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -50,7 +51,7 @@ import kotlinx.datetime.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTaskView(
+fun UpsertTaskView(
     createTask: (
         name: String,
         description: String,
@@ -63,6 +64,8 @@ fun CreateTaskView(
     navigateBack: () -> Unit,
     projects : List<ProjectEntity>
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -249,21 +252,18 @@ fun CreateTaskView(
                 verticalAlignment = Alignment.Bottom
             ) {
 
-                AnimatedVisibility(visible = (customDatetime != null)) {
-                    Text(
-                        text = "Due Date set to ".plus(
-                            customDatetime?.toJavaLocalDate()?.toNiceDateFormat() ?: ""
-                        ),
-                        color = Color(selectedProject?.color ?: 4294935846),
-                        fontFamily = FontFamily(Nunito.Bold.font),
-                        fontSize = 16.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 10.dp)
-                    )
-                }
+                Text(
+                    text = "Create Task",
+                    modifier = Modifier
+                        .padding(5.dp)
+                        .weight(1f),
+                    fontFamily = FontFamily(Nunito.ExtraBold.font),
+                    fontSize = 28.sp,
+                    color = getTextColor()
+                )
 
-                Spacer(modifier = Modifier.weight(1f))
+
+                Spacer(modifier = Modifier.weight(.5f))
 
                 IconButton(
                     onClick = navigateBack,
@@ -385,6 +385,23 @@ fun CreateTaskView(
 
             }
 
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+
+            AnimatedVisibility(visible = (customDatetime != null)) {
+                Text(
+                    text = "Due Date set to ".plus(
+                        customDatetime?.toJavaLocalDate()?.toNiceDateFormat() ?: ""
+                    ),
+                    color = Color(selectedProject?.color ?: 4294935846),
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 30.dp)
+                )
+            }
             Spacer(modifier = Modifier.height(20.dp))
 
             /**
@@ -394,10 +411,7 @@ fun CreateTaskView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp),
-                horizontalArrangement = Arrangement.spacedBy(
-                    40.dp,
-                    alignment = Alignment.CenterHorizontally
-                ),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -684,11 +698,11 @@ fun CreateTaskView(
 }
 
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewCreateTaskView() {
+fun PreviewUpsertTaskView() {
     val sampleProject = getSampleProject()
-    CreateTaskView(
+    UpsertTaskView(
         createTask = { _, _, _, _, _, _ -> },
         navigateBack = {},
         projectId = sampleProject.id,

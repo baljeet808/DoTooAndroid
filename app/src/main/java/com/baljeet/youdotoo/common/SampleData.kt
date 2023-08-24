@@ -64,7 +64,7 @@ fun getSampleDotooItem(): DoTooItem {
 fun getSampleProject(): Project {
     return Project(
         id = getRandomId(),
-        name = "Daily Chores",
+        name = "Daily long long chores",
         description = "This project is about the irritating stuff which always gets forgotten.",
         ownerId = "",
         collaboratorIds = getSampleIds(),

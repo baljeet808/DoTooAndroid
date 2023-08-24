@@ -19,7 +19,7 @@ enum class DueDates(val toString : String) {
     CUSTOM("Custom");
 
     fun getExactDate(): LocalDate {
-        val currentDate = java.time.LocalDate.now().toKotlinLocalDate()
+        var currentDate = java.time.LocalDate.now().toKotlinLocalDate()
 
         return when (this) {
             TODAY -> {
@@ -30,21 +30,24 @@ enum class DueDates(val toString : String) {
             }
             NEXT_FRIDAY -> {
                 val currentDayOfWeek = currentDate.dayOfWeek.isoDayNumber
-                if (currentDayOfWeek == 5) {
+                currentDate = if (currentDayOfWeek == 5) {
                     currentDate.plus(7, DateTimeUnit.DAY)
                 } else if (currentDayOfWeek < 5) {
                     currentDate.plus((5 - currentDayOfWeek), DateTimeUnit.DAY)
                 } else {
                     currentDate.plus(7 - (currentDayOfWeek - 5), DateTimeUnit.DAY)
                 }
+                currentDate
             }
             else -> {
                 currentDate
             }
         }
     }
-
 }
+
+
+
 
 enum class EnumCreateTaskSheetType {
     SELECT_PROJECT, SELECT_DUE_DATE, SELECT_PRIORITY

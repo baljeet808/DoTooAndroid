@@ -48,7 +48,7 @@ fun NavGraphBuilder.addProjectsViewDestination(
                 viewModel.upsertDoToo(it)
             },
             navigateToTask = {
-
+                navController.navigate("editTask/".plus(it.id))
             },
             navigateToCreateTask = {
                 val userProjects = projects.filter { project -> project.project.ownerId == SharedPref.userId!! }

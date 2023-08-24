@@ -12,11 +12,15 @@ import com.baljeet.youdotoo.domain.models.Interaction
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.models.UserInvitation
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.isoDayNumber
+import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinInstant
+import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.datetime.toLocalDateTime
 import java.time.Instant
 import java.time.LocalDate
@@ -229,3 +233,32 @@ fun MessageEntity.updateInteraction(interactionName: String) {
     this.interactions = interactions.joinToString(" | ")
 }
 
+
+fun Long.getDueDateEnumEntry() : DueDates{
+    var currentDate = LocalDate.now().toKotlinLocalDate()
+    val taskDueDate = this.toLocalDateTime().toJavaLocalDateTime().toLocalDate().toKotlinLocalDate()
+
+    return if(currentDate == taskDueDate){
+        DueDates.TODAY
+    }else if(currentDate.plus(1, DateTimeUnit.DAY) == taskDueDate){
+        DueDates.TOMORROW
+    }else{
+
+        // Calculating next friday date
+        val currentDayOfWeek = currentDate.dayOfWeek.isoDayNumber
+        currentDate = if (currentDayOfWeek == 5) {
+            currentDate.plus(7, DateTimeUnit.DAY)
+        } else if (currentDayOfWeek < 5) {
+            currentDate.plus((5 - currentDayOfWeek), DateTimeUnit.DAY)
+        } else {
+            currentDate.plus(7 - (currentDayOfWeek - 5), DateTimeUnit.DAY)
+        }
+
+        if(currentDate == taskDueDate){
+            DueDates.NEXT_FRIDAY
+        }else{
+            DueDates.CUSTOM
+        }
+
+    }
+}
