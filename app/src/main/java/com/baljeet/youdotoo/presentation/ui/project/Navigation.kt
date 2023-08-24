@@ -40,8 +40,11 @@ fun NavGraphBuilder.addProjectViewDestination(
         ProjectView(
             project = project,
             onToggle={doTooItem, selectedProject ->
+                val newDoToo = doTooItem.copy()
+                newDoToo.done = doTooItem.done.not()
+                newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
                 viewModel.upsertDoToo(
-                    doTooItem, selectedProject
+                    newDoToo, selectedProject
                 )
             },
             tasks = tasks,
@@ -68,11 +71,20 @@ fun NavGraphBuilder.addProjectViewDestination(
                 navController.navigate("invitations/".plus(projectId))
             },
             navigateToEditTask = {
-
+                navController.navigate("editTask/".plus(it.id))
             },
             navigateToChat = {
                 navController.navigate(
                     "messages/${projectId}"
+                )
+            },
+            updateTaskTitle = { task, title->
+                viewModel.upsertDoToo(
+                    doTooItem = task.copy(
+                        title = title,
+                        updatedBy = SharedPref.userName.plus(" has updated this task.")
+                    ),
+                    project = project!!.toProject()
                 )
             }
         )

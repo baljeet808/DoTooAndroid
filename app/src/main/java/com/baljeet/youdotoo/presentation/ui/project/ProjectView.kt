@@ -2,11 +2,19 @@ package com.baljeet.youdotoo.presentation.ui.project
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.EaseIn
+import androidx.compose.animation.core.EaseOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.FloatingActionButton
@@ -18,18 +26,30 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
+import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
@@ -44,9 +64,13 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectView(
     project: ProjectEntity?,
@@ -60,10 +84,28 @@ fun ProjectView(
     upsertProject: (Project) -> Unit,
     onClickInvite: () -> Unit,
     navigateToEditTask: (task: DoTooItem) -> Unit,
-    navigateToChat: () -> Unit
+    navigateToChat: () -> Unit,
+    updateTaskTitle: (task: DoTooItem, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
+
+
+
+    var taskToEdit: DoTooItem? = null
+
+
+    var showBlur by remember {
+        mutableStateOf(false)
+    }
+
+    val focusScope = rememberCoroutineScope()
+    val keyBoardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember {
+        FocusRequester()
+    }
+
+
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -89,6 +131,13 @@ fun ProjectView(
                 .fillMaxSize()
                 .background(
                     color = getLightThemeColor()
+                )
+                .blur(
+                    radius = if (showBlur) {
+                        20.dp
+                    } else {
+                        0.dp
+                    }
                 )
                 .padding(padding),
             verticalArrangement = Arrangement.Top,
@@ -152,14 +201,77 @@ fun ProjectView(
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
                 onItemDelete = deleteTask,
                 navigateToEditTask = { task ->
-
+                    navigateToEditTask(task)
                 },
                 navigateToQuickEditTask = { task ->
-                    navigateToEditTask(task)
+                    taskToEdit = task
+                    keyBoardController?.show()
+                    showBlur = true
+                    focusScope.launch {
+                        delay(500)
+                        focusRequester.requestFocus()
+                    }
                 }
             )
 
         }
+
+
+        AnimatedVisibility(
+            visible = showBlur && taskToEdit != null,
+            enter = slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseIn
+                ),
+                initialOffsetY = {
+                    it / 2
+                }
+            ),
+            exit = slideOutVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseOut
+                ),
+                targetOffsetY = {
+                    it / 2
+                }
+            )
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = padding)
+                    .clickable(
+                        onClick = {
+                            showBlur = false
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                EditOnFlyBoxRound(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                    onSubmit = { title ->
+                        updateTaskTitle(taskToEdit!!, title)
+                        keyBoardController?.hide()
+                        showBlur = false
+                    },
+                    placeholder = taskToEdit?.title ?: "",
+                    label = "Edit Task",
+                    maxCharLength = maxTitleCharsAllowed,
+                    onCancel = {
+                        showBlur = false
+                    },
+                    themeColor = Color(taskToEdit?.projectColor ?: getRandomColor()),
+                    lines = 2
+                )
+
+            }
+        }
+
     }
 
 
@@ -183,6 +295,7 @@ fun PreviewProjectView() {
         upsertProject = {},
         onClickInvite = {},
         navigateToEditTask = {},
-        navigateToChat = {}
+        navigateToChat = {},
+        updateTaskTitle = {_,_ ->}
     )
 }

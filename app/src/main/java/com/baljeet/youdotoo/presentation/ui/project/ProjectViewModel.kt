@@ -56,20 +56,18 @@ class ProjectViewModel @Inject constructor(
         project.collaboratorIds.contains(SharedPref.userId) ||
     project.viewerIds.contains(SharedPref.userId)
 
+
     fun upsertDoToo(doTooItem: DoTooItem, project : Project){
-        val newDoToo = doTooItem.copy()
-        newDoToo.done = doTooItem.done.not()
-        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
         if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
             projectsReference
                 .document(projectId)
                 .collection("todos")
-                .document(newDoToo.id)
-                .set(newDoToo)
+                .document(doTooItem.id)
+                .set(doTooItem)
 
         }else{
             CoroutineScope(Dispatchers.IO).launch {
-                upsertDoToosUseCase(listOf(newDoToo),projectId)
+                upsertDoToosUseCase(listOf(doTooItem),projectId)
             }
         }
         upsertProject(project)

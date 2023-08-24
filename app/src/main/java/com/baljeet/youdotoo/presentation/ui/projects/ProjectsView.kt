@@ -186,6 +186,7 @@ fun ProjectsView(
     val focusRequester = remember {
         FocusRequester()
     }
+
     val focusScope = rememberCoroutineScope()
 
     Scaffold(
