@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.dto.UserData
 import com.baljeet.youdotoo.presentation.ui.notifications.DestinationNotificationRoute
+import com.baljeet.youdotoo.presentation.ui.projectsonly.DestinationProjectOnlyRoute
 import com.baljeet.youdotoo.presentation.ui.settings.DestinationSettingsRoute
 
 /**
@@ -46,6 +47,11 @@ fun NavGraphBuilder.addDashboardViewDestination(
             },
             openProfile = {
                 navController.navigate("profile_quick_view/".plus(SharedPref.userId))
+            },
+            navigateToProjectsOnlyView ={
+                navController.navigate(
+                    DestinationProjectOnlyRoute
+                )
             }
         )
     }

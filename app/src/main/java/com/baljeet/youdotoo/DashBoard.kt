@@ -20,6 +20,7 @@ import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestinatio
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
 import com.baljeet.youdotoo.presentation.ui.profile_quick_view.addProfileQuickViewDestination
 import com.baljeet.youdotoo.presentation.ui.projectinvitation.addProjectInvitationDestination
+import com.baljeet.youdotoo.presentation.ui.projectsonly.addProjectOnlyViewDestination
 import com.baljeet.youdotoo.presentation.ui.settings.addSettingsViewDestination
 import com.baljeet.youdotoo.presentation.ui.theme.YouDoTooTheme
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -77,6 +78,7 @@ class DashBoard : ComponentActivity() {
                         addThemeChooserViewDestination(navController)
                         addProfileQuickViewDestination(navController)
                         addSettingsViewDestination(navController)
+                        addProjectOnlyViewDestination(navController)
                     }
                 }
             }

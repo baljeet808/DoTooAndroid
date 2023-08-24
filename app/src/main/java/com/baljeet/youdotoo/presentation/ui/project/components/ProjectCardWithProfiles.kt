@@ -61,11 +61,12 @@ fun ProjectCardWithProfiles(
     updateProjectTitle: (title: String) -> Unit,
     updateProjectDescription: (title: String) -> Unit,
     toggleNotificationSetting: () -> Unit,
-    onClickInvite: () -> Unit
+    onClickInvite: () -> Unit,
+    showFullCardInitially : Boolean = true
 ) {
 
     var showAll by remember {
-        mutableStateOf(true)
+        mutableStateOf(showFullCardInitially)
     }
 
     var showEditTitleBox by remember {

@@ -37,6 +37,7 @@ fun NavGraphBuilder.addProjectViewDestination(
         val users = project?.let {
              viewModel.getUserProfiles(it.toProject().getUserIds()).collectAsState(initial = listOf())
         }?.value?: listOf()
+
         ProjectView(
             project = project,
             onToggle={doTooItem, selectedProject ->

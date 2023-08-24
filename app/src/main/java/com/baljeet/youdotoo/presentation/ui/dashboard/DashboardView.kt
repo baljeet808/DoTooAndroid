@@ -70,7 +70,8 @@ fun DashboardView(
     logout : () -> Unit,
     onClickNotifications: () -> Unit,
     onClickSettings : () -> Unit,
-    openProfile : () -> Unit
+    openProfile : () -> Unit,
+    navigateToProjectsOnlyView : () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
@@ -152,7 +153,7 @@ fun DashboardView(
                                     scaffoldState.drawerState.close()
                                 }
                                 maximizeCurrentScreen = true
-                                navController.navigate(DestinationProjectsRoute)
+                                navigateToProjectsOnlyView()
                             }
                         }
                     },
@@ -287,6 +288,7 @@ fun PreviewDashboardView() {
         onClickNotifications = {},
         logout = {},
         onClickSettings = {},
-        openProfile = {}
+        openProfile = {},
+        navigateToProjectsOnlyView = {}
     )
 }
