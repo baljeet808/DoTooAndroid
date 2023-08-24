@@ -64,7 +64,6 @@ fun DoTooItemsLazyColumn(
     val stopScope = rememberCoroutineScope()
 
     LazyColumn(
-       // state = lazyListState,
         modifier = modifier
             .fillMaxSize()
             .background(color = Color.Transparent),
@@ -150,10 +149,10 @@ fun DoTooItemsLazyColumn(
                             onToggleDoToo(dotoo)
                         },
                         navigateToQuickEditDotoo = {
-                            navigateToEditTask(dotoo)
+                            navigateToQuickEditTask(dotoo)
                         },
                         navigateToTaskEdit = {
-
+                            navigateToEditTask(dotoo)
                         }
                     )
                 },

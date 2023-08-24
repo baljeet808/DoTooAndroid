@@ -510,7 +510,6 @@ fun ProjectsView(
                                                 deleteTask(task)
                                             },
                                             navigateToQuickEditTask = {
-                                                //navigateToQuickEditTask(it)
                                                 taskToEdit = it
                                                 keyBoardController?.show()
                                                 showBlur = true
@@ -549,7 +548,6 @@ fun ProjectsView(
                                                 deleteTask(task)
                                             },
                                             navigateToQuickEditTask = {
-                                                //navigateToQuickEditTask(it)
                                                 taskToEdit = it
                                                 keyBoardController?.show()
                                                 showBlur = true
@@ -593,7 +591,6 @@ fun ProjectsView(
                                                 deleteTask(task)
                                             },
                                             navigateToQuickEditTask = {
-                                                // navigateToQuickEditTask(it)
                                                 taskToEdit = it
                                                 keyBoardController?.show()
                                                 showBlur = true
@@ -637,7 +634,6 @@ fun ProjectsView(
                                                 deleteTask(task)
                                             },
                                             navigateToQuickEditTask = {
-                                                // navigateToQuickEditTask(it)
                                                 taskToEdit = it
                                                 keyBoardController?.show()
                                                 showBlur = true
@@ -681,7 +677,6 @@ fun ProjectsView(
                                                 deleteTask(task)
                                             },
                                             navigateToQuickEditTask = {
-                                                // navigateToQuickEditTask(it)
                                                 taskToEdit = it
                                                 keyBoardController?.show()
                                                 showBlur = true
@@ -885,6 +880,7 @@ fun DefaultProjectPreview() {
         navigateToCreateTask = {},
         navigateToCreateProject = {},
         deleteTask = {},
-        updateTaskTitle = { _, _ -> }
+        updateTaskTitle = { _, _ -> },
+
     )
 }

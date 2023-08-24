@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
@@ -26,9 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -51,10 +55,15 @@ fun EditOnFlyBoxRound(
     lines: Int
 ) {
 
-    var text  by remember {
-        mutableStateOf(placeholder)
+    val focusRequester = remember {
+        FocusRequester()
     }
-
+    var text  by remember {
+        mutableStateOf(
+            TextFieldValue(placeholder)
+        )
+    }
+    text = text.copy(selection = TextRange(text.text.length))
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -74,7 +83,7 @@ fun EditOnFlyBoxRound(
         TextField(
             value = text,
             onValueChange = { updatedText ->
-                if (updatedText.length <= maxCharLength) {
+                if (updatedText.text.length <= maxCharLength) {
                     text = updatedText
                 }
             },
@@ -105,7 +114,10 @@ fun EditOnFlyBoxRound(
                 errorContainerColor = Color.White,
                 cursorColor = Color.Black,
                 errorCursorColor = Color.Red
-            )
+            ),
+            keyboardActions = KeyboardActions {
+                focusRequester.requestFocus()
+            }
         )
 
         /**
@@ -122,7 +134,7 @@ fun EditOnFlyBoxRound(
             Spacer(modifier = Modifier.width(15.dp))
             IconButton(
                 onClick = {
-                    onSubmit(text)
+                    onSubmit(text.text)
                 },
                 modifier = Modifier
                     .background(
@@ -162,8 +174,8 @@ fun EditOnFlyBoxRound(
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "${text.length}/$maxCharLength",
-                color = if (text.length >= maxCharLength) {
+                text = "${text.text.length}/$maxCharLength",
+                color = if (text.text.length >= maxCharLength) {
                     DoTooRed
                 } else {
                     Color.White
