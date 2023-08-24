@@ -202,12 +202,12 @@ fun ProjectsView(
                     Icon(
                         Icons.Outlined.Add,
                         contentDescription = "Floating button to quickly add a task to this project",
-                        tint = Color.White
+                        tint = getTextColor()
                     )
                     Text(
                         text = "Add Task",
                         fontFamily = FontFamily(Nunito.Normal.font),
-                        color = Color.White,
+                        color = getTextColor(),
                         fontSize = 14.sp
                     )
                 }
@@ -340,12 +340,12 @@ fun ProjectsView(
                                 Icon(
                                     Icons.Outlined.Add,
                                     contentDescription = "Floating button to add a project",
-                                    tint = Color.White
+                                    tint = getTextColor()
                                 )
                                 Text(
                                     text = "Add Project",
                                     fontFamily = FontFamily(Nunito.Normal.font),
-                                    color = Color.White,
+                                    color = getTextColor(),
                                     fontSize = 13.sp
                                 )
                             }
@@ -447,12 +447,12 @@ fun ProjectsView(
                                     Icon(
                                         Icons.Outlined.Add,
                                         contentDescription = "Floating button to add a project",
-                                        tint = Color.White
+                                        tint = getTextColor()
                                     )
                                     Text(
                                         text = "Add Project",
                                         fontFamily = FontFamily(Nunito.Normal.font),
-                                        color = Color.White,
+                                        color = getTextColor(),
                                         fontSize = 13.sp
                                     )
                                 }

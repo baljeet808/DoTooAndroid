@@ -5,7 +5,6 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -54,24 +53,36 @@ fun ProjectCardView(
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
     ).value
 
-    Box(
+    Column(
         modifier = modifier
             .widthIn(max = 220.dp)
             .heightIn(max = 160.dp)
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
+            .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
             .background(
                 color = getDarkThemeColor(),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(10.dp)
             ),
     ) {
+
+        Row(
+            modifier = Modifier
+                .background(
+                    color = Color(project.project.color)
+                )
+                .fillMaxWidth()
+                .height(10.dp)
+        ) {
+
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .clickable(onClick = onItemClick)
-                .padding(20.dp),
+                .padding(start = 15.dp, end = 15.dp, bottom = 15.dp, top = 5.dp),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,7 +92,7 @@ fun ProjectCardView(
             ) {
 
                 Text(
-                    text = project.tasks.size.toString().plus(" Tasks"),
+                    text = project.tasks.size.toString().plus(if(project.tasks.size == 1) " Task" else " Tasks"),
                     color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
