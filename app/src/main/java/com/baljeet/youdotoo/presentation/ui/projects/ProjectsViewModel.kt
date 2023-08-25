@@ -135,16 +135,6 @@ class ProjectsViewModel @Inject constructor(
     fun allOtherTasks(): Flow<List<DoTooItemEntity>> = getAllOtherDoToosUseCase(tomorrowDateInLong)
 
 
-    init {
-
-        //online db connection
-
-
-
-    }
-
-
-
 
     private fun isProjectIsSharedToUser(project: ProjectEntity) =
         project.ownerId != SharedPref.userId
