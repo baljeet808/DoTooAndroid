@@ -8,7 +8,8 @@ interface DoTooItemsRepository {
 
      fun getAllDoTooItems(): Flow<List<DoTooItemEntity>>
 
-     fun getDoToosByProjectId(projectId : String): Flow<List<DoTooItemEntity>>
+     suspend fun getDoToosByProjectId(projectId : String): List<DoTooItemEntity>
+     fun getAllDoTooItemsByProjectIDAsFlow(projectId : String): Flow<List<DoTooItemEntity>>
 
      suspend fun getDoTooById(doTooId : String): DoTooItemEntity
 

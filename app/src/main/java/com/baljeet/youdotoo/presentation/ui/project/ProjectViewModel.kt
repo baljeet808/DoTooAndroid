@@ -11,7 +11,7 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
-import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectTasksAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
@@ -34,7 +34,7 @@ class ProjectViewModel @Inject constructor(
     private val deleteDoToosUseCase: DeleteDoTooUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
-    private val getProjectDoToosUseCase: GetProjectDoToosUseCase,
+    private val getProjectTasksAsFlowUseCase: GetProjectTasksAsFlowUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase
 ) : ViewModel() {
 
@@ -48,7 +48,7 @@ class ProjectViewModel @Inject constructor(
 
     fun getProjectById() : Flow<ProjectEntity> = getProjectByIdAsFlowUseCase(projectId)
 
-    fun getProjectTasks() : Flow<List<DoTooItemEntity>> = getProjectDoToosUseCase(projectId)
+    fun getProjectTasks() : Flow<List<DoTooItemEntity>> = getProjectTasksAsFlowUseCase(projectId)
 
     fun getUserProfiles(ids : List<String>) : Flow<List<UserEntity>> = getUsersByIdsUseCase(ids)
 

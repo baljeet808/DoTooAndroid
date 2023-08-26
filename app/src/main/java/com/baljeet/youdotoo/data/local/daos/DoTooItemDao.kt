@@ -15,7 +15,9 @@ interface DoTooItemDao {
     suspend fun upsertAll(doTooItems : List<DoTooItemEntity>)
 
     @Query("SELECT * FROM todos WHERE projectId = :projectId")
-    fun getAllDoTooItemsByProjectID(projectId: String) : Flow<List<DoTooItemEntity>>
+    suspend fun getAllDoTooItemsByProjectID(projectId: String) : List<DoTooItemEntity>
+    @Query("SELECT * FROM todos WHERE projectId = :projectId")
+    fun getAllDoTooItemsByProjectIDAsFlow(projectId: String) : Flow<List<DoTooItemEntity>>
 
     @Query("SELECT * FROM todos")
     fun getAllDoTooItems() : Flow<List<DoTooItemEntity>>

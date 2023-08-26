@@ -1,9 +1,6 @@
 package com.baljeet.youdotoo
 
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.common.AccessTypeAdmin
-import com.baljeet.youdotoo.common.AccessTypeEditor
-import com.baljeet.youdotoo.common.AccessTypeViewer
 import com.baljeet.youdotoo.common.EnumNotificationType
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationArchived
@@ -17,11 +14,14 @@ import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
+import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteTasksByProjectIdUseCase
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectTasksUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetInvitationByIdUseCase
@@ -57,7 +57,9 @@ class DashboardViewModel @Inject constructor(
     private val upsertNotificationsUseCase: UpsertNotificationsUseCase,
     private val deleteAllTablesUseCase: DeleteAllTablesUseCase,
     private val upsertMessagesUseCase: UpsertMessagesUseCase,
-    private val deleteAllMessagesOfProjectUseCase: DeleteAllMessagesOfProjectUseCase
+    private val deleteAllMessagesOfProjectUseCase: DeleteAllMessagesOfProjectUseCase,
+    private val getProjectTasksUseCase: GetProjectTasksUseCase,
+    private val deleteDoTooUseCase: DeleteDoTooUseCase
 ) : ViewModel() {
 
 
@@ -115,6 +117,7 @@ class DashboardViewModel @Inject constructor(
         projectsQuery.addSnapshotListener { snapshot, error ->
             if (snapshot != null && error == null) {
                 for (project in snapshot) {
+
                     val onlineProject = Project(
                         id = project.getString("id") ?: "",
                         name = project.getString("name") ?: "",
@@ -155,10 +158,16 @@ class DashboardViewModel @Inject constructor(
                                     )
                                 }
                                 CoroutineScope(Dispatchers.IO).launch {
+                                    val allLocalTasksOfThisProject = getProjectTasksUseCase(onlineProject.id)
                                     upsertDoToosUseCase(
                                         dotoos = doToos,
                                         projectId = onlineProject.id
                                     )
+                                    if(allLocalTasksOfThisProject.size != doToos.size){
+                                        allLocalTasksOfThisProject.filter { localTask -> doToos.none { onlineTask -> onlineTask.id == localTask.id } }.forEach { wildTask ->
+                                            deleteDoTooUseCase(wildTask.toDoTooItem(), onlineProject.id )
+                                        }
+                                    }
                                 }
                             }
                             if (e != null) {
@@ -327,25 +336,6 @@ class DashboardViewModel @Inject constructor(
                                 }
                             }
 
-                            if (invite.accessType != oldInvite.accessType) {
-                                if (invite.invitedEmail == SharedPref.userEmail) {
-                                    val accessName = when (invite.accessType) {
-                                        AccessTypeAdmin -> {
-                                            "Admin"
-                                        }
-
-                                        AccessTypeEditor -> {
-                                            "Editor"
-                                        }
-
-                                        AccessTypeViewer -> {
-                                            "Viewer"
-                                        }
-
-                                        else -> return@launch
-                                    }
-                                }
-                            }
 
                         } ?: kotlin.run{
                             if (invite.invitedEmail == SharedPref.userEmail) {

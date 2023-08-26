@@ -19,7 +19,10 @@ class DoTooItemsRepositoryImpl @Inject constructor(
         return doToosDao.getAllDoTooItems()
     }
 
-    override fun getDoToosByProjectId(projectId: String): Flow<List<DoTooItemEntity>> {
+    override fun getAllDoTooItemsByProjectIDAsFlow(projectId: String): Flow<List<DoTooItemEntity>> {
+        return doToosDao.getAllDoTooItemsByProjectIDAsFlow(projectId = projectId)
+    }
+    override suspend fun getDoToosByProjectId(projectId: String): List<DoTooItemEntity> {
         return doToosDao.getAllDoTooItemsByProjectID(projectId = projectId)
     }
 
