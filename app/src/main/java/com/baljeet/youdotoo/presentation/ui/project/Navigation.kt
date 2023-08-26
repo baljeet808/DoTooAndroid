@@ -57,7 +57,9 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             users = users,
             deleteTask = { task ->
-                viewModel.deleteTask(task)
+                project?.toProject()?.let {
+                    viewModel.deleteTask(task,it)
+                }
             },
             deleteProject = {
                 project?.toProject()?.let {
@@ -81,7 +83,7 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             updateTaskTitle = { task, title->
                 viewModel.upsertDoToo(
-                    doTooItem = task.copy(
+                    task = task.copy(
                         title = title,
                         updatedBy = SharedPref.userName.plus(" has updated this task.")
                     ),
