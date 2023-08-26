@@ -23,6 +23,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.AccessTypeEditor
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.common.getSampleProfile
@@ -62,6 +64,9 @@ fun InvitationsView(
     sendInvite: (email: String, accessType: Int) -> Unit,
     onBackPressed: () -> Unit
 ) {
+
+
+    SharedPref.init(LocalContext.current)
 
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -460,7 +465,7 @@ fun isEmailValid(email: String): Boolean {
     return true
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewInvitationsView() {
     InvitationsView(
