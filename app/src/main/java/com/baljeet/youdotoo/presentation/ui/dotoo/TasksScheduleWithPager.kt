@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -113,6 +115,9 @@ fun TasksScheduleWithPager(
     var showNothingHereView by remember { mutableStateOf(false) }
     showNothingHereView = (tasksTabs[pagerState.currentPage].taskCount == 0)
 
+
+    val deleteScope = rememberCoroutineScope()
+
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -170,6 +175,11 @@ fun TasksScheduleWithPager(
                                 end = 10.dp
                             ),
                         onItemDelete = { task ->
+                            if (tasksTabs[currentIndex].taskCount == 1) {
+                                deleteScope.launch {
+                                    pagerState.scrollToPage(page = 0)
+                                }
+                            }
                             viewModel.deleteTask(task)
                         },
                         navigateToQuickEditTask = navigateToQuickEditTaskTitle

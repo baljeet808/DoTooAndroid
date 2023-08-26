@@ -11,7 +11,6 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetDoTooByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsWithDoToosUseCase
@@ -28,7 +27,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ProjectsViewModel @Inject constructor(
     private val getProjectsWithDoToosUseCase: GetProjectsWithDoToosUseCase,
-    private val getDoTooByIdUseCase: GetDoTooByIdUseCase,
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
     private val upsertDoToosUseCase: UpsertDoToosUseCase
@@ -87,9 +85,8 @@ class ProjectsViewModel @Inject constructor(
 
     fun updateTask(task: DoTooItemEntity) {
         CoroutineScope(Dispatchers.IO).launch {
-            val taskEntity = getDoTooByIdUseCase(task.id)
-            val projectEntity = getProjectByIdUseCase(projectId = taskEntity.projectId)
-            updateTask(taskEntity,projectEntity.toProject())
+            val projectEntity = getProjectByIdUseCase(projectId = task.projectId)
+            updateTask(task,projectEntity.toProject())
         }
     }
     private fun updateTask(task: DoTooItemEntity, project : Project){
@@ -140,13 +137,13 @@ class ProjectsViewModel @Inject constructor(
 
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateProjectOnSever(project)
+                updateProjectOnSever(projectCopy)
             }
             Roles.Admin -> {
-                updateProjectLocally(project)
+                updateProjectLocally(projectCopy)
             }
             Roles.Editor -> {
-                updateProjectOnSever(project)
+                updateProjectOnSever(projectCopy)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything

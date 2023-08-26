@@ -101,13 +101,13 @@ class ProjectViewModel @Inject constructor(
 
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateProjectOnSever(project)
+                updateProjectOnSever(projectCopy)
             }
             Roles.Admin -> {
-                updateProjectLocally(project)
+                updateProjectLocally(projectCopy)
             }
             Roles.Editor -> {
-                updateProjectOnSever(project)
+                updateProjectOnSever(projectCopy)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything

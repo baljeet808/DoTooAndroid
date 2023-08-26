@@ -420,8 +420,8 @@ fun ProjectsView(
                                 .fillMaxSize()
                                 .padding(
                                     top = 10.dp,
-                                    start = 10.dp,
-                                    end = 10.dp
+                                    start = 5.dp,
+                                    end = 5.dp
                                 ),
                             navigateToQuickEditTask = {
                                 taskToEdit = it
