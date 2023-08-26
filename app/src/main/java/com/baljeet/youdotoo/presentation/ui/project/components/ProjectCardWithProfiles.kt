@@ -37,13 +37,13 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
+import com.baljeet.youdotoo.common.getUserRole
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
-import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBox
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow

@@ -45,10 +45,10 @@ import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.common.getUserRole
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
 import com.baljeet.youdotoo.presentation.ui.dotoo.DummyDoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.DummyProjectCardView
-import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor

@@ -37,7 +37,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import kotlinx.coroutines.CoroutineScope
@@ -50,11 +51,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemsLazyColumn(
-    doToos: List<DoTooItem>,
-    onToggleDoToo: (doToo: DoTooItem) -> Unit,
-    navigateToQuickEditTask : (task: DoTooItem) -> Unit,
-    navigateToEditTask : (task : DoTooItem) -> Unit,
-    onItemDelete: (doToo: DoTooItem) -> Unit,
+    doToos: List<DoTooItemEntity>,
+    onToggleDoToo: (doToo: DoTooItemEntity) -> Unit,
+    navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
+    navigateToEditTask : (task : DoTooItemEntity) -> Unit,
+    onItemDelete: (doToo: DoTooItemEntity) -> Unit,
     modifier: Modifier
 ) {
 
@@ -178,7 +179,7 @@ fun PreviewDoTooItemsLazyColumn() {
             getSampleDotooItem(),
             getSampleDotooItem(),
             sampleTaskItem
-        ),
+        ).map { it.toDoTooItemEntity("") },
         onToggleDoToo = {},
         modifier = Modifier,
         onItemDelete = {},

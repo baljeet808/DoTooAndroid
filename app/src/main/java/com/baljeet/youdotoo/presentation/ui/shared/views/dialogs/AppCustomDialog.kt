@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.common
+package com.baljeet.youdotoo.presentation.ui.shared.views.dialogs
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor

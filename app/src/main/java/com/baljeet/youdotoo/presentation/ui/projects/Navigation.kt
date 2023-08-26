@@ -9,7 +9,6 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.doesUserHavePermissionToEdit
 import com.baljeet.youdotoo.common.getRandomId
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
 
 
@@ -23,21 +22,10 @@ fun NavGraphBuilder.addProjectsViewDestination(
     ){
 
         val viewModel : ProjectsViewModel = hiltViewModel()
-
-
         val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
-        val pendingTasks by viewModel.pendingTasks().collectAsState(initial = arrayListOf())
-        val yesterdayTasks by viewModel.yesterdayTasks().collectAsState(initial = arrayListOf())
-        val todayTasks by viewModel.todayTasks().collectAsState(initial = arrayListOf())
-        val tomorrowTasks by viewModel.tomorrowTasks().collectAsState(initial = arrayListOf())
-        val allOtherTasks by viewModel.allOtherTasks().collectAsState(initial = arrayListOf())
+
         ProjectsView(
             projects = projects,
-            pendingTasks = pendingTasks.map { it.toDoTooItem() },
-            yesterdayTasks = yesterdayTasks.map { it.toDoTooItem() },
-            todayTasks = todayTasks.map { it.toDoTooItem() },
-            tomorrowTasks = tomorrowTasks.map { it.toDoTooItem() },
-            allOtherTasks = allOtherTasks.map { it.toDoTooItem() },
             navigateToDoToos = { project ->
                 navController.navigate("project/".plus(project.id))
             },
@@ -70,9 +58,6 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             navigateToCreateProject = {
                 navController.navigate(DestinationCreateProjectRoute)
-            },
-            deleteTask = { task ->
-                viewModel.deleteTask(task)
             },
             updateTaskTitle = { task , title ->
                 val newTask = task.copy(

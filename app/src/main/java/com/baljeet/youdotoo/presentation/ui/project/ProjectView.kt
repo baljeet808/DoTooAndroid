@@ -59,7 +59,6 @@ import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.data.mappers.toUser
 import com.baljeet.youdotoo.data.mappers.toUserEntity
-import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
@@ -76,22 +75,22 @@ fun ProjectView(
     project: ProjectEntity?,
     users: List<UserEntity>,
     tasks: List<DoTooItemEntity>,
-    onToggle: (doTooItem: DoTooItem, project: Project) -> Unit,
+    onToggle: (doTooItem: DoTooItemEntity, project: Project) -> Unit,
     navigateToCreateTask: () -> Unit,
-    deleteTask: (DoTooItem) -> Unit,
+    deleteTask: (DoTooItemEntity) -> Unit,
     deleteProject: () -> Unit,
     upsertProject: (Project) -> Unit,
     onClickInvite: () -> Unit,
-    navigateToEditTask: (task: DoTooItem) -> Unit,
+    navigateToEditTask: (task: DoTooItemEntity) -> Unit,
     navigateToChat: () -> Unit,
-    updateTaskTitle: (task: DoTooItem, title: String) -> Unit
+    updateTaskTitle: (task: DoTooItemEntity, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
 
 
 
-    var taskToEdit: DoTooItem? = null
+    var taskToEdit: DoTooItemEntity? = null
 
 
     var showBlur by remember {
@@ -185,7 +184,7 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-                doToos = tasks.map { it.toDoTooItem() },
+                doToos = tasks,
                 onToggleDoToo = { doToo ->
                     project?.let {
                         onToggle(doToo, project.toProject())

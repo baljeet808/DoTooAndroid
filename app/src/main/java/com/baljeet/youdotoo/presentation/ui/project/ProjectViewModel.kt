@@ -8,7 +8,7 @@ import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetProjectDoToosUseCase
@@ -54,7 +54,7 @@ class ProjectViewModel @Inject constructor(
 
 
 
-    fun upsertTask(task: DoTooItem, project : Project){
+    fun upsertTask(task: DoTooItemEntity, project : Project){
         when(getRole(project)){
             Roles.ProAdmin -> {
                 updateTaskOnServer(task, project)
@@ -76,7 +76,7 @@ class ProjectViewModel @Inject constructor(
         }
     }
 
-    private fun updateTaskOnServer(task : DoTooItem, project: Project){
+    private fun updateTaskOnServer(task : DoTooItemEntity, project: Project){
         projectsReference
             .document(projectId)
             .collection("todos")
@@ -87,9 +87,9 @@ class ProjectViewModel @Inject constructor(
             }
     }
 
-    private fun updateTaskLocally(task : DoTooItem, project : Project){
+    private fun updateTaskLocally(task : DoTooItemEntity, project : Project){
         CoroutineScope(Dispatchers.IO).launch {
-            upsertDoToosUseCase(listOf(task),projectId)
+            upsertDoToosUseCase(listOf(task.toDoTooItem()),projectId)
             updateProject(project)
         }
     }
@@ -169,7 +169,7 @@ class ProjectViewModel @Inject constructor(
         }
     }
 
-    fun deleteTask(task : DoTooItem, project: Project){
+    fun deleteTask(task : DoTooItemEntity, project: Project){
         when(getRole(project)){
             Roles.ProAdmin -> {
                 deleteTaskOnServer(task, project)
@@ -190,7 +190,7 @@ class ProjectViewModel @Inject constructor(
             }
         }
     }
-    private fun deleteTaskOnServer(task: DoTooItem, project: Project){
+    private fun deleteTaskOnServer(task: DoTooItemEntity, project: Project){
         projectsReference
             .document(projectId)
             .collection("todos")
@@ -201,9 +201,9 @@ class ProjectViewModel @Inject constructor(
             }
     }
 
-    private fun deleteTaskLocally(task: DoTooItem, project: Project){
+    private fun deleteTaskLocally(task: DoTooItemEntity, project: Project){
         CoroutineScope(Dispatchers.IO).launch {
-            deleteDoToosUseCase(task, projectId = projectId)
+            deleteDoToosUseCase(task.toDoTooItem(), projectId = projectId)
             updateProject(project)
         }
     }

@@ -8,7 +8,6 @@ import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
-import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetAllTasksUseCase
@@ -39,7 +38,7 @@ class TasksScheduleViewModel @Inject constructor(
         .collection("projects")
 
 
-    fun deleteTask(task : DoTooItem){
+    fun deleteTask(task : DoTooItemEntity){
         CoroutineScope(Dispatchers.IO).launch {
             val taskEntity = getDoTooByIdUseCase(task.id)
             val project = getProjectByIdUseCase(projectId = taskEntity.projectId)

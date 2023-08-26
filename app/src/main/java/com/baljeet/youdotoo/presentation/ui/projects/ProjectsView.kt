@@ -61,22 +61,17 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.DashboardTaskTabs
-import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
-import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
-import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
+import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleWithPager
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
-import com.baljeet.youdotoo.presentation.ui.projects.components.TasksSchedulesTabRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
@@ -85,8 +80,6 @@ import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -95,17 +88,11 @@ import kotlinx.coroutines.launch
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
     projects: List<ProjectWithDoToos>,
-    pendingTasks: List<DoTooItem>,
-    yesterdayTasks: List<DoTooItem>,
-    todayTasks: List<DoTooItem>,
-    tomorrowTasks: List<DoTooItem>,
-    allOtherTasks: List<DoTooItem>,
-    onToggleTask: (DoTooItem) -> Unit,
-    navigateToTask: (DoTooItem) -> Unit,
+    onToggleTask: (DoTooItemEntity) -> Unit,
+    navigateToTask: (DoTooItemEntity) -> Unit,
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
-    deleteTask: (task: DoTooItem) -> Unit,
-    updateTaskTitle: (task: DoTooItem, title: String) -> Unit
+    updateTaskTitle: (task: DoTooItemEntity, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -114,7 +101,7 @@ fun ProjectsView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: DoTooItem? = null
+    var taskToEdit: DoTooItemEntity? = null
 
     val projectsListState = rememberLazyListState()
     val listMoveScope = rememberCoroutineScope()
@@ -123,27 +110,6 @@ fun ProjectsView(
     var showBlur by remember {
         mutableStateOf(false)
     }
-
-    val tasksTabs = getTaskTabs(
-        allOtherTasks = allOtherTasks,
-        todayTasks = todayTasks,
-        tomorrowTasks = tomorrowTasks,
-        pendingTasks = pendingTasks,
-        yesterdayTasks = yesterdayTasks
-    )
-
-
-    val startingTabIndex = 0
-
-    val pagerState = rememberPagerState(initialPage = startingTabIndex)
-
-
-    /**
-     * Logic to check if need to show empty view or not
-     * **/
-    var showNothingHereView by remember { mutableStateOf(false) }
-    showNothingHereView = ((tasksTabs[0].taskCount == 0) && (pagerState.currentPage == 0) && showScheduleTasksView.not())
-
 
     var showTopInfo by remember {
         mutableStateOf(true)
@@ -448,296 +414,69 @@ fun ProjectsView(
                 ) {
 
 
-                    /**
-                     * Empty view
-                     * **/
-                    androidx.compose.animation.AnimatedVisibility(visible = showNothingHereView) {
-                        NothingHereView(
-                            modifier = Modifier.padding(bottom = 100.dp)
-                        )
-                    }
-
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView) {
-                        Column(
+                        TasksScheduleLazyColumn(
                             modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.End,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-
-                            TasksScheduleLazyColumn(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f)
-                                    .padding(
-                                        top = 10.dp,
-                                        start = 10.dp,
-                                        end = 10.dp
-                                    ),
-                                navigateToQuickEditTask = {
-                                    taskToEdit = it
-                                    keyBoardController?.show()
-                                    showBlur = true
-                                    focusScope.launch {
-                                        delay(500)
-                                        focusRequester.requestFocus()
-                                    }
-                                },
-                                navigateToEditTask = {
-                                    navigateToTask(it)
-                                },
-                                toggleTask = {
-                                    onToggleTask(it)
-                                    listMoveScope.launch {
-                                        delay(moveAnimationDelay)
-                                        projectsListState.animateScrollToItem(0)
-                                    }
+                                .fillMaxSize()
+                                .padding(
+                                    top = 10.dp,
+                                    start = 10.dp,
+                                    end = 10.dp
+                                ),
+                            navigateToQuickEditTask = {
+                                taskToEdit = it
+                                keyBoardController?.show()
+                                showBlur = true
+                                focusScope.launch {
+                                    delay(500)
+                                    focusRequester.requestFocus()
                                 }
-                            )
-                        }
+                            },
+                            navigateToEditTask = {
+                                navigateToTask(it)
+                            },
+                            toggleTask = {
+                                onToggleTask(it)
+                                listMoveScope.launch {
+                                    delay(moveAnimationDelay)
+                                    projectsListState.animateScrollToItem(0)
+                                }
+                            }
+                        )
                     }
 
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView.not()) {
                         /**
                          * Tasks divided in tabs by schedule
                          * **/
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            horizontalAlignment = Alignment.End
-                        ) {
-
-                            /**
-                             *Tab row view
-                             * **/
-                            TasksSchedulesTabRow(
-                                pagerState = pagerState,
-                                tasksTabs = tasksTabs
-                            )
-
-                            /**
-                             * Tasks pages by schedule
-                             * **/
-                            HorizontalPager(
-                                count = tasksTabs.size,
-                                state = pagerState,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .weight(1f),
-                            ) { currentIndex ->
-                                when (tasksTabs[currentIndex].name) {
-                                    EnumDashboardTasksTabs.Yesterday -> {
-                                        AnimatedVisibility(visible = yesterdayTasks.isNotEmpty()) {
-                                            DoTooItemsLazyColumn(
-                                                doToos = yesterdayTasks,
-                                                onToggleDoToo = { doToo ->
-                                                    onToggleTask(doToo)
-                                                    listMoveScope.launch {
-                                                        delay(moveAnimationDelay)
-                                                        projectsListState.animateScrollToItem(0)
-                                                    }
-                                                },
-                                                navigateToEditTask = { doToo ->
-                                                    navigateToTask(doToo)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .padding(
-                                                        top = 10.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    ),
-                                                onItemDelete = { task ->
-                                                    if (yesterdayTasks.size == 1) {
-                                                        focusScope.launch {
-                                                            pagerState.scrollToPage(page = 0)
-                                                        }
-                                                    }
-                                                    deleteTask(task)
-                                                },
-                                                navigateToQuickEditTask = {
-                                                    taskToEdit = it
-                                                    keyBoardController?.show()
-                                                    showBlur = true
-                                                    focusScope.launch {
-                                                        delay(500)
-                                                        focusRequester.requestFocus()
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
-
-                                    EnumDashboardTasksTabs.Today -> {
-                                        AnimatedVisibility(visible = todayTasks.isNotEmpty()) {
-                                            DoTooItemsLazyColumn(
-                                                doToos = todayTasks,
-                                                onToggleDoToo = { doToo ->
-                                                    onToggleTask(doToo)
-                                                    listMoveScope.launch {
-                                                        delay(moveAnimationDelay)
-                                                        projectsListState.animateScrollToItem(0)
-                                                    }
-                                                },
-                                                navigateToEditTask = { doToo ->
-                                                    navigateToTask(doToo)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .padding(
-                                                        top = 10.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    ),
-                                                onItemDelete = { task ->
-                                                    deleteTask(task)
-                                                },
-                                                navigateToQuickEditTask = {
-                                                    taskToEdit = it
-                                                    keyBoardController?.show()
-                                                    showBlur = true
-                                                    focusScope.launch {
-                                                        delay(500)
-                                                        focusRequester.requestFocus()
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
-
-                                    EnumDashboardTasksTabs.Tomorrow -> {
-                                        AnimatedVisibility(visible = tomorrowTasks.isNotEmpty()) {
-                                            DoTooItemsLazyColumn(
-                                                doToos = tomorrowTasks,
-                                                onToggleDoToo = { doToo ->
-                                                    onToggleTask(doToo)
-                                                    listMoveScope.launch {
-                                                        delay(moveAnimationDelay)
-                                                        projectsListState.animateScrollToItem(0)
-                                                    }
-                                                },
-                                                navigateToEditTask = { doToo ->
-                                                    navigateToTask(doToo)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .padding(
-                                                        top = 10.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    ),
-                                                onItemDelete = { task ->
-                                                    if (tomorrowTasks.size == 1) {
-                                                        focusScope.launch {
-                                                            pagerState.scrollToPage(page = 0)
-                                                        }
-                                                    }
-                                                    deleteTask(task)
-                                                },
-                                                navigateToQuickEditTask = {
-                                                    taskToEdit = it
-                                                    keyBoardController?.show()
-                                                    showBlur = true
-                                                    focusScope.launch {
-                                                        delay(500)
-                                                        focusRequester.requestFocus()
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
-
-                                    EnumDashboardTasksTabs.Pending -> {
-                                        AnimatedVisibility(visible = pendingTasks.isNotEmpty()) {
-                                            DoTooItemsLazyColumn(
-                                                doToos = pendingTasks,
-                                                onToggleDoToo = { doToo ->
-                                                    onToggleTask(doToo)
-                                                    listMoveScope.launch {
-                                                        delay(moveAnimationDelay)
-                                                        projectsListState.animateScrollToItem(0)
-                                                    }
-                                                },
-                                                navigateToEditTask = { doToo ->
-                                                    navigateToTask(doToo)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .padding(
-                                                        top = 10.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    ),
-                                                onItemDelete = { task ->
-                                                    if (pendingTasks.size == 1) {
-                                                        focusScope.launch {
-                                                            pagerState.scrollToPage(page = 0)
-                                                        }
-                                                    }
-                                                    deleteTask(task)
-                                                },
-                                                navigateToQuickEditTask = {
-                                                    taskToEdit = it
-                                                    keyBoardController?.show()
-                                                    showBlur = true
-                                                    focusScope.launch {
-                                                        delay(500)
-                                                        focusRequester.requestFocus()
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
-
-                                    EnumDashboardTasksTabs.AllOther -> {
-                                        AnimatedVisibility(visible = allOtherTasks.isNotEmpty()) {
-                                            DoTooItemsLazyColumn(
-                                                doToos = allOtherTasks,
-                                                onToggleDoToo = { doToo ->
-                                                    onToggleTask(doToo)
-                                                    listMoveScope.launch {
-                                                        delay(moveAnimationDelay)
-                                                        projectsListState.animateScrollToItem(0)
-                                                    }
-                                                },
-                                                navigateToEditTask = { doToo ->
-                                                    navigateToTask(doToo)
-                                                },
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .weight(1f)
-                                                    .padding(
-                                                        top = 10.dp,
-                                                        start = 10.dp,
-                                                        end = 10.dp
-                                                    ),
-                                                onItemDelete = { task ->
-                                                    if (allOtherTasks.size == 1) {
-                                                        focusScope.launch {
-                                                            pagerState.scrollToPage(page = 0)
-                                                        }
-                                                    }
-                                                    deleteTask(task)
-                                                },
-                                                navigateToQuickEditTask = {
-                                                    taskToEdit = it
-                                                    keyBoardController?.show()
-                                                    showBlur = true
-                                                    focusScope.launch {
-                                                        delay(500)
-                                                        focusRequester.requestFocus()
-                                                    }
-                                                }
-                                            )
-                                        }
-                                    }
+                        TasksScheduleWithPager(
+                            navigateToQuickEditTaskTitle = {
+                                taskToEdit = it
+                                keyBoardController?.show()
+                                showBlur = true
+                                focusScope.launch {
+                                    delay(500)
+                                    focusRequester.requestFocus()
                                 }
-                            }
-                        }
+                            },
+                            navigateToEditTask = {
+                                navigateToTask(it)
+                            },
+                            onToggleTask = {
+                                onToggleTask(it)
+                                listMoveScope.launch {
+                                    delay(moveAnimationDelay)
+                                    projectsListState.animateScrollToItem(0)
+                                }
+                            },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(
+                                    top = 10.dp,
+                                    start = 0.dp,
+                                    end = 0.dp
+                                )
+                        )
                     }
 
                 }
@@ -746,6 +485,9 @@ fun ProjectsView(
         }
 
 
+        /**
+         * Edit Task screen
+         * **/
         AnimatedVisibility(
             visible = showBlur && taskToEdit != null,
             enter = slideInVertically(
@@ -805,89 +547,6 @@ fun ProjectsView(
 }
 
 
-fun Project.getUserRole(): String {
-    SharedPref.userId?.let { userId ->
-        if (this.ownerId == userId) {
-            return "Admin"
-        }
-        if (this.collaboratorIds.contains(userId)) {
-            return "Collaborator"
-        }
-        if (this.viewerIds.contains(userId)) {
-            return "Viewer"
-        }
-    }
-    return "Blocked"
-}
-
-
-fun getTaskTabs(
-    pendingTasks: List<DoTooItem>,
-    yesterdayTasks: List<DoTooItem>,
-    todayTasks: List<DoTooItem>,
-    tomorrowTasks: List<DoTooItem>,
-    allOtherTasks: List<DoTooItem>
-): ArrayList<DashboardTaskTabs> {
-
-    val tasksTabs = arrayListOf<DashboardTaskTabs>()
-
-    EnumDashboardTasksTabs.values().forEachIndexed { index, enumDashboardTasksTabs ->
-        when (enumDashboardTasksTabs) {
-            EnumDashboardTasksTabs.Today -> {
-                tasksTabs.add(
-                    DashboardTaskTabs(
-                        index = index,
-                        name = EnumDashboardTasksTabs.Today,
-                        taskCount = todayTasks.size
-                    )
-                )
-            }
-
-            EnumDashboardTasksTabs.Tomorrow -> {
-                tasksTabs.add(
-                    DashboardTaskTabs(
-                        index = index,
-                        name = EnumDashboardTasksTabs.Tomorrow,
-                        taskCount = tomorrowTasks.size
-                    )
-                )
-            }
-
-            EnumDashboardTasksTabs.Yesterday -> {
-                tasksTabs.add(
-                    DashboardTaskTabs(
-                        index = index,
-                        name = EnumDashboardTasksTabs.Yesterday,
-                        taskCount = yesterdayTasks.size
-                    )
-                )
-            }
-
-            EnumDashboardTasksTabs.Pending -> {
-                tasksTabs.add(
-                    DashboardTaskTabs(
-                        index = index,
-                        name = EnumDashboardTasksTabs.Pending,
-                        taskCount = pendingTasks.size
-                    )
-                )
-            }
-
-            EnumDashboardTasksTabs.AllOther -> {
-                tasksTabs.add(
-                    DashboardTaskTabs(
-                        index = index,
-                        name = EnumDashboardTasksTabs.AllOther,
-                        taskCount = allOtherTasks.size
-                    )
-                )
-            }
-        }
-    }
-    return tasksTabs
-}
-
-
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun DefaultProjectPreview() {
@@ -898,37 +557,10 @@ fun DefaultProjectPreview() {
             getSampleProjectWithTasks(),
             getSampleProjectWithTasks()
         ),
-        pendingTasks = arrayListOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
-        ),
-        yesterdayTasks = arrayListOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
-        ),
-        todayTasks = arrayListOf(
-            /*getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()*/
-        ),
-        tomorrowTasks = arrayListOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
-        ),
-        allOtherTasks = arrayListOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem()
-        ),
         onToggleTask = {},
         navigateToTask = {},
         navigateToCreateTask = {},
         navigateToCreateProject = {},
-        deleteTask = {},
         updateTaskTitle = { _, _ -> },
-
-        )
+    )
 }

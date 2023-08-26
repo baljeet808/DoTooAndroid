@@ -28,3 +28,18 @@ fun getRole(project: Project): Roles {
 
 fun doesUserHavePermissionToEdit(project: ProjectEntity) =
     (project.ownerId == SharedPref.userId!!) || project.collaboratorIds.contains(SharedPref.userId!!)
+
+fun Project.getUserRole(): String {
+    SharedPref.userId?.let { userId ->
+        if (this.ownerId == userId) {
+            return "Admin"
+        }
+        if (this.collaboratorIds.contains(userId)) {
+            return "Collaborator"
+        }
+        if (this.viewerIds.contains(userId)) {
+            return "Viewer"
+        }
+    }
+    return "Blocked"
+}

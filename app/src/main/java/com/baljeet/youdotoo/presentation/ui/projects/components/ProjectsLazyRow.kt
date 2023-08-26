@@ -10,10 +10,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.getUserRole
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
-import com.baljeet.youdotoo.presentation.ui.projects.getUserRole
 
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -32,14 +32,15 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.playWooshSound
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemView(
-    doToo: DoTooItem,
+    doToo: DoTooItemEntity,
     navigateToTaskEdit: () -> Unit,
     navigateToQuickEditDotoo : () -> Unit,
     onToggleDone: () -> Unit
@@ -139,7 +140,7 @@ fun DoTooItemView(
 @Composable
 fun PreviewDoTooItemView() {
     DoTooItemView(
-        doToo = getSampleDotooItem(),
+        doToo = getSampleDotooItem().toDoTooItemEntity(""),
         onToggleDone = {},
         navigateToTaskEdit = {},
         navigateToQuickEditDotoo = {}

@@ -1,10 +1,12 @@
 package com.baljeet.youdotoo.presentation.ui.dotoo
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,7 +29,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,9 +46,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.toLocalDateTime
 import com.baljeet.youdotoo.common.toNiceDateFormat
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.CoroutineScope
@@ -64,9 +69,9 @@ import kotlinx.datetime.toKotlinLocalDateTime
 @Composable
 fun TasksScheduleLazyColumn(
     modifier: Modifier,
-    navigateToQuickEditTask : (task: DoTooItem) -> Unit,
-    navigateToEditTask : (task : DoTooItem) -> Unit,
-    toggleTask : (task : DoTooItem) -> Unit
+    navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
+    navigateToEditTask : (task : DoTooItemEntity) -> Unit,
+    toggleTask : (task : DoTooItemEntity) -> Unit
 ) {
 
     val todayDate = java.time.LocalDateTime.now()
@@ -121,199 +126,226 @@ fun TasksScheduleLazyColumn(
     val allTasks by viewModel.getAllTasks().collectAsState(initial = listOf())
 
 
+    /**
+     * Logic to check if need to show empty view or not
+     * **/
+    var showNothingHereView by remember { mutableStateOf(false) }
+    showNothingHereView = allTasks.isEmpty()
 
-    LazyColumn(
+
+    Box(
         modifier = modifier
-            .fillMaxSize()
-            .background(color = Color.Transparent),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ){
+            .fillMaxSize(),
+        contentAlignment = Alignment.BottomCenter
+    ) {
 
-
-        allTasks.filter { task -> task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
-
-            if(pendingTasks.isNotEmpty()){
-                item {
-                    HeadingTextWithCount(
-                        heading = "Pending",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                items(pendingTasks, key = {it.id}){ task ->
-                    SwipeAbleTaskItemView(
-                        task = task.toDoTooItem(),
-                        modifier = Modifier.animateItemPlacement(),
-                        onToggleTask = {
-                            toggleTask(task.toDoTooItem())
-                        },
-                        navigateToQuickEditTask = {
-                            navigateToQuickEditTask(task.toDoTooItem())
-                        },
-                        navigateToEditTask = {
-                            navigateToEditTask(task.toDoTooItem())
-                        },
-                        onDeleteTask = {
-                            viewModel.deleteTask(task.toDoTooItem())
-                        }
-                    )
-
-                }
-            }
+        /**
+         * Empty view
+         * **/
+        AnimatedVisibility(visible = showNothingHereView) {
+            NothingHereView(
+                modifier = Modifier.padding(bottom = 100.dp)
+            )
         }
 
-        allTasks.filter { task -> task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
+        /**
+         * Main Content
+         * **/
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = Color.Transparent),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
 
-            if(yesterdayTasks.isNotEmpty()){
 
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
+            allTasks.filter { task -> task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
 
-                item {
-                    HeadingTextWithCount(
-                        heading = "Yesterday",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                items(yesterdayTasks, key = {it.id}){ task ->
-                    SwipeAbleTaskItemView(
-                        task = task.toDoTooItem(),
-                        modifier = Modifier.animateItemPlacement(),
-                        onToggleTask = {
-                            toggleTask(task.toDoTooItem())
-                        },
-                        navigateToQuickEditTask = {
-                            navigateToQuickEditTask(task.toDoTooItem())
-                        },
-                        navigateToEditTask = {
-                            navigateToEditTask(task.toDoTooItem())
-                        },
-                        onDeleteTask = {
-                            viewModel.deleteTask(task.toDoTooItem())
-                        }
-                    )
-
-                }
-            }
-        }
-        allTasks.filter { task -> task.dueDate == todayDateInLong }.let { todayTasks ->
-
-            if(todayTasks.isNotEmpty()){
-
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
-                item {
-                    HeadingTextWithCount(
-                        heading = "Today",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                items(todayTasks, key = {it.id}){ task ->
-                    SwipeAbleTaskItemView(
-                        task = task.toDoTooItem(),
-                        modifier = Modifier.animateItemPlacement(),
-                        onToggleTask = {
-                            toggleTask(task.toDoTooItem())
-                        },
-                        navigateToQuickEditTask = {
-                            navigateToQuickEditTask(task.toDoTooItem())
-                        },
-                        navigateToEditTask = {
-                            navigateToEditTask(task.toDoTooItem())
-                        },
-                        onDeleteTask = {
-                            viewModel.deleteTask(task.toDoTooItem())
-                        }
-                    )
-
-                }
-            }
-        }
-        allTasks.filter { task -> task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
-
-            if(tomorrowTasks.isNotEmpty()){
-
-                item {
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-
-                item {
-                    HeadingTextWithCount(
-                        heading = "Tomorrow",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
-                }
-                items(tomorrowTasks, key = {it.id}){ task ->
-                    SwipeAbleTaskItemView(
-                        task = task.toDoTooItem(),
-                        modifier = Modifier.animateItemPlacement(),
-                        onToggleTask = {
-                            toggleTask(task.toDoTooItem())
-                        },
-                        navigateToQuickEditTask = {
-                            navigateToQuickEditTask(task.toDoTooItem())
-                        },
-                        navigateToEditTask = {
-                            navigateToEditTask(task.toDoTooItem())
-                        },
-                        onDeleteTask = {
-                            viewModel.deleteTask(task.toDoTooItem())
-                        }
-                    )
-
-                }
-            }
-        }
-        allTasks.filter { task -> task.dueDate > tomorrowDateInLong }.sortedBy { task -> task.dueDate }.let { allOther ->
-
-            allOther.distinctBy { task -> task.dueDate }.forEach {  distinctByDate ->
-
-                allOther.filter { task -> task.dueDate == distinctByDate.dueDate }.let { tasksOnSpecificDate ->
-                    item {
-                        Spacer(modifier = Modifier.height(10.dp))
-                    }
+                if (pendingTasks.isNotEmpty()) {
                     item {
                         HeadingTextWithCount(
-                            heading = distinctByDate.dueDate
-                                .toLocalDateTime()
-                                .toJavaLocalDateTime()
-                                .toLocalDate()
-                                .toNiceDateFormat(false),
+                            heading = "Pending",
                             modifier = Modifier
                                 .fillMaxWidth()
                         )
                     }
-                    items(tasksOnSpecificDate, key = {it.id}){ task ->
+                    items(pendingTasks, key = { it.id }) { task ->
                         SwipeAbleTaskItemView(
-                            task = task.toDoTooItem(),
+                            task = task,
                             modifier = Modifier.animateItemPlacement(),
                             onToggleTask = {
-                                toggleTask(task.toDoTooItem())
+                                toggleTask(task)
                             },
                             navigateToQuickEditTask = {
-                                navigateToQuickEditTask(task.toDoTooItem())
+                                navigateToQuickEditTask(task)
                             },
                             navigateToEditTask = {
-                                navigateToEditTask(task.toDoTooItem())
+                                navigateToEditTask(task)
                             },
                             onDeleteTask = {
-                                viewModel.deleteTask(task.toDoTooItem())
+                                viewModel.deleteTask(task)
                             }
                         )
 
                     }
                 }
             }
-        }
 
-        item {
-            Spacer(modifier = Modifier.height(70.dp))
+            allTasks.filter { task -> task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
+
+                if (yesterdayTasks.isNotEmpty()) {
+
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+
+                    item {
+                        HeadingTextWithCount(
+                            heading = "Yesterday",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                    items(yesterdayTasks, key = { it.id }) { task ->
+                        SwipeAbleTaskItemView(
+                            task = task,
+                            modifier = Modifier.animateItemPlacement(),
+                            onToggleTask = {
+                                toggleTask(task)
+                            },
+                            navigateToQuickEditTask = {
+                                navigateToQuickEditTask(task)
+                            },
+                            navigateToEditTask = {
+                                navigateToEditTask(task)
+                            },
+                            onDeleteTask = {
+                                viewModel.deleteTask(task)
+                            }
+                        )
+
+                    }
+                }
+            }
+            allTasks.filter { task -> task.dueDate == todayDateInLong }.let { todayTasks ->
+
+                if (todayTasks.isNotEmpty()) {
+
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+
+                    item {
+                        HeadingTextWithCount(
+                            heading = "Today",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                    items(todayTasks, key = { it.id }) { task ->
+                        SwipeAbleTaskItemView(
+                            task = task,
+                            modifier = Modifier.animateItemPlacement(),
+                            onToggleTask = {
+                                toggleTask(task)
+                            },
+                            navigateToQuickEditTask = {
+                                navigateToQuickEditTask(task)
+                            },
+                            navigateToEditTask = {
+                                navigateToEditTask(task)
+                            },
+                            onDeleteTask = {
+                                viewModel.deleteTask(task)
+                            }
+                        )
+
+                    }
+                }
+            }
+            allTasks.filter { task -> task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
+
+                if (tomorrowTasks.isNotEmpty()) {
+
+                    item {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+
+                    item {
+                        HeadingTextWithCount(
+                            heading = "Tomorrow",
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
+                    items(tomorrowTasks, key = { it.id }) { task ->
+                        SwipeAbleTaskItemView(
+                            task = task,
+                            modifier = Modifier.animateItemPlacement(),
+                            onToggleTask = {
+                                toggleTask(task)
+                            },
+                            navigateToQuickEditTask = {
+                                navigateToQuickEditTask(task)
+                            },
+                            navigateToEditTask = {
+                                navigateToEditTask(task)
+                            },
+                            onDeleteTask = {
+                                viewModel.deleteTask(task)
+                            }
+                        )
+
+                    }
+                }
+            }
+            allTasks.filter { task -> task.dueDate > tomorrowDateInLong }
+                .sortedBy { task -> task.dueDate }.let { allOther ->
+
+                allOther.distinctBy { task -> task.dueDate }.forEach { distinctByDate ->
+
+                    allOther.filter { task -> task.dueDate == distinctByDate.dueDate }
+                        .let { tasksOnSpecificDate ->
+                            item {
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+                            item {
+                                HeadingTextWithCount(
+                                    heading = distinctByDate.dueDate
+                                        .toLocalDateTime()
+                                        .toJavaLocalDateTime()
+                                        .toLocalDate()
+                                        .toNiceDateFormat(false),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                )
+                            }
+                            items(tasksOnSpecificDate, key = { it.id }) { task ->
+                                SwipeAbleTaskItemView(
+                                    task = task,
+                                    modifier = Modifier.animateItemPlacement(),
+                                    onToggleTask = {
+                                        toggleTask(task)
+                                    },
+                                    navigateToQuickEditTask = {
+                                        navigateToQuickEditTask(task)
+                                    },
+                                    navigateToEditTask = {
+                                        navigateToEditTask(task)
+                                    },
+                                    onDeleteTask = {
+                                        viewModel.deleteTask(task)
+                                    }
+                                )
+
+                            }
+                        }
+                }
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(70.dp))
+            }
         }
     }
 }
@@ -341,7 +373,7 @@ fun HeadingTextWithCount(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeAbleTaskItemView(
-    task : DoTooItem,
+    task : DoTooItemEntity,
     modifier: Modifier,
     onToggleTask : () -> Unit,
     onDeleteTask : () -> Unit,
