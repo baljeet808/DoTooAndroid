@@ -1,19 +1,22 @@
 package com.baljeet.youdotoo.presentation.ui.create_task
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.Roles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
+import com.baljeet.youdotoo.common.getRole
+import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
@@ -25,20 +28,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateTaskViewModel  @Inject constructor(
-    savedStateHandle: SavedStateHandle,
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val upsertProjectUseCase: UpsertProjectUseCase,
     private val getProjectsUseCase: GetProjectsUseCase
 ) : ViewModel() {
 
-    private val projectOwner: Boolean = checkNotNull(savedStateHandle["projectOwner"])
 
-    private var projectRef = FirebaseFirestore
+    private var projectsReference = FirebaseFirestore
         .getInstance()
         .collection("projects")
-
-    var createState = mutableStateOf(false)
-        private set
-
 
     fun getProjects() = getProjectsUseCase()
 
@@ -51,10 +49,8 @@ class CreateTaskViewModel  @Inject constructor(
         selectedProject : Project
     ){
 
-
-        val newDoTooID = UUID.randomUUID().toString()
-        val newDoToo = DoTooItem(
-            id = newDoTooID,
+        val newTask = DoTooItem(
+            id = UUID.randomUUID().toString(),
             title = name,
             description = description,
             priority = priority.toString,
@@ -71,32 +67,84 @@ class CreateTaskViewModel  @Inject constructor(
             done = false,
             projectColor = selectedProject.color
         )
+        createTask(newTask, selectedProject)
+    }
 
-        if (SharedPref.isUserAPro || projectOwner.not()){
-            projectRef
-                .document(selectedProject.id)
-                .collection("todos")
-                .document(newDoTooID)
-                .set(newDoToo)
-                .addOnSuccessListener {
-                    createState.value = true
-                }
-                .addOnFailureListener {
-                    createState.value = false
-                }
-        }else{
-            viewModelScope.launch {
-                upsertDoToosUseCase(
-                    projectId = selectedProject.id,
-                    dotoos = listOf(newDoToo)
-                )
+    private fun createTask(task: DoTooItem, project : Project){
+        when(getRole(project)){
+            Roles.ProAdmin -> {
+                updateTaskOnServer(task, project)
             }
-            createState.value = true
+            Roles.Admin -> {
+                updateTaskLocally(task, project)
+            }
+            Roles.Editor -> {
+                updateTaskOnServer(task, project)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
         }
     }
 
-    fun resetState(){
-        createState.value = false
+    private fun updateTaskOnServer(task : DoTooItem, project : Project){
+        projectsReference
+            .document(project.id)
+            .collection("todos")
+            .document(task.id)
+            .set(task)
     }
+
+    private fun updateTaskLocally(task : DoTooItem, project: Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            upsertDoToosUseCase(listOf(task),project.id)
+            updateProject(project)
+        }
+    }
+
+
+    private fun updateProject(project : Project){
+        val projectCopy = project.copy()
+        projectCopy.updatedAt = getSampleDateInLong()
+
+        when(getRole(project)){
+            Roles.ProAdmin -> {
+                updateProjectOnSever(project)
+            }
+            Roles.Admin -> {
+                updateProjectLocally(project)
+            }
+            Roles.Editor -> {
+                updateProjectOnSever(project)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+        }
+    }
+
+
+    private fun updateProjectOnSever(project : Project){
+        projectsReference
+            .document(project.id)
+            .set(project)
+    }
+
+    private fun updateProjectLocally(project : Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            upsertProjectUseCase(listOf(project))
+        }
+    }
+
 
 }

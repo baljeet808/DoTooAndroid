@@ -14,7 +14,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import kotlinx.datetime.LocalDate
 
 
-const val DestinationCreateTaskRoute = "create_task/{projectId}/{projectOwner}"
+const val DestinationCreateTaskRoute = "create_task/{projectId}"
 
 
 fun NavGraphBuilder.addCreateTaskViewDestination(
@@ -26,9 +26,6 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         arguments = listOf(
             navArgument("projectId"){
                 type = NavType.StringType
-            },
-            navArgument("projectOwner"){
-                type = NavType.BoolType
             }
         )
     ){backStackEntry ->
@@ -36,14 +33,9 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         val projectId = backStackEntry.arguments?.getString("projectId")
 
         val viewModel : CreateTaskViewModel = hiltViewModel()
-        val state by viewModel.createState
 
         val projects by viewModel.getProjects().collectAsState(initial = listOf())
 
-        if(state){
-            navController.popBackStack()
-            viewModel.resetState()
-        }
         UpsertTaskView(
             createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDate?, selectedProject : Project ->
                 viewModel.createTask(
@@ -54,13 +46,13 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
                     customDate = customDate,
                     selectedProject = selectedProject
                 )
+                navController.popBackStack()
             },
             navigateBack = {
                 //navigate back
                 navController.popBackStack()
-                viewModel.resetState()
             },
-            projectId = projectId!!,
+            projectId = projectId?:"",
             projects = projects
         )
 

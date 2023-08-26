@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.doesUserHavePermissionToEdit
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
@@ -51,11 +52,11 @@ fun NavGraphBuilder.addProjectsViewDestination(
                 navController.navigate("editTask/".plus(it.id))
             },
             navigateToCreateTask = {
-                val userProjects = projects.filter { project -> project.project.ownerId == SharedPref.userId!! }
+                val userProjects = projects.filter { project -> doesUserHavePermissionToEdit(project.project) }
                 if(userProjects.isNotEmpty()){
                     userProjects.first().let {project ->
                         navController.navigate(
-                            "create_task/".plus(project.project.id).plus("/${true}")
+                            "create_task/".plus(project.project.id)
                         )
                     }
                 }else{
@@ -63,7 +64,7 @@ fun NavGraphBuilder.addProjectsViewDestination(
                     viewModel.createDummyProject(newProjectId)
 
                     navController.navigate(
-                        "create_task/".plus(newProjectId).plus("/${true}")
+                        "create_task/".plus(newProjectId)
                     )
                 }
             },

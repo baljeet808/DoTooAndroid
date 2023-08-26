@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.common
 
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 
 
@@ -23,3 +24,7 @@ fun getRole(project: Project): Roles {
         Roles.Blocked
     }
 }
+
+
+fun doesUserHavePermissionToEdit(project: ProjectEntity) =
+    (project.ownerId == SharedPref.userId!!) || project.collaboratorIds.contains(SharedPref.userId!!)

@@ -74,11 +74,10 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProjectView(
     project: ProjectEntity?,
-    userId: String,
     users: List<UserEntity>,
     tasks: List<DoTooItemEntity>,
     onToggle: (doTooItem: DoTooItem, project: Project) -> Unit,
-    navigateToCreateTask: (projectOwner: Boolean) -> Unit,
+    navigateToCreateTask: () -> Unit,
     deleteTask: (DoTooItem) -> Unit,
     deleteProject: () -> Unit,
     upsertProject: (Project) -> Unit,
@@ -109,11 +108,7 @@ fun ProjectView(
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    navigateToCreateTask(
-                        project?.ownerId == userId
-                    )
-                },
+                onClick = navigateToCreateTask,
                 modifier = Modifier,
                 backgroundColor = project?.color?.let{Color(it)}?: NightDotooBrightBlue
             ) {
@@ -285,7 +280,6 @@ fun PreviewProjectView() {
         project = getSampleProject().toProjectEntity(),
         onToggle = { _, _ -> },
         navigateToCreateTask = {},
-        userId = getRandomId(),
         tasks = listOf(
             getSampleDotooItem().toDoTooItemEntity(getRandomId())
         ),

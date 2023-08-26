@@ -54,16 +54,16 @@ class ProjectViewModel @Inject constructor(
 
 
 
-    fun upsertDoToo(task: DoTooItem, project : Project){
+    fun upsertTask(task: DoTooItem, project : Project){
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateTaskOnServerAndLocal(task, project)
+                updateTaskOnServer(task)
             }
             Roles.Admin -> {
                 updateTaskLocally(task, project)
             }
             Roles.Editor -> {
-                updateTaskOnServerAndLocal(task, project)
+                updateTaskOnServer(task)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything
@@ -76,38 +76,35 @@ class ProjectViewModel @Inject constructor(
         }
     }
 
-    private fun updateTaskOnServerAndLocal(task : DoTooItem, project : Project){
+    private fun updateTaskOnServer(task : DoTooItem){
         projectsReference
             .document(projectId)
             .collection("todos")
             .document(task.id)
             .set(task)
-            .addOnSuccessListener {
-                updateTaskLocally(task, project)
-            }
     }
 
     private fun updateTaskLocally(task : DoTooItem, project : Project){
         CoroutineScope(Dispatchers.IO).launch {
             upsertDoToosUseCase(listOf(task),projectId)
-            upsertProject(project)
+            updateProject(project)
         }
     }
 
 
-    fun upsertProject(project : Project){
+    fun updateProject(project : Project){
         val projectCopy = project.copy()
         projectCopy.updatedAt = getSampleDateInLong()
 
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateProjectOnSeverAndLocally(project)
+                updateProjectOnSever(project)
             }
             Roles.Admin -> {
                 updateProjectLocally(project)
             }
             Roles.Editor -> {
-                updateProjectOnSeverAndLocally(project)
+                updateProjectOnSever(project)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything
@@ -121,13 +118,10 @@ class ProjectViewModel @Inject constructor(
     }
 
 
-    private fun updateProjectOnSeverAndLocally(project : Project){
+    private fun updateProjectOnSever(project : Project){
         projectsReference
             .document(projectId)
             .set(project)
-            .addOnSuccessListener {
-                updateProjectLocally(project)
-            }
     }
 
     private fun updateProjectLocally(project : Project){

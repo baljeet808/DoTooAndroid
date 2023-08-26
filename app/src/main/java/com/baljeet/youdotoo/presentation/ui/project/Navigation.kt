@@ -44,15 +44,14 @@ fun NavGraphBuilder.addProjectViewDestination(
                 val newDoToo = doTooItem.copy()
                 newDoToo.done = doTooItem.done.not()
                 newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
-                viewModel.upsertDoToo(
+                viewModel.upsertTask(
                     newDoToo, selectedProject
                 )
             },
             tasks = tasks,
-            userId = SharedPref.userId!!,
-            navigateToCreateTask = {projectOwner->
+            navigateToCreateTask = {
                 navController.navigate(
-                    "create_task/".plus(projectId).plus("/${projectOwner}")
+                    "create_task/".plus(projectId)
                 )
             },
             users = users,
@@ -68,7 +67,7 @@ fun NavGraphBuilder.addProjectViewDestination(
                 }
             },
             upsertProject = { updatedProject ->
-                viewModel.upsertProject(updatedProject)
+                viewModel.updateProject(updatedProject)
             },
             onClickInvite = {
                 navController.navigate("invitations/".plus(projectId))
@@ -82,7 +81,7 @@ fun NavGraphBuilder.addProjectViewDestination(
                 )
             },
             updateTaskTitle = { task, title->
-                viewModel.upsertDoToo(
+                viewModel.upsertTask(
                     task = task.copy(
                         title = title,
                         updatedBy = SharedPref.userName.plus(" has updated this task.")
