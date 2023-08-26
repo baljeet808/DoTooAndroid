@@ -40,26 +40,22 @@ class CreateProjectViewModel @Inject constructor(
 
     private fun createProject(project : Project){
         if(SharedPref.isUserAPro){
-            createProjectOnServerAndLocal(project)
+            createProjectOnServer(project)
         }else{
             createProjectLocally(project)
         }
     }
 
-    private fun createProjectOnServerAndLocal(project: Project) {
+    private fun createProjectOnServer(project: Project) {
         projectsReference
             .document(project.id)
             .set(project)
-            .addOnSuccessListener {
-                createProjectLocally(project)
-            }
     }
 
     private fun createProjectLocally(project: Project) {
         CoroutineScope(Dispatchers.IO).launch {
             upsertProjectUseCase(listOf(project))
         }
-
     }
 
 }

@@ -98,6 +98,9 @@ class CreateTaskViewModel  @Inject constructor(
             .collection("todos")
             .document(task.id)
             .set(task)
+            .addOnSuccessListener {
+                updateProject(project)
+            }
     }
 
     private fun updateTaskLocally(task : DoTooItem, project: Project){

@@ -155,19 +155,16 @@ class ProjectsViewModel @Inject constructor(
 
     private fun createProject(project : Project){
         if(SharedPref.isUserAPro){
-            createProjectOnServerAndLocal(project)
+            createProjectOnServer(project)
         }else{
             createProjectLocally(project)
         }
     }
 
-    private fun createProjectOnServerAndLocal(project: Project) {
+    private fun createProjectOnServer(project: Project) {
         projectsReference
             .document(project.id)
             .set(project)
-            .addOnSuccessListener {
-                createProjectLocally(project)
-            }
     }
 
 
@@ -187,13 +184,13 @@ class ProjectsViewModel @Inject constructor(
     private fun updateTask(task: DoTooItemEntity, project : Project){
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateTaskOnServerAndLocal(task, project)
+                updateTaskOnServer(task, project)
             }
             Roles.Admin -> {
                 updateTaskLocally(task, project)
             }
             Roles.Editor -> {
-                updateTaskOnServerAndLocal(task, project)
+                updateTaskOnServer(task, project)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything
@@ -206,15 +203,16 @@ class ProjectsViewModel @Inject constructor(
         }
     }
 
-    private fun updateTaskOnServerAndLocal(task : DoTooItemEntity, project : Project){
+    private fun updateTaskOnServer(task : DoTooItemEntity, project: Project){
         projectsReference
-            .document(project.id)
+            .document(task.projectId)
             .collection("todos")
             .document(task.id)
             .set(task)
             .addOnSuccessListener {
-                updateTaskLocally(task, project)
+                updateProject(project)
             }
+
     }
 
     private fun updateTaskLocally(task : DoTooItemEntity, project: Project){
@@ -231,13 +229,13 @@ class ProjectsViewModel @Inject constructor(
 
         when(getRole(project)){
             Roles.ProAdmin -> {
-                updateProjectOnSeverAndLocally(project)
+                updateProjectOnSever(project)
             }
             Roles.Admin -> {
                 updateProjectLocally(project)
             }
             Roles.Editor -> {
-                updateProjectOnSeverAndLocally(project)
+                updateProjectOnSever(project)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything
@@ -251,13 +249,10 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
-    private fun updateProjectOnSeverAndLocally(project : Project){
+    private fun updateProjectOnSever(project : Project){
         projectsReference
             .document(project.id)
             .set(project)
-            .addOnSuccessListener {
-                updateProjectLocally(project)
-            }
     }
 
     private fun updateProjectLocally(project : Project){
@@ -280,13 +275,13 @@ class ProjectsViewModel @Inject constructor(
     private fun deleteTask(task : DoTooItemEntity, project: ProjectEntity){
         when(getRole(project.toProject())){
             Roles.ProAdmin -> {
-                deleteTaskOnServerAndLocally(task)
+                deleteTaskOnServer(task, project)
             }
             Roles.Admin -> {
-                deleteTaskOnServerAndLocally(task)
+                deleteTaskLocally(task, project)
             }
             Roles.Editor -> {
-                deleteTaskOnServerAndLocally(task)
+                deleteTaskOnServer(task, project)
             }
             Roles.Viewer -> {
                 //Do nothing can't update anything
@@ -298,20 +293,21 @@ class ProjectsViewModel @Inject constructor(
             }
         }
     }
-    private fun deleteTaskOnServerAndLocally(task: DoTooItemEntity){
+    private fun deleteTaskOnServer(task: DoTooItemEntity, project : ProjectEntity){
         projectsReference
             .document(task.projectId)
             .collection("todos")
             .document(task.id)
             .delete()
             .addOnSuccessListener {
-                deleteTaskLocally(task)
+                updateProject(project.toProject())
             }
     }
 
-    private fun deleteTaskLocally(task: DoTooItemEntity){
+    private fun deleteTaskLocally(task: DoTooItemEntity , project : ProjectEntity){
         CoroutineScope(Dispatchers.IO).launch {
             deleteDoToosUseCase(task.toDoTooItem(), projectId = task.projectId)
+            updateProject(project.toProject())
         }
     }
 
