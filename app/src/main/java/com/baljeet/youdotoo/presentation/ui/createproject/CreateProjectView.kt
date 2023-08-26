@@ -99,7 +99,7 @@ fun CreateProjectView(
 
     val hapticFeedback = LocalHapticFeedback.current
 
-    val transition = rememberInfiniteTransition()
+    val transition = rememberInfiniteTransition(label = "")
 
     val rotation = transition.animateValue(
         initialValue = -3f,

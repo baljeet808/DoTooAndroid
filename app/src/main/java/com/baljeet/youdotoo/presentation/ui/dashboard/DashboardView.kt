@@ -43,6 +43,7 @@ import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.attachment_viewer.addAttachmentViewerDestination
 import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
+import com.baljeet.youdotoo.presentation.ui.createproject.addCreateProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.drawer.NavigationDrawer
 import com.baljeet.youdotoo.presentation.ui.drawer.components.TopBar
 import com.baljeet.youdotoo.presentation.ui.edittask.addEditTaskViewDestination
@@ -259,6 +260,7 @@ fun DashboardView(
                     addProjectsViewDestination(navController)
                     addProjectViewDestination(navController)
                     addCreateTaskViewDestination(navController)
+                    addCreateProjectViewDestination(navController)
                     addChatViewDestination(navController)
                     addInvitationViewDestination(navController)
                     addEditTaskViewDestination(navController)

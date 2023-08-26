@@ -1,17 +1,16 @@
 package com.baljeet.youdotoo.presentation.ui.createproject
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.*
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,18 +18,13 @@ class CreateProjectViewModel @Inject constructor(
     private val upsertProjectUseCase: UpsertProjectUseCase
 ) : ViewModel() {
 
-
-    var createState = mutableStateOf(false)
-        private set
-
-    var db = Firebase.firestore
+    private var projectsReference = FirebaseFirestore
+        .getInstance()
+        .collection("projects")
 
     fun createProject(projectName: String, description: String?, projectColor: Long) {
-        val newProjectId = UUID.randomUUID().toString()
-        val projectRef = db.collection("projects")
-
         val newProject = Project(
-            id = newProjectId,
+            id = UUID.randomUUID().toString(),
             ownerId = SharedPref.userId!!,
             name = projectName,
             description = description ?: "",
@@ -40,21 +34,32 @@ class CreateProjectViewModel @Inject constructor(
             color = projectColor,
             updatedAt = getSampleDateInLong()
         )
-
-        if(SharedPref.isUserAPro) {
-            projectRef
-                .document(newProjectId)
-                .set(newProject)
-        }else{
-            viewModelScope.launch {
-                upsertProjectUseCase(listOf(newProject))
-            }
-        }
-
+        createProject(newProject)
     }
 
-    fun resetState(){
-        createState.value = false
+
+    private fun createProject(project : Project){
+        if(SharedPref.isUserAPro){
+            createProjectOnServerAndLocal(project)
+        }else{
+            createProjectLocally(project)
+        }
+    }
+
+    private fun createProjectOnServerAndLocal(project: Project) {
+        projectsReference
+            .document(project.id)
+            .set(project)
+            .addOnSuccessListener {
+                createProjectLocally(project)
+            }
+    }
+
+    private fun createProjectLocally(project: Project) {
+        CoroutineScope(Dispatchers.IO).launch {
+            upsertProjectUseCase(listOf(project))
+        }
+
     }
 
 }

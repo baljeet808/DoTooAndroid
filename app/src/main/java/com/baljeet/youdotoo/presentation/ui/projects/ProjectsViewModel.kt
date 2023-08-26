@@ -1,12 +1,15 @@
 package com.baljeet.youdotoo.presentation.ui.projects
 
 import androidx.lifecycle.ViewModel
+import com.baljeet.youdotoo.common.Roles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
+import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
@@ -135,76 +138,6 @@ class ProjectsViewModel @Inject constructor(
     fun allOtherTasks(): Flow<List<DoTooItemEntity>> = getAllOtherDoToosUseCase(tomorrowDateInLong)
 
 
-
-    private fun isProjectIsSharedToUser(project: ProjectEntity) =
-        project.ownerId != SharedPref.userId
-
-
-    fun upsertDoToo(doTooItem: DoTooItem) {
-        val newDoToo = doTooItem.copy()
-        newDoToo.done = doTooItem.done.not()
-        newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ")
-            .plus(if (newDoToo.done) "completed." else "not completed.")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val task = getDoTooByIdUseCase(doTooItem.id)
-            val project = getProjectByIdUseCase(projectId = task.projectId)
-            if (SharedPref.isUserAPro || isProjectIsSharedToUser(project)) {
-                projectsReference
-                    .document(project.id)
-                    .collection("todos")
-                    .document(newDoToo.id)
-                    .set(newDoToo)
-
-            }else{
-                upsertDoToosUseCase(listOf(newDoToo), project.id)
-            }
-            upsertProject(project)
-        }
-    }
-
-
-    fun updateTaskTitle(doTooItem: DoTooItem, title : String) {
-        val newDoToo = doTooItem.copy(
-            title = title
-        )
-        newDoToo.updatedBy = SharedPref.userName.plus(" has updated task title.")
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val task = getDoTooByIdUseCase(doTooItem.id)
-            val project = getProjectByIdUseCase(projectId = task.projectId)
-            if (SharedPref.isUserAPro || isProjectIsSharedToUser(project)) {
-                projectsReference
-                    .document(project.id)
-                    .collection("todos")
-                    .document(newDoToo.id)
-                    .set(newDoToo)
-
-            }else{
-                upsertDoToosUseCase(listOf(newDoToo), project.id)
-            }
-            upsertProject(project)
-        }
-    }
-
-
-    private fun upsertProject(project : ProjectEntity){
-        val newProject = project.copy()
-        newProject.updatedAt = getSampleDateInLong()
-        if(SharedPref.isUserAPro || isProjectIsSharedToUser(project)){
-            projectsReference
-                .document(project.id)
-                .set(newProject.toProject())
-        }else{
-            CoroutineScope(Dispatchers.IO).launch {
-                upsertProjectUseCase(listOf(newProject.toProject()))
-            }
-        }
-    }
-
-
-
-
     fun createDummyProject(newProjectId: String) {
         val newProject = Project(
             id = newProjectId,
@@ -213,36 +146,173 @@ class ProjectsViewModel @Inject constructor(
             ownerId = SharedPref.userId!!,
             collaboratorIds = listOf(),
             viewerIds = listOf(),
-            update = "${SharedPref.userName} created this Project named 'My tasks'.",
+            update = "${SharedPref.userName} created this project named 'My tasks'.",
             color = getRandomColor(),
             updatedAt = getSampleDateInLong()
         )
+        createProject(newProject)
+    }
+
+    private fun createProject(project : Project){
+        if(SharedPref.isUserAPro){
+            createProjectOnServerAndLocal(project)
+        }else{
+            createProjectLocally(project)
+        }
+    }
+
+    private fun createProjectOnServerAndLocal(project: Project) {
+        projectsReference
+            .document(project.id)
+            .set(project)
+            .addOnSuccessListener {
+                createProjectLocally(project)
+            }
+    }
+
+
+    private fun createProjectLocally(project: Project) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (SharedPref.isUserAPro) {
-                projectsReference
-                    .document(newProjectId)
-                    .set(newProject)
-            } else {
-                upsertProjectUseCase(listOf(newProject))
+            upsertProjectUseCase(listOf(project))
+        }
+    }
+
+    fun updateTask(task: DoTooItem) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val taskEntity = getDoTooByIdUseCase(task.id)
+            val projectEntity = getProjectByIdUseCase(projectId = taskEntity.projectId)
+            updateTask(taskEntity,projectEntity.toProject())
+        }
+    }
+    private fun updateTask(task: DoTooItemEntity, project : Project){
+        when(getRole(project)){
+            Roles.ProAdmin -> {
+                updateTaskOnServerAndLocal(task, project)
+            }
+            Roles.Admin -> {
+                updateTaskLocally(task, project)
+            }
+            Roles.Editor -> {
+                updateTaskOnServerAndLocal(task, project)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+        }
+    }
+
+    private fun updateTaskOnServerAndLocal(task : DoTooItemEntity, project : Project){
+        projectsReference
+            .document(project.id)
+            .collection("todos")
+            .document(task.id)
+            .set(task)
+            .addOnSuccessListener {
+                updateTaskLocally(task, project)
+            }
+    }
+
+    private fun updateTaskLocally(task : DoTooItemEntity, project: Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            upsertDoToosUseCase(listOf(task.toDoTooItem()),task.projectId)
+            updateProject(project)
+        }
+    }
+
+
+    private fun updateProject(project : Project){
+        val projectCopy = project.copy()
+        projectCopy.updatedAt = getSampleDateInLong()
+
+        when(getRole(project)){
+            Roles.ProAdmin -> {
+                updateProjectOnSeverAndLocally(project)
+            }
+            Roles.Admin -> {
+                updateProjectLocally(project)
+            }
+            Roles.Editor -> {
+                updateProjectOnSeverAndLocally(project)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
             }
         }
     }
 
 
-    fun deleteTask(task : DoTooItem){
-       CoroutineScope(Dispatchers.IO).launch {
-           val taskEntity = getDoTooByIdUseCase(task.id)
-           val project = getProjectByIdUseCase(projectId = taskEntity.projectId)
-           if(SharedPref.isUserAPro){
-               projectsReference
-                   .document(project.id)
-                   .collection("todos")
-                   .document(task.id)
-                   .delete()
-           }
-           deleteDoToosUseCase(task, projectId = project.id)
-       }
+    private fun updateProjectOnSeverAndLocally(project : Project){
+        projectsReference
+            .document(project.id)
+            .set(project)
+            .addOnSuccessListener {
+                updateProjectLocally(project)
+            }
+    }
 
+    private fun updateProjectLocally(project : Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            upsertProjectUseCase(listOf(project))
+        }
+    }
+
+
+
+    fun deleteTask(task : DoTooItem){
+        CoroutineScope(Dispatchers.IO).launch {
+            val taskEntity = getDoTooByIdUseCase(task.id)
+            val project = getProjectByIdUseCase(projectId = taskEntity.projectId)
+            deleteTask(taskEntity, project)
+        }
+    }
+
+
+    private fun deleteTask(task : DoTooItemEntity, project: ProjectEntity){
+        when(getRole(project.toProject())){
+            Roles.ProAdmin -> {
+                deleteTaskOnServerAndLocally(task)
+            }
+            Roles.Admin -> {
+                deleteTaskOnServerAndLocally(task)
+            }
+            Roles.Editor -> {
+                deleteTaskOnServerAndLocally(task)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+        }
+    }
+    private fun deleteTaskOnServerAndLocally(task: DoTooItemEntity){
+        projectsReference
+            .document(task.projectId)
+            .collection("todos")
+            .document(task.id)
+            .delete()
+            .addOnSuccessListener {
+                deleteTaskLocally(task)
+            }
+    }
+
+    private fun deleteTaskLocally(task: DoTooItemEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteDoToosUseCase(task.toDoTooItem(), projectId = task.projectId)
+        }
     }
 
 

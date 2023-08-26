@@ -71,7 +71,7 @@ class TasksScheduleViewModel @Inject constructor(
             .collection("todos")
             .document(task.id)
             .delete()
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 deleteTaskLocally(task)
             }
     }

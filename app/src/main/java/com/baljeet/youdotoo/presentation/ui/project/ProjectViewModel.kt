@@ -82,7 +82,7 @@ class ProjectViewModel @Inject constructor(
             .collection("todos")
             .document(task.id)
             .set(task)
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 updateTaskLocally(task, project)
             }
     }
@@ -125,7 +125,7 @@ class ProjectViewModel @Inject constructor(
         projectsReference
             .document(projectId)
             .set(project)
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 updateProjectLocally(project)
             }
     }
@@ -164,7 +164,7 @@ class ProjectViewModel @Inject constructor(
         projectsReference
             .document(projectId)
             .delete()
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 deleteProjectLocally(project)
             }
     }
@@ -202,7 +202,7 @@ class ProjectViewModel @Inject constructor(
             .collection("todos")
             .document(task.id)
             .delete()
-            .addOnCompleteListener {
+            .addOnSuccessListener {
                 deleteTaskLocally(task)
             }
     }

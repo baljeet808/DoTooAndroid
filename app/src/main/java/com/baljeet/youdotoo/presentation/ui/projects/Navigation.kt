@@ -9,14 +9,10 @@ import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
-import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectView
-import com.baljeet.youdotoo.presentation.ui.createproject.CreateProjectViewModel
+import com.baljeet.youdotoo.presentation.ui.createproject.DestinationCreateProjectRoute
 
 
 const val DestinationProjectsRoute = "projects"
-
-const val DestinationCreateProjectRoute = "create_project"
-
 
 fun NavGraphBuilder.addProjectsViewDestination(
     navController: NavController
@@ -44,8 +40,12 @@ fun NavGraphBuilder.addProjectsViewDestination(
             navigateToDoToos = { project ->
                 navController.navigate("project/".plus(project.id))
             },
-            onToggleTask = {
-                viewModel.upsertDoToo(it)
+            onToggleTask = { task ->
+                val newTask = task.copy()
+                newTask.done = task.done.not()
+                newTask.updatedBy = SharedPref.userName.plus(" marked this task ")
+                    .plus(if (newTask.done) "completed." else "not completed.")
+                viewModel.updateTask(newTask)
             },
             navigateToTask = {
                 navController.navigate("editTask/".plus(it.id))
@@ -74,38 +74,13 @@ fun NavGraphBuilder.addProjectsViewDestination(
                 viewModel.deleteTask(task)
             },
             updateTaskTitle = { task , title ->
-                viewModel.updateTaskTitle(task,title)
-            }
-        )
-    }
-    composable(
-        route = DestinationCreateProjectRoute
-    ){
-
-        val viewModel : CreateProjectViewModel = hiltViewModel()
-        val state by viewModel.createState
-
-        if(state){
-            navController.popBackStack()
-            viewModel.resetState()
-        }
-        CreateProjectView(
-            createProject = { name: String, description: String, color : Long ->
-                viewModel.createProject(
-                    projectName = name,
-                    description = description,
-                    projectColor = color
+                val newTask = task.copy(
+                    title = title
                 )
-                navController.popBackStack()
-                viewModel.resetState()
-            },
-            navigateBack = {
-                //navigate back
-                navController.popBackStack()
-                viewModel.resetState()
+                newTask.updatedBy = SharedPref.userName.plus(" has updated task title.")
+                viewModel.updateTask(newTask)
             }
         )
-
     }
 }
 
