@@ -163,7 +163,7 @@ fun TasksScheduleWithPager(
             ) { currentIndex ->
                 AnimatedVisibility(visible = tasksTabs[currentIndex].tasks.isNotEmpty()) {
                     DoTooItemsLazyColumn(
-                        doToos = tasksTabs[currentIndex].tasks,
+                        doToos = tasksTabs[currentIndex].tasks.toCollection(ArrayList()),
                         onToggleDoToo = onToggleTask,
                         navigateToEditTask = navigateToEditTask,
                         modifier = Modifier

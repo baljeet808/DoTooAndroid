@@ -3,8 +3,6 @@ package com.baljeet.youdotoo.presentation.ui.dotoo
 import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,8 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.getSampleDotooItem
@@ -41,9 +37,6 @@ import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -51,19 +44,13 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemsLazyColumn(
-    doToos: List<DoTooItemEntity>,
+    doToos: ArrayList<DoTooItemEntity>,
     onToggleDoToo: (doToo: DoTooItemEntity) -> Unit,
     navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
     navigateToEditTask : (task : DoTooItemEntity) -> Unit,
     onItemDelete: (doToo: DoTooItemEntity) -> Unit,
     modifier: Modifier
 ) {
-
-
-
-    val parentJob = Job()
-    val stopScope = rememberCoroutineScope()
-
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -72,20 +59,21 @@ fun DoTooItemsLazyColumn(
     ) {
         items(doToos, key = {it.id}) { dotoo ->
 
-            var startJob : CoroutineScope? = null
+            val scope = rememberCoroutineScope()
 
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        startJob = CoroutineScope(parentJob)
-                        startJob?.launch {
+                        scope.launch {
                             delay(1000)
                             onItemDelete(dotoo)
                         }
                     }
-                    true
+                    //Todo: check if deleting without confirmation if enabled if yes then return true else false
+                    false
                 }
             )
+
             SwipeToDismiss(
                 modifier = Modifier.animateItemPlacement(),
                 state = state,
@@ -99,12 +87,12 @@ fun DoTooItemsLazyColumn(
                             color = Color.Transparent,
                             shape = RoundedCornerShape(20.dp)
                         ),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Row(
                         modifier = Modifier,
-                        horizontalArrangement = Arrangement.SpaceAround,
+                        horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(
@@ -122,25 +110,6 @@ fun DoTooItemsLazyColumn(
                             fontFamily = FontFamily(Nunito.Normal.font)
                         )
                     }
-                    Text(
-                        text = "UNDO",
-                        color = if (isSystemInDarkTheme()) {
-                            Color.White
-                        } else {
-                            Color.Black
-                        },
-                        fontSize = 14.sp,
-                        fontFamily = FontFamily(Nunito.ExtraBold.font),
-                        letterSpacing = TextUnit(1.5f, TextUnitType.Sp),
-                        modifier = Modifier.clickable(
-                            onClick = {
-                                startJob?.cancel()
-                                stopScope.launch {
-                                    state.reset()
-                                }
-                            }
-                        )
-                    )
                 }
             },
                 dismissContent = {
@@ -157,7 +126,11 @@ fun DoTooItemsLazyColumn(
                         }
                     )
                 },
-                directions = setOf(DismissDirection.EndToStart))
+                directions = setOf(
+                    DismissDirection.EndToStart
+                )
+            )
+
         }
 
         item {
@@ -179,7 +152,7 @@ fun PreviewDoTooItemsLazyColumn() {
             getSampleDotooItem(),
             getSampleDotooItem(),
             sampleTaskItem
-        ).map { it.toDoTooItemEntity("") },
+        ).map { it.toDoTooItemEntity("") }.toCollection(ArrayList()),
         onToggleDoToo = {},
         modifier = Modifier,
         onItemDelete = {},

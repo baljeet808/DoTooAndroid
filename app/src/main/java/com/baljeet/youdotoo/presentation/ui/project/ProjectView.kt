@@ -184,7 +184,7 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-                doToos = tasks,
+                doToos = tasks.toCollection(ArrayList()),
                 onToggleDoToo = { doToo ->
                     project?.let {
                         onToggle(doToo, project.toProject())
