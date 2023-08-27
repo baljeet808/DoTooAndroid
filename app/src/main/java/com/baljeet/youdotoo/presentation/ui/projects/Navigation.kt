@@ -65,6 +65,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
                 )
                 newTask.updatedBy = SharedPref.userName.plus(" has updated task title.")
                 viewModel.updateTask(newTask)
+            },
+            deleteTask = { task ->
+                viewModel.deleteTask(task)
             }
         )
     }

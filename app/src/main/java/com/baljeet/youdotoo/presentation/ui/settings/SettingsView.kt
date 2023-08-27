@@ -48,7 +48,7 @@ fun SettingsView(
 ) {
 
     SharedPref.init(LocalContext.current)
-
+    SharedPref.deleteTaskWithoutConfirmation = false
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(color = getLightThemeColor())
 

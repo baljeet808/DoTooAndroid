@@ -1,6 +1,7 @@
 package com.baljeet.youdotoo.presentation.ui.shared.views.dialogs
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,12 +47,16 @@ fun AppCustomDialog(
     topRowIcon: ImageVector,
     confirmButtonText: String = "Understood 👍",
     dismissButtonText: String = "Bullshit 🤬",
-    showDismissButton: Boolean = false
+    showDismissButton: Boolean = false,
+    showCheckbox: Boolean = false,
+    onChecked: () -> Unit,
+    checkBoxText : String = "Don't ask me next time?",
+    checked : Boolean = false,
+    modifier: Modifier
 ) {
     SharedPref.init(LocalContext.current)
     Dialog(
-        onDismissRequest = onDismiss,
-        properties = DialogProperties(
+        onDismissRequest = onDismiss, properties = DialogProperties(
             usePlatformDefaultWidth = true
         )
     ) {
@@ -60,7 +66,7 @@ fun AppCustomDialog(
             colors = CardDefaults.cardColors(
                 containerColor = getDarkThemeColor()
             ),
-            modifier = Modifier
+            modifier = modifier
         ) {
             Column(
                 modifier = Modifier
@@ -82,9 +88,7 @@ fun AppCustomDialog(
                         letterSpacing = TextUnit(1f, TextUnitType.Sp)
                     )
                     Icon(
-                        topRowIcon,
-                        contentDescription = "dialog icon",
-                        tint = getTextColor()
+                        topRowIcon, contentDescription = "dialog icon", tint = getTextColor()
                     )
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -97,7 +101,36 @@ fun AppCustomDialog(
                     modifier = Modifier.fillMaxWidth(),
                     letterSpacing = TextUnit(1f, TextUnitType.Sp)
                 )
+
                 Spacer(modifier = Modifier.height(20.dp))
+
+                AnimatedVisibility(visible = showCheckbox) {
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Checkbox(checked = checked, onCheckedChange = {
+                            if (it) {
+                                onChecked()
+                            }
+                        })
+                        Text(
+                            text = checkBoxText,
+                            fontFamily = FontFamily(Nunito.Bold.font),
+                            fontSize = 12.sp,
+                            textAlign = TextAlign.Start,
+                            modifier = Modifier,
+                            color = LessTransparentWhiteColor,
+                            letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                }
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -113,7 +146,7 @@ fun AppCustomDialog(
                             letterSpacing = TextUnit(1f, TextUnitType.Sp)
                         )
                     }
-                    if(showDismissButton) {
+                    if (showDismissButton) {
                         TextButton(onClick = onDismiss) {
                             Text(
                                 text = dismissButtonText,
@@ -126,6 +159,7 @@ fun AppCustomDialog(
                         }
                     }
                 }
+
             }
         }
     }
@@ -139,6 +173,10 @@ fun PreviewAppCustomDialog() {
         onDismiss = {},
         title = "Permission required.",
         description = "Looks like you are blocked from this project",
-        topRowIcon = Icons.Default.Lock
+        topRowIcon = Icons.Default.Lock,
+        onChecked = {},
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(30.dp)
     )
 }

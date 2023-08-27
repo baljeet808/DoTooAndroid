@@ -113,6 +113,14 @@ object SharedPref {
         get() = sharedPref.getBoolean("subscribedYearly", false)
         set(value) = sharedPref.edit{ it.putBoolean("subscribedYearly", value)}
 
+
+    var deleteTaskWithoutConfirmation : Boolean
+        get() = sharedPref.getBoolean("deleteTaskWithoutConfirmation", false)
+        set(value) = sharedPref.edit{ it.putBoolean("deleteTaskWithoutConfirmation", value)}
+
+
+
+
     fun clearAll(){
         sharedPref.edit().clear().apply()
     }

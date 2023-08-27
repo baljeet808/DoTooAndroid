@@ -30,6 +30,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.ListAlt
@@ -72,6 +73,7 @@ import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleWithPager
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
@@ -92,6 +94,7 @@ fun ProjectsView(
     navigateToTask: (DoTooItemEntity) -> Unit,
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
+    deleteTask:(DoTooItemEntity) -> Unit,
     updateTaskTitle: (task: DoTooItemEntity, title: String) -> Unit
 ) {
 
@@ -101,7 +104,13 @@ fun ProjectsView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: DoTooItemEntity? = null
+    var taskToEdit: DoTooItemEntity? = remember {
+        null
+    }
+
+    var taskToDelete : DoTooItemEntity? = remember {
+        null
+    }
 
     val projectsListState = rememberLazyListState()
     val listMoveScope = rememberCoroutineScope()
@@ -441,6 +450,14 @@ fun ProjectsView(
                                     delay(moveAnimationDelay)
                                     projectsListState.animateScrollToItem(0)
                                 }
+                            },
+                            onDeleteTask = { task ->
+                                if(SharedPref.deleteTaskWithoutConfirmation){
+                                    deleteTask(task)
+                                }else{
+                                    taskToDelete = task
+                                    showBlur = true
+                                }
                             }
                         )
                     }
@@ -475,7 +492,15 @@ fun ProjectsView(
                                     top = 10.dp,
                                     start = 0.dp,
                                     end = 0.dp
-                                )
+                                ),
+                            onTaskDelete = { task ->
+                                if(SharedPref.deleteTaskWithoutConfirmation){
+                                    deleteTask(task)
+                                }else{
+                                    taskToDelete = task
+                                    showBlur = true
+                                }
+                            }
                         )
                     }
 
@@ -516,6 +541,7 @@ fun ProjectsView(
                     .padding(paddingValues = padding)
                     .clickable(
                         onClick = {
+                            taskToEdit = null
                             showBlur = false
                         }
                     ),
@@ -529,17 +555,82 @@ fun ProjectsView(
                         updateTaskTitle(taskToEdit!!, title)
                         keyBoardController?.hide()
                         showBlur = false
+                        taskToEdit = null
                     },
                     placeholder = taskToEdit?.title ?: "",
                     label = "Edit Task",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showBlur = false
+                        taskToEdit = null
                     },
                     themeColor = Color(taskToEdit?.projectColor ?: getRandomColor()),
                     lines = 2
                 )
 
+            }
+        }
+
+
+        AnimatedVisibility(
+            visible = showBlur && taskToDelete != null,
+            enter = slideInVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseIn
+                ),
+                initialOffsetY = {
+                    it / 2
+                }
+            ),
+            exit = slideOutVertically(
+                animationSpec = tween(
+                    durationMillis = 200,
+                    easing = EaseOut
+                ),
+                targetOffsetY = {
+                    it / 2
+                }
+            )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues = padding)
+                    .clickable(
+                        onClick = {
+                            taskToDelete = null
+                            showBlur = false
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                AppCustomDialog(
+                    onDismiss = {
+                        taskToDelete = null
+                        showBlur = false
+                    },
+                    onConfirm = {
+                        deleteTask(taskToDelete!!)
+                        taskToDelete = null
+                        showBlur = false
+                    },
+                    title = "Delete this task?",
+                    description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.title?:""}\"",
+                    topRowIcon = Icons.Default.DeleteForever,
+                    showDismissButton = true,
+                    dismissButtonText = "Abort",
+                    confirmButtonText = "Yes, proceed",
+                    showCheckbox = SharedPref.deleteTaskWithoutConfirmation.not(),
+                    checked = SharedPref.deleteTaskWithoutConfirmation,
+                    onChecked = {
+                           SharedPref.deleteTaskWithoutConfirmation = true
+                    },
+                    checkBoxText = "Delete without confirmation next time?",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp)
+                )
             }
         }
 
@@ -562,5 +653,6 @@ fun DefaultProjectPreview() {
         navigateToCreateTask = {},
         navigateToCreateProject = {},
         updateTaskTitle = { _, _ -> },
+        deleteTask = {}
     )
 }

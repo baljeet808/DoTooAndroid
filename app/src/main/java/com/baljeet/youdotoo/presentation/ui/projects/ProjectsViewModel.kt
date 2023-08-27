@@ -7,10 +7,12 @@ import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsWithDoToosUseCase
@@ -29,7 +31,8 @@ class ProjectsViewModel @Inject constructor(
     private val getProjectsWithDoToosUseCase: GetProjectsWithDoToosUseCase,
     private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
-    private val upsertDoToosUseCase: UpsertDoToosUseCase
+    private val upsertDoToosUseCase: UpsertDoToosUseCase,
+    private val deleteDoTooUseCase: DeleteDoTooUseCase
 ) : ViewModel() {
 
     private var projectsReference = FirebaseFirestore
@@ -131,6 +134,56 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
+    fun deleteTask(task : DoTooItemEntity){
+        CoroutineScope(Dispatchers.IO).launch {
+            val project = getProjectByIdUseCase(projectId = task.projectId)
+            deleteTask(task, project)
+        }
+    }
+
+
+    private fun deleteTask(task : DoTooItemEntity, projectEntity: ProjectEntity){
+        val project = projectEntity.toProject()
+        when(getRole(project)){
+            Roles.ProAdmin -> {
+                deleteTaskOnServer(task, project)
+            }
+            Roles.Admin -> {
+                deleteTaskLocally(task, project)
+            }
+            Roles.Editor -> {
+                deleteTaskOnServer(task, project)
+            }
+            Roles.Viewer -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+            Roles.Blocked -> {
+                //Do nothing can't update anything
+                //UI handles this by itself
+            }
+        }
+    }
+    private fun deleteTaskOnServer(task: DoTooItemEntity, project: Project){
+        projectsReference
+            .document(task.projectId)
+            .collection("todos")
+            .document(task.id)
+            .delete()
+            .addOnSuccessListener {
+                updateProject(project)
+            }
+    }
+
+    private fun deleteTaskLocally(task: DoTooItemEntity, project: Project){
+        CoroutineScope(Dispatchers.IO).launch {
+            deleteDoTooUseCase(task.toDoTooItem(), projectId = task.projectId)
+            updateProject(project)
+        }
+    }
+
+
+
     private fun updateProject(project : Project){
         val projectCopy = project.copy()
         projectCopy.updatedAt = getSampleDateInLong()
@@ -168,5 +221,7 @@ class ProjectsViewModel @Inject constructor(
             upsertProjectUseCase(listOf(project))
         }
     }
+
+
 
 }

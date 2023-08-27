@@ -3,8 +3,6 @@ package com.baljeet.youdotoo.presentation.ui.dotoo
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -31,7 +29,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -51,11 +48,6 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -71,7 +63,8 @@ fun TasksScheduleLazyColumn(
     modifier: Modifier,
     navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
     navigateToEditTask : (task : DoTooItemEntity) -> Unit,
-    toggleTask : (task : DoTooItemEntity) -> Unit
+    toggleTask : (task : DoTooItemEntity) -> Unit,
+    onDeleteTask : (task : DoTooItemEntity) -> Unit
 ) {
 
     val todayDate = java.time.LocalDateTime.now()
@@ -183,7 +176,7 @@ fun TasksScheduleLazyColumn(
                                 navigateToEditTask(task)
                             },
                             onDeleteTask = {
-                                viewModel.deleteTask(task)
+                                onDeleteTask(task)
                             }
                         )
 
@@ -220,7 +213,7 @@ fun TasksScheduleLazyColumn(
                                 navigateToEditTask(task)
                             },
                             onDeleteTask = {
-                                viewModel.deleteTask(task)
+                                onDeleteTask(task)
                             }
                         )
 
@@ -256,7 +249,7 @@ fun TasksScheduleLazyColumn(
                                 navigateToEditTask(task)
                             },
                             onDeleteTask = {
-                                viewModel.deleteTask(task)
+                                onDeleteTask(task)
                             }
                         )
 
@@ -292,7 +285,7 @@ fun TasksScheduleLazyColumn(
                                 navigateToEditTask(task)
                             },
                             onDeleteTask = {
-                                viewModel.deleteTask(task)
+                                onDeleteTask(task)
                             }
                         )
 
@@ -334,10 +327,9 @@ fun TasksScheduleLazyColumn(
                                         navigateToEditTask(task)
                                     },
                                     onDeleteTask = {
-                                        viewModel.deleteTask(task)
+                                        onDeleteTask(task)
                                     }
                                 )
-
                             }
                         }
                 }
@@ -380,22 +372,12 @@ fun SwipeAbleTaskItemView(
     navigateToEditTask: () -> Unit,
     navigateToQuickEditTask: () -> Unit
 ){
-    val parentJob = Job()
-    val stopScope = rememberCoroutineScope()
-
-
-    var startJob : CoroutineScope? = null
-
     val state = rememberDismissState(
         confirmStateChange = {
             if (it == DismissValue.DismissedToStart) {
-                startJob = CoroutineScope(parentJob)
-                startJob?.launch {
-                    delay(1000)
-                    onDeleteTask()
-                }
+                onDeleteTask()
             }
-            true
+            SharedPref.deleteTaskWithoutConfirmation
         }
     )
     SwipeToDismiss(
@@ -411,12 +393,12 @@ fun SwipeAbleTaskItemView(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(20.dp)
                     ),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Row(
                     modifier = Modifier,
-                    horizontalArrangement = Arrangement.SpaceAround,
+                    horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
@@ -434,25 +416,6 @@ fun SwipeAbleTaskItemView(
                         fontFamily = FontFamily(Nunito.Normal.font)
                     )
                 }
-                androidx.compose.material.Text(
-                    text = "UNDO",
-                    color = if (isSystemInDarkTheme()) {
-                        Color.White
-                    } else {
-                        Color.Black
-                    },
-                    fontSize = 14.sp,
-                    fontFamily = FontFamily(Nunito.ExtraBold.font),
-                    letterSpacing = TextUnit(1.5f, TextUnitType.Sp),
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            startJob?.cancel()
-                            stopScope.launch {
-                                state.reset()
-                            }
-                        }
-                    )
-                )
             }
         },
         dismissContent = {

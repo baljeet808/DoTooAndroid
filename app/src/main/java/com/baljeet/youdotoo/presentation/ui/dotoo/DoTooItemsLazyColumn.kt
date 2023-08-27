@@ -24,7 +24,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.rememberDismissState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,13 +31,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -59,18 +57,12 @@ fun DoTooItemsLazyColumn(
     ) {
         items(doToos, key = {it.id}) { dotoo ->
 
-            val scope = rememberCoroutineScope()
-
             val state = rememberDismissState(
                 confirmStateChange = {
                     if (it == DismissValue.DismissedToStart) {
-                        scope.launch {
-                            delay(1000)
-                            onItemDelete(dotoo)
-                        }
+                        onItemDelete(dotoo)
                     }
-                    //Todo: check if deleting without confirmation if enabled if yes then return true else false
-                    false
+                    SharedPref.deleteTaskWithoutConfirmation
                 }
             )
 
