@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -43,9 +44,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.baljeet.youdotoo.common.Roles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRandomId
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
@@ -63,6 +66,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -88,7 +92,9 @@ fun ProjectView(
 
     SharedPref.init(LocalContext.current)
 
-
+    val showViewerPermissionDialog = remember {
+        mutableStateOf(false)
+    }
 
     var taskToEdit: DoTooItemEntity? = null
 
@@ -103,13 +109,35 @@ fun ProjectView(
         FocusRequester()
     }
 
+    if (showViewerPermissionDialog.value){
+        AppCustomDialog(
+            onDismiss = {
+                showViewerPermissionDialog.value = false
+            },
+            onConfirm = {
+                showViewerPermissionDialog.value = false
+            },
+            title = "Permission Issue! 😣",
+            description = "Sorry, you are a viewer in this project. And viewer can not create tasks. Ask Project Admin for permission upgrade.",
+            topRowIcon = Icons.Default.Lock,
+            onChecked = {  },
+            showCheckbox = false,
+            modifier = Modifier
+        )
+    }
 
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToCreateTask,
+                onClick = {
+                    if(getRole(project?.toProject()!!) != Roles.Viewer){
+                        navigateToCreateTask()
+                    }else{
+                        showViewerPermissionDialog.value = true
+                    }
+                },
                 modifier = Modifier,
-                backgroundColor = project?.color?.let{Color(it)}?: NightDotooBrightBlue
+                backgroundColor = project?.color?.let { Color(it) } ?: NightDotooBrightBlue
             ) {
                 Icon(
                     Icons.Outlined.Add,
@@ -164,7 +192,7 @@ fun ProjectView(
 
             AnimatedVisibility(visible = users.isNotEmpty()) {
                 TextButton(
-                    onClick = navigateToChat ,
+                    onClick = navigateToChat,
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
                     Text(
@@ -289,6 +317,6 @@ fun PreviewProjectView() {
         onClickInvite = {},
         navigateToEditTask = {},
         navigateToChat = {},
-        updateTaskTitle = {_,_ ->}
+        updateTaskTitle = { _, _ -> }
     )
 }

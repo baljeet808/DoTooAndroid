@@ -50,8 +50,8 @@ fun AppCustomDialog(
     showDismissButton: Boolean = false,
     showCheckbox: Boolean = false,
     onChecked: () -> Unit,
-    checkBoxText : String = "Don't ask me next time?",
-    checked : Boolean = false,
+    checkBoxText: String = "Don't ask me next time?",
+    checked: Boolean = false,
     modifier: Modifier
 ) {
     SharedPref.init(LocalContext.current)
@@ -136,7 +136,11 @@ fun AppCustomDialog(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
-                    TextButton(onClick = onConfirm) {
+                    TextButton(
+                        onClick = {
+                            onConfirm()
+                        }
+                    ) {
                         Text(
                             text = confirmButtonText,
                             fontFamily = FontFamily(Nunito.Bold.font),
