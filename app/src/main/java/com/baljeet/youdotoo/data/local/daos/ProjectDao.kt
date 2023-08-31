@@ -16,7 +16,9 @@ interface ProjectDao {
     suspend fun upsertAll(projects : List<ProjectEntity>)
 
     @Query("SELECT * FROM projects")
-    fun getAllProjects() : Flow<List<ProjectEntity>>
+    fun getAllProjectsAsFlow() : Flow<List<ProjectEntity>>
+    @Query("SELECT * FROM projects")
+    suspend fun getAllProjects() : List<ProjectEntity>
 
     @Query("SELECT * FROM projects where id = :projectId")
     suspend fun getProjectById(projectId : String) : ProjectEntity

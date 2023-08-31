@@ -11,7 +11,7 @@ import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
-import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetAllProjectsAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class CreateTaskViewModel  @Inject constructor(
     private val upsertDoToosUseCase: UpsertDoToosUseCase,
     private val upsertProjectUseCase: UpsertProjectUseCase,
-    private val getProjectsUseCase: GetProjectsUseCase
+    private val getProjectsUseCase: GetAllProjectsAsFlowUseCase
 ) : ViewModel() {
 
 

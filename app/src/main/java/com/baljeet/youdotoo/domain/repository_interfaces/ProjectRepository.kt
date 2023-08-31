@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 
 interface ProjectRepository {
-     fun getProjects(): Flow<List<ProjectEntity>>
+     suspend fun getProjects(): List<ProjectEntity>
+     fun getProjectsAsFlow(): Flow<List<ProjectEntity>>
      fun getAllProjectsAndTasksAsFlow(): Flow<List<ProjectWithDoToos>>
      suspend fun getProjectById(projectId : String): ProjectEntity
      fun getProjectByIdAsFlow(projectId : String): Flow<ProjectEntity>

@@ -15,6 +15,7 @@ import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.mappers.toDoTooItem
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
@@ -29,6 +30,8 @@ import com.baljeet.youdotoo.domain.use_cases.invitation.UpsertAllInvitationsUseC
 import com.baljeet.youdotoo.domain.use_cases.messages.DeleteAllMessagesOfProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.messages.UpsertMessagesUseCase
 import com.baljeet.youdotoo.domain.use_cases.notifications.UpsertNotificationsUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.DeleteProjectUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectsUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.UpsertProjectUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.UpsertUserUseCase
@@ -59,7 +62,9 @@ class DashboardViewModel @Inject constructor(
     private val upsertMessagesUseCase: UpsertMessagesUseCase,
     private val deleteAllMessagesOfProjectUseCase: DeleteAllMessagesOfProjectUseCase,
     private val getProjectTasksUseCase: GetProjectTasksUseCase,
-    private val deleteDoTooUseCase: DeleteDoTooUseCase
+    private val deleteDoTooUseCase: DeleteDoTooUseCase,
+    private val getProjectsUseCase: GetProjectsUseCase,
+    private val deleteProjectUseCase: DeleteProjectUseCase
 ) : ViewModel() {
 
 
@@ -115,9 +120,10 @@ class DashboardViewModel @Inject constructor(
          * and their tasks. and save/update everything to local db
          * **/
         projectsQuery.addSnapshotListener { snapshot, error ->
-            if (snapshot != null && error == null) {
-                for (project in snapshot) {
 
+            if (snapshot != null && error == null) {
+                val allOnlineProjects = arrayListOf<Project>()
+                for (project in snapshot) {
                     val onlineProject = Project(
                         id = project.getString("id") ?: "",
                         name = project.getString("name") ?: "",
@@ -129,7 +135,8 @@ class DashboardViewModel @Inject constructor(
                         color = project.getLong("color") ?: 4278215265,
                         updatedAt = project.getLong("updatedAt") ?: getSampleDateInLong()
                     )
-
+                    //Saving it to list
+                    allOnlineProjects.add(onlineProject)
                     // save all online projects to local db
                     CoroutineScope(Dispatchers.IO).launch {
                         upsertProjectUseCase.invoke(arrayListOf(onlineProject))
@@ -157,6 +164,9 @@ class DashboardViewModel @Inject constructor(
                                         )
                                     )
                                 }
+                                /**
+                                 * Code to delete tasks locally which have been deleted online
+                                 * **/
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val allLocalTasksOfThisProject = getProjectTasksUseCase(onlineProject.id)
                                     upsertDoToosUseCase(
@@ -212,6 +222,18 @@ class DashboardViewModel @Inject constructor(
 
 
                     getUserProfilesAndUpdateDatabase(onlineProject)
+                }
+
+                /**
+                 * Code to delete projects locally which have been deleted online
+                 * **/
+                CoroutineScope(Dispatchers.IO).launch {
+                    val allLocalProject = getProjectsUseCase()
+                    if(allOnlineProjects.size < allLocalProject.size){
+                        allLocalProject.filter { localProject -> allOnlineProjects.none { onlineProject -> onlineProject.id == localProject.id } }.forEach { wildProject ->
+                            deleteProjectUseCase(wildProject.toProject())
+                        }
+                    }
                 }
             }
         }

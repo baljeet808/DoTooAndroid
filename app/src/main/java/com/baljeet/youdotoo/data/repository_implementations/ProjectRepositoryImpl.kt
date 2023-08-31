@@ -19,8 +19,12 @@ class ProjectRepositoryImpl @Inject constructor(
 
     private val projectDao = localDB.projectDao
 
-    override fun getProjects(): Flow<List<ProjectEntity>> {
+    override suspend fun getProjects(): List<ProjectEntity> {
         return projectDao.getAllProjects()
+    }
+
+    override fun getProjectsAsFlow(): Flow<List<ProjectEntity>> {
+        return projectDao.getAllProjectsAsFlow()
     }
 
     override fun getAllProjectsAndTasksAsFlow(): Flow<List<ProjectWithDoToos>> {
