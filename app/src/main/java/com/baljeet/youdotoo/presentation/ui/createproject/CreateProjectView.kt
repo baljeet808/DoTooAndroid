@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.createproject
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
@@ -27,13 +28,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.outlined.Adjust
-import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Notes
 import androidx.compose.material.icons.outlined.PlaylistRemove
 import androidx.compose.material.icons.outlined.Preview
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -47,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -56,6 +58,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumProjectColors
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getRandomColorEnum
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
@@ -72,9 +75,11 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun CreateProjectView(
-    createProject: (name : String, description : String, color : Long) -> Unit,
-    navigateBack : () -> Unit
+    createProject: (name: String, description: String, color: Long) -> Unit,
+    navigateBack: () -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     var projectName by remember {
         mutableStateOf("")
@@ -103,7 +108,7 @@ fun CreateProjectView(
 
     val rotation = transition.animateValue(
         initialValue = -3f,
-        targetValue =  3f,
+        targetValue = 3f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 100),
             repeatMode = RepeatMode.Reverse
@@ -111,11 +116,11 @@ fun CreateProjectView(
         typeConverter = Float.VectorConverter, label = ""
     )
 
-    var showTitleErrorAnimation by remember{
+    var showTitleErrorAnimation by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = showTitleErrorAnimation){
+    LaunchedEffect(key1 = showTitleErrorAnimation) {
         delay(1000)
         showTitleErrorAnimation = false
     }
@@ -182,6 +187,8 @@ fun CreateProjectView(
             }
         }
 
+        Spacer(modifier = Modifier.height(20.dp))
+
         /**
          * Row for preview and project color button
          * **/
@@ -192,46 +199,14 @@ fun CreateProjectView(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
-            //Preview
-            Row(
+            Text(
+                text = "Select Project Color",
+                color = getTextColor(),
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Nunito.SemiBold.font),
                 modifier = Modifier
-                    .border(
-                        width = 2.dp,
-                        color = if (isSystemInDarkTheme()) {
-                            NightDotooFooterTextColor
-                        } else {
-                            LightDotooFooterTextColor
-                        },
-                        shape = RoundedCornerShape(30.dp)
-                    )
-                    .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
-                    .clickable(
-                        onClick = {
+            )
 
-                        }
-                    ),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    Icons.Outlined.Preview,
-                    contentDescription = "Button to see the project preview.",
-                    tint = LightAppBarIconsColor,
-                    modifier = Modifier
-                        .width(30.dp)
-                        .height(30.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Preview",
-                    color = LightAppBarIconsColor,
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textAlign = TextAlign.Center
-                )
-            }
 
             Spacer(modifier = Modifier.width(5.dp))
 
@@ -239,7 +214,7 @@ fun CreateProjectView(
             Row(
                 modifier = Modifier
                     .border(
-                        width = 2.dp,
+                        width = 1.dp,
                         color = if (isSystemInDarkTheme()) {
                             NightDotooFooterTextColor
                         } else {
@@ -282,15 +257,20 @@ fun CreateProjectView(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-            ){
+            ) {
                 item {
                     Spacer(modifier = Modifier.width(20.dp))
                 }
-                items(EnumProjectColors.values()){ color ->
+                items(EnumProjectColors.values()) { color ->
                     Row(
                         modifier = Modifier
                             .border(
-                                width = 2.dp,
+                                width =
+                                if (selectedColor == color) {
+                                    2.dp
+                                } else {
+                                    1.dp
+                                },
                                 color = if (selectedColor == color) {
                                     if (isSystemInDarkTheme()) {
                                         Color.White
@@ -310,6 +290,7 @@ fun CreateProjectView(
                             .clickable(
                                 onClick = {
                                     selectedColor = color
+                                    showColorOptions = false
                                 }
                             ),
                         horizontalArrangement = Arrangement.SpaceAround,
@@ -326,13 +307,13 @@ fun CreateProjectView(
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
                             text = color.name,
-                            color = if(selectedColor == color){
+                            color = if (selectedColor == color) {
                                 if (isSystemInDarkTheme()) {
                                     Color.White
                                 } else {
                                     Color.Black
                                 }
-                            }else{
+                            } else {
                                 LightAppBarIconsColor
                             },
                             fontFamily = FontFamily(Nunito.Bold.font),
@@ -355,44 +336,62 @@ fun CreateProjectView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(20.dp),
-            horizontalArrangement = Arrangement.spacedBy(
-                40.dp,
-                alignment = Alignment.CenterHorizontally
-            ),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            //set priority
-            Row(
-                modifier = Modifier
-                    .clickable(
-                        onClick = {
+            TextButton(
+                onClick = {
 
-                        }
-                    ),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
+                },
+                modifier = Modifier
+                    .border(
+                        width = 1.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooFooterTextColor
+                        } else {
+                            LightDotooFooterTextColor
+                        },
+                        shape = RoundedCornerShape(30.dp)
+                    )
             ) {
                 Icon(
-                    Icons.Outlined.Favorite,
-                    contentDescription = "Button to set project favorite.",
-                    tint = LightAppBarIconsColor
+                    Icons.Outlined.Preview,
+                    contentDescription = "Button to see the project preview.",
+                    tint = LightAppBarIconsColor,
+                    modifier = Modifier
+                        .width(30.dp)
+                        .height(30.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "Preview",
+                    color = LightAppBarIconsColor,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textAlign = TextAlign.Center
                 )
             }
 
-            //toggle description
-            Row(
+            TextButton(
+                onClick = {
+                    descriptionOn = descriptionOn.not()
+                    if (descriptionOn.not()) {
+                        description = ""
+                    }
+                },
                 modifier = Modifier
-                    .clickable(
-                        onClick = {
-                            descriptionOn = descriptionOn.not()
-                            if (descriptionOn.not()) {
-                                description = ""
-                            }
-                        }
-                    ),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.CenterVertically
+                    .border(
+                        width = 1.dp,
+                        color = if (isSystemInDarkTheme()) {
+                            NightDotooFooterTextColor
+                        } else {
+                            LightDotooFooterTextColor
+                        },
+                        shape = RoundedCornerShape(30.dp)
+                    )
             ) {
                 Icon(
                     if (descriptionOn) {
@@ -630,11 +629,11 @@ fun CreateProjectView(
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun PreviewCreateProjectView(){
+fun PreviewCreateProjectView() {
     CreateProjectView(
-        createProject = {_,_,_->},
+        createProject = { _, _, _ -> },
         navigateBack = {}
     )
 }
