@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 
@@ -37,7 +38,7 @@ fun ProjectTopBar(
     onNotificationItemClicked: () -> Unit,
     onDeleteItemClicked: () -> Unit,
     onClickInvite: () -> Unit,
-    roleText : String,
+    role : EnumRoles,
     modifier: Modifier
 ) {
 
@@ -58,9 +59,9 @@ fun ProjectTopBar(
              * Role
              * **/
             Text(
-                text = "You are ".plus(roleText),
+                text = "You are ".plus(role.name),
                 modifier = Modifier
-                    .padding(start = 5.dp, end = 5.dp),
+                    .padding(start = 10.dp, end = 5.dp),
                 color = LessTransparentWhiteColor,
                 fontSize = 14.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
@@ -73,32 +74,34 @@ fun ProjectTopBar(
             /**
              * Button to add more person to the project
              * **/
-            IconButton(
-                onClick = onClickInvite,
-                modifier = Modifier
-                    .weight(0.2f)
-            ) {
-                Icon(
-                    Icons.Outlined.PersonAdd,
-                    contentDescription = "Button to add more person to the project",
-                    tint = Color.White
-                )
-            }
-            /**
-             * Delete the project
-             * **/
-            IconButton(
-                onClick = {
-                    onDeleteItemClicked()
-                },
-                modifier = Modifier
-                    .weight(0.2f)
-            ) {
-                Icon(
-                    Icons.Outlined.DeleteForever,
-                    contentDescription = "Button to Delete the project",
-                    tint = Color.White
-                )
+            if(role == EnumRoles.Admin || role == EnumRoles.ProAdmin) {
+                IconButton(
+                    onClick = onClickInvite,
+                    modifier = Modifier
+                        .weight(0.2f)
+                ) {
+                    Icon(
+                        Icons.Outlined.PersonAdd,
+                        contentDescription = "Button to add more person to the project",
+                        tint = Color.White
+                    )
+                }
+                /**
+                 * Delete the project
+                 * **/
+                IconButton(
+                    onClick = {
+                        onDeleteItemClicked()
+                    },
+                    modifier = Modifier
+                        .weight(0.2f)
+                ) {
+                    Icon(
+                        Icons.Outlined.DeleteForever,
+                        contentDescription = "Button to Delete the project",
+                        tint = Color.White
+                    )
+                }
             }
 
             /**
@@ -140,6 +143,6 @@ fun PreviewProjectTopBar() {
         onNotificationItemClicked = {},
         onDeleteItemClicked = {},
         onClickInvite = {},
-        roleText = "Admin"
+        role = EnumRoles.Admin
     )
 }

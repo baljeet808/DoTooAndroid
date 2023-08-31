@@ -2,7 +2,7 @@ package com.baljeet.youdotoo.presentation.ui.project
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.baljeet.youdotoo.common.Roles
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
@@ -56,20 +56,20 @@ class ProjectViewModel @Inject constructor(
 
     fun upsertTask(task: DoTooItemEntity, project : Project){
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 updateTaskOnServer(task, project)
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 updateTaskLocally(task, project)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 updateTaskOnServer(task, project)
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
@@ -100,20 +100,20 @@ class ProjectViewModel @Inject constructor(
         projectCopy.updatedAt = getSampleDateInLong()
 
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 updateProjectOnSever(projectCopy)
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 updateProjectLocally(projectCopy)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 updateProjectOnSever(projectCopy)
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
@@ -137,20 +137,20 @@ class ProjectViewModel @Inject constructor(
     fun deleteProject(project: Project){
 
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 deleteProjectOnServer()
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 deleteProjectLocally(project)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 deleteProjectOnServer()
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
@@ -171,20 +171,20 @@ class ProjectViewModel @Inject constructor(
 
     fun deleteTask(task : DoTooItemEntity, project: Project){
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 deleteTaskOnServer(task, project)
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 deleteTaskLocally(task, project)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 deleteTaskOnServer(task, project)
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }

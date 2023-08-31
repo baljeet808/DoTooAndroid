@@ -40,12 +40,11 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleColorPalette
 import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
-import com.baljeet.youdotoo.common.getUserRole
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
 import com.baljeet.youdotoo.presentation.ui.dotoo.DummyDoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.DummyProjectCardView
@@ -211,7 +210,7 @@ fun ThemeChooserView(
                         ),
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
-                        role = getSampleProject().getUserRole(),
+                        role = EnumRoles.Editor.name,
                         backgroundColor = Color(appliedPalette.nightDark),
                         leftAlign = false,
                         textColor = Color.White
@@ -288,7 +287,7 @@ fun ThemeChooserView(
                         ),
                         project = getSampleProjectWithTasks(),
                         onItemClick = {},
-                        role = getSampleProject().getUserRole(),
+                        role = EnumRoles.Admin.name,
                         backgroundColor = Color(appliedPalette.dayDark),
                         leftAlign = false,
                         textColor = Color.Black

@@ -4,24 +4,24 @@ import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 
 
-enum class Roles {
+enum class EnumRoles {
     ProAdmin, Admin, Editor, Viewer, Blocked
 }
 
 
-fun getRole(project: Project): Roles {
+fun getRole(project: Project): EnumRoles {
     return if (project.ownerId == SharedPref.userId) {
         if (SharedPref.isUserAPro) {
-            Roles.ProAdmin
+            EnumRoles.ProAdmin
         } else {
-            Roles.Admin
+            EnumRoles.Admin
         }
     } else if (project.collaboratorIds.contains(SharedPref.userId)) {
-        Roles.Editor
+        EnumRoles.Editor
     } else if (project.viewerIds.contains(SharedPref.userId)) {
-        Roles.Viewer
+        EnumRoles.Viewer
     } else {
-        Roles.Blocked
+        EnumRoles.Blocked
     }
 }
 
@@ -29,17 +29,3 @@ fun getRole(project: Project): Roles {
 fun doesUserHavePermissionToEdit(project: ProjectEntity) =
     (project.ownerId == SharedPref.userId!!) || project.collaboratorIds.contains(SharedPref.userId!!)
 
-fun Project.getUserRole(): String {
-    SharedPref.userId?.let { userId ->
-        if (this.ownerId == userId) {
-            return "Admin"
-        }
-        if (this.collaboratorIds.contains(userId)) {
-            return "Collaborator"
-        }
-        if (this.viewerIds.contains(userId)) {
-            return "Viewer"
-        }
-    }
-    return "Blocked"
-}

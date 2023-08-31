@@ -3,7 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.create_task
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
-import com.baljeet.youdotoo.common.Roles
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
 import com.baljeet.youdotoo.common.getRole
@@ -72,20 +72,20 @@ class CreateTaskViewModel  @Inject constructor(
 
     private fun createTask(task: DoTooItem, project : Project){
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 updateTaskOnServer(task, project)
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 updateTaskLocally(task, project)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 updateTaskOnServer(task, project)
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
@@ -116,20 +116,20 @@ class CreateTaskViewModel  @Inject constructor(
         projectCopy.updatedAt = getSampleDateInLong()
 
         when(getRole(project)){
-            Roles.ProAdmin -> {
+            EnumRoles.ProAdmin -> {
                 updateProjectOnSever(project)
             }
-            Roles.Admin -> {
+            EnumRoles.Admin -> {
                 updateProjectLocally(project)
             }
-            Roles.Editor -> {
+            EnumRoles.Editor -> {
                 updateProjectOnSever(project)
             }
-            Roles.Viewer -> {
+            EnumRoles.Viewer -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }
-            Roles.Blocked -> {
+            EnumRoles.Blocked -> {
                 //Do nothing can't update anything
                 //UI handles this by itself
             }

@@ -44,7 +44,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.baljeet.youdotoo.common.Roles
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRandomId
@@ -130,7 +130,7 @@ fun ProjectView(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if(getRole(project?.toProject()!!) != Roles.Viewer){
+                    if(getRole(project?.toProject()!!) != EnumRoles.Viewer){
                         navigateToCreateTask()
                     }else{
                         showViewerPermissionDialog.value = true
@@ -169,26 +169,28 @@ fun ProjectView(
             /**
              *Top Project Card
              * **/
-            ProjectCardWithProfiles(
-                project = project?.toProject(),
-                users = users.map { it.toUser() },
-                tasks = tasks.map { it.toDoTooItem() },
-                onItemDeleteClick = deleteProject,
-                updateProjectTitle = { title ->
-                    project?.copy()?.toProject()?.let { projectCopy ->
-                        projectCopy.name = title
-                        upsertProject(projectCopy)
-                    }
-                },
-                updateProjectDescription = { description ->
-                    project?.copy()?.toProject()?.let { projectCopy ->
-                        projectCopy.description = description
-                        upsertProject(projectCopy)
-                    }
-                },
-                toggleNotificationSetting = {},
-                onClickInvite = onClickInvite
-            )
+            project?.let {
+                ProjectCardWithProfiles(
+                    project = project.toProject(),
+                    users = users.map { it.toUser() },
+                    tasks = tasks.map { it.toDoTooItem() },
+                    onItemDeleteClick = deleteProject,
+                    updateProjectTitle = { title ->
+                        project.copy().toProject().let { projectCopy ->
+                            projectCopy.name = title
+                            upsertProject(projectCopy)
+                        }
+                    },
+                    updateProjectDescription = { description ->
+                        project.copy().toProject().let { projectCopy ->
+                            projectCopy.description = description
+                            upsertProject(projectCopy)
+                        }
+                    },
+                    toggleNotificationSetting = {},
+                    onClickInvite = onClickInvite
+                )
+            }
 
             AnimatedVisibility(visible = users.isNotEmpty()) {
                 TextButton(

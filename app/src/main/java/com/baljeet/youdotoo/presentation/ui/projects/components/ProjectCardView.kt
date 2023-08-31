@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
@@ -41,7 +42,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 @Composable
 fun ProjectCardView(
     project: ProjectWithDoToos,
-    role: String,
+    role: EnumRoles,
     onItemClick: () -> Unit,
     modifier: Modifier
 ) {
@@ -101,12 +102,7 @@ fun ProjectCardView(
 
 
                 Text(
-                    text = when (role) {
-                        "Admin" -> "Owner"
-                        "Collaborator" -> "Editor"
-                        "Viewer" -> "Viewer"
-                        else -> "Blocked"
-                    },
+                    text = role.name,
                     color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
@@ -148,6 +144,6 @@ fun DefaultProjectCardPreview() {
         modifier = Modifier,
         project = getSampleProjectWithTasks(),
         onItemClick = {},
-        role = "Blocked"
+        role = EnumRoles.Editor
     )
 }

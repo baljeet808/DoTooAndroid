@@ -34,10 +34,10 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
-import com.baljeet.youdotoo.common.getUserRole
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.domain.models.DoTooItem
@@ -54,7 +54,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 
 @Composable
 fun ProjectCardWithProfiles(
-    project: Project?,
+    project: Project,
     users: List<User>,
     tasks: List<DoTooItem>,
     onItemDeleteClick: () -> Unit,
@@ -64,6 +64,8 @@ fun ProjectCardWithProfiles(
     onClickInvite: () -> Unit,
     showFullCardInitially : Boolean = true
 ) {
+
+    val role = getRole(project)
 
     var showAll by remember {
         mutableStateOf(showFullCardInitially)
@@ -82,7 +84,7 @@ fun ProjectCardWithProfiles(
             .padding(10.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .clip(shape = RoundedCornerShape(20.dp))
-            .background(color = Color(project?.color ?: 4278215265)),
+            .background(color = Color(project.color)),
         verticalArrangement = Arrangement.SpaceAround
     ) {
 
@@ -97,7 +99,7 @@ fun ProjectCardWithProfiles(
                 )
             )
             drawCircle(
-                color = Color(project?.color ?: 4278215265),
+                color = Color(project.color),
                 radius = 100.dp.toPx(),
                 center = Offset(
                     x = 50.dp.toPx(),
@@ -143,7 +145,7 @@ fun ProjectCardWithProfiles(
                 onDeleteItemClicked = onItemDeleteClick,
                 onClickInvite = onClickInvite,
                 modifier = Modifier,
-                roleText = project?.getUserRole()?:"Blocked"
+                role = role
             )
         }
 
@@ -167,10 +169,8 @@ fun ProjectCardWithProfiles(
                 )
                 AnimatedVisibility(visible = showEditDescriptionBox.not()) {
                     Text(
-                        text = if (project?.description.isNullOrBlank()) {
+                        text = project.description.ifBlank {
                             "Add Description here..."
-                        } else {
-                            project?.description!!
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -193,13 +193,13 @@ fun ProjectCardWithProfiles(
                            updateProjectDescription(desc)
                             showEditDescriptionBox = false
                         },
-                        placeholder = project?.description ?: "",
+                        placeholder = project.description ,
                         label = "Project Description",
                         maxCharLength = maxDescriptionCharsAllowed,
                         onCancel = {
                             showEditDescriptionBox = false
                         },
-                        themeColor = Color(project?.color ?: 4278215265),
+                        themeColor = Color(project.color ),
                         lines = 3
                     )
                 }
@@ -214,10 +214,8 @@ fun ProjectCardWithProfiles(
         ) {
             AnimatedVisibility(visible = showEditTitleBox.not()) {
                 Text(
-                    text = if (project?.name.isNullOrBlank()) {
+                    text = project.name.ifBlank {
                         "Add title here..."
-                    } else {
-                        project?.name!!
                     },
                     modifier = Modifier
                         .padding(5.dp)
@@ -240,13 +238,13 @@ fun ProjectCardWithProfiles(
                         updateProjectTitle(title)
                         showEditTitleBox = false
                     },
-                    placeholder = project?.name ?: "",
+                    placeholder = project.name ,
                     label = "Project Title",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showEditTitleBox = false
                     },
-                    themeColor = Color(project?.color ?: 4278215265),
+                    themeColor = Color(project.color ),
                     lines = 2
                 )
             }
