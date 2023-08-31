@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.Project
 import kotlinx.datetime.LocalDate
 
@@ -53,7 +54,7 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
                 navController.popBackStack()
             },
             projectId = projectId?:"",
-            projects = projects
+            projects = projects.filter { project ->  (project.ownerId == SharedPref.userId) || (project.collaboratorIds.contains(SharedPref.userId!!)) }
         )
 
     }
