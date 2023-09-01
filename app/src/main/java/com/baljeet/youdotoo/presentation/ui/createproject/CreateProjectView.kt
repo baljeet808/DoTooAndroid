@@ -24,6 +24,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
@@ -44,14 +46,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -73,13 +80,26 @@ import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.delay
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateProjectView(
     createProject: (name: String, description: String, color: Long) -> Unit,
     navigateBack: () -> Unit
 ) {
 
+    val composedForFirstTime = remember {
+        mutableStateOf(true)
+    }
+
     SharedPref.init(LocalContext.current)
+
+    val keyBoardController = LocalSoftwareKeyboardController.current
+    val titleFocusRequester = remember {
+        FocusRequester()
+    }
+    val descriptionFocusRequester = remember {
+        FocusRequester()
+    }
 
     var projectName by remember {
         mutableStateOf("")
@@ -95,7 +115,7 @@ fun CreateProjectView(
 
 
     var descriptionOn by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
     var showColorOptions by remember {
@@ -480,9 +500,35 @@ fun CreateProjectView(
                     fontFamily = FontFamily(Nunito.SemiBold.font)
                 ),
                 maxLines = 3,
-                modifier = Modifier.fillMaxWidth(),
-
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(titleFocusRequester),
+                keyboardOptions = KeyboardOptions(
+                    imeAction = if (descriptionOn) {
+                        ImeAction.Next
+                    } else {
+                        ImeAction.Done
+                    }
+                ),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        if (projectName.isNotBlank()) {
+                            createProject(
+                                projectName,
+                                description,
+                                selectedColor.longValue
+                            )
+                        } else {
+                            projectName = ""
+                            showTitleErrorAnimation = true
+                        }
+                        addHapticFeedback(hapticFeedback = hapticFeedback)
+                    },
+                    onNext = {
+                        descriptionFocusRequester.requestFocus()
+                    }
                 )
+            )
             Text(
                 text = "${projectName.length}/$maxTitleCharsAllowedForProject",
                 color = if (projectName.length >= maxTitleCharsAllowedForProject) {
@@ -555,9 +601,28 @@ fun CreateProjectView(
                         fontFamily = FontFamily(Nunito.SemiBold.font)
                     ),
                     maxLines = 3,
-                    modifier = Modifier.fillMaxWidth(),
-
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(descriptionFocusRequester),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            if (projectName.isNotBlank()) {
+                                createProject(
+                                    projectName,
+                                    description,
+                                    selectedColor.longValue
+                                )
+                            } else {
+                                projectName = ""
+                                showTitleErrorAnimation = true
+                            }
+                            addHapticFeedback(hapticFeedback = hapticFeedback)
+                        }
+                    ),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done
                     )
+                )
                 Text(
                     text = "${description.length}/$maxDescriptionCharsAllowed",
                     color = if (description.length >= maxDescriptionCharsAllowed) {
@@ -624,8 +689,14 @@ fun CreateProjectView(
                 )
             }
         }
-    }
 
+        LaunchedEffect(composedForFirstTime.value){
+            keyBoardController?.show()
+            delay(500)
+            titleFocusRequester.requestFocus()
+            composedForFirstTime.value = false
+        }
+    }
 }
 
 
