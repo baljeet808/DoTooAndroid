@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
@@ -45,6 +47,7 @@ import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBox
 import com.baljeet.youdotoo.presentation.ui.shared.views.lazies.ProfilesLazyRow
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
@@ -71,11 +74,32 @@ fun ProjectCardWithProfiles(
         mutableStateOf(showFullCardInitially)
     }
 
+    val showViewerPermissionDialog = remember {
+        mutableStateOf(false)
+    }
+
     var showEditTitleBox by remember {
         mutableStateOf(false)
     }
     var showEditDescriptionBox by remember {
         mutableStateOf(false)
+    }
+
+    if (showViewerPermissionDialog.value){
+        AppCustomDialog(
+            onDismiss = {
+                showViewerPermissionDialog.value = false
+            },
+            onConfirm = {
+                showViewerPermissionDialog.value = false
+            },
+            title = "Permission Issue! 😣",
+            description = "Sorry, only project owner can edit project details.",
+            topRowIcon = Icons.Default.Lock,
+            onChecked = {  },
+            showCheckbox = false,
+            modifier = Modifier
+        )
     }
 
     Column(
@@ -170,13 +194,21 @@ fun ProjectCardWithProfiles(
                 AnimatedVisibility(visible = showEditDescriptionBox.not()) {
                     Text(
                         text = project.description.ifBlank {
-                            "Add Description here..."
+                            if (role == EnumRoles.ProAdmin || role == EnumRoles.Admin){
+                                "Add Description here..."
+                            }else{
+                                ""
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(
                                 onClick = {
-                                    showEditDescriptionBox = true
+                                    if(role == EnumRoles.ProAdmin || role == EnumRoles.Admin) {
+                                        showEditDescriptionBox = true
+                                    }else{
+                                        showViewerPermissionDialog.value = true
+                                    }
                                 }
                             )
                             .padding(start = 5.dp, end = 5.dp),
@@ -215,13 +247,21 @@ fun ProjectCardWithProfiles(
             AnimatedVisibility(visible = showEditTitleBox.not()) {
                 Text(
                     text = project.name.ifBlank {
-                        "Add title here..."
+                        if(role == EnumRoles.ProAdmin || role == EnumRoles.Admin){
+                            "Add title here..."
+                        }else{
+                            "No title yet 🤪"
+                        }
                     },
                     modifier = Modifier
                         .padding(5.dp)
                         .clickable(
                             onClick = {
-                                showEditTitleBox = true
+                                if(role == EnumRoles.ProAdmin || role == EnumRoles.Admin) {
+                                    showEditTitleBox = true
+                                }else{
+                                    showViewerPermissionDialog.value = true
+                                }
                             }
                         )
                         .fillMaxWidth(),
