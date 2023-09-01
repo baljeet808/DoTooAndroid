@@ -40,7 +40,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
@@ -94,7 +93,7 @@ fun AppCustomDialog(
                     Text(
                         text = title,
                         fontFamily = FontFamily(Nunito.Bold.font),
-                        fontSize = 17.sp,
+                        fontSize = 18.sp,
                         color = getTextColor(),
                         textAlign = TextAlign.Start,
                         letterSpacing = TextUnit(1f, TextUnitType.Sp)
@@ -106,9 +105,9 @@ fun AppCustomDialog(
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     text = description,
-                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 14.sp,
-                    color = LessTransparentWhiteColor,
+                    color = getTextColor(),
                     textAlign = TextAlign.Start,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -138,7 +137,7 @@ fun AppCustomDialog(
                             fontSize = 12.sp,
                             textAlign = TextAlign.Start,
                             modifier = Modifier,
-                            color = LessTransparentWhiteColor,
+                            color = getTextColor(),
                             letterSpacing = TextUnit(1f, TextUnitType.Sp)
                         )
                     }

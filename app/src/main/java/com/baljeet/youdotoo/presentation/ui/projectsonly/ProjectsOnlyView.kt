@@ -12,8 +12,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,11 +42,21 @@ fun  ProjectsOnlyView(
 ) {
     SharedPref.init(LocalContext.current)
 
+    var showBlur by remember {
+        mutableStateOf(false)
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 color = getLightThemeColor()
+            ).blur(
+                radius = if (showBlur) {
+                    20.dp
+                } else {
+                    0.dp
+                }
             ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.End
@@ -76,7 +91,10 @@ fun  ProjectsOnlyView(
                     updateProjectDescription = {},
                     toggleNotificationSetting = {},
                     onClickInvite = {},
-                    showFullCardInitially = false
+                    showFullCardInitially = false,
+                    showDialogBackgroundBlur = {
+                        showBlur = it
+                    }
                 )
             }
 

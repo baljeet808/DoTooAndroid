@@ -149,7 +149,7 @@ fun ProjectView(
                 //TODO: take user to pro features
             },
             title = "Pro feature 🦄",
-            description = "Become a 👑Pro member to share this project with your friends and chat with them about tasks.",
+            description = "Become a 👑 Pro member to share this project with your friends and chat with them about tasks.",
             topRowIcon = Icons.Default.Lock,
             onChecked = {
                 SharedPref.doNotBugMeAboutProFeaturesAgain = true
@@ -226,12 +226,17 @@ fun ProjectView(
                         }
                     },
                     toggleNotificationSetting = {},
-                    onClickInvite = onClickInvite
+                    onClickInvite = onClickInvite,
+                    showDialogBackgroundBlur = {
+                        showBlur = it
+                    }
                 )
             }
 
 
-            Box {
+            Box(
+                contentAlignment = Alignment.CenterStart
+            ) {
                 TextButton(
                     onClick = {
                         if(role == EnumRoles.ProAdmin || role == EnumRoles.Editor || role == EnumRoles.Viewer){
@@ -262,8 +267,8 @@ fun ProjectView(
                         contentDescription = "Lock icon",
                         tint = DoTooRed,
                         modifier = Modifier
-                            .width(15.dp)
-                            .height(15.dp)
+                            .width(20.dp)
+                            .height(20.dp)
                     )
                 }
             }

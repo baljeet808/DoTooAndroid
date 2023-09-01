@@ -65,7 +65,8 @@ fun ProjectCardWithProfiles(
     updateProjectDescription: (title: String) -> Unit,
     toggleNotificationSetting: () -> Unit,
     onClickInvite: () -> Unit,
-    showFullCardInitially : Boolean = true
+    showFullCardInitially : Boolean = true,
+    showDialogBackgroundBlur : (showBlur : Boolean) -> Unit
 ) {
 
     val role = getRole(project)
@@ -88,9 +89,11 @@ fun ProjectCardWithProfiles(
     if (showViewerPermissionDialog.value){
         AppCustomDialog(
             onDismiss = {
+                showDialogBackgroundBlur(false)
                 showViewerPermissionDialog.value = false
             },
             onConfirm = {
+                showDialogBackgroundBlur(false)
                 showViewerPermissionDialog.value = false
             },
             title = "Permission Issue! 😣",
@@ -207,6 +210,7 @@ fun ProjectCardWithProfiles(
                                     if(role == EnumRoles.ProAdmin || role == EnumRoles.Admin) {
                                         showEditDescriptionBox = true
                                     }else{
+                                        showDialogBackgroundBlur(true)
                                         showViewerPermissionDialog.value = true
                                     }
                                 }
@@ -260,6 +264,7 @@ fun ProjectCardWithProfiles(
                                 if(role == EnumRoles.ProAdmin || role == EnumRoles.Admin) {
                                     showEditTitleBox = true
                                 }else{
+                                    showDialogBackgroundBlur(true)
                                     showViewerPermissionDialog.value = true
                                 }
                             }
@@ -348,6 +353,7 @@ fun PreviewProjectCardWithProfiles() {
         updateProjectDescription = {},
         updateProjectTitle = {},
         toggleNotificationSetting = {},
-        onClickInvite = {}
+        onClickInvite = {},
+        showDialogBackgroundBlur = {}
     )
 }
