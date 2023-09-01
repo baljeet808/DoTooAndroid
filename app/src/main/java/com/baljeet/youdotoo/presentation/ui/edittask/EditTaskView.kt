@@ -23,6 +23,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
@@ -50,14 +52,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -107,7 +117,7 @@ import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun EditTaskView(
     project : ProjectEntity?,
@@ -123,6 +133,20 @@ fun EditTaskView(
     onClose: () -> Unit
 ) {
     SharedPref.init(LocalContext.current)
+
+    val focusScope = rememberCoroutineScope()
+
+    val composedForFirstTime = remember {
+        mutableStateOf(true)
+    }
+
+    val keyBoardController = LocalSoftwareKeyboardController.current
+    val titleFocusRequester = remember {
+        FocusRequester()
+    }
+    val descriptionFocusRequester = remember {
+        FocusRequester()
+    }
 
     val hapticFeedback = LocalHapticFeedback.current
 
@@ -204,9 +228,11 @@ fun EditTaskView(
     }
 
     var title by remember {
-        mutableStateOf(task?.title?:"")
+        mutableStateOf(
+            TextFieldValue(task?.title?:"")
+        )
     }
-
+    title = title.copy(selection = TextRange(title.text.length))
     val calendarState = com.maxkeppeker.sheets.core.models.base.rememberSheetState()
 
     CalendarDialog(
@@ -363,6 +389,8 @@ fun EditTaskView(
                         .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
                         .clickable(
                             onClick = {
+                                closeSheet()
+                                keyBoardController?.hide()
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_DUE_DATE
                                 openSheet()
                             }
@@ -475,6 +503,8 @@ fun EditTaskView(
                     modifier = Modifier
                         .clickable(
                             onClick = {
+                                closeSheet()
+                                keyBoardController?.hide()
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_PRIORITY
                                 openSheet()
                             }
@@ -504,8 +534,17 @@ fun EditTaskView(
                         .clickable(
                             onClick = {
                                 descriptionOn = descriptionOn.not()
-                                if (descriptionOn.not()) {
+                                if (descriptionOn) {
+                                    closeSheet()
+                                    focusScope.launch {
+                                        delay(300)
+                                        keyBoardController?.show()
+                                        descriptionFocusRequester.requestFocus()
+                                    }
+                                } else {
+                                    closeSheet()
                                     description = ""
+                                    descriptionFocusRequester.freeFocus()
                                 }
                             }
                         ),
@@ -567,7 +606,7 @@ fun EditTaskView(
                 TextField(
                     value = title,
                     onValueChange = {
-                        if (it.length <= maxTitleCharsAllowed) {
+                        if (it.text.length <= maxTitleCharsAllowed) {
                             title = it
                         }
                     },
@@ -602,12 +641,47 @@ fun EditTaskView(
                         fontFamily = FontFamily(Nunito.SemiBold.font)
                     ),
                     maxLines = 3,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(titleFocusRequester)
+                        .onFocusEvent {
+                            if (it.hasFocus) {
+                                closeSheet()
+                            }
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = if (descriptionOn) {
+                            ImeAction.Next
+                        } else {
+                            ImeAction.Done
+                        }
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            descriptionFocusRequester.requestFocus()
+                        },
+                        onDone = {
+                            if (title.text.isNotBlank()) {
+                                updateTask(
+                                    title.text,
+                                    description,
+                                    priority,
+                                    dueDate,
+                                    customDatetime,
+                                    project!!.toProject()
+                                )
+                            } else {
+                                title= TextFieldValue("")
+                                showTitleErrorAnimation = true
+                            }
+                            addHapticFeedback(hapticFeedback = hapticFeedback)
+                        }
+                    )
 
                     )
                 Text(
-                    text = "${title.length}/$maxTitleCharsAllowed",
-                    color = if (title.length >= maxTitleCharsAllowed) {
+                    text = "${title.text.length}/$maxTitleCharsAllowed",
+                    color = if (title.text.length >= maxTitleCharsAllowed) {
                         DoTooRed
                     } else {
                         LightAppBarIconsColor
@@ -677,8 +751,35 @@ fun EditTaskView(
                             fontFamily = FontFamily(Nunito.SemiBold.font)
                         ),
                         maxLines = 3,
-                        modifier = Modifier.fillMaxWidth(),
-
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(descriptionFocusRequester)
+                            .onFocusEvent {
+                                if (it.hasFocus) {
+                                    closeSheet()
+                                }
+                            },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (title.text.isNotBlank()) {
+                                    updateTask(
+                                        title.text,
+                                        description,
+                                        priority,
+                                        dueDate,
+                                        customDatetime,
+                                        project!!.toProject()
+                                    )
+                                } else {
+                                    title = TextFieldValue("")
+                                    showTitleErrorAnimation = true
+                                }
+                                addHapticFeedback(hapticFeedback = hapticFeedback)
+                            }
+                        )
                         )
                     Text(
                         text = "${description.length}/$maxDescriptionCharsAllowed",
@@ -718,9 +819,9 @@ fun EditTaskView(
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
                         .clickable(
                             onClick = {
-                                if (title.isNotBlank()) {
+                                if (title.text.isNotBlank()) {
                                     updateTask(
-                                        title,
+                                        title.text,
                                         description,
                                         priority,
                                         dueDate,
@@ -728,7 +829,7 @@ fun EditTaskView(
                                         project!!.toProject()
                                     )
                                 } else {
-                                    title = ""
+                                    title = TextFieldValue("")
                                     showTitleErrorAnimation = true
                                 }
                                 addHapticFeedback(hapticFeedback = hapticFeedback)
@@ -749,6 +850,13 @@ fun EditTaskView(
                         tint = Color.White
                     )
                 }
+            }
+
+            LaunchedEffect(composedForFirstTime ){
+                keyBoardController?.show()
+                delay(500)
+                titleFocusRequester.requestFocus()
+                composedForFirstTime.value = false
             }
         }
     }
