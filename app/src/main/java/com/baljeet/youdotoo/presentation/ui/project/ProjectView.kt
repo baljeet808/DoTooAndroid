@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.FloatingActionButton
@@ -68,8 +69,10 @@ import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithPr
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
+import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -96,8 +99,15 @@ fun ProjectView(
         mutableStateOf(false)
     }
 
+    val showProRequiredDialog = remember {
+        mutableStateOf(false)
+    }
+
     var taskToEdit: DoTooItemEntity? = null
 
+    val role = project?.toProject()?.let {
+        getRole(it)
+    }?:EnumRoles.Blocked
 
     var showBlur by remember {
         mutableStateOf(false)
@@ -123,6 +133,29 @@ fun ProjectView(
             onChecked = {  },
             showCheckbox = false,
             modifier = Modifier
+        )
+    }
+    if (showProRequiredDialog.value && SharedPref.doNotBugMeAboutProFeaturesAgain.not()){
+        AppCustomDialog(
+            onDismiss = {
+                showProRequiredDialog.value = false
+            },
+            onConfirm = {
+                showProRequiredDialog.value = false
+                //TODO: take user to pro features
+            },
+            title = "Pro version feature 🧸",
+            description = "Become a 👑Pro member to share this project with your friends and chat with them about tasks.",
+            topRowIcon = Icons.Default.Lock,
+            onChecked = {
+                SharedPref.doNotBugMeAboutProFeaturesAgain = true
+            },
+            showCheckbox = true,
+            checkBoxText = "Do not ask me again!",
+            modifier = Modifier,
+            showDismissButton = true,
+            dismissButtonText = "May be later",
+            confirmButtonText = "More details"
         )
     }
 
@@ -192,23 +225,42 @@ fun ProjectView(
                 )
             }
 
-            AnimatedVisibility(visible = users.isNotEmpty()) {
+
+            Box {
                 TextButton(
-                    onClick = navigateToChat,
+                    onClick = {
+                        if(role == EnumRoles.ProAdmin || role == EnumRoles.Editor || role == EnumRoles.Viewer){
+                            navigateToChat()
+                        }else{
+                            showProRequiredDialog.value = true
+                        }
+                    },
                     modifier = Modifier.padding(end = 10.dp)
                 ) {
                     Text(
                         text = "Chat",
-                        fontFamily = FontFamily(Nunito.Normal.font)
+                        fontFamily = FontFamily(Nunito.Normal.font),
+                        color = getTextColor()
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         Icons.Default.Chat,
-                        contentDescription = "show less or more button"
+                        contentDescription = "show less or more button",
+                        tint = getTextColor()
+                    )
+
+                }
+                if(role == EnumRoles.Admin) {
+                    Icon(
+                        Icons.Default.Lock,
+                        contentDescription = "Lock icon",
+                        tint = DoTooRed,
+                        modifier = Modifier
+                            .width(15.dp)
+                            .height(15.dp)
                     )
                 }
             }
-
 
             /**
              * List of tasks form this project

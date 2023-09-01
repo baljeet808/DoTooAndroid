@@ -19,6 +19,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -51,10 +55,14 @@ fun AppCustomDialog(
     showCheckbox: Boolean = false,
     onChecked: () -> Unit,
     checkBoxText: String = "Don't ask me next time?",
-    checked: Boolean = false,
     modifier: Modifier
 ) {
     SharedPref.init(LocalContext.current)
+
+    var checked by remember {
+        mutableStateOf(false)
+    }
+
     Dialog(
         onDismissRequest = onDismiss, properties = DialogProperties(
             usePlatformDefaultWidth = true
@@ -113,6 +121,7 @@ fun AppCustomDialog(
                     ) {
 
                         Checkbox(checked = checked, onCheckedChange = {
+                            checked = it
                             if (it) {
                                 onChecked()
                             }

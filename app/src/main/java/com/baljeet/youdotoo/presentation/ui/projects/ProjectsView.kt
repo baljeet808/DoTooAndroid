@@ -622,7 +622,6 @@ fun ProjectsView(
                     dismissButtonText = "Abort",
                     confirmButtonText = "Yes, proceed",
                     showCheckbox = SharedPref.deleteTaskWithoutConfirmation.not(),
-                    checked = SharedPref.deleteTaskWithoutConfirmation,
                     onChecked = {
                            SharedPref.deleteTaskWithoutConfirmation = true
                     },

@@ -2,6 +2,7 @@ package com.baljeet.youdotoo
 
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.EnumNotificationType
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationArchived
 import com.baljeet.youdotoo.common.InvitationDeclined
@@ -9,6 +10,7 @@ import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRandomId
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
@@ -229,8 +231,8 @@ class DashboardViewModel @Inject constructor(
                  * **/
                 CoroutineScope(Dispatchers.IO).launch {
                     val allLocalProject = getProjectsUseCase()
-                    if(allOnlineProjects.size < allLocalProject.size){
-                        allLocalProject.filter { localProject -> allOnlineProjects.none { onlineProject -> onlineProject.id == localProject.id } }.forEach { wildProject ->
+                    if(allOnlineProjects.size < allLocalProject.filter { getRole(it.toProject()) != EnumRoles.Admin }.size){
+                        allLocalProject.filter { getRole(it.toProject()) != EnumRoles.Admin }.filter { localProject -> allOnlineProjects.none { onlineProject -> onlineProject.id == localProject.id } }.forEach { wildProject ->
                             deleteProjectUseCase(wildProject.toProject())
                         }
                     }
