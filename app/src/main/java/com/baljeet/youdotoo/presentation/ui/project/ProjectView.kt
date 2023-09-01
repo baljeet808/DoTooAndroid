@@ -122,9 +122,11 @@ fun ProjectView(
     if (showViewerPermissionDialog.value){
         AppCustomDialog(
             onDismiss = {
+                showBlur = false
                 showViewerPermissionDialog.value = false
             },
             onConfirm = {
+                showBlur = false
                 showViewerPermissionDialog.value = false
             },
             title = "Permission Issue! 😣",
@@ -138,13 +140,15 @@ fun ProjectView(
     if (showProRequiredDialog.value && SharedPref.doNotBugMeAboutProFeaturesAgain.not()){
         AppCustomDialog(
             onDismiss = {
+                showBlur = false
                 showProRequiredDialog.value = false
             },
             onConfirm = {
+                showBlur = false
                 showProRequiredDialog.value = false
                 //TODO: take user to pro features
             },
-            title = "Pro version feature 🧸",
+            title = "Pro feature 🦄",
             description = "Become a 👑Pro member to share this project with your friends and chat with them about tasks.",
             topRowIcon = Icons.Default.Lock,
             onChecked = {
@@ -166,6 +170,7 @@ fun ProjectView(
                     if(getRole(project?.toProject()!!) != EnumRoles.Viewer){
                         navigateToCreateTask()
                     }else{
+                        showBlur = true
                         showViewerPermissionDialog.value = true
                     }
                 },
@@ -232,6 +237,7 @@ fun ProjectView(
                         if(role == EnumRoles.ProAdmin || role == EnumRoles.Editor || role == EnumRoles.Viewer){
                             navigateToChat()
                         }else{
+                            showBlur = true
                             showProRequiredDialog.value = true
                         }
                     },

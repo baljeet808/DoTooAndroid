@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -29,6 +30,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -39,7 +41,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
-import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
@@ -64,7 +66,8 @@ fun AppCustomDialog(
     }
 
     Dialog(
-        onDismissRequest = onDismiss, properties = DialogProperties(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
             usePlatformDefaultWidth = true
         )
     ) {
@@ -72,25 +75,26 @@ fun AppCustomDialog(
             elevation = CardDefaults.cardElevation(5.dp),
             shape = RoundedCornerShape(10.dp),
             colors = CardDefaults.cardColors(
-                containerColor = getDarkThemeColor()
+                containerColor = getLightThemeColor()
             ),
             modifier = modifier
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 15.dp, start = 15.dp, end = 15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
                         text = title,
                         fontFamily = FontFamily(Nunito.Bold.font),
-                        fontSize = 16.sp,
+                        fontSize = 17.sp,
                         color = getTextColor(),
                         textAlign = TextAlign.Start,
                         letterSpacing = TextUnit(1f, TextUnitType.Sp)
@@ -106,16 +110,18 @@ fun AppCustomDialog(
                     fontSize = 14.sp,
                     color = LessTransparentWhiteColor,
                     textAlign = TextAlign.Start,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
                     letterSpacing = TextUnit(1f, TextUnitType.Sp)
                 )
-
-                Spacer(modifier = Modifier.height(20.dp))
 
                 AnimatedVisibility(visible = showCheckbox) {
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            ,
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -141,33 +147,44 @@ fun AppCustomDialog(
 
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     TextButton(
                         onClick = {
                             onConfirm()
-                        }
+                        },
+                        modifier = Modifier
                     ) {
                         Text(
                             text = confirmButtonText,
                             fontFamily = FontFamily(Nunito.Bold.font),
-                            fontSize = 14.sp,
+                            fontSize = 15.sp,
                             textAlign = TextAlign.Start,
                             modifier = Modifier,
-                            letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                            letterSpacing = TextUnit(1f, TextUnitType.Sp),
+                            color = getTextColor(),
+                            textDecoration = TextDecoration.Underline
                         )
                     }
+
                     if (showDismissButton) {
-                        TextButton(onClick = onDismiss) {
+                        Spacer(modifier = Modifier.width(10.dp))
+                        TextButton(
+                            onClick = onDismiss
+                        ) {
                             Text(
                                 text = dismissButtonText,
                                 fontFamily = FontFamily(Nunito.Bold.font),
-                                fontSize = 14.sp,
+                                fontSize = 15.sp,
                                 textAlign = TextAlign.Start,
                                 modifier = Modifier,
-                                letterSpacing = TextUnit(1f, TextUnitType.Sp)
+                                letterSpacing = TextUnit(1f, TextUnitType.Sp),
+                                color = getTextColor(),
+                                textDecoration = TextDecoration.Underline
                             )
                         }
                     }
@@ -190,6 +207,8 @@ fun PreviewAppCustomDialog() {
         onChecked = {},
         modifier = Modifier
             .fillMaxWidth()
-            .padding(30.dp)
+            .padding(30.dp),
+        showDismissButton = false,
+        showCheckbox = false
     )
 }
