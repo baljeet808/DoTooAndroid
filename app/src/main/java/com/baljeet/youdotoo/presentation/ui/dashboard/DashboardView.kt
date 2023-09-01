@@ -53,7 +53,6 @@ import com.baljeet.youdotoo.presentation.ui.project.addProjectViewDestination
 import com.baljeet.youdotoo.presentation.ui.projects.DestinationProjectsRoute
 import com.baljeet.youdotoo.presentation.ui.projects.addProjectsViewDestination
 import com.baljeet.youdotoo.presentation.ui.settings.DestinationSettingsRoute
-import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
@@ -91,7 +90,11 @@ fun DashboardView(
         if (maximizeCurrentScreen) {
             getLightThemeColor()
         } else {
-            getDarkThemeColor()
+            if (darkTheme) {
+                getNightDarkColor()
+            } else {
+                getNightLightColor()
+            }
         }, label = ""
     )
 
