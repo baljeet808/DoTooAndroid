@@ -2,35 +2,83 @@ package com.baljeet.youdotoo.presentation.ui.create_task
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.outlined.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.outlined.Adjust
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.LowPriority
+import androidx.compose.material.icons.outlined.Notes
+import androidx.compose.material.icons.outlined.PlaylistRemove
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberStandardBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
-import com.baljeet.youdotoo.common.*
+import com.baljeet.youdotoo.common.DueDates
+import com.baljeet.youdotoo.common.EnumCreateTaskSheetType
+import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getSampleProject
+import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
+import com.baljeet.youdotoo.common.maxTitleCharsAllowed
+import com.baljeet.youdotoo.common.toNiceDateFormat
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
@@ -39,7 +87,16 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.DueDatesSheet
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.PrioritySheet
 import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.SelectProjectBottomSheet
-import com.baljeet.youdotoo.presentation.ui.theme.*
+import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
+import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
+import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
+import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
@@ -47,9 +104,10 @@ import com.maxkeppeler.sheets.calendar.models.CalendarStyle
 import com.maxkeppeler.sheets.calendar.models.CalendarTimeline
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.*
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toJavaLocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
 fun UpsertTaskView(
     createTask: (
@@ -62,18 +120,33 @@ fun UpsertTaskView(
     ) -> Unit,
     projectId: String,
     navigateBack: () -> Unit,
-    projects : List<ProjectEntity>
+    projects: List<ProjectEntity>
 ) {
 
     SharedPref.init(LocalContext.current)
+
+    val focusScope = rememberCoroutineScope()
+
+    val composedForFirstTime = remember {
+        mutableStateOf(true)
+    }
+
+    val keyBoardController = LocalSoftwareKeyboardController.current
+    val titleFocusRequester = remember {
+        FocusRequester()
+    }
+    val descriptionFocusRequester = remember {
+        FocusRequester()
+    }
 
     val hapticFeedback = LocalHapticFeedback.current
 
     val transition = rememberInfiniteTransition(label = "")
 
+
     val rotation = transition.animateValue(
         initialValue = -3f,
-        targetValue =  3f,
+        targetValue = 3f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 100),
             repeatMode = RepeatMode.Reverse
@@ -81,11 +154,11 @@ fun UpsertTaskView(
         typeConverter = Float.VectorConverter, label = ""
     )
 
-    var showTitleErrorAnimation by remember{
+    var showTitleErrorAnimation by remember {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = showTitleErrorAnimation){
+    LaunchedEffect(key1 = showTitleErrorAnimation) {
         delay(1000)
         showTitleErrorAnimation = false
     }
@@ -132,7 +205,7 @@ fun UpsertTaskView(
         )
     }
 
-    if(projects.isNotEmpty()){
+    if (projects.isNotEmpty()) {
         selectedProject = projects.firstOrNull { project -> project.id == projectId }
     }
 
@@ -143,7 +216,7 @@ fun UpsertTaskView(
     }
 
     var descriptionOn by remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
     var description by remember {
@@ -188,6 +261,7 @@ fun UpsertTaskView(
                             closeSheet()
                         }
                     }
+
                     EnumCreateTaskSheetType.SELECT_DUE_DATE -> {
                         DueDatesSheet(
                             dueDate = dueDate,
@@ -204,6 +278,7 @@ fun UpsertTaskView(
                             }
                         )
                     }
+
                     EnumCreateTaskSheetType.SELECT_PROJECT -> {
                         SelectProjectBottomSheet(
                             projects = projects.map { p -> p.toProject() },
@@ -317,6 +392,8 @@ fun UpsertTaskView(
                         .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
                         .clickable(
                             onClick = {
+                                closeSheet()
+                                keyBoardController?.hide()
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_DUE_DATE
                                 openSheet()
                             }
@@ -357,6 +434,8 @@ fun UpsertTaskView(
                         .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 10.dp)
                         .clickable(
                             onClick = {
+                                closeSheet()
+                                keyBoardController?.hide()
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_PROJECT
                                 openSheet()
                             }
@@ -420,6 +499,8 @@ fun UpsertTaskView(
                     modifier = Modifier
                         .clickable(
                             onClick = {
+                                closeSheet()
+                                keyBoardController?.hide()
                                 currentBottomSheet = EnumCreateTaskSheetType.SELECT_PRIORITY
                                 openSheet()
                             }
@@ -449,8 +530,17 @@ fun UpsertTaskView(
                         .clickable(
                             onClick = {
                                 descriptionOn = descriptionOn.not()
-                                if (descriptionOn.not()) {
+                                if (descriptionOn) {
+                                    closeSheet()
+                                    focusScope.launch {
+                                        delay(300)
+                                        keyBoardController?.show()
+                                        descriptionFocusRequester.requestFocus()
+                                    }
+                                } else {
+                                    closeSheet()
                                     description = ""
+                                    descriptionFocusRequester.freeFocus()
                                 }
                             }
                         ),
@@ -545,9 +635,43 @@ fun UpsertTaskView(
                         fontFamily = FontFamily(Nunito.SemiBold.font)
                     ),
                     maxLines = 3,
-                    modifier = Modifier.fillMaxWidth(),
-
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(titleFocusRequester)
+                        .onFocusEvent {
+                            if (it.hasFocus) {
+                                closeSheet()
+                            }
+                        },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = if (descriptionOn) {
+                            ImeAction.Next
+                        } else {
+                            ImeAction.Done
+                        }
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onNext = {
+                            descriptionFocusRequester.requestFocus()
+                        },
+                        onDone = {
+                            if (title.isNotBlank()) {
+                                createTask(
+                                    title,
+                                    description,
+                                    priority,
+                                    dueDate,
+                                    customDatetime,
+                                    selectedProject!!.toProject()
+                                )
+                            } else {
+                                title = ""
+                                showTitleErrorAnimation = true
+                            }
+                            addHapticFeedback(hapticFeedback = hapticFeedback)
+                        }
                     )
+                )
                 Text(
                     text = "${title.length}/$maxTitleCharsAllowed",
                     color = if (title.length >= maxTitleCharsAllowed) {
@@ -620,9 +744,36 @@ fun UpsertTaskView(
                             fontFamily = FontFamily(Nunito.SemiBold.font)
                         ),
                         maxLines = 3,
-                        modifier = Modifier.fillMaxWidth(),
-
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(descriptionFocusRequester)
+                            .onFocusEvent {
+                                if (it.hasFocus) {
+                                    closeSheet()
+                                }
+                            },
+                        keyboardOptions = KeyboardOptions(
+                            imeAction = ImeAction.Done
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onDone = {
+                                if (title.isNotBlank()) {
+                                    createTask(
+                                        title,
+                                        description,
+                                        priority,
+                                        dueDate,
+                                        customDatetime,
+                                        selectedProject!!.toProject()
+                                    )
+                                } else {
+                                    title = ""
+                                    showTitleErrorAnimation = true
+                                }
+                                addHapticFeedback(hapticFeedback = hapticFeedback)
+                            }
                         )
+                    )
                     Text(
                         text = "${description.length}/$maxDescriptionCharsAllowed",
                         color = if (description.length >= maxDescriptionCharsAllowed) {
@@ -693,6 +844,14 @@ fun UpsertTaskView(
                     )
                 }
             }
+
+            LaunchedEffect(composedForFirstTime ){
+                keyBoardController?.show()
+                delay(500)
+                titleFocusRequester.requestFocus()
+                composedForFirstTime.value = false
+            }
+
         }
     }
 }

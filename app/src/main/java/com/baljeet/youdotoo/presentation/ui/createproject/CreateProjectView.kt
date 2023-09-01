@@ -398,7 +398,10 @@ fun CreateProjectView(
             TextButton(
                 onClick = {
                     descriptionOn = descriptionOn.not()
-                    if (descriptionOn.not()) {
+                    if (descriptionOn) {
+                        keyBoardController?.show()
+                        descriptionFocusRequester.requestFocus()
+                    }else{
                         description = ""
                     }
                 },
