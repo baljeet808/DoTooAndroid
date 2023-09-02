@@ -14,6 +14,7 @@ import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.UserInvitation
 import com.baljeet.youdotoo.domain.use_cases.invitation.DeleteInvitationUseCase
 import com.baljeet.youdotoo.domain.use_cases.invitation.GetAllInvitationsByProjectIdUseCase
@@ -123,7 +124,7 @@ class InvitationsViewModel @Inject constructor(
                     collaboratorIds = editorIDs.joinToString(separator = ",")
                 )
 
-                projectReference.set(updatedProject)
+                projectReference.set(updatedProject.toProject())
             }
             userInvitation.invitationEntity?.let { invitation ->
                 archiveInvitation(invitation)
@@ -180,7 +181,7 @@ class InvitationsViewModel @Inject constructor(
                         updatedProject.ownerId = userInvitation.user?.id?:SharedPref.userId!!
                     }
 
-                    projectReference.set(updatedProject)
+                    projectReference.set(updatedProject.toProject())
                 }
             }
 

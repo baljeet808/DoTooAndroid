@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -40,6 +41,7 @@ import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationDeclined
 import com.baljeet.youdotoo.common.InvitationPending
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.data.mappers.toUserEntity
@@ -59,6 +61,8 @@ fun InvitationItemView(
     onClickButton: () -> Unit,
     onEditAccess: () -> Unit
 ) {
+
+    SharedPref.init(LocalContext.current)
 
     val hapticFeedback = LocalHapticFeedback.current
 
