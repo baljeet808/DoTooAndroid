@@ -118,8 +118,8 @@ fun ProjectsView(
     }
 
 
-    var taskToDelete : TaskWithProject? = remember {
-        null
+    val taskToDelete = remember {
+        mutableStateOf<TaskWithProject?>(null)
     }
 
 
@@ -145,17 +145,17 @@ fun ProjectsView(
     if (showDeleteConfirmationDialog.value){
         AppCustomDialog(
             onDismiss = {
-                taskToDelete = null
+                taskToDelete.value = null
                 showDeleteConfirmationDialog.value = false
                 showBlur = false
             },
             onConfirm = {
-                taskToDelete?.let(deleteTask)
+                taskToDelete.value?.let(deleteTask)
                 showDeleteConfirmationDialog.value = false
                 showBlur = false
             },
             title = "Delete this task?",
-            description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.task?.title?:""}\"",
+            description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete.value?.task?.title?:""}\"",
             topRowIcon = Icons.Default.DeleteForever,
             showDismissButton = true,
             dismissButtonText = "Abort",
@@ -171,8 +171,8 @@ fun ProjectsView(
         )
     }
 
-    var taskToEdit: TaskWithProject? = remember {
-        null
+    val taskToEdit = remember {
+        mutableStateOf<TaskWithProject?>(null)
     }
 
     val projectsListState = rememberLazyListState()
@@ -498,7 +498,7 @@ fun ProjectsView(
                                     showBlur = true
                                     showViewerPermissionDialog.value = true
                                 }else {
-                                    taskToEdit = task
+                                    taskToEdit.value = task
                                     keyBoardController?.show()
                                     showBlur = true
                                     focusScope.launch {
@@ -538,7 +538,7 @@ fun ProjectsView(
                                     if (SharedPref.deleteTaskWithoutConfirmation) {
                                         deleteTask(task)
                                     } else {
-                                        taskToDelete = task
+                                        taskToDelete.value = task
                                         showBlur = true
                                         showDeleteConfirmationDialog.value = true
                                     }
@@ -558,7 +558,7 @@ fun ProjectsView(
                                     showBlur = true
                                     showViewerPermissionDialog.value = true
                                 }else {
-                                    taskToEdit = task
+                                    taskToEdit.value = task
                                     keyBoardController?.show()
                                     showBlur = true
                                     focusScope.launch {
@@ -605,7 +605,7 @@ fun ProjectsView(
                                     if (SharedPref.deleteTaskWithoutConfirmation) {
                                         deleteTask(task)
                                     } else {
-                                        taskToDelete = task
+                                        taskToDelete.value = task
                                         showBlur = true
                                         showDeleteConfirmationDialog.value = true
                                     }
@@ -624,7 +624,7 @@ fun ProjectsView(
          * Edit Task screen
          * **/
         AnimatedVisibility(
-            visible = showBlur && taskToEdit != null,
+            visible = showBlur && taskToEdit.value != null,
             enter = slideInVertically(
                 animationSpec = tween(
                     durationMillis = 200,
@@ -651,7 +651,7 @@ fun ProjectsView(
                     .padding(paddingValues = padding)
                     .clickable(
                         onClick = {
-                            taskToEdit = null
+                            taskToEdit.value = null
                             showBlur = false
                         }
                     ),
@@ -662,19 +662,21 @@ fun ProjectsView(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     onSubmit = { title ->
-                        updateTaskTitle(taskToEdit!!, title)
+                        taskToEdit.value?.let{
+                            updateTaskTitle(it, title)
+                        }
                         keyBoardController?.hide()
                         showBlur = false
-                        taskToEdit = null
+                        taskToEdit.value = null
                     },
-                    placeholder = taskToEdit?.task?.title ?: "",
+                    placeholder = taskToEdit.value?.task?.title ?: "",
                     label = "Edit Task",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showBlur = false
-                        taskToEdit = null
+                        taskToEdit.value = null
                     },
-                    themeColor = Color(taskToEdit?.projectEntity?.color ?: getRandomColor()),
+                    themeColor = Color(taskToEdit.value?.projectEntity?.color ?: getRandomColor()),
                     lines = 2
                 )
 
