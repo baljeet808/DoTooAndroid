@@ -33,8 +33,8 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.ListAlt
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LowPriority
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -73,8 +73,8 @@ import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.presentation.ui.dotoo.TasksPrioritiesWithPager
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
-import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleWithPager
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
@@ -450,9 +450,9 @@ fun ProjectsView(
                     ) {
                         Icon(
                             if (showScheduleTasksView) {
-                                Icons.Default.ListAlt
-                            } else {
                                 Icons.Default.CalendarMonth
+                            } else {
+                                Icons.Default.LowPriority
                             },
                             contentDescription = "Button to change task list style",
                             tint = getTextColor()
@@ -460,9 +460,9 @@ fun ProjectsView(
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
                             text = if (showScheduleTasksView) {
-                                "Tabs View"
-                            } else {
                                 "Calendar View"
+                            } else {
+                                "Priorities View"
                             },
                             fontFamily = FontFamily(Nunito.Normal.font),
                             color = getTextColor()
@@ -551,7 +551,7 @@ fun ProjectsView(
                         /**
                          * Tasks divided in tabs by schedule
                          * **/
-                        TasksScheduleWithPager(
+                        TasksPrioritiesWithPager(
                             navigateToQuickEditTaskTitle = { task ->
                                 val role = getRole(task.projectEntity.toProject())
                                 if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){

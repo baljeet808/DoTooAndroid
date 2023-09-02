@@ -72,7 +72,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.EnumCreateTaskSheetType
-import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getSampleProject
@@ -113,7 +113,7 @@ fun UpsertTaskView(
     createTask: (
         name: String,
         description: String,
-        priority: Priorities,
+        priority: EnumPriorities,
         dueDate: DueDates,
         customDate: LocalDate?,
         selectedProject: Project
@@ -211,7 +211,7 @@ fun UpsertTaskView(
 
     var priority by remember {
         mutableStateOf(
-            Priorities.HIGH
+            EnumPriorities.HIGH
         )
     }
 

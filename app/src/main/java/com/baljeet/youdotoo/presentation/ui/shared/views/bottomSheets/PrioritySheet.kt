@@ -26,7 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
@@ -36,8 +36,8 @@ import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @Composable
 fun PrioritySheet(
-    priority: Priorities,
-    onPriorityChanged : (Priorities) -> Unit
+    priority: EnumPriorities,
+    onPriorityChanged : (EnumPriorities) -> Unit
 ){
     Box(
         modifier = Modifier
@@ -66,7 +66,7 @@ fun PrioritySheet(
                 fontWeight = FontWeight.Light
             )
             Spacer(modifier = Modifier.height(20.dp))
-            for (priorityEntry in Priorities.values()) {
+            for (priorityEntry in EnumPriorities.values()) {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Row(
@@ -126,5 +126,5 @@ fun PrioritySheet(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PrioritySheetPreview(){
-    PrioritySheet(priority = Priorities.LOW, onPriorityChanged = {})
+    PrioritySheet(priority = EnumPriorities.LOW, onPriorityChanged = {})
 }

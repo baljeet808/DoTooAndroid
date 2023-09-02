@@ -76,7 +76,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.EnumCreateTaskSheetType
-import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
 import com.baljeet.youdotoo.common.getDueDateEnumEntry
@@ -86,8 +86,8 @@ import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.common.toLocalDateTime
 import com.baljeet.youdotoo.common.toNiceDateFormat
-import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
@@ -124,7 +124,7 @@ fun EditTaskView(
     updateTask: (
         name: String,
         description: String,
-        priority: Priorities,
+        priority: EnumPriorities,
         dueDate: DueDates,
         customDate: LocalDate?,
         selectedProject: Project
@@ -213,8 +213,8 @@ fun EditTaskView(
     var priority by remember {
         mutableStateOf(
             task?.priority?.let {
-                Priorities.values().firstOrNull { p -> p.toString == it }
-            }?:Priorities.HIGH
+                EnumPriorities.values().firstOrNull { p -> p.toString == it }
+            }?:EnumPriorities.HIGH
         )
     }
 

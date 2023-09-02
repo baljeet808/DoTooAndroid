@@ -2,8 +2,8 @@ package com.baljeet.youdotoo.presentation.ui.create_task
 
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.DueDates
+import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.EnumRoles
-import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
 import com.baljeet.youdotoo.common.getRole
@@ -43,7 +43,7 @@ class CreateTaskViewModel  @Inject constructor(
     fun createTask(
         name : String,
         description : String,
-        priority: Priorities,
+        priority: EnumPriorities,
         dueDate: DueDates,
         customDate : LocalDate?,
         selectedProject : Project

@@ -7,10 +7,10 @@ import kotlinx.datetime.isoDayNumber
 import kotlinx.datetime.plus
 import kotlinx.datetime.toKotlinLocalDate
 
-enum class Priorities(val toString: String) {
-    LOW("Low"),
+enum class EnumPriorities(val toString: String) {
     HIGH("High"),
     MEDIUM("Medium"),
+    LOW("Low"),
 }
 
 enum class DueDates(val toString : String) {
@@ -84,6 +84,12 @@ enum class EnumDashboardTasksTabs{
 
 data class DashboardTaskTabs (
     var name: EnumDashboardTasksTabs = EnumDashboardTasksTabs.Today,
+    var taskCount: Int = 0,
+    var index: Int = 0,
+    var tasks : List<TaskWithProject> = listOf()
+    )
+data class DashboardTaskTabsByPriorities (
+    var name: EnumPriorities = EnumPriorities.HIGH,
     var taskCount: Int = 0,
     var index: Int = 0,
     var tasks : List<TaskWithProject> = listOf()

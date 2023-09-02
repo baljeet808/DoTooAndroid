@@ -9,7 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baljeet.youdotoo.common.DueDates
-import com.baljeet.youdotoo.common.Priorities
+import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.Project
 import kotlinx.datetime.LocalDate
@@ -38,7 +38,7 @@ fun NavGraphBuilder.addCreateTaskViewDestination(
         val projects by viewModel.getProjects().collectAsState(initial = listOf())
 
         UpsertTaskView(
-            createTask = { title: String, description: String, priority: Priorities, dueDate: DueDates, customDate: LocalDate?, selectedProject : Project ->
+            createTask = { title: String, description: String, priority: EnumPriorities, dueDate: DueDates, customDate: LocalDate?, selectedProject : Project ->
                 viewModel.createTask(
                     name = title,
                     description = description,
