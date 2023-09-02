@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ import com.baljeet.youdotoo.presentation.ui.settings.components.PersonalisationS
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -44,7 +46,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 @Composable
 fun SettingsView(
     onClose: () -> Unit,
-    onClickThemes: () -> Unit
+    onClickAccount : () -> Unit,
+    onClickThemes: () -> Unit,
+    onClickDashboard: () -> Unit,
+    onClickDialogPref : () -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -58,7 +63,7 @@ fun SettingsView(
             .background(
                 color = getLightThemeColor()
             )
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp),
+        ,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -68,7 +73,7 @@ fun SettingsView(
          * Top row
          * **/
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 20.dp, start = 20.dp, end = 20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -130,27 +135,41 @@ fun SettingsView(
 
 
             item {
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(30.dp))
             }
 
             /**
              * section for account settings
              * **/
             item {
-                AccountSectionView ()
+                AccountSectionView (
+                    onClickAccount = onClickAccount
+                )
             }
 
             item {
-                Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(25.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(
+                            color = getDarkThemeColor()
+                        )
+                )
+                Spacer(modifier = Modifier.height(25.dp))
             }
 
             /**
              * section personalisation
              * **/
             item {
-                PersonalisationSectionView (onClickThemes = onClickThemes)
+                PersonalisationSectionView (
+                    onClickThemes = onClickThemes,
+                    onClickDashboard = onClickDashboard,
+                    onClickDialogPref = onClickDialogPref
+                )
             }
-
 
         }
 
@@ -162,6 +181,9 @@ fun SettingsView(
 fun PreviewSettingsView() {
     SettingsView(
         onClose = {},
-        onClickThemes = {}
+        onClickThemes = {},
+        onClickDashboard = {},
+        onClickDialogPref = {},
+        onClickAccount= {}
     )
 }

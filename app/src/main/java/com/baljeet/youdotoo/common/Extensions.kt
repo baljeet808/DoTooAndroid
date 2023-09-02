@@ -5,6 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
@@ -12,6 +19,7 @@ import com.baljeet.youdotoo.domain.models.Interaction
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.models.UserInvitation
+import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -260,5 +268,40 @@ fun Long.getDueDateEnumEntry() : DueDates{
             DueDates.CUSTOM
         }
 
+    }
+}
+
+fun buildMoneyAnnotatedString(textColor : Color, money : String, size : TextUnit): AnnotatedString {
+    return buildAnnotatedString {
+        val mainText = ""
+
+        val dollarStyle = SpanStyle(
+            color = DotooBlue,
+            fontSize = 14.sp
+        )
+
+        val moneyStyle = SpanStyle(
+            color = DotooBlue,
+            fontSize = size
+        )
+
+        val periodStyle = SpanStyle(
+            color = textColor,
+            fontSize = 14.sp
+        )
+
+        append(mainText)
+
+        withStyle(style = dollarStyle) {
+            append("$ ")
+        }
+
+        withStyle(style = moneyStyle){
+            append(money)
+        }
+
+        withStyle(style = periodStyle) {
+            append(" /mo")
+        }
     }
 }

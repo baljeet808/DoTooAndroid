@@ -1,12 +1,14 @@
 package com.baljeet.youdotoo.presentation.ui.settings.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
@@ -36,11 +38,12 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun AccountSectionView(
+    onClickAccount : () -> Unit
 ) {
     SharedPref.init(LocalContext.current)
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth().padding(top = 20.dp, start = 20.dp, end = 20.dp),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -62,7 +65,11 @@ fun AccountSectionView(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable(
+                    onClick = onClickAccount
+                )
+            ,
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -129,5 +136,7 @@ fun AccountSectionView(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewAccountSectionView(){
-    AccountSectionView()
+    AccountSectionView(
+        onClickAccount = {}
+    )
 }

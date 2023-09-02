@@ -1,19 +1,24 @@
 package com.baljeet.youdotoo.presentation.ui.settings.components
 
 import android.content.res.Configuration
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.ColorLens
+import androidx.compose.material.icons.filled.Dashboard
+import androidx.compose.material.icons.filled.ImageAspectRatio
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -36,12 +41,15 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun PersonalisationSectionView(
-    onClickThemes: () -> Unit
+    onClickThemes: () -> Unit,
+    onClickDashboard:() -> Unit,
+    onClickDialogPref : () -> Unit
 ) {
     SharedPref.init(LocalContext.current)
     Column(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            ,
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -51,7 +59,7 @@ fun PersonalisationSectionView(
          * **/
         Text(
             text = "Personalisation",
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp),
             textAlign = TextAlign.Start,
             fontSize = 20.sp,
             fontFamily = FontFamily(Nunito.Bold.font),
@@ -64,6 +72,7 @@ fun PersonalisationSectionView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp)
                 .clickable(onClick = onClickThemes),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -79,7 +88,7 @@ fun PersonalisationSectionView(
                     .width(40.dp)
                     .height(40.dp)
                     .clip(shape = RoundedCornerShape(65.dp)),
-                tint = getDarkThemeColor()
+                tint = getTextColor()
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -128,6 +137,168 @@ fun PersonalisationSectionView(
 
         }
 
+        Spacer(modifier = Modifier.height(30.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(start = 60.dp)
+                .background(
+                    color = getDarkThemeColor()
+                )
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp)
+                .clickable(onClick = onClickDashboard),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            /**
+             * User Profile with Progress bar for total tasks completed
+             * **/
+            Icon(
+                Icons.Default.Dashboard,
+                contentDescription = "Dashboard icon",
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp)
+                    .clip(shape = RoundedCornerShape(65.dp)),
+                tint = getTextColor()
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Column (
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+
+
+
+                /**
+                 * item name
+                 * **/
+                Text(
+                    text = "Dashboard settings",
+                    color = getTextColor(),
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 16.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+
+                /**
+                 * settings info
+                 * **/
+                Text(
+                    text = "Modify default setting for dashboard",
+                    color = Color.Gray,
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 14.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription ="Navigate button",
+                tint = getDayLightColor()
+            )
+
+        }
+
+        Spacer(modifier = Modifier.height(30.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .padding(start = 60.dp)
+                .background(
+                    color = getDarkThemeColor()
+                )
+        )
+        Spacer(modifier = Modifier.height(25.dp))
+
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp)
+                .clickable(onClick = onClickDialogPref),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            /**
+             * User Profile with Progress bar for total tasks completed
+             * **/
+            Icon(
+                Icons.Default.ImageAspectRatio,
+                contentDescription = "Dialog icon",
+                modifier = Modifier
+                    .width(40.dp)
+                    .height(40.dp)
+                    .clip(shape = RoundedCornerShape(65.dp)),
+                tint = getTextColor()
+            )
+
+            Spacer(modifier = Modifier.width(20.dp))
+
+            Column (
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+
+
+
+                /**
+                 * item name
+                 * **/
+                Text(
+                    text = "Dialog preferences",
+                    color = getTextColor(),
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 16.sp,
+                    modifier = Modifier.fillMaxWidth(),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+
+                /**
+                 * settings info
+                 * **/
+                Text(
+                    text = "Toggle confirmations before actions",
+                    color = Color.Gray,
+                    fontFamily = FontFamily(Nunito.Normal.font),
+                    fontSize = 14.sp,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            Spacer(modifier = Modifier.width(10.dp))
+
+            Icon(
+                Icons.Default.ArrowForwardIos,
+                contentDescription ="Navigate button",
+                tint = getDayLightColor()
+            )
+
+        }
+
     }
 }
 
@@ -135,6 +306,8 @@ fun PersonalisationSectionView(
 @Composable
 fun PreviewPersonalisationSectionView(){
     PersonalisationSectionView(
-        onClickThemes = {}
+        onClickThemes = {},
+        onClickDashboard ={},
+        onClickDialogPref = {}
     )
 }
