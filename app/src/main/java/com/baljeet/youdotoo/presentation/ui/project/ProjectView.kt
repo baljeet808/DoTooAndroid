@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
@@ -53,8 +54,8 @@ import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
-import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
@@ -79,15 +80,15 @@ fun ProjectView(
     project: ProjectEntity,
     users: List<UserEntity>,
     tasks: List<TaskEntity>,
-    onToggle: (doTooItem: TaskEntity, project: Project) -> Unit,
+    onToggle: (TaskWithProject) -> Unit,
     navigateToCreateTask: () -> Unit,
-    deleteTask: (TaskEntity) -> Unit,
+    deleteTask: (TaskWithProject) -> Unit,
     deleteProject: () -> Unit,
     upsertProject: (Project) -> Unit,
     onClickInvite: () -> Unit,
-    navigateToEditTask: (task: TaskEntity) -> Unit,
+    navigateToEditTask: (task: TaskWithProject) -> Unit,
     navigateToChat: () -> Unit,
-    updateTaskTitle: (task: TaskEntity, title: String) -> Unit
+    updateTaskTitle: (task: TaskWithProject, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -100,13 +101,52 @@ fun ProjectView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: TaskWithProject? = null
-
-    val role = getRole(project.toProject())
 
     var showBlur by remember {
         mutableStateOf(false)
     }
+
+
+    var taskToDelete : TaskWithProject? = remember {
+        null
+    }
+    val showDeleteConfirmationDialog = remember {
+        mutableStateOf(false)
+    }
+
+    if (showDeleteConfirmationDialog.value){
+        AppCustomDialog(
+            onDismiss = {
+                taskToDelete = null
+                showDeleteConfirmationDialog.value = false
+                showBlur = false
+            },
+            onConfirm = {
+                taskToDelete?.let(deleteTask)
+                showDeleteConfirmationDialog.value = false
+                showBlur = false
+            },
+            title = "Delete this task?",
+            description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.task?.title?:""}\"",
+            topRowIcon = Icons.Default.DeleteForever,
+            showDismissButton = true,
+            dismissButtonText = "Abort",
+            confirmButtonText = "Yes, proceed",
+            showCheckbox = SharedPref.deleteTaskWithoutConfirmation.not(),
+            onChecked = {
+                SharedPref.deleteTaskWithoutConfirmation = true
+            },
+            checkBoxText = "Delete without confirmation next time?",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        )
+    }
+
+
+    var taskToEdit: TaskWithProject? = null
+
+    val role = getRole(project.toProject())
 
     val focusScope = rememberCoroutineScope()
     val keyBoardController = LocalSoftwareKeyboardController.current
@@ -125,7 +165,7 @@ fun ProjectView(
                 showViewerPermissionDialog.value = false
             },
             title = "Permission Issue! 😣",
-            description = "Sorry, you are a viewer in this project. And viewer can not create tasks. Ask Project Admin for permission upgrade.",
+            description = "Sorry, you are a viewer in this project. And viewer can not create, edit, update or delete tasks. Ask Project Admin for permission upgrade.",
             topRowIcon = Icons.Default.Lock,
             onChecked = {  },
             showCheckbox = false,
@@ -270,30 +310,57 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-                doToos = tasks.map {
-                                   task ->
+                doToos = tasks.map { task ->
                     TaskWithProject(
                         task = task,
                         projectEntity = project
                     )
                 }.toCollection(ArrayList()),
-                onToggleDoToo = { doToo ->
-                    onToggle(doToo.task, project.toProject())
+                onToggleDoToo = { task ->
+                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                        showBlur = true
+                        showViewerPermissionDialog.value = true
+                    }else {
+                        onToggle(task)
+                    }
                 },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
-                onItemDelete = { deleteTask(it.task) },
+                onItemDelete = { task ->
+                    if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
+                        showBlur = true
+                        showViewerPermissionDialog.value = true
+                    } else {
+                        if (SharedPref.deleteTaskWithoutConfirmation) {
+                            deleteTask(task)
+                        } else {
+                            taskToDelete = task
+                            showBlur = true
+                            showDeleteConfirmationDialog.value = true
+                        }
+                    }
+                },
                 navigateToEditTask = { task ->
-                    navigateToEditTask(task.task)
+                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                        showBlur = true
+                        showViewerPermissionDialog.value = true
+                    }else {
+                        navigateToEditTask(task)
+                    }
                 },
                 navigateToQuickEditTask = { task ->
-                    taskToEdit = task
-                    keyBoardController?.show()
-                    showBlur = true
-                    focusScope.launch {
-                        delay(500)
-                        focusRequester.requestFocus()
+                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                        showBlur = true
+                        showViewerPermissionDialog.value = true
+                    }else {
+                        taskToEdit = task
+                        keyBoardController?.show()
+                        showBlur = true
+                        focusScope.launch {
+                            delay(500)
+                            focusRequester.requestFocus()
+                        }
                     }
                 }
             )
@@ -339,7 +406,9 @@ fun ProjectView(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     onSubmit = { title ->
-                        updateTaskTitle(taskToEdit!!.task, title)
+                        taskToEdit?.let {
+                            updateTaskTitle(it, title)
+                        }
                         keyBoardController?.hide()
                         showBlur = false
                     },
@@ -367,7 +436,7 @@ fun ProjectView(
 fun PreviewProjectView() {
     ProjectView(
         project = getSampleProject().toProjectEntity(),
-        onToggle = { _, _ -> },
+        onToggle = { },
         navigateToCreateTask = {},
         tasks = listOf(
             getSampleDotooItem()

@@ -41,13 +41,11 @@ fun NavGraphBuilder.addProjectViewDestination(
 
         ProjectView(
             project = project,
-            onToggle={doTooItem, selectedProject ->
-                val newDoToo = doTooItem.copy()
-                newDoToo.done = doTooItem.done.not()
-                newDoToo.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(newDoToo.done)"completed." else "not completed.")
-                viewModel.upsertTask(
-                    newDoToo, selectedProject
-                )
+            onToggle={ task ->
+                val updatedTask = task.task.copy()
+                updatedTask.done = task.task.done.not()
+                updatedTask.updatedBy = SharedPref.userName.plus(" marked this task ").plus(if(updatedTask.done)"completed." else "not completed.")
+                viewModel.upsertTask(updatedTask, task.projectEntity.toProject())
             },
             tasks = tasks,
             navigateToCreateTask = {
@@ -57,9 +55,7 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             users = users,
             deleteTask = { task ->
-                project.toProject().let {
-                    viewModel.deleteTask(task,it)
-                }
+                viewModel.deleteTask(task.task,project.toProject())
             },
             deleteProject = {
                 project.toProject().let {
@@ -74,7 +70,7 @@ fun NavGraphBuilder.addProjectViewDestination(
                 navController.navigate("invitations/".plus(projectId))
             },
             navigateToEditTask = {
-                navController.navigate("editTask/".plus(it.id))
+                navController.navigate("editTask/".plus(it.task.id))
             },
             navigateToChat = {
                 navController.navigate(
@@ -83,7 +79,7 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             updateTaskTitle = { task, title->
                 viewModel.upsertTask(
-                    task = task.copy(
+                    task = task.task.copy(
                         title = title,
                         updatedBy = SharedPref.userName.plus(" has updated this task.")
                     ),

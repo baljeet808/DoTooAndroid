@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.ListAlt
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -62,12 +63,15 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleWithPager
@@ -103,11 +107,71 @@ fun ProjectsView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: TaskWithProject? = remember {
+    val showViewerPermissionDialog = remember {
+        mutableStateOf(false)
+    }
+    val showDeleteConfirmationDialog = remember {
+        mutableStateOf(false)
+    }
+    var showBlur by remember {
+        mutableStateOf(false)
+    }
+
+
+    var taskToDelete : TaskWithProject? = remember {
         null
     }
 
-    var taskToDelete : TaskWithProject? = remember {
+
+    if (showViewerPermissionDialog.value){
+        AppCustomDialog(
+            onDismiss = {
+                showBlur = false
+                showViewerPermissionDialog.value = false
+            },
+            onConfirm = {
+                showBlur = false
+                showViewerPermissionDialog.value = false
+            },
+            title = "Permission Issue! 😣",
+            description = "Sorry, you are a viewer in this project. And viewer can not create, edit, update or delete tasks. Ask Project Admin for permission upgrade.",
+            topRowIcon = Icons.Default.Lock,
+            onChecked = {  },
+            showCheckbox = false,
+            modifier = Modifier
+        )
+    }
+
+    if (showDeleteConfirmationDialog.value){
+        AppCustomDialog(
+            onDismiss = {
+                taskToDelete = null
+                showDeleteConfirmationDialog.value = false
+                showBlur = false
+            },
+            onConfirm = {
+                taskToDelete?.let(deleteTask)
+                showDeleteConfirmationDialog.value = false
+                showBlur = false
+            },
+            title = "Delete this task?",
+            description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.task?.title?:""}\"",
+            topRowIcon = Icons.Default.DeleteForever,
+            showDismissButton = true,
+            dismissButtonText = "Abort",
+            confirmButtonText = "Yes, proceed",
+            showCheckbox = SharedPref.deleteTaskWithoutConfirmation.not(),
+            onChecked = {
+                SharedPref.deleteTaskWithoutConfirmation = true
+            },
+            checkBoxText = "Delete without confirmation next time?",
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+        )
+    }
+
+    var taskToEdit: TaskWithProject? = remember {
         null
     }
 
@@ -115,9 +179,6 @@ fun ProjectsView(
     val listMoveScope = rememberCoroutineScope()
     val moveAnimationDelay: Long = 200
 
-    var showBlur by remember {
-        mutableStateOf(false)
-    }
 
     var showTopInfo by remember {
         mutableStateOf(true)
@@ -431,31 +492,56 @@ fun ProjectsView(
                                     start = 5.dp,
                                     end = 5.dp
                                 ),
-                            navigateToQuickEditTask = {
-                                taskToEdit = it
-                                keyBoardController?.show()
-                                showBlur = true
-                                focusScope.launch {
-                                    delay(500)
-                                    focusRequester.requestFocus()
+                            navigateToQuickEditTask = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    taskToEdit = task
+                                    keyBoardController?.show()
+                                    showBlur = true
+                                    focusScope.launch {
+                                        delay(500)
+                                        focusRequester.requestFocus()
+                                    }
                                 }
                             },
-                            navigateToEditTask = {
-                                navigateToTask(it)
+                            navigateToEditTask = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    navigateToTask(task)
+                                }
                             },
-                            toggleTask = {
-                                onToggleTask(it)
-                                listMoveScope.launch {
-                                    delay(moveAnimationDelay)
-                                    projectsListState.animateScrollToItem(0)
+                            toggleTask = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    onToggleTask(task)
+                                    listMoveScope.launch {
+                                        delay(moveAnimationDelay)
+                                        projectsListState.animateScrollToItem(0)
+                                    }
                                 }
                             },
                             onDeleteTask = { task ->
-                                if(SharedPref.deleteTaskWithoutConfirmation){
-                                    deleteTask(task)
-                                }else{
-                                    taskToDelete = task
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
                                     showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    if (SharedPref.deleteTaskWithoutConfirmation) {
+                                        deleteTask(task)
+                                    } else {
+                                        taskToDelete = task
+                                        showBlur = true
+                                        showDeleteConfirmationDialog.value = true
+                                    }
                                 }
                             }
                         )
@@ -466,23 +552,41 @@ fun ProjectsView(
                          * Tasks divided in tabs by schedule
                          * **/
                         TasksScheduleWithPager(
-                            navigateToQuickEditTaskTitle = {
-                                taskToEdit = it
-                                keyBoardController?.show()
-                                showBlur = true
-                                focusScope.launch {
-                                    delay(500)
-                                    focusRequester.requestFocus()
+                            navigateToQuickEditTaskTitle = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    taskToEdit = task
+                                    keyBoardController?.show()
+                                    showBlur = true
+                                    focusScope.launch {
+                                        delay(500)
+                                        focusRequester.requestFocus()
+                                    }
                                 }
                             },
-                            navigateToEditTask = {
-                                navigateToTask(it)
+                            navigateToEditTask = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    navigateToTask(task)
+                                }
                             },
-                            onToggleTask = {
-                                onToggleTask(it)
-                                listMoveScope.launch {
-                                    delay(moveAnimationDelay)
-                                    projectsListState.animateScrollToItem(0)
+                            onToggleTask = { task ->
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
+                                    showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    onToggleTask(task)
+                                    listMoveScope.launch {
+                                        delay(moveAnimationDelay)
+                                        projectsListState.animateScrollToItem(0)
+                                    }
                                 }
                             },
                             modifier = Modifier
@@ -493,11 +597,18 @@ fun ProjectsView(
                                     end = 0.dp
                                 ),
                             onTaskDelete = { task ->
-                                if(SharedPref.deleteTaskWithoutConfirmation){
-                                    deleteTask(task)
-                                }else{
-                                    taskToDelete = task
+                                val role = getRole(task.projectEntity.toProject())
+                                if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
                                     showBlur = true
+                                    showViewerPermissionDialog.value = true
+                                }else {
+                                    if (SharedPref.deleteTaskWithoutConfirmation) {
+                                        deleteTask(task)
+                                    } else {
+                                        taskToDelete = task
+                                        showBlur = true
+                                        showDeleteConfirmationDialog.value = true
+                                    }
                                 }
                             }
                         )
@@ -569,69 +680,6 @@ fun ProjectsView(
 
             }
         }
-
-
-        AnimatedVisibility(
-            visible = showBlur && taskToDelete != null,
-            enter = slideInVertically(
-                animationSpec = tween(
-                    durationMillis = 200,
-                    easing = EaseIn
-                ),
-                initialOffsetY = {
-                    it / 2
-                }
-            ),
-            exit = slideOutVertically(
-                animationSpec = tween(
-                    durationMillis = 200,
-                    easing = EaseOut
-                ),
-                targetOffsetY = {
-                    it / 2
-                }
-            )
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues = padding)
-                    .clickable(
-                        onClick = {
-                            taskToDelete = null
-                            showBlur = false
-                        }
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                AppCustomDialog(
-                    onDismiss = {
-                        taskToDelete = null
-                        showBlur = false
-                    },
-                    onConfirm = {
-                        deleteTask(taskToDelete!!)
-                        taskToDelete = null
-                        showBlur = false
-                    },
-                    title = "Delete this task?",
-                    description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.task?.title?:""}\"",
-                    topRowIcon = Icons.Default.DeleteForever,
-                    showDismissButton = true,
-                    dismissButtonText = "Abort",
-                    confirmButtonText = "Yes, proceed",
-                    showCheckbox = SharedPref.deleteTaskWithoutConfirmation.not(),
-                    onChecked = {
-                           SharedPref.deleteTaskWithoutConfirmation = true
-                    },
-                    checkBoxText = "Delete without confirmation next time?",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(20.dp)
-                )
-            }
-        }
-
     }
 }
 
