@@ -31,13 +31,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.getRandomColor
-import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.common.getSampleTaskWithProject
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 
 @Composable
 fun DummyDoTooItemView(
-    doToo: DoTooItem,
+    doToo: TaskWithProject,
     textColor : Color = Color.White,
     backgroundColor : Color = Color(getRandomColor())
 ) {
@@ -83,11 +83,11 @@ fun DummyDoTooItemView(
                     .width(20.dp)
                     .padding(0.dp),
             ) {
-                if (doToo.done) {
+                if (doToo.task.done) {
                     Icon(
                         Icons.Filled.CheckCircle,
                         contentDescription = "Checked circular icon",
-                        tint = Color(doToo.projectColor),
+                        tint = Color(doToo.projectEntity.color),
                         modifier = Modifier
                             .height(20.dp)
                             .width(20.dp)
@@ -96,7 +96,7 @@ fun DummyDoTooItemView(
                     Icon(
                         Icons.Outlined.Circle,
                         contentDescription = "Checked circular icon",
-                        tint = Color(doToo.projectColor),
+                        tint = Color(doToo.projectEntity.color),
                         modifier = Modifier
                             .height(20.dp)
                             .width(20.dp)
@@ -106,13 +106,13 @@ fun DummyDoTooItemView(
             Spacer(modifier = Modifier.width(10.dp))
 
             Text(
-                text = doToo.title,
+                text = doToo.task.title,
                 color = textColor,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 15.sp,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = if (doToo.done) {
+                style = if (doToo.task.done) {
                     TextStyle(textDecoration = TextDecoration.LineThrough)
                 } else {
                     TextStyle()
@@ -130,6 +130,6 @@ fun DummyDoTooItemView(
 @Composable
 fun PreviewDummyDoTooItemView() {
     DummyDoTooItemView(
-        doToo = getSampleDotooItem()
+        doToo = getSampleTaskWithProject()
     )
 }

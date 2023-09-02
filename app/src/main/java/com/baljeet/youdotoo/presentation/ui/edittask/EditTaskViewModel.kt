@@ -5,7 +5,7 @@ import com.baljeet.youdotoo.common.DueDates
 import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.GetTaskByIdAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
@@ -30,7 +30,7 @@ class EditTaskViewModel @Inject constructor(
     fun getProject(projectId : String) = getProjectByIdAsFlowUseCase(projectId)
 
     fun updateTask(
-        task: DoTooItemEntity,
+        task: TaskEntity,
         name : String,
         description : String,
         priority: Priorities,
@@ -52,7 +52,7 @@ class EditTaskViewModel @Inject constructor(
             },
             createDate = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             updatedBy = SharedPref.userName.plus(" updated this Task."),
-            projectColor = selectedProject.color
+            projectId = selectedProject.id
         )
         onlineDB.collection("projects")
             .document(task.projectId)

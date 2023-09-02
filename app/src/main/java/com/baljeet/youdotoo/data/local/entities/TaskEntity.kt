@@ -15,7 +15,7 @@ import androidx.room.PrimaryKey
         )
     ]
 )
-data class DoTooItemEntity(
+data class TaskEntity(
     @PrimaryKey
     val id : String,
     val title : String,
@@ -25,6 +25,5 @@ data class DoTooItemEntity(
     val createDate : Long,
     var done : Boolean,
     val priority : String,
-    var updatedBy : String,
-    var projectColor : Long
+    var updatedBy : String
 )

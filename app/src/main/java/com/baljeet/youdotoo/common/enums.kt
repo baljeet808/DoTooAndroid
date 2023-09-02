@@ -1,6 +1,6 @@
 package com.baljeet.youdotoo.common
 
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.isoDayNumber
@@ -86,5 +86,5 @@ data class DashboardTaskTabs (
     var name: EnumDashboardTasksTabs = EnumDashboardTasksTabs.Today,
     var taskCount: Int = 0,
     var index: Int = 0,
-    var tasks : List<DoTooItemEntity> = listOf()
+    var tasks : List<TaskWithProject> = listOf()
     )

@@ -12,25 +12,25 @@ import com.baljeet.youdotoo.data.local.daos.NotificationDao
 import com.baljeet.youdotoo.data.local.daos.ProjectDao
 import com.baljeet.youdotoo.data.local.daos.UserDao
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 
 
 @Database(
     entities = [
         ProjectEntity::class,
-        DoTooItemEntity::class,
+        TaskEntity::class,
         UserEntity::class,
         InvitationEntity::class,
         NotificationEntity::class,
         ColorPaletteEntity::class,
         MessageEntity::class
     ],
-    version = 21
+    version = 22
 )
 @TypeConverters(NotificationTypeConverter::class)
 abstract class YouDoTooDatabase  : RoomDatabase(){

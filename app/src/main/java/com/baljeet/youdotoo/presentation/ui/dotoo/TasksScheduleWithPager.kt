@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.baljeet.youdotoo.common.DashboardTaskTabs
 import com.baljeet.youdotoo.common.EnumDashboardTasksTabs
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.presentation.ui.projects.components.TasksSchedulesTabRow
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -37,18 +37,18 @@ import kotlinx.datetime.toKotlinLocalDateTime
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun TasksScheduleWithPager(
-    onToggleTask : (DoTooItemEntity) -> Unit,
-    navigateToQuickEditTaskTitle : (DoTooItemEntity) -> Unit,
-    navigateToEditTask : (DoTooItemEntity) -> Unit,
+    onToggleTask : (TaskWithProject) -> Unit,
+    navigateToQuickEditTaskTitle : (TaskWithProject) -> Unit,
+    navigateToEditTask : (TaskWithProject) -> Unit,
     modifier: Modifier,
-    onTaskDelete: (DoTooItemEntity) -> Unit
+    onTaskDelete: (TaskWithProject) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
 
     val viewModel : TasksScheduleViewModel = hiltViewModel()
 
-    val allTasks by viewModel.getAllTasks().collectAsState(initial = listOf())
+    val allTasks by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
     val todayDate = java.time.LocalDateTime.now().toKotlinLocalDateTime()
 
@@ -90,11 +90,11 @@ fun TasksScheduleWithPager(
             timeZone = TimeZone.currentSystemDefault()
         ).epochSeconds
 
-    val yesterdayTasks = allTasks.filter { task -> task.dueDate == yesterdayDateInLong }
-    val todayTasks = allTasks.filter { task -> task.dueDate == todayDateInLong }
-    val tomorrowTasks = allTasks.filter { task -> task.dueDate == tomorrowDateInLong }
-    val pendingTasks = allTasks.filter { task -> task.dueDate < yesterdayDateInLong }
-    val allOtherTasks = allTasks.filter { task -> task.dueDate > tomorrowDateInLong }
+    val yesterdayTasks = allTasks.filter { task -> task.task.dueDate == yesterdayDateInLong }
+    val todayTasks = allTasks.filter { task -> task.task.dueDate == todayDateInLong }
+    val tomorrowTasks = allTasks.filter { task -> task.task.dueDate == tomorrowDateInLong }
+    val pendingTasks = allTasks.filter { task -> task.task.dueDate < yesterdayDateInLong }
+    val allOtherTasks = allTasks.filter { task -> task.task.dueDate > tomorrowDateInLong }
 
     val tasksTabs = getTaskTabs(
         todayTasks = todayTasks,
@@ -185,11 +185,11 @@ fun TasksScheduleWithPager(
 
 
 fun getTaskTabs(
-    pendingTasks: List<DoTooItemEntity>,
-    yesterdayTasks: List<DoTooItemEntity>,
-    todayTasks: List<DoTooItemEntity>,
-    tomorrowTasks: List<DoTooItemEntity>,
-    allOtherTasks: List<DoTooItemEntity>
+    pendingTasks: List<TaskWithProject>,
+    yesterdayTasks: List<TaskWithProject>,
+    todayTasks: List<TaskWithProject>,
+    tomorrowTasks: List<TaskWithProject>,
+    allOtherTasks: List<TaskWithProject>
 ): ArrayList<DashboardTaskTabs> {
 
     val tasksTabs = arrayListOf<DashboardTaskTabs>()

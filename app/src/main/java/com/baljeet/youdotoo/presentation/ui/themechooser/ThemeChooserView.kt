@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleColorPalette
-import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.common.getSampleTaskWithProject
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
 import com.baljeet.youdotoo.presentation.ui.dotoo.DummyDoTooItemsLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.DummyProjectCardView
@@ -230,8 +230,8 @@ fun ThemeChooserView(
 
                     DummyDoTooItemsLazyColumn(
                         doToos = listOf(
-                            getSampleDotooItem(),
-                            getSampleDotooItem()
+                            getSampleTaskWithProject(),
+                            getSampleTaskWithProject()
                         ),
                         modifier = Modifier.padding(start = 10.dp, bottom = 20.dp),
                         textColor = Color.White,
@@ -308,8 +308,8 @@ fun ThemeChooserView(
 
                     DummyDoTooItemsLazyColumn(
                         doToos = listOf(
-                            getSampleDotooItem(),
-                            getSampleDotooItem()
+                            getSampleTaskWithProject(),
+                            getSampleTaskWithProject(),
                         ),
                         modifier = Modifier.padding(start = 10.dp, bottom = 20.dp),
                         textColor = Color.Black,

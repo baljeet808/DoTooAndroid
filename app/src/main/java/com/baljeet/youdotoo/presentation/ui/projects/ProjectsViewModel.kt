@@ -6,10 +6,9 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
@@ -86,13 +85,13 @@ class ProjectsViewModel @Inject constructor(
         }
     }
 
-    fun updateTask(task: DoTooItemEntity) {
+    fun updateTask(task: TaskEntity) {
         CoroutineScope(Dispatchers.IO).launch {
             val projectEntity = getProjectByIdUseCase(projectId = task.projectId)
             updateTask(task,projectEntity.toProject())
         }
     }
-    private fun updateTask(task: DoTooItemEntity, project : Project){
+    private fun updateTask(task: TaskEntity, project : Project){
         when(getRole(project)){
             EnumRoles.ProAdmin -> {
                 updateTaskOnServer(task, project)
@@ -114,7 +113,7 @@ class ProjectsViewModel @Inject constructor(
         }
     }
 
-    private fun updateTaskOnServer(task : DoTooItemEntity, project: Project){
+    private fun updateTaskOnServer(task : TaskEntity, project: Project){
         projectsReference
             .document(task.projectId)
             .collection("todos")
@@ -126,15 +125,15 @@ class ProjectsViewModel @Inject constructor(
 
     }
 
-    private fun updateTaskLocally(task : DoTooItemEntity, project: Project){
+    private fun updateTaskLocally(task : TaskEntity, project: Project){
         CoroutineScope(Dispatchers.IO).launch {
-            upsertDoToosUseCase(listOf(task.toDoTooItem()),task.projectId)
+            upsertDoToosUseCase(listOf(task))
             updateProject(project)
         }
     }
 
 
-    fun deleteTask(task : DoTooItemEntity){
+    fun deleteTask(task : TaskEntity){
         CoroutineScope(Dispatchers.IO).launch {
             val project = getProjectByIdUseCase(projectId = task.projectId)
             deleteTask(task, project)
@@ -142,7 +141,7 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
-    private fun deleteTask(task : DoTooItemEntity, projectEntity: ProjectEntity){
+    private fun deleteTask(task : TaskEntity, projectEntity: ProjectEntity){
         val project = projectEntity.toProject()
         when(getRole(project)){
             EnumRoles.ProAdmin -> {
@@ -164,7 +163,7 @@ class ProjectsViewModel @Inject constructor(
             }
         }
     }
-    private fun deleteTaskOnServer(task: DoTooItemEntity, project: Project){
+    private fun deleteTaskOnServer(task: TaskEntity, project: Project){
         projectsReference
             .document(task.projectId)
             .collection("todos")
@@ -175,9 +174,9 @@ class ProjectsViewModel @Inject constructor(
             }
     }
 
-    private fun deleteTaskLocally(task: DoTooItemEntity, project: Project){
+    private fun deleteTaskLocally(task: TaskEntity, project: Project){
         CoroutineScope(Dispatchers.IO).launch {
-            deleteDoTooUseCase(task.toDoTooItem(), projectId = task.projectId)
+            deleteDoTooUseCase(task)
             updateProject(project)
         }
     }

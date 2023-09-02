@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getUserIds
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.mappers.toProject
 
 
@@ -32,11 +33,11 @@ fun NavGraphBuilder.addProjectViewDestination(
         val projectId = backStackEntry.arguments?.getString("projectId")
 
         val viewModel : ProjectViewModel = hiltViewModel()
-        val project by viewModel.getProjectById().collectAsState(initial = null)
+        val project by viewModel.getProjectById().collectAsState(initial = ProjectEntity())
         val tasks by viewModel.getProjectTasks().collectAsState(initial = listOf())
-        val users = project?.let {
-             viewModel.getUserProfiles(it.toProject().getUserIds()).collectAsState(initial = listOf())
-        }?.value?: listOf()
+        val users = project.let {
+            viewModel.getUserProfiles(it.toProject().getUserIds()).collectAsState(initial = listOf())
+        }.value
 
         ProjectView(
             project = project,
@@ -56,12 +57,12 @@ fun NavGraphBuilder.addProjectViewDestination(
             },
             users = users,
             deleteTask = { task ->
-                project?.toProject()?.let {
+                project.toProject().let {
                     viewModel.deleteTask(task,it)
                 }
             },
             deleteProject = {
-                project?.toProject()?.let {
+                project.toProject().let {
                     viewModel.deleteProject(it)
                     navController.popBackStack()
                 }
@@ -86,7 +87,7 @@ fun NavGraphBuilder.addProjectViewDestination(
                         title = title,
                         updatedBy = SharedPref.userName.plus(" has updated this task.")
                     ),
-                    project = project!!.toProject()
+                    project = project.toProject()
                 )
             }
         )

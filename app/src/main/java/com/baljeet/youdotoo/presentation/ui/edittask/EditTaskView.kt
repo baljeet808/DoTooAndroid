@@ -86,9 +86,8 @@ import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.common.toLocalDateTime
 import com.baljeet.youdotoo.common.toNiceDateFormat
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
@@ -121,7 +120,7 @@ import kotlinx.datetime.toKotlinLocalDate
 @Composable
 fun EditTaskView(
     project : ProjectEntity?,
-    task: DoTooItemEntity?,
+    task: TaskEntity?,
     updateTask: (
         name: String,
         description: String,
@@ -866,7 +865,7 @@ fun EditTaskView(
 @Composable
 fun PreviewEditTaskView() {
     EditTaskView(
-        task = getSampleDotooItem().toDoTooItemEntity(""),
+        task = getSampleDotooItem(),
         updateTask = { _, _, _, _,_,_-> },
         project = getSampleProject().toProjectEntity(),
         onClose = {}

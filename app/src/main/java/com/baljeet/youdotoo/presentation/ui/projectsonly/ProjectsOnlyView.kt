@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.presentation.ui.project.components.ProjectCardWithProfiles
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -37,8 +36,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun  ProjectsOnlyView(
-    projects : List<ProjectWithDoToos>,
-    goBack : () -> Unit
+    projects : List<ProjectWithDoToos>
 ) {
     SharedPref.init(LocalContext.current)
 
@@ -85,7 +83,7 @@ fun  ProjectsOnlyView(
                 ProjectCardWithProfiles(
                     project = item.project.toProject(),
                     users = listOf(),
-                    tasks = item.tasks.map { it.toDoTooItem() },
+                    tasks = item.tasks,
                     onItemDeleteClick = {  },
                     updateProjectTitle = {},
                     updateProjectDescription = {},
@@ -117,7 +115,6 @@ fun PreviewProjectsOnlyView(){
             getSampleProjectWithTasks(),
             getSampleProjectWithTasks(),
             getSampleProjectWithTasks()
-        ),
-        goBack = {}
+        )
     )
 }

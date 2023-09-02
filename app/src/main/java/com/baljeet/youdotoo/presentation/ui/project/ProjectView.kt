@@ -48,17 +48,15 @@ import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
-import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.data.mappers.toUser
@@ -70,7 +68,6 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.delay
@@ -79,18 +76,18 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectView(
-    project: ProjectEntity?,
+    project: ProjectEntity,
     users: List<UserEntity>,
-    tasks: List<DoTooItemEntity>,
-    onToggle: (doTooItem: DoTooItemEntity, project: Project) -> Unit,
+    tasks: List<TaskEntity>,
+    onToggle: (doTooItem: TaskEntity, project: Project) -> Unit,
     navigateToCreateTask: () -> Unit,
-    deleteTask: (DoTooItemEntity) -> Unit,
+    deleteTask: (TaskEntity) -> Unit,
     deleteProject: () -> Unit,
     upsertProject: (Project) -> Unit,
     onClickInvite: () -> Unit,
-    navigateToEditTask: (task: DoTooItemEntity) -> Unit,
+    navigateToEditTask: (task: TaskEntity) -> Unit,
     navigateToChat: () -> Unit,
-    updateTaskTitle: (task: DoTooItemEntity, title: String) -> Unit
+    updateTaskTitle: (task: TaskEntity, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -103,11 +100,9 @@ fun ProjectView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: DoTooItemEntity? = null
+    var taskToEdit: TaskWithProject? = null
 
-    val role = project?.toProject()?.let {
-        getRole(it)
-    }?:EnumRoles.Blocked
+    val role = getRole(project.toProject())
 
     var showBlur by remember {
         mutableStateOf(false)
@@ -167,7 +162,7 @@ fun ProjectView(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    if(getRole(project?.toProject()!!) != EnumRoles.Viewer){
+                    if(getRole(project.toProject()) != EnumRoles.Viewer){
                         navigateToCreateTask()
                     }else{
                         showBlur = true
@@ -175,7 +170,7 @@ fun ProjectView(
                     }
                 },
                 modifier = Modifier,
-                backgroundColor = project?.color?.let { Color(it) } ?: NightDotooBrightBlue
+                backgroundColor = Color(project.color)
             ) {
                 Icon(
                     Icons.Outlined.Add,
@@ -207,31 +202,29 @@ fun ProjectView(
             /**
              *Top Project Card
              * **/
-            project?.let {
-                ProjectCardWithProfiles(
-                    project = project.toProject(),
-                    users = users.map { it.toUser() },
-                    tasks = tasks.map { it.toDoTooItem() },
-                    onItemDeleteClick = deleteProject,
-                    updateProjectTitle = { title ->
-                        project.copy().toProject().let { projectCopy ->
-                            projectCopy.name = title
-                            upsertProject(projectCopy)
-                        }
-                    },
-                    updateProjectDescription = { description ->
-                        project.copy().toProject().let { projectCopy ->
-                            projectCopy.description = description
-                            upsertProject(projectCopy)
-                        }
-                    },
-                    toggleNotificationSetting = {},
-                    onClickInvite = onClickInvite,
-                    showDialogBackgroundBlur = {
-                        showBlur = it
+            ProjectCardWithProfiles(
+                project = project.toProject(),
+                users = users.map { it.toUser() },
+                tasks = tasks.map { it },
+                onItemDeleteClick = deleteProject,
+                updateProjectTitle = { title ->
+                    project.copy().toProject().let { projectCopy ->
+                        projectCopy.name = title
+                        upsertProject(projectCopy)
                     }
-                )
-            }
+                },
+                updateProjectDescription = { description ->
+                    project.copy().toProject().let { projectCopy ->
+                        projectCopy.description = description
+                        upsertProject(projectCopy)
+                    }
+                },
+                toggleNotificationSetting = {},
+                onClickInvite = onClickInvite,
+                showDialogBackgroundBlur = {
+                    showBlur = it
+                }
+            )
 
 
             Box(
@@ -277,18 +270,22 @@ fun ProjectView(
              * List of tasks form this project
              * **/
             DoTooItemsLazyColumn(
-                doToos = tasks.toCollection(ArrayList()),
+                doToos = tasks.map {
+                                   task ->
+                    TaskWithProject(
+                        task = task,
+                        projectEntity = project
+                    )
+                }.toCollection(ArrayList()),
                 onToggleDoToo = { doToo ->
-                    project?.let {
-                        onToggle(doToo, project.toProject())
-                    }
+                    onToggle(doToo.task, project.toProject())
                 },
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
-                onItemDelete = deleteTask,
+                onItemDelete = { deleteTask(it.task) },
                 navigateToEditTask = { task ->
-                    navigateToEditTask(task)
+                    navigateToEditTask(task.task)
                 },
                 navigateToQuickEditTask = { task ->
                     taskToEdit = task
@@ -342,17 +339,17 @@ fun ProjectView(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     onSubmit = { title ->
-                        updateTaskTitle(taskToEdit!!, title)
+                        updateTaskTitle(taskToEdit!!.task, title)
                         keyBoardController?.hide()
                         showBlur = false
                     },
-                    placeholder = taskToEdit?.title ?: "",
+                    placeholder = taskToEdit?.task?.title ?: "",
                     label = "Edit Task",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showBlur = false
                     },
-                    themeColor = Color(taskToEdit?.projectColor ?: getRandomColor()),
+                    themeColor = Color(taskToEdit?.projectEntity?.color ?: getRandomColor()),
                     lines = 2
                 )
 
@@ -373,7 +370,7 @@ fun PreviewProjectView() {
         onToggle = { _, _ -> },
         navigateToCreateTask = {},
         tasks = listOf(
-            getSampleDotooItem().toDoTooItemEntity(getRandomId())
+            getSampleDotooItem()
         ),
         users = listOf(getSampleProfile().toUserEntity()),
         deleteTask = {},

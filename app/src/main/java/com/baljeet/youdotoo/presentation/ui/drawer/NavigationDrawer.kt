@@ -57,8 +57,7 @@ import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
@@ -80,7 +79,7 @@ fun NavigationDrawer(
     closeDrawer : () -> Unit,
     logout: () -> Unit,
     modifier: Modifier,
-    allTasks : List<DoTooItemEntity>,
+    allTasks : List<TaskEntity>,
     openProfile : () -> Unit
 ) {
 
@@ -396,7 +395,7 @@ fun PreviewNavigationDrawer() {
         logout = {},
         modifier = Modifier,
         allTasks = listOf(
-            getSampleDotooItem().toDoTooItemEntity("0")
+            getSampleDotooItem()
         ),
         openProfile = {}
     )

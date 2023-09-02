@@ -42,7 +42,7 @@ import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
@@ -59,7 +59,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 fun ProjectCardWithProfiles(
     project: Project,
     users: List<User>,
-    tasks: List<DoTooItem>,
+    tasks: List<TaskEntity>,
     onItemDeleteClick: () -> Unit,
     updateProjectTitle: (title: String) -> Unit,
     updateProjectDescription: (title: String) -> Unit,

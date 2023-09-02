@@ -32,9 +32,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.common.getSampleTaskWithProject
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 
@@ -42,11 +41,11 @@ import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemsLazyColumn(
-    doToos: ArrayList<DoTooItemEntity>,
-    onToggleDoToo: (doToo: DoTooItemEntity) -> Unit,
-    navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
-    navigateToEditTask : (task : DoTooItemEntity) -> Unit,
-    onItemDelete: (doToo: DoTooItemEntity) -> Unit,
+    doToos: ArrayList<TaskWithProject>,
+    onToggleDoToo: (doToo: TaskWithProject) -> Unit,
+    navigateToQuickEditTask : (task: TaskWithProject) -> Unit,
+    navigateToEditTask : (task : TaskWithProject) -> Unit,
+    onItemDelete: (doToo: TaskWithProject) -> Unit,
     modifier: Modifier
 ) {
     LazyColumn(
@@ -55,7 +54,7 @@ fun DoTooItemsLazyColumn(
             .background(color = Color.Transparent),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        items(doToos, key = {it.id}) { dotoo ->
+        items(doToos, key = {it.task.id}) { dotoo ->
 
             val state = rememberDismissState(
                 confirmStateChange = {
@@ -136,15 +135,13 @@ fun DoTooItemsLazyColumn(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewDoTooItemsLazyColumn() {
-    val sampleTaskItem = getSampleDotooItem()
     DoTooItemsLazyColumn(
-       // lazyListState = LazyListState(),
-        doToos = listOf(
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            getSampleDotooItem(),
-            sampleTaskItem
-        ).map { it.toDoTooItemEntity("") }.toCollection(ArrayList()),
+        doToos = arrayListOf(
+            getSampleTaskWithProject(),
+            getSampleTaskWithProject(),
+            getSampleTaskWithProject(),
+            getSampleTaskWithProject()
+        ),
         onToggleDoToo = {},
         modifier = Modifier,
         onItemDelete = {},

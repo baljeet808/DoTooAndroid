@@ -13,12 +13,11 @@ import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.common.getUserIds
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItem
 import com.baljeet.youdotoo.data.mappers.toProject
-import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
@@ -149,20 +148,19 @@ class DashboardViewModel @Inject constructor(
                         .collection("todos")
                         .addSnapshotListener { sShot, e ->
                             if (sShot != null && e == null) {
-                                val doToos = ArrayList<DoTooItem>()
-                                for (doToo in sShot) {
-                                    doToos.add(
-                                        DoTooItem(
-                                            id = doToo.getString("id") ?: "",
-                                            title = doToo.getString("title") ?: "",
-                                            description = doToo.getString("description") ?: "",
-                                            createDate = doToo.getLong("createDate") ?: 0L,
-                                            dueDate = doToo.getLong("dueDate") ?: 0L,
-                                            priority = doToo.getString("priority") ?: "High",
-                                            updatedBy = doToo.getString("updatedBy") ?: "",
-                                            done = doToo.getBoolean("done") ?: false,
-                                            projectColor = doToo.getLong("projectColor")
-                                                ?: getRandomColor()
+                                val tasks = ArrayList<TaskEntity>()
+                                for (task in sShot) {
+                                    tasks.add(
+                                        TaskEntity(
+                                            id = task.getString("id") ?: "",
+                                            title = task.getString("title") ?: "",
+                                            description = task.getString("description") ?: "",
+                                            createDate = task.getLong("createDate") ?: 0L,
+                                            dueDate = task.getLong("dueDate") ?: 0L,
+                                            priority = task.getString("priority") ?: "High",
+                                            updatedBy = task.getString("updatedBy") ?: "",
+                                            done = task.getBoolean("done") ?: false,
+                                            projectId = task.getString("projectId")?:""
                                         )
                                     )
                                 }
@@ -172,12 +170,11 @@ class DashboardViewModel @Inject constructor(
                                 CoroutineScope(Dispatchers.IO).launch {
                                     val allLocalTasksOfThisProject = getProjectTasksUseCase(onlineProject.id)
                                     upsertDoToosUseCase(
-                                        dotoos = doToos,
-                                        projectId = onlineProject.id
+                                        tasks = tasks
                                     )
-                                    if(allLocalTasksOfThisProject.size != doToos.size){
-                                        allLocalTasksOfThisProject.filter { localTask -> doToos.none { onlineTask -> onlineTask.id == localTask.id } }.forEach { wildTask ->
-                                            deleteDoTooUseCase(wildTask.toDoTooItem(), onlineProject.id )
+                                    if(allLocalTasksOfThisProject.size != tasks.size){
+                                        allLocalTasksOfThisProject.filter { localTask -> tasks.none { onlineTask -> onlineTask.id == localTask.id } }.forEach { wildTask ->
+                                            deleteDoTooUseCase(wildTask)
                                         }
                                     }
                                 }

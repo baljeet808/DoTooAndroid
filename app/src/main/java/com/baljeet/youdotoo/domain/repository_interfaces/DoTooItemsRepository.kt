@@ -1,35 +1,23 @@
 package com.baljeet.youdotoo.domain.repository_interfaces
 
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import kotlinx.coroutines.flow.Flow
 
 interface DoTooItemsRepository {
-
-     fun getAllDoTooItems(): Flow<List<DoTooItemEntity>>
-
-     suspend fun getDoToosByProjectId(projectId : String): List<DoTooItemEntity>
-     fun getAllDoTooItemsByProjectIDAsFlow(projectId : String): Flow<List<DoTooItemEntity>>
-
-     suspend fun getDoTooById(doTooId : String): DoTooItemEntity
-
-     fun getTaskByIdAsAFlow(taskId : String): Flow<DoTooItemEntity>
-
-     fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>>
-
-     fun getTodayTasks(todayDateInLong: Long): Flow<List<DoTooItemEntity>>
-
-
-     fun getTomorrowTasks(tomorrowDateInLong: Long): Flow<List<DoTooItemEntity>>
-
-     fun getPendingTasks(yesterdayDateInLong: Long): Flow<List<DoTooItemEntity>>
-
-     fun getAllOtherTasks(tomorrowDateInLong: Long ): Flow<List<DoTooItemEntity>>
-
-     suspend fun upsertDoTooItem(doTooItems : List<DoTooItem>, projectId: String)
-
-     suspend fun deleteDoTooItem(doTooItem : DoTooItem, projectId: String)
-
+     fun getAllDoTooItems(): Flow<List<TaskEntity>>
+     fun getAllTasksWithProjectAsFlow(): Flow<List<TaskWithProject>>
+     suspend fun getAllTasksWithProject(): List<TaskWithProject>
+     suspend fun getDoToosByProjectId(projectId : String): List<TaskEntity>
+     fun getAllDoTooItemsByProjectIDAsFlow(projectId : String): Flow<List<TaskEntity>>
+     suspend fun getDoTooById(doTooId : String): TaskEntity
+     fun getTaskByIdAsAFlow(taskId : String): Flow<TaskEntity>
+     fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<TaskEntity>>
+     fun getTodayTasks(todayDateInLong: Long): Flow<List<TaskEntity>>
+     fun getTomorrowTasks(tomorrowDateInLong: Long): Flow<List<TaskEntity>>
+     fun getPendingTasks(yesterdayDateInLong: Long): Flow<List<TaskEntity>>
+     fun getAllOtherTasks(tomorrowDateInLong: Long ): Flow<List<TaskEntity>>
+     suspend fun upsertDoTooItem(tasks : List<TaskEntity>)
+     suspend fun deleteDoTooItem(task : TaskEntity)
      suspend fun deleteAllByProjectId(projectId: String)
-
 }

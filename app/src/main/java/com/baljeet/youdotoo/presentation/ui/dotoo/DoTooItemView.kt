@@ -30,17 +30,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
-import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.getSampleTaskWithProject
 import com.baljeet.youdotoo.common.playWooshSound
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun DoTooItemView(
-    doToo: DoTooItemEntity,
+    doToo: TaskWithProject,
     navigateToTaskEdit: () -> Unit,
     navigateToQuickEditDotoo : () -> Unit,
     onToggleDone: () -> Unit
@@ -80,7 +79,7 @@ fun DoTooItemView(
 
             IconButton(
                 onClick = {
-                    if (doToo.done.not()) {
+                    if (doToo.task.done.not()) {
                         playWooshSound(context)
                     }
                     addHapticFeedback(hapticFeedback = hapticFeedback)
@@ -93,13 +92,13 @@ fun DoTooItemView(
                     .padding(0.dp),
             ) {
                 Icon(
-                    if (doToo.done) {
+                    if (doToo.task.done) {
                         Icons.Filled.CheckCircle
                     } else {
                         Icons.Outlined.Circle
                     },
                     contentDescription = "Checked circular icon",
-                    tint = Color(doToo.projectColor),
+                    tint = Color(doToo.projectEntity.color),
                     modifier = Modifier
                         .height(30.dp)
                         .width(30.dp)
@@ -108,7 +107,7 @@ fun DoTooItemView(
             Spacer(modifier = Modifier.width(10.dp))
 
             Text(
-                text = doToo.title,
+                text = doToo.task.title,
                 color = if (isSystemInDarkTheme()) {
                     Color.White
                 } else {
@@ -118,7 +117,7 @@ fun DoTooItemView(
                 fontSize = 18.sp,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = if (doToo.done) {
+                style = if (doToo.task.done) {
                     TextStyle(textDecoration = TextDecoration.LineThrough)
                 } else {
                     TextStyle()
@@ -130,7 +129,7 @@ fun DoTooItemView(
             Icon(
                 Icons.Default.ArrowForwardIos,
                 contentDescription ="Navigate to chat button",
-                tint = Color(doToo.projectColor)
+                tint = Color(doToo.projectEntity.color)
             )
         }
     }
@@ -140,7 +139,7 @@ fun DoTooItemView(
 @Composable
 fun PreviewDoTooItemView() {
     DoTooItemView(
-        doToo = getSampleDotooItem().toDoTooItemEntity(""),
+        doToo = getSampleTaskWithProject(),
         onToggleDone = {},
         navigateToTaskEdit = {},
         navigateToQuickEditDotoo = {}

@@ -31,13 +31,13 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             onToggleTask = { task ->
                 val newTask = task.copy()
-                newTask.done = task.done.not()
-                newTask.updatedBy = SharedPref.userName.plus(" marked this task ")
-                    .plus(if (newTask.done) "completed." else "not completed.")
-                viewModel.updateTask(newTask)
+                newTask.task.done = task.task.done.not()
+                newTask.task.updatedBy = SharedPref.userName.plus(" marked this task ")
+                    .plus(if (newTask.task.done) "completed." else "not completed.")
+                viewModel.updateTask(newTask.task)
             },
             navigateToTask = {
-                navController.navigate("editTask/".plus(it.id))
+                navController.navigate("editTask/".plus(it.task.id))
             },
             navigateToCreateTask = {
                 val userProjects = projects.filter { project -> doesUserHavePermissionToEdit(project.project) }
@@ -60,14 +60,14 @@ fun NavGraphBuilder.addProjectsViewDestination(
                 navController.navigate(DestinationCreateProjectRoute)
             },
             updateTaskTitle = { task , title ->
-                val newTask = task.copy(
+                val newTask = task.task.copy(
                     title = title
                 )
                 newTask.updatedBy = SharedPref.userName.plus(" has updated task title.")
                 viewModel.updateTask(newTask)
             },
             deleteTask = { task ->
-                viewModel.deleteTask(task)
+                viewModel.deleteTask(task.task)
             }
         )
     }

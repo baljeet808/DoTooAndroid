@@ -5,16 +5,16 @@ import androidx.room.Relation
 import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 
-data class ProjectWithDoToos(
+data class TaskWithProject(
 
     @Embedded
-    val project : ProjectEntity,
+    val task : TaskEntity,
 
     @Relation(
-        parentColumn = "id",
-        entityColumn = "projectId",
-        entity = TaskEntity::class
+        parentColumn = "projectId",
+        entityColumn = "id",
+        entity = ProjectEntity::class
     )
-    var tasks : List<TaskEntity> = listOf()
+    var projectEntity : ProjectEntity
 
 )

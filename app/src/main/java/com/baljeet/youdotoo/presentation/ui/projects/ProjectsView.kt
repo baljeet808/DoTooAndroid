@@ -66,8 +66,8 @@ import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleWithPager
@@ -81,21 +81,20 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
-import com.google.accompanist.pager.ExperimentalPagerApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalPagerApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
     projects: List<ProjectWithDoToos>,
-    onToggleTask: (DoTooItemEntity) -> Unit,
-    navigateToTask: (DoTooItemEntity) -> Unit,
+    onToggleTask: (TaskWithProject) -> Unit,
+    navigateToTask: (TaskWithProject) -> Unit,
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
-    deleteTask:(DoTooItemEntity) -> Unit,
-    updateTaskTitle: (task: DoTooItemEntity, title: String) -> Unit
+    deleteTask:(TaskWithProject) -> Unit,
+    updateTaskTitle: (task: TaskWithProject, title: String) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -104,11 +103,11 @@ fun ProjectsView(
         mutableStateOf(false)
     }
 
-    var taskToEdit: DoTooItemEntity? = remember {
+    var taskToEdit: TaskWithProject? = remember {
         null
     }
 
-    var taskToDelete : DoTooItemEntity? = remember {
+    var taskToDelete : TaskWithProject? = remember {
         null
     }
 
@@ -557,14 +556,14 @@ fun ProjectsView(
                         showBlur = false
                         taskToEdit = null
                     },
-                    placeholder = taskToEdit?.title ?: "",
+                    placeholder = taskToEdit?.task?.title ?: "",
                     label = "Edit Task",
                     maxCharLength = maxTitleCharsAllowed,
                     onCancel = {
                         showBlur = false
                         taskToEdit = null
                     },
-                    themeColor = Color(taskToEdit?.projectColor ?: getRandomColor()),
+                    themeColor = Color(taskToEdit?.projectEntity?.color ?: getRandomColor()),
                     lines = 2
                 )
 
@@ -616,7 +615,7 @@ fun ProjectsView(
                         showBlur = false
                     },
                     title = "Delete this task?",
-                    description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.title?:""}\"",
+                    description = "Are you sure, you want to permanently delete Following task? \n \"${taskToDelete?.task?.title?:""}\"",
                     topRowIcon = Icons.Default.DeleteForever,
                     showDismissButton = true,
                     dismissButtonText = "Abort",

@@ -1,13 +1,13 @@
 package com.baljeet.youdotoo.common
 
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
-import com.baljeet.youdotoo.data.mappers.toDoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
-import com.baljeet.youdotoo.domain.models.DoTooItem
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import kotlinx.datetime.TimeZone
@@ -47,8 +47,8 @@ fun getRandomId(): String {
     return UUID.randomUUID().toString()
 }
 
-fun getSampleDotooItem(): DoTooItem {
-    return DoTooItem(
+fun getSampleDotooItem(): TaskEntity {
+    return TaskEntity(
         id = getRandomId(),
         title = "Wash the dishes Please",
         description = "To see the preview comment code related to viewModel",
@@ -57,7 +57,14 @@ fun getSampleDotooItem(): DoTooItem {
         done = Random.nextInt(from = 0, 1) == 0,
         priority = "High",
         updatedBy = "Baljeet create this doToo item.",
-        projectColor = getRandomColor()
+        projectId = ""
+    )
+}
+
+fun getSampleTaskWithProject() : TaskWithProject {
+    return TaskWithProject(
+        task = getSampleDotooItem(),
+        projectEntity = getSampleProject().toProjectEntity()
     )
 }
 
@@ -79,9 +86,9 @@ fun getSampleProjectWithTasks(): ProjectWithDoToos {
     return ProjectWithDoToos(
         project = getSampleProject().toProjectEntity(),
         tasks = listOf(
-            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
-            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
-            getSampleDotooItem().toDoTooItemEntity(getRandomId()),
+            getSampleDotooItem(),
+            getSampleDotooItem(),
+            getSampleDotooItem(),
         )
     )
 }

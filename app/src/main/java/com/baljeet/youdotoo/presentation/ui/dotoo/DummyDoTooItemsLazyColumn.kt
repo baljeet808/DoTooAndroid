@@ -10,13 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.baljeet.youdotoo.common.getRandomColor
-import com.baljeet.youdotoo.common.getSampleDotooItem
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.common.getSampleTaskWithProject
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 
 
 @Composable
 fun DummyDoTooItemsLazyColumn(
-    doToos: List<DoTooItem>,
+    doToos: List<TaskWithProject>,
     modifier: Modifier,
     textColor : Color = Color.White,
     backgroundColor : Color = Color(getRandomColor())
@@ -30,7 +30,7 @@ fun DummyDoTooItemsLazyColumn(
     ) {
         items(
             doToos,
-            key = {it.id}
+            key = {it.task.id}
         ) { dotoo ->
             DummyDoTooItemView(
                 doToo = dotoo,
@@ -46,11 +46,10 @@ fun DummyDoTooItemsLazyColumn(
 @Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewDummyDoTooItemsLazyColumn() {
-    val sampleTaskItem = getSampleDotooItem()
     DummyDoTooItemsLazyColumn(
         doToos = listOf(
-            getSampleDotooItem(),
-            sampleTaskItem
+            getSampleTaskWithProject(),
+            getSampleTaskWithProject()
         ),
         modifier = Modifier
     )

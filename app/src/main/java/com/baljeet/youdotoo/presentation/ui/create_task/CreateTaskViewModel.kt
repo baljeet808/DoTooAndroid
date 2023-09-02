@@ -2,13 +2,13 @@ package com.baljeet.youdotoo.presentation.ui.create_task
 
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.DueDates
-import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.EnumRoles
+import com.baljeet.youdotoo.common.Priorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
-import com.baljeet.youdotoo.domain.models.DoTooItem
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetAllProjectsAsFlowUseCase
@@ -49,7 +49,7 @@ class CreateTaskViewModel  @Inject constructor(
         selectedProject : Project
     ){
 
-        val newTask = DoTooItem(
+        val newTask = TaskEntity(
             id = UUID.randomUUID().toString(),
             title = name,
             description = description,
@@ -65,12 +65,12 @@ class CreateTaskViewModel  @Inject constructor(
             createDate = java.time.LocalDateTime.now().toKotlinLocalDateTime().toInstant(TimeZone.currentSystemDefault()).epochSeconds,
             updatedBy = SharedPref.userName.plus(" created this Task."),
             done = false,
-            projectColor = selectedProject.color
+            projectId = selectedProject.id
         )
         createTask(newTask, selectedProject)
     }
 
-    private fun createTask(task: DoTooItem, project : Project){
+    private fun createTask(task: TaskEntity, project : Project){
         when(getRole(project)){
             EnumRoles.ProAdmin -> {
                 updateTaskOnServer(task, project)
@@ -92,7 +92,7 @@ class CreateTaskViewModel  @Inject constructor(
         }
     }
 
-    private fun updateTaskOnServer(task : DoTooItem, project : Project){
+    private fun updateTaskOnServer(task : TaskEntity, project : Project){
         projectsReference
             .document(project.id)
             .collection("todos")
@@ -103,9 +103,9 @@ class CreateTaskViewModel  @Inject constructor(
             }
     }
 
-    private fun updateTaskLocally(task : DoTooItem, project: Project){
+    private fun updateTaskLocally(task : TaskEntity, project: Project){
         CoroutineScope(Dispatchers.IO).launch {
-            upsertDoToosUseCase(listOf(task),project.id)
+            upsertDoToosUseCase(listOf(task))
             updateProject(project)
         }
     }

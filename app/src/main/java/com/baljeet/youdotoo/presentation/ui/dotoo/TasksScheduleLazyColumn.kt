@@ -43,7 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.toLocalDateTime
 import com.baljeet.youdotoo.common.toNiceDateFormat
-import com.baljeet.youdotoo.data.local.entities.DoTooItemEntity
+import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
@@ -61,10 +61,10 @@ import kotlinx.datetime.toKotlinLocalDateTime
 @Composable
 fun TasksScheduleLazyColumn(
     modifier: Modifier,
-    navigateToQuickEditTask : (task: DoTooItemEntity) -> Unit,
-    navigateToEditTask : (task : DoTooItemEntity) -> Unit,
-    toggleTask : (task : DoTooItemEntity) -> Unit,
-    onDeleteTask : (task : DoTooItemEntity) -> Unit
+    navigateToQuickEditTask : (task: TaskWithProject) -> Unit,
+    navigateToEditTask : (task : TaskWithProject) -> Unit,
+    toggleTask : (task : TaskWithProject) -> Unit,
+    onDeleteTask : (task : TaskWithProject) -> Unit
 ) {
 
     val todayDate = java.time.LocalDateTime.now()
@@ -116,7 +116,7 @@ fun TasksScheduleLazyColumn(
 
     val viewModel : TasksScheduleViewModel = hiltViewModel()
 
-    val allTasks by viewModel.getAllTasks().collectAsState(initial = listOf())
+    val allTasks by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
 
     /**
@@ -152,7 +152,7 @@ fun TasksScheduleLazyColumn(
         ) {
 
 
-            allTasks.filter { task -> task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
+            allTasks.filter { task -> task.task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
 
                 if (pendingTasks.isNotEmpty()) {
                     item {
@@ -162,7 +162,7 @@ fun TasksScheduleLazyColumn(
                                 .fillMaxWidth()
                         )
                     }
-                    items(pendingTasks, key = { it.id }) { task ->
+                    items(pendingTasks, key = { it.task.id }) { task ->
                         SwipeAbleTaskItemView(
                             task = task,
                             modifier = Modifier.animateItemPlacement(),
@@ -184,7 +184,7 @@ fun TasksScheduleLazyColumn(
                 }
             }
 
-            allTasks.filter { task -> task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
+            allTasks.filter { task -> task.task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
 
                 if (yesterdayTasks.isNotEmpty()) {
 
@@ -199,7 +199,7 @@ fun TasksScheduleLazyColumn(
                                 .fillMaxWidth()
                         )
                     }
-                    items(yesterdayTasks, key = { it.id }) { task ->
+                    items(yesterdayTasks, key = { it.task.id }) { task ->
                         SwipeAbleTaskItemView(
                             task = task,
                             modifier = Modifier.animateItemPlacement(),
@@ -220,7 +220,7 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.dueDate == todayDateInLong }.let { todayTasks ->
+            allTasks.filter { task -> task.task.dueDate == todayDateInLong }.let { todayTasks ->
 
                 if (todayTasks.isNotEmpty()) {
 
@@ -235,7 +235,7 @@ fun TasksScheduleLazyColumn(
                                 .fillMaxWidth()
                         )
                     }
-                    items(todayTasks, key = { it.id }) { task ->
+                    items(todayTasks, key = { it.task.id }) { task ->
                         SwipeAbleTaskItemView(
                             task = task,
                             modifier = Modifier.animateItemPlacement(),
@@ -256,7 +256,7 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
+            allTasks.filter { task -> task.task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
 
                 if (tomorrowTasks.isNotEmpty()) {
 
@@ -271,7 +271,7 @@ fun TasksScheduleLazyColumn(
                                 .fillMaxWidth()
                         )
                     }
-                    items(tomorrowTasks, key = { it.id }) { task ->
+                    items(tomorrowTasks, key = { it.task.id }) { task ->
                         SwipeAbleTaskItemView(
                             task = task,
                             modifier = Modifier.animateItemPlacement(),
@@ -292,19 +292,19 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.dueDate > tomorrowDateInLong }
-                .sortedBy { task -> task.dueDate }.let { allOther ->
+            allTasks.filter { task -> task.task.dueDate > tomorrowDateInLong }
+                .sortedBy { task -> task.task.dueDate }.let { allOther ->
 
-                allOther.distinctBy { task -> task.dueDate }.forEach { distinctByDate ->
+                allOther.distinctBy { task -> task.task.dueDate }.forEach { distinctByDate ->
 
-                    allOther.filter { task -> task.dueDate == distinctByDate.dueDate }
+                    allOther.filter { task -> task.task.dueDate == distinctByDate.task.dueDate }
                         .let { tasksOnSpecificDate ->
                             item {
                                 Spacer(modifier = Modifier.height(10.dp))
                             }
                             item {
                                 HeadingTextWithCount(
-                                    heading = distinctByDate.dueDate
+                                    heading = distinctByDate.task.dueDate
                                         .toLocalDateTime()
                                         .toJavaLocalDateTime()
                                         .toLocalDate()
@@ -313,7 +313,7 @@ fun TasksScheduleLazyColumn(
                                         .fillMaxWidth()
                                 )
                             }
-                            items(tasksOnSpecificDate, key = { it.id }) { task ->
+                            items(tasksOnSpecificDate, key = { it.task.id }) { task ->
                                 SwipeAbleTaskItemView(
                                     task = task,
                                     modifier = Modifier.animateItemPlacement(),
@@ -365,7 +365,7 @@ fun HeadingTextWithCount(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun SwipeAbleTaskItemView(
-    task : DoTooItemEntity,
+    task : TaskWithProject,
     modifier: Modifier,
     onToggleTask : () -> Unit,
     onDeleteTask : () -> Unit,
