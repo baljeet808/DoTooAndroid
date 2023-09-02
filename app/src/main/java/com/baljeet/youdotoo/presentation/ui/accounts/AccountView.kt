@@ -57,7 +57,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun AccountView(
-    user : UserEntity,
+    user : UserEntity?,
     onClose : () -> Unit
 ) {
     SharedPref.init(LocalContext.current)
@@ -168,7 +168,7 @@ fun AccountView(
 
 
                         Text(
-                            text = user.name,
+                            text = user?.name?:"",
                             modifier = Modifier
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Start,
@@ -179,7 +179,7 @@ fun AccountView(
                         )
 
                         Text(
-                            text = user.email,
+                            text = user?.email?:"",
                             modifier = Modifier
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Start,
@@ -190,7 +190,7 @@ fun AccountView(
                         )
 
                         Text(
-                            text = "Joined ${LocalContext.current.getString(R.string.app_name)} ".plus(user.joined.toNiceDateTimeFormat()),
+                            text = "Joined ${LocalContext.current.getString(R.string.app_name)} ".plus(user?.joined?.toNiceDateTimeFormat()),
                             modifier = Modifier
                                 .fillMaxWidth(),
                             textAlign = TextAlign.Start,
@@ -202,7 +202,7 @@ fun AccountView(
                     }
 
                     AsyncImage(
-                        model = user.avatarUrl,
+                        model = user?.avatarUrl?:"",
                         contentDescription = "avatarImage",
                         placeholder = painterResource(id = R.drawable.feeling_good),
                         modifier = Modifier
@@ -304,7 +304,7 @@ fun AccountView(
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = "Buy Pro MemberShip",
+                                text = "Be A Pro Member",
                                 color = getTextColor(),
                                 fontFamily = FontFamily(Nunito.Normal.font),
                                 fontSize = 16.sp,
@@ -350,7 +350,7 @@ fun AccountView(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(10.dp),
+                                .padding(15.dp),
                             horizontalArrangement = Arrangement.Start,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -420,7 +420,7 @@ fun AccountView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(15.dp),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -462,7 +462,7 @@ fun AccountView(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(10.dp),
+                            .padding(15.dp),
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically
                     ) {

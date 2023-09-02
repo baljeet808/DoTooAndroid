@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.baljeet.youdotoo.common.DestinationAccountRoute
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
@@ -138,12 +137,6 @@ fun DashboardView(
                     menuItems = menuItems,
                     onMenuItemClick = { menuId ->
                         when (menuId.id) {
-                            DestinationAccountRoute -> {
-                                scope.launch {
-                                    scaffoldState.drawerState.close()
-                                }
-                                maximizeCurrentScreen = true
-                            }
                             DestinationSettingsRoute -> {
                                 scope.launch {
                                     scaffoldState.drawerState.close()

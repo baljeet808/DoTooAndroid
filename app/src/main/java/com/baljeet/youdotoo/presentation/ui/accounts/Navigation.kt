@@ -6,7 +6,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.baljeet.youdotoo.data.local.entities.UserEntity
 
 const val DestinationAccountsRoute = "account"
 
@@ -17,18 +16,16 @@ fun NavGraphBuilder.addAccountsViewDestination(
         route = DestinationAccountsRoute
     ) {
 
-        val viewModel : AccountViewModel = hiltViewModel()
+        val viewModel: AccountViewModel = hiltViewModel()
 
-        val user : UserEntity? by viewModel.userAsFlow().collectAsState(initial = null)
+        val user by viewModel.userAsFlow().collectAsState(initial = null)
 
-        user?.let {
-            AccountView(
-                user = it,
-                onClose = {
-                    navController.popBackStack()
-                }
-            )
-        }
+        AccountView(
+            user = user,
+            onClose = {
+                navController.popBackStack()
+            }
+        )
 
     }
 }

@@ -10,9 +10,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.data.dto.AttachmentDto
-import com.baljeet.youdotoo.data.mappers.toProject
 
 /**
  * Updated by Baljeet singh.
@@ -32,19 +30,14 @@ fun NavGraphBuilder.addChatViewDestination(navController: NavController){
 
         val viewModel : ChatViewModel = hiltViewModel()
 
-        val project by viewModel.getProjectById().collectAsState(initial = null)
-        val participants = project?.let {
-            viewModel.getUserProfiles(it.toProject().getUserIds()).collectAsState(initial = listOf())
-        }?.value
+        val participants by viewModel.usersOfChat
 
-        val messages = participants?.let {
-            viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
-        }?.value?: listOf()
+        val messages by viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
 
         val contentResolver = LocalContext.current.contentResolver
 
         ChatView(
-            participants = participants?:listOf(),
+            participants = participants,
             messages = messages.reversed(),
             sendMessage = { messageString, attachments ->
 

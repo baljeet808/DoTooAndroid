@@ -3,7 +3,6 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateValue
@@ -49,7 +48,7 @@ import kotlinx.coroutines.launch
 fun ChatView(
     participants: List<UserEntity>,
     messages: List<MessageEntity>,
-    sendMessage: (message: String, attachments:  List<Uri>) -> Unit,
+    sendMessage: (message: String, attachments: List<Uri>) -> Unit,
     showAttachment: (messages: MessageEntity) -> Unit,
     interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit
 ) {
@@ -196,31 +195,26 @@ fun ChatView(
                 )
             })
 
-
-
-
-            AnimatedVisibility(visible = participants.isNotEmpty()) {
-                ChatViewMainContent(
-                    modifier = Modifier.padding(padding),
-                    messages = messages,
-                    sendMessage = sendMessage,
-                    openEmoticons = { message ->
-                        selectedMessage = message
-                        currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
-                        openSheet()
-                    },
-                    showAttachment = showAttachment,
-                    openCollaboratorsScreen = {
-                        currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
-                        openSheet()
-                    },
-                    openPersonTagger = {
-                        currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
-                        openSheet()
-                    },
-                    participants = participants
-                )
-            }
+            ChatViewMainContent(
+                modifier = Modifier.padding(padding),
+                messages = messages,
+                sendMessage = sendMessage,
+                openEmoticons = { message ->
+                    selectedMessage = message
+                    currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
+                    openSheet()
+                },
+                showAttachment = showAttachment,
+                openCollaboratorsScreen = {
+                    currentBottomSheet = ChatScreenBottomSheetTypes.COLLABORATOR_SCREEN
+                    openSheet()
+                },
+                openPersonTagger = {
+                    currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
+                    openSheet()
+                },
+                participants = participants
+            )
         }
     }
 }

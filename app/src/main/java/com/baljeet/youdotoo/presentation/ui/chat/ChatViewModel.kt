@@ -1,22 +1,29 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleDateInLong
+import com.baljeet.youdotoo.common.getUserIds
 import com.baljeet.youdotoo.common.updateInteraction
 import com.baljeet.youdotoo.data.dto.AttachmentDto
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.use_cases.messages.GetAllMessagesByProjectIDAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
+import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -27,7 +34,8 @@ class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getAllMessagesByProjectIDAsFlowUseCase: GetAllMessagesByProjectIDAsFlowUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
-    private val getUsersByIdsUseCase: GetUsersByIdsUseCase
+    private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
+    private val getProjectByIdUseCase: GetProjectByIdUseCase
 ) : ViewModel() {
 
 
@@ -41,7 +49,17 @@ class ChatViewModel @Inject constructor(
 
     fun getProjectById(): Flow<ProjectEntity> = getProjectByIdAsFlowUseCase(projectId)
 
-    fun getUserProfiles(ids: List<String>): Flow<List<UserEntity>> = getUsersByIdsUseCase(ids)
+    var usersOfChat = mutableStateOf<List<UserEntity>>(listOf())
+
+    init {
+        viewModelScope.launch {
+            val project = getProjectByIdUseCase(projectId)
+            getUsersByIdsUseCase(project.toProject().getUserIds()).onEach {
+                usersOfChat.value = it
+            }
+        }
+    }
+
 
     fun getAllMessagesOfThisProject() = getAllMessagesByProjectIDAsFlowUseCase(projectId)
 
