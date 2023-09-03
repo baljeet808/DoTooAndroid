@@ -11,6 +11,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.baljeet.youdotoo.data.dto.AttachmentDto
+import com.baljeet.youdotoo.data.mappers.toProject
 
 /**
  * Updated by Baljeet singh.
@@ -35,6 +36,8 @@ fun NavGraphBuilder.addChatViewDestination(navController: NavController){
         val messages by viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
 
         val contentResolver = LocalContext.current.contentResolver
+
+        val project by viewModel.getProjectById().collectAsState(initial = null)
 
         ChatView(
             participants = participants,
@@ -71,7 +74,11 @@ fun NavGraphBuilder.addChatViewDestination(navController: NavController){
                     message= message,
                     emoticon = emoticon
                 )
-            }
+            },
+            onClose={
+                navController.popBackStack()
+            },
+            project = project?.toProject()
         )
     }
 }

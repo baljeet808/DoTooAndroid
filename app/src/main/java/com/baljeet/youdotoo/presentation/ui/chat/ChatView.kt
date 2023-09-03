@@ -35,6 +35,7 @@ import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.chat.components.ChatViewMainContent
 import com.baljeet.youdotoo.presentation.ui.chat.components.EmoticonsControllerView
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
@@ -50,10 +51,13 @@ fun ChatView(
     messages: List<MessageEntity>,
     sendMessage: (message: String, attachments: List<Uri>) -> Unit,
     showAttachment: (messages: MessageEntity) -> Unit,
-    interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit
+    interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit,
+    onClose : () -> Unit,
+    project : Project?
 ) {
 
     SharedPref.init(LocalContext.current)
+
     var selectedMessage: MessageEntity? by remember {
         mutableStateOf(null)
     }
@@ -213,7 +217,9 @@ fun ChatView(
                     currentBottomSheet = ChatScreenBottomSheetTypes.PERSON_TAGGER
                     openSheet()
                 },
-                participants = participants
+                participants = participants,
+                project = project,
+                onClose = onClose
             )
         }
     }

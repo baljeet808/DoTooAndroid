@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,8 +19,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -28,6 +27,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.PhotoLibrary
@@ -44,13 +44,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getSampleProject
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -62,13 +64,13 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 @Composable
 fun MessageBoxView(
     onClickSend: (String) -> Unit,
-    openCollaboratorsScreen : () -> Unit,
-    openPersonTagger : () -> Unit,
-    pickAttachments : () -> Unit,
-    openCamera : () -> Unit,
-    showEditText : Boolean,
-    attachments : ArrayList<Uri>,
-    removeAttachment : (uri : Uri) -> Unit
+    openCollaboratorsScreen: () -> Unit,
+    openPersonTagger: () -> Unit,
+    pickAttachments: () -> Unit,
+    openCamera: () -> Unit,
+    attachments: ArrayList<Uri>,
+    removeAttachment: (uri: Uri) -> Unit,
+    project: Project?
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -89,9 +91,9 @@ fun MessageBoxView(
             modifier = Modifier
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(2.dp)
-        ){
+        ) {
 
-            items(attachments){attachment ->
+            items(attachments) { attachment ->
 
                 Box(
                     modifier = Modifier
@@ -118,7 +120,7 @@ fun MessageBoxView(
 
                     Icon(
                         Icons.Default.Cancel,
-                        contentDescription ="Remove attachment button",
+                        contentDescription = "Remove attachment button",
                         tint = getLightThemeColor(),
                         modifier = Modifier
                             .clip(
@@ -136,9 +138,13 @@ fun MessageBoxView(
 
         }
 
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-
-        if(showEditText) {
             TextField(
                 value = message,
                 onValueChange = {
@@ -168,8 +174,8 @@ fun MessageBoxView(
                 ),
                 maxLines = 5,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
+                    .weight(1f)
+                    .padding(5.dp),
                 colors = TextFieldDefaults.textFieldColors(
                     backgroundColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
@@ -177,6 +183,41 @@ fun MessageBoxView(
                     errorIndicatorColor = Color.Transparent
                 )
             )
+
+            Box(
+                modifier = Modifier
+                    .clickable(
+                        onClick = {
+                            if (message.isNotBlank() || attachments.isNotEmpty()) {
+                                onClickSend(message)
+                                message = ""
+                                attachments.forEach { attachment ->
+                                    removeAttachment(attachment)
+                                }
+                            }
+                        }
+                    )
+                    .background(
+                        color = if (message.isNotBlank() || attachments.isNotEmpty()) {
+                            Color(project?.color ?: EnumProjectColors.Purple.longValue)
+                        } else {
+                            Color.Gray
+                        },
+                        shape = RoundedCornerShape(25.dp)
+                    )
+                    .padding(10.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Send,
+                    contentDescription = "Send message button",
+                    tint = Color.White,
+                    modifier = Modifier
+                        .width(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(20.dp))
         }
 
 
@@ -230,28 +271,6 @@ fun MessageBoxView(
                     tint = Color.Gray
                 )
             }
-
-            Button(
-                onClick = {
-                    onClickSend(message)
-                    message = ""
-                },
-                modifier = Modifier,
-                shape = RoundedCornerShape(30.dp),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = getLightThemeColor(),
-                    disabledBackgroundColor = Color.Gray
-                ),
-                enabled = message.isNotBlank()
-            ) {
-                Text(
-                    text = "Send",
-                    fontFamily = FontFamily(Nunito.Bold.font),
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp,
-                    color = getTextColor()
-                )
-            }
         }
 
     }
@@ -269,8 +288,8 @@ fun PreviewMessageBoxView() {
         pickAttachments = {},
         openPersonTagger = {},
         openCamera = {},
-        showEditText = true,
         attachments = arrayListOf(),
-        removeAttachment = {}
+        removeAttachment = {},
+        project = getSampleProject()
     )
 }

@@ -1,18 +1,31 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import android.content.res.Configuration
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -21,15 +34,26 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getSampleProfile
-import com.baljeet.youdotoo.common.isScrolled
+import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
+import com.baljeet.youdotoo.domain.models.Project
+import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -37,14 +61,17 @@ import kotlinx.coroutines.launch
 fun ChatViewMainContent(
     participants : List<UserEntity>,
     messages: List<MessageEntity>,
+    project : Project?,
     sendMessage: (messageString: String, attachments : List<Uri>) -> Unit,
     openEmoticons: (message: MessageEntity) -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
     showAttachment: (messages: MessageEntity) -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    onClose : () -> Unit
 ) {
-    val lazyListState = rememberLazyListState()
+
+    SharedPref.init(LocalContext.current)
 
     var selectedImageUris by remember {
         mutableStateOf<List<Uri>>(emptyList())
@@ -84,104 +111,208 @@ fun ChatViewMainContent(
         }
     )
 
-
-    Column(
-        modifier = modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.SpaceBetween
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                color = getLightThemeColor()
+            ),
+        contentAlignment = Alignment.TopCenter
     ) {
 
-        /**
-         *LazyColumn of Chat
-         * **/
-        LazyColumn(
-            state = lazyListState,
+
+        Column(
+            modifier = modifier
+                .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+
+            /**
+             *LazyColumn of Chat
+             * **/
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(bottom = 5.dp, top = 5.dp)
+                ,
+                verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
+                reverseLayout = true
+            ) {
+
+
+
+                items(messages, key = {it.id}) { message ->
+                    val itemIndex = messages.indexOf(message)
+                    val nextMessage =
+                        if (messages.last() == message) {
+                            null
+                        } else {
+                            messages[itemIndex + 1]
+                        }
+                    val isThisFromMe = message.senderId == SharedPref.userId
+                    val showUserInfo = nextMessage?.senderId != message.senderId
+
+                    if(isThisFromMe){
+                        SenderMessageBubbleView(
+                            message = message,
+                            onLongPress = {
+                                openEmoticons(message)
+                            },
+                            users= participants ,
+                            showSenderInfo  = showUserInfo,
+                            showAttachment = {
+                                showAttachment(message)
+                            }
+                        )
+                    }else{
+                        ThereMessageBubbleView(
+                            message = message,
+                            users = participants,
+                            onLongPress = {
+                                openEmoticons(message)
+                            },
+                            showSenderInfo  = showUserInfo
+                        )
+                    }
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(100.dp))
+                }
+            }
+            /**
+             *SendBox
+             * **/
+            MessageBoxView(
+                onClickSend = { message ->
+                    sendMessage(message, selectedImageUris)
+                },
+                pickAttachments = {
+                    if(selectedImageUris.size <4) {
+                        multiplePhotoPickerLauncher.launch(
+                            PickVisualMediaRequest(
+                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                            )
+                        )
+                    }else{
+                        scope.launch{
+                            showToast = true
+                            delay(1000)
+                            showToast = false
+                        }
+                    }
+                },
+                openCollaboratorsScreen = openCollaboratorsScreen,
+                openPersonTagger = openPersonTagger,
+                openCamera = {
+
+                },
+                attachments  = selectedImageUris.toCollection(ArrayList()),
+                removeAttachment = { attachment ->
+                    val selectedImages = selectedImageUris.toCollection(ArrayList())
+                    if(selectedImages.any { uri -> uri == attachment }){
+                        selectedImages.remove(attachment)
+                    }
+                    selectedImageUris = selectedImages
+                },
+                project = project
+            )
+
+        }
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
-                .padding(bottom = 5.dp, top = 5.dp)
-            ,
-            verticalArrangement = Arrangement.spacedBy(10.dp, alignment = Alignment.Bottom),
-            reverseLayout = true
-        ) {
-            items(messages, key = {it.id}) { message ->
-                val itemIndex = messages.indexOf(message)
-                val nextMessage =
-                    if (messages.last() == message) {
-                        null
-                    } else {
-                        messages[itemIndex + 1]
-                    }
-                val isThisFromMe = message.senderId == SharedPref.userId
-                val showUserInfo = nextMessage?.senderId != message.senderId
+                .height(70.dp)
+        ){
 
-                if(isThisFromMe){
-                    SenderMessageBubbleView(
-                        message = message,
-                        onLongPress = {
-                            openEmoticons(message)
-                        },
-                        users= participants ,
-                        showSenderInfo  = showUserInfo,
-                        showAttachment = {
-                            showAttachment(message)
-                        }
+
+
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(.9f)
+                    .blur(
+                        radius = 20.dp
                     )
-                }else{
-                    ThereMessageBubbleView(
-                        message = message,
-                        users = participants,
-                        onLongPress = {
-                            openEmoticons(message)
-                        },
-                        showSenderInfo  = showUserInfo
+                    .background(
+                        color = Color(project?.color ?: EnumProjectColors.Purple.longValue)
+                    )
+            ){
+
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(20.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                /**
+                 * Close icon button
+                 * **/
+                /**
+                 * Close icon button
+                 * **/
+                /**
+                 * Close icon button
+                 * **/
+
+                /**
+                 * Close icon button
+                 * **/
+                IconButton(
+                    onClick = onClose,
+                    modifier = Modifier
+                        .width(50.dp)
+                        .height(50.dp)
+                        .border(
+                            width = 1.dp,
+                            color = getLightThemeColor(),
+                            shape = RoundedCornerShape(40.dp)
+                        )
+
+                ) {
+                    Icon(
+                        Icons.Default.ArrowBackIos,
+                        contentDescription = "Button to close current screen.",
+                        tint = Color.White
                     )
                 }
+
+                Spacer(modifier = Modifier.width(20.dp))
+                /**
+                 * Title
+                 * **/
+                /**
+                 * Title
+                 * **/
+                /**
+                 * Title
+                 * **/
+                /**
+                 * Title
+                 * **/
+                Text(
+                    text = project?.name?:"",
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Start,
+                    fontSize = 16.sp,
+                    fontFamily = FontFamily(Nunito.Bold.font),
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.White
+                )
             }
         }
-        /**
-         *SendBox
-         * **/
-        MessageBoxView(
-            onClickSend = { message ->
-                sendMessage(message, selectedImageUris)
-            },
-            showEditText =  lazyListState.isScrolled.not(),
-            pickAttachments = {
-                if(selectedImageUris.size <4) {
-                    multiplePhotoPickerLauncher.launch(
-                        PickVisualMediaRequest(
-                            ActivityResultContracts.PickVisualMedia.ImageOnly
-                        )
-                    )
-                }else{
-                    scope.launch{
-                        showToast = true
-                        delay(1000)
-                        showToast = false
-                    }
-                }
-            },
-            openCollaboratorsScreen = openCollaboratorsScreen,
-            openPersonTagger = openPersonTagger,
-            openCamera = {
-
-            },
-            attachments  = selectedImageUris.toCollection(ArrayList()),
-            removeAttachment = { attachment ->
-                val selectedImages = selectedImageUris.toCollection(ArrayList())
-                if(selectedImages.any { uri -> uri == attachment }){
-                    selectedImages.remove(attachment)
-                }
-                selectedImageUris = selectedImages
-            }
-        )
 
     }
+
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewChatView() {
     ChatViewMainContent(
@@ -195,6 +326,8 @@ fun PreviewChatView() {
             getSampleProfile(),
             getSampleProfile(),
         ).map { it.toUserEntity() },
-        modifier = Modifier
+        modifier = Modifier,
+        project = getSampleProject(),
+        onClose = {}
     )
 }
