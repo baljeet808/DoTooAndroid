@@ -101,7 +101,7 @@ object SharedPref {
         get() = sharedPref.getBoolean("isUserAPro", false)
         set(value) = sharedPref.edit { it.putBoolean("isUserAPro", value) }
 
- 
+
     var deleteTaskWithoutConfirmation : Boolean
         get() = sharedPref.getBoolean("deleteTaskWithoutConfirmation", false)
         set(value) = sharedPref.edit{ it.putBoolean("deleteTaskWithoutConfirmation", value)}
