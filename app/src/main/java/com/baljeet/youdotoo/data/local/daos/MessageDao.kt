@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.data.local.daos
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface MessageDao {
     @Upsert
     suspend fun upsertAll(messages : List<MessageEntity>)
+
+    @Query("SELECT * FROM messages WHERE projectId = :projectId ORDER BY createdAt DESC")
+    fun getAllMessageByProjectId(projectId: String) : PagingSource<Int,MessageEntity>
 
     @Query("SELECT * FROM messages")
     fun getAllMessagesAsFlow() : Flow<List<MessageEntity>>

@@ -1,6 +1,5 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
-import android.content.res.Configuration
 import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
@@ -41,16 +39,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.itemContentType
+import androidx.paging.compose.itemKey
 import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.common.getSampleProfile
-import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
-import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -60,7 +57,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatViewMainContent(
     participants : List<UserEntity>,
-    messages: List<MessageEntity>,
+    messages: LazyPagingItems<MessageEntity>,
     project : Project?,
     sendMessage: (messageString: String, attachments : List<Uri>) -> Unit,
     openEmoticons: (message: MessageEntity) -> Unit,
@@ -140,41 +137,49 @@ fun ChatViewMainContent(
                 reverseLayout = true
             ) {
 
+                items(
+                    count = messages.itemCount,
+                    key = messages.itemKey{ message -> message.id},
+                    contentType = messages.itemContentType { "Messages" }
+                ){ index: Int ->
 
+                    val message : MessageEntity? = messages[index]
 
-                items(messages, key = {it.id}) { message ->
-                    val itemIndex = messages.indexOf(message)
-                    val nextMessage =
-                        if (messages.last() == message) {
+                    message?.let{
+
+                        val nextMessage = if (messages[messages.itemCount-1] == message) {
                             null
                         } else {
-                            messages[itemIndex + 1]
+                            messages[index + 1]
                         }
-                    val isThisFromMe = message.senderId == SharedPref.userId
-                    val showUserInfo = nextMessage?.senderId != message.senderId
 
-                    if(isThisFromMe){
-                        SenderMessageBubbleView(
-                            message = message,
-                            onLongPress = {
-                                openEmoticons(message)
-                            },
-                            users= participants ,
-                            showSenderInfo  = showUserInfo,
-                            showAttachment = {
-                                showAttachment(message)
-                            }
-                        )
-                    }else{
-                        ThereMessageBubbleView(
-                            message = message,
-                            users = participants,
-                            onLongPress = {
-                                openEmoticons(message)
-                            },
-                            showSenderInfo  = showUserInfo
-                        )
+                        val isThisFromMe = message.senderId == SharedPref.userId
+                        val showUserInfo = nextMessage?.senderId != message.senderId
+
+                        if(isThisFromMe){
+                            SenderMessageBubbleView(
+                                message = message,
+                                onLongPress = {
+                                    openEmoticons(message)
+                                },
+                                users= participants ,
+                                showSenderInfo  = showUserInfo,
+                                showAttachment = {
+                                    showAttachment(message)
+                                }
+                            )
+                        }else{
+                            ThereMessageBubbleView(
+                                message = message,
+                                users = participants,
+                                onLongPress = {
+                                    openEmoticons(message)
+                                },
+                                showSenderInfo  = showUserInfo
+                            )
+                        }
                     }
+
                 }
 
                 item {
@@ -283,15 +288,7 @@ fun ChatViewMainContent(
                 }
 
                 Spacer(modifier = Modifier.width(20.dp))
-                /**
-                 * Title
-                 * **/
-                /**
-                 * Title
-                 * **/
-                /**
-                 * Title
-                 * **/
+
                 /**
                  * Title
                  * **/
@@ -312,22 +309,3 @@ fun ChatViewMainContent(
 }
 
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun PreviewChatView() {
-    ChatViewMainContent(
-        messages = listOf(),
-        sendMessage = {_,_ ->},
-        openEmoticons = {},
-        openCollaboratorsScreen = {},
-        showAttachment = {},
-        openPersonTagger = {},
-        participants = listOf(
-            getSampleProfile(),
-            getSampleProfile(),
-        ).map { it.toUserEntity() },
-        modifier = Modifier,
-        project = getSampleProject(),
-        onClose = {}
-    )
-}

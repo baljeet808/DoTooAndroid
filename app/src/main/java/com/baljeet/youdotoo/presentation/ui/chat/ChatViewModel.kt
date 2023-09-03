@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getRandomId
 import com.baljeet.youdotoo.common.getSampleDateInLong
@@ -14,7 +16,7 @@ import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toProject
-import com.baljeet.youdotoo.domain.use_cases.messages.GetAllMessagesByProjectIDAsFlowUseCase
+import com.baljeet.youdotoo.domain.use_cases.messages.GetPagedMessagesOfProject
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
@@ -32,10 +34,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getAllMessagesByProjectIDAsFlowUseCase: GetAllMessagesByProjectIDAsFlowUseCase,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
-    private val getProjectByIdUseCase: GetProjectByIdUseCase
+    private val getProjectByIdUseCase: GetProjectByIdUseCase,
+    private val getPagedMessagesOfProject: GetPagedMessagesOfProject
 ) : ViewModel() {
 
 
@@ -60,8 +62,8 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-
-    fun getAllMessagesOfThisProject() = getAllMessagesByProjectIDAsFlowUseCase(projectId)
+    fun getAllMessagesOfThisProject() : Flow<PagingData<MessageEntity>> = getPagedMessagesOfProject(projectId)
+        .cachedIn(viewModelScope)
 
 
     fun interactWithMessage(

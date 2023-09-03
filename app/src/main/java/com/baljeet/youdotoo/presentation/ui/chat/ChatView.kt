@@ -31,6 +31,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
@@ -48,7 +49,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ChatView(
     participants: List<UserEntity>,
-    messages: List<MessageEntity>,
+    messages: LazyPagingItems<MessageEntity>,
     sendMessage: (message: String, attachments: List<Uri>) -> Unit,
     showAttachment: (messages: MessageEntity) -> Unit,
     interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit,

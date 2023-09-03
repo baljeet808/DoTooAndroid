@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.data.repository_implementations
 
+import androidx.paging.PagingSource
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.room.YouDoTooDatabase
 import com.baljeet.youdotoo.domain.repository_interfaces.MessageRepository
@@ -38,6 +39,10 @@ class MessageRepositoryImpl @Inject constructor(
 
     override suspend fun getAllMessagesOfAProject(projectId: String): List<MessageEntity> {
         return messageDao.getAllMessagesOfAProject(projectId)
+    }
+
+    override fun getAllMessageByProjectId(projectId: String): PagingSource<Int, MessageEntity> {
+        return messageDao.getAllMessageByProjectId(projectId)
     }
 
     override suspend fun delete(message: MessageEntity) {

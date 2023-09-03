@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -20,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getInteractions
 import com.baljeet.youdotoo.common.getSampleMessage
@@ -84,7 +86,7 @@ fun SenderMessageBubbleView(
                             .padding(top = 4.dp)
                     )
                     Text(
-                        text = users.getUserName(message.senderId),
+                        text = users.getUserName(message.senderId)?:"Unknown",
                         fontFamily = FontFamily(Nunito.Bold.font),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -160,6 +162,7 @@ fun SenderMessageBubbleView(
                 AsyncImage(
                     model = users.getUserProfilePicture(message.senderId),
                     contentDescription = "avatarImage",
+                    placeholder = painterResource(id = R.drawable.youdotoo_app_icon),
                     modifier = Modifier
                         .width(30.dp)
                         .height(30.dp)
@@ -189,16 +192,16 @@ fun PreviewSenderMessageBubble() {
     )
 }
 
-fun List<UserEntity>.getUserProfilePicture(userId: String): String {
+fun List<UserEntity>.getUserProfilePicture(userId: String): String? {
     if(userId == SharedPref.userId){
         return SharedPref.userAvatar
     }
-    return this.first { user -> user.id == userId }.avatarUrl
+    return this.firstOrNull { user -> user.id == userId }?.avatarUrl
 }
 
-fun List<UserEntity>.getUserName(userId: String): String {
+fun List<UserEntity>.getUserName(userId: String): String? {
     if(userId == SharedPref.userId){
         return SharedPref.userName
     }
-    return this.first { user -> user.id == userId }.name
+    return this.firstOrNull { user -> user.id == userId }?.name
 }

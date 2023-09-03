@@ -10,7 +10,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.baljeet.youdotoo.data.dto.AttachmentDto
+import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.mappers.toProject
 
 /**
@@ -33,7 +36,7 @@ fun NavGraphBuilder.addChatViewDestination(navController: NavController){
 
         val participants by viewModel.usersOfChat
 
-        val messages by viewModel.getAllMessagesOfThisProject().collectAsState(initial = listOf())
+        val lazyPagedMessages : LazyPagingItems<MessageEntity> = viewModel.getAllMessagesOfThisProject().collectAsLazyPagingItems()
 
         val contentResolver = LocalContext.current.contentResolver
 
@@ -41,7 +44,7 @@ fun NavGraphBuilder.addChatViewDestination(navController: NavController){
 
         ChatView(
             participants = participants,
-            messages = messages.reversed(),
+            messages = lazyPagedMessages,
             sendMessage = { messageString, attachments ->
 
                 val attachmentsDTOs = arrayListOf<AttachmentDto>()
