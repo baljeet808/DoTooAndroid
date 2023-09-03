@@ -24,6 +24,9 @@ fun NavGraphBuilder.addAccountsViewDestination(
             user = user,
             onClose = {
                 navController.popBackStack()
+            },
+            deleteAccount = {
+                viewModel.deleteEverything()
             }
         )
 

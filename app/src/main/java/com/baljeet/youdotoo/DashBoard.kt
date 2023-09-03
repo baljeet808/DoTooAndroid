@@ -70,12 +70,7 @@ class DashBoard : ComponentActivity() {
                         navController = navController,
                         startDestination = DestinationDashboardRoute
                     ) {
-                        addDashboardViewDestination(
-                            navController = navController,
-                            logout = {
-                                firebaseAuth.signOut()
-                            }
-                        )
+                        addDashboardViewDestination(navController)
                         addNotificationViewDestination(navController)
                         addProjectInvitationDestination(navController)
                         addThemeChooserViewDestination(navController)

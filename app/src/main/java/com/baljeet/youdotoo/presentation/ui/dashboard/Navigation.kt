@@ -20,8 +20,7 @@ const val DestinationDashboardRoute = "Dashboard"
 
 
 fun NavGraphBuilder.addDashboardViewDestination(
-    navController: NavHostController,
-    logout : () -> Unit
+    navController: NavHostController
 ) {
     composable(
         route = DestinationDashboardRoute
@@ -41,7 +40,9 @@ fun NavGraphBuilder.addDashboardViewDestination(
             onClickNotifications = {
                 navController.navigate(DestinationNotificationRoute)
             },
-            logout = logout,
+            logout = {
+                viewModel.signOut()
+            },
             onClickSettings = {
                 navController.navigate(DestinationSettingsRoute)
             },

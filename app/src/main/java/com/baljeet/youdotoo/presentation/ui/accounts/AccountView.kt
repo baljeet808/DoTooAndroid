@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +28,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -51,19 +56,76 @@ import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
+import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
+import com.google.firebase.auth.FirebaseAuth
 
 @Composable
 fun AccountView(
     user : UserEntity?,
-    onClose : () -> Unit
+    onClose : () -> Unit,
+    deleteAccount : () -> Unit
 ) {
     SharedPref.init(LocalContext.current)
 
+    val firebaseAuth = FirebaseAuth.getInstance()
+
     val screenWidthInDp = LocalConfiguration.current.screenWidthDp
+
+
+    var askLogoutConfirmation by remember {
+        mutableStateOf(false)
+    }
+
+    var askDeleteAccountConfirmation by remember {
+        mutableStateOf(false)
+    }
+
+
+
+    if(askLogoutConfirmation){
+        AppCustomDialog(
+            onDismiss = {
+                askLogoutConfirmation = false
+            },
+            onConfirm = {
+                askLogoutConfirmation = false
+                firebaseAuth.signOut()
+            },
+            title = "Are you sure? 🙁" ,
+            description = "This will not delete your project and tasks. You can log back in at any time to work on them.",
+            topRowIcon = Icons.Default.Logout,
+            onChecked = { },
+            modifier = Modifier,
+            showDismissButton = true,
+            dismissButtonText = "No Cancel",
+            confirmButtonText = "Yes Proceed"
+        )
+    }
+
+    if(askDeleteAccountConfirmation){
+        AppCustomDialog(
+            onDismiss = {
+                askDeleteAccountConfirmation = false
+            },
+            onConfirm = {
+                askDeleteAccountConfirmation = false
+                deleteAccount()
+            },
+            title = "Delete Account? 😟" ,
+            description = "This will remove all your online projects and tasks before deleting your account with us. You still want to proceed?",
+            topRowIcon = Icons.Default.DeleteForever,
+            onChecked = { },
+            modifier = Modifier,
+            showDismissButton = true,
+            dismissButtonText = "No Cancel",
+            confirmButtonText = "Yes Proceed"
+        )
+    }
+
 
     Column(
         modifier = Modifier
@@ -410,6 +472,10 @@ fun AccountView(
                         .background(
                             color = getLightThemeColor(),
                             shape = RoundedCornerShape(10.dp)
+                        ).clickable(
+                            onClick = {
+                                askLogoutConfirmation = true
+                            }
                         )
 
                 ) {
@@ -452,8 +518,11 @@ fun AccountView(
                         .background(
                             color = getLightThemeColor(),
                             shape = RoundedCornerShape(10.dp)
+                        ).clickable(
+                            onClick = {
+                                askDeleteAccountConfirmation = true
+                            }
                         )
-
                 ) {
 
                     Row(
@@ -501,6 +570,7 @@ fun AccountView(
 fun PreviewAccountView(){
     AccountView(
         user = getSampleProfile().toUserEntity(),
-        onClose = {}
+        onClose = {},
+        deleteAccount = {}
     )
 }
