@@ -10,6 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.R
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getInteractions
 import com.baljeet.youdotoo.common.getSampleMessage
 import com.baljeet.youdotoo.common.getSampleProfile
@@ -39,6 +42,10 @@ fun ThereMessageBubbleView(
     onLongPress: () -> Unit,
     showSenderInfo: Boolean = true
 ) {
+
+    SharedPref.init(LocalContext.current)
+
+    val screenWidthInDp = LocalConfiguration.current.screenWidthDp
 
     Row(
         modifier = Modifier
@@ -91,7 +98,7 @@ fun ThereMessageBubbleView(
 
         Column(
             modifier = Modifier
-                .widthIn(min = 30.dp, max = 200.dp),
+                .widthIn(min = 60.dp, max = (screenWidthInDp/1.4).dp),
             verticalArrangement = Arrangement.spacedBy(0.dp, alignment = Alignment.Top),
             horizontalAlignment = Alignment.Start
         ) {
@@ -126,6 +133,7 @@ fun ThereMessageBubbleView(
             }
             Column(
                 modifier = Modifier
+                    .widthIn(min = 60.dp, max = (screenWidthInDp/1.4).dp)
                     .background(
                         color = DoTooLightBlue,
                         shape = RoundedCornerShape(
@@ -135,8 +143,7 @@ fun ThereMessageBubbleView(
                             bottomEnd = 20.dp
                         )
                     )
-                    .padding(10.dp)
-                    .widthIn(min = 30.dp, max = 200.dp),
+                    .padding(10.dp),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 message.attachmentUrl?.let { url ->
@@ -144,7 +151,7 @@ fun ThereMessageBubbleView(
                         model = url,
                         contentDescription = "Attachment image",
                         modifier = Modifier
-                            .height(180.dp)
+                            .height((screenWidthInDp/1.4).dp)
                             .clip(shape = RoundedCornerShape(20.dp)),
                         contentScale = ContentScale.Crop,
                     )

@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.*
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -49,6 +51,8 @@ fun SenderMessageBubbleView(
 ) {
 
 
+    val screenWidthInDp = LocalConfiguration.current.screenWidthDp
+
     SharedPref.init(LocalContext.current)
 
     Row(
@@ -64,7 +68,7 @@ fun SenderMessageBubbleView(
     ) {
         Column(
             modifier = Modifier
-                .widthIn(min = 30.dp, max = 200.dp),
+                .widthIn(min = 60.dp, max = (screenWidthInDp/1.4).dp),
             verticalArrangement = Arrangement.spacedBy(0.dp, alignment = Alignment.Top),
             horizontalAlignment = Alignment.End
         ) {
@@ -97,6 +101,7 @@ fun SenderMessageBubbleView(
                 }
             }
             Column(modifier = Modifier
+                .widthIn(min = 60.dp, max = (screenWidthInDp/1.4).dp)
                 .background(
                     color = getDarkThemeColor(),
                     shape = RoundedCornerShape(
@@ -112,8 +117,7 @@ fun SenderMessageBubbleView(
                     } else {
                         10.dp
                     }
-                )
-                .widthIn(min = 30.dp, max = 200.dp),
+                ),
                 verticalArrangement = Arrangement.SpaceAround
             ) {
                 message.attachmentUrl?.let {url ->
@@ -121,7 +125,7 @@ fun SenderMessageBubbleView(
                         model = Uri.parse(url),
                         contentDescription ="Attachment image",
                         modifier = Modifier
-                            .height(180.dp)
+                            .height((screenWidthInDp/1.4).dp)
                             .clip(shape = RoundedCornerShape(20.dp))
                             .clickable(
                                 onClick = showAttachment
@@ -177,7 +181,7 @@ fun SenderMessageBubbleView(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun PreviewSenderMessageBubble() {
     SenderMessageBubbleView(
