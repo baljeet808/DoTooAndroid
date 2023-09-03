@@ -58,8 +58,8 @@ fun DashboardTasksListTypePreview() {
 
     SharedPref.init(LocalContext.current)
 
-    var showTasksByPrioritiesInitially by remember {
-        mutableStateOf(SharedPref.showTasksByPrioritiesInitially)
+    var showCalendarViewInitially by remember {
+        mutableStateOf(SharedPref.showCalendarViewInitially)
     }
 
     Column(
@@ -92,10 +92,10 @@ fun DashboardTasksListTypePreview() {
                 overflow = TextOverflow.Ellipsis
             )
             Checkbox(
-                checked = showTasksByPrioritiesInitially,
+                checked = showCalendarViewInitially,
                 onCheckedChange = {
-                    showTasksByPrioritiesInitially = it
-                    SharedPref.showTasksByPrioritiesInitially = it
+                    showCalendarViewInitially = it
+                    SharedPref.showCalendarViewInitially = it
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color(EnumProjectColors.Purple.longValue),
@@ -170,11 +170,11 @@ fun DashboardTasksListTypePreview() {
             ) {
 
                 TextButton(
-                    onClick = { showTasksByPrioritiesInitially = !showTasksByPrioritiesInitially },
+                    onClick = { showCalendarViewInitially = !showCalendarViewInitially },
                     modifier = Modifier.padding(end = 5.dp)
                 ) {
                     Icon(
-                        if (showTasksByPrioritiesInitially) {
+                        if (showCalendarViewInitially) {
                             Icons.Default.CalendarMonth
                         } else {
                             Icons.Default.LowPriority
@@ -186,7 +186,7 @@ fun DashboardTasksListTypePreview() {
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = if (showTasksByPrioritiesInitially) {
+                        text = if (showCalendarViewInitially) {
                             "Calendar View"
                         } else {
                             "Priorities View"
@@ -200,7 +200,7 @@ fun DashboardTasksListTypePreview() {
 
             }
 
-            AnimatedVisibility(visible = showTasksByPrioritiesInitially) {
+            AnimatedVisibility(visible = showCalendarViewInitially.not()) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -246,7 +246,7 @@ fun DashboardTasksListTypePreview() {
                 }
             }
 
-            AnimatedVisibility(visible = showTasksByPrioritiesInitially.not()) {
+            AnimatedVisibility(visible = showCalendarViewInitially) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

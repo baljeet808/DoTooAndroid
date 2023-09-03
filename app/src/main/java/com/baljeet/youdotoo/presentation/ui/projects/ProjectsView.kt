@@ -104,7 +104,7 @@ fun ProjectsView(
     SharedPref.init(LocalContext.current)
 
     var showScheduleTasksView by remember {
-        mutableStateOf(false)
+        mutableStateOf(SharedPref.showCalendarViewInitially)
     }
 
     val showViewerPermissionDialog = remember {
