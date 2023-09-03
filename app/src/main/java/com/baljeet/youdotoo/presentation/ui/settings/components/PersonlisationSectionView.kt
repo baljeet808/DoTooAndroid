@@ -103,7 +103,7 @@ fun PersonalisationSectionView(
                  * User name
                  * **/
                 Text(
-                    text = "Change theme",
+                    text = "Change Theme",
                     color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
@@ -184,7 +184,7 @@ fun PersonalisationSectionView(
                  * item name
                  * **/
                 Text(
-                    text = "Dashboard settings",
+                    text = "Dashboard Settings",
                     color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
@@ -265,7 +265,7 @@ fun PersonalisationSectionView(
                  * item name
                  * **/
                 Text(
-                    text = "Dialog preferences",
+                    text = "App Preferences",
                     color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,

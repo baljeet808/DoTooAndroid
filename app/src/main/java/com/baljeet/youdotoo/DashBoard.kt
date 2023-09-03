@@ -19,6 +19,7 @@ import com.baljeet.youdotoo.presentation.ui.accounts.addAccountsViewDestination
 import com.baljeet.youdotoo.presentation.ui.dasboard_settings.addDashboardSettingsViewDestination
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
+import com.baljeet.youdotoo.presentation.ui.dialogs_settings.addAppPreferencesViewDestination
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
 import com.baljeet.youdotoo.presentation.ui.profile_quick_view.addProfileQuickViewDestination
 import com.baljeet.youdotoo.presentation.ui.projectinvitation.addProjectInvitationDestination
@@ -81,6 +82,7 @@ class DashBoard : ComponentActivity() {
                         addProfileQuickViewDestination(navController)
                         addSettingsViewDestination(navController)
                         addDashboardSettingsViewDestination(navController)
+                        addAppPreferencesViewDestination(navController)
                         addAccountsViewDestination(navController)
                         addProjectOnlyViewDestination(navController)
                     }
