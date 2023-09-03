@@ -13,45 +13,48 @@ import kotlinx.coroutines.flow.Flow
 interface DoTooItemDao {
 
     @Upsert
-    suspend fun upsertAll(doTooItems : List<TaskEntity>)
+    suspend fun upsertAll(doTooItems: List<TaskEntity>)
 
     @Query("SELECT * FROM todos WHERE projectId = :projectId")
-    suspend fun getAllDoTooItemsByProjectID(projectId: String) : List<TaskEntity>
+    suspend fun getAllDoTooItemsByProjectID(projectId: String): List<TaskEntity>
+
     @Query("SELECT * FROM todos WHERE projectId = :projectId")
-    fun getAllDoTooItemsByProjectIDAsFlow(projectId: String) : Flow<List<TaskEntity>>
+    fun getAllDoTooItemsByProjectIDAsFlow(projectId: String): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM todos")
-    fun getAllDoTooItems() : Flow<List<TaskEntity>>
+    fun getAllDoTooItems(): Flow<List<TaskEntity>>
+
     @Query("SELECT * FROM todos")
-    fun getAllTasksWithProjectAsFlow() : Flow<List<TaskWithProject>>
+    fun getAllTasksWithProjectAsFlow(): Flow<List<TaskWithProject>>
+
     @Query("SELECT * FROM todos")
-    suspend fun getAllTasksWithProject() : List<TaskWithProject>
+    suspend fun getAllTasksWithProject(): List<TaskWithProject>
 
     @Query("SELECT * FROM todos where id = :doTooId")
-    suspend fun getDoTooById(doTooId : String) : TaskEntity
+    suspend fun getDoTooById(doTooId: String): TaskEntity
 
     @Query("SELECT * FROM todos where id = :taskId")
-    fun getTaskByIdAsAFlow(taskId : String) : Flow<TaskEntity>
+    fun getTaskByIdAsAFlow(taskId: String): Flow<TaskEntity>
 
     @Delete
-    fun delete(doTooItem : TaskEntity)
+    fun delete(doTooItem: TaskEntity)
 
     @Query("DELETE FROM todos where projectId = :projectId")
-    fun deleteAllByProjectId(projectId : String)
+    fun deleteAllByProjectId(projectId: String)
 
     @Query("SELECT * FROM todos WHERE dueDate = :yesterdayDateInLong")
-    fun getYesterdayTasks(yesterdayDateInLong : Long): Flow<List<TaskEntity>>
+    fun getYesterdayTasks(yesterdayDateInLong: Long): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM todos WHERE dueDate = :todayDateInLong")
-    fun getTodayTasks(todayDateInLong : Long): Flow<List<TaskEntity>>
+    fun getTodayTasks(todayDateInLong: Long): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM todos WHERE dueDate = :tomorrowDateInLong")
-    fun getTomorrowTasks(tomorrowDateInLong : Long): Flow<List<TaskEntity>>
+    fun getTomorrowTasks(tomorrowDateInLong: Long): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM todos WHERE dueDate < :yesterdayDateInLong")
-    fun getPendingTasks(yesterdayDateInLong : Long): Flow<List<TaskEntity>>
+    fun getPendingTasks(yesterdayDateInLong: Long): Flow<List<TaskEntity>>
 
     @Query("SELECT * FROM todos WHERE dueDate > :tomorrowDateInLong")
-    fun getAllOtherTasks(tomorrowDateInLong : Long): Flow<List<TaskEntity>>
+    fun getAllOtherTasks(tomorrowDateInLong: Long): Flow<List<TaskEntity>>
 
 }

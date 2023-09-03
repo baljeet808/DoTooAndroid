@@ -222,7 +222,7 @@ fun DashboardTasksListTypePreview() {
                     TasksPrioritiesTabRow(
                         pagerState = rememberPagerState(initialPage = 0),
                         tasksTabs = getPrioritiesTabs(
-                            allTasks = listOf()
+                            filteredTasks = listOf()
                         )
                     )
                     

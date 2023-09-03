@@ -20,11 +20,7 @@ object SharedPref {
         editor.apply()
     }
 
-    var isAlertEnabled: Boolean
-        get() = sharedPref.getBoolean("isAlertEnabled",true)
-        set(value) = sharedPref.edit {
-            it.putBoolean("isAlertEnabled",value)
-        }
+
     var themeNightDarkColor: Long
         get() = sharedPref.getLong("themeNightDarkColor", 4278848010)
         set(value) = sharedPref.edit {
@@ -105,15 +101,7 @@ object SharedPref {
         get() = sharedPref.getBoolean("isUserAPro", false)
         set(value) = sharedPref.edit { it.putBoolean("isUserAPro", value) }
 
-    var subscriptionIsMonthly : Boolean
-        get() = sharedPref.getBoolean("subscribedMonthly", false)
-        set(value) = sharedPref.edit{ it.putBoolean("subscribedMonthly", value)}
-
-    var subscriptionIsYearly : Boolean
-        get() = sharedPref.getBoolean("subscribedYearly", false)
-        set(value) = sharedPref.edit{ it.putBoolean("subscribedYearly", value)}
-
-
+ 
     var deleteTaskWithoutConfirmation : Boolean
         get() = sharedPref.getBoolean("deleteTaskWithoutConfirmation", false)
         set(value) = sharedPref.edit{ it.putBoolean("deleteTaskWithoutConfirmation", value)}
@@ -122,6 +110,10 @@ object SharedPref {
     var doNotBugMeAboutProFeaturesAgain : Boolean
         get() = sharedPref.getBoolean("doNotBugMeAboutProFeaturesAgain", false)
         set(value) = sharedPref.edit{ it.putBoolean("doNotBugMeAboutProFeaturesAgain", value)}
+
+    var doNotShowViewerTasksOnDashboard : Boolean
+        get() = sharedPref.getBoolean("doNotShowViewerTasksOnDashboard", false)
+        set(value) = sharedPref.edit{ it.putBoolean("doNotShowViewerTasksOnDashboard", value)}
 
 
     var showProjectsInitially : Boolean

@@ -40,10 +40,13 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.toLocalDateTime
 import com.baljeet.youdotoo.common.toNiceDateFormat
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
@@ -116,14 +119,22 @@ fun TasksScheduleLazyColumn(
 
     val viewModel : TasksScheduleViewModel = hiltViewModel()
 
-    val allTasks by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
+    val allTasksWithProjects by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
+    val filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
+        allTasksWithProjects
+            .filter {
+                    task -> getRole(task.projectEntity.toProject()) != EnumRoles.Viewer
+            }
+    }else{
+        allTasksWithProjects
+    }
 
     /**
      * Logic to check if need to show empty view or not
      * **/
     var showNothingHereView by remember { mutableStateOf(false) }
-    showNothingHereView = allTasks.isEmpty()
+    showNothingHereView = filteredTasks.isEmpty()
 
 
     Box(
@@ -152,7 +163,7 @@ fun TasksScheduleLazyColumn(
         ) {
 
 
-            allTasks.filter { task -> task.task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
+            filteredTasks.filter { task -> task.task.dueDate < yesterdayDateInLong }.let { pendingTasks ->
 
                 if (pendingTasks.isNotEmpty()) {
                     item {
@@ -184,7 +195,7 @@ fun TasksScheduleLazyColumn(
                 }
             }
 
-            allTasks.filter { task -> task.task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
+            filteredTasks.filter { task -> task.task.dueDate == yesterdayDateInLong }.let { yesterdayTasks ->
 
                 if (yesterdayTasks.isNotEmpty()) {
 
@@ -220,7 +231,7 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.task.dueDate == todayDateInLong }.let { todayTasks ->
+            filteredTasks.filter { task -> task.task.dueDate == todayDateInLong }.let { todayTasks ->
 
                 if (todayTasks.isNotEmpty()) {
 
@@ -256,7 +267,7 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
+            filteredTasks.filter { task -> task.task.dueDate == tomorrowDateInLong }.let { tomorrowTasks ->
 
                 if (tomorrowTasks.isNotEmpty()) {
 
@@ -292,7 +303,7 @@ fun TasksScheduleLazyColumn(
                     }
                 }
             }
-            allTasks.filter { task -> task.task.dueDate > tomorrowDateInLong }
+            filteredTasks.filter { task -> task.task.dueDate > tomorrowDateInLong }
                 .sortedBy { task -> task.task.dueDate }.let { allOther ->
 
                 allOther.distinctBy { task -> task.task.dueDate }.forEach { distinctByDate ->

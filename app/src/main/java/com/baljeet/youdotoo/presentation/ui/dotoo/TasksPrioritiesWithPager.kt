@@ -19,8 +19,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.baljeet.youdotoo.common.DashboardTaskTabsByPriorities
 import com.baljeet.youdotoo.common.EnumPriorities
+import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
+import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.presentation.ui.shared.views.NothingHereView
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
@@ -40,9 +43,18 @@ fun TasksPrioritiesWithPager(
 
     val viewModel : TasksScheduleViewModel = hiltViewModel()
 
-    val allTasks by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
+    val allTasksWithProjects by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
-    val tasksTabs = getPrioritiesTabs(allTasks)
+    val filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
+        allTasksWithProjects
+            .filter {
+                    task -> getRole(task.projectEntity.toProject()) != EnumRoles.Viewer
+            }
+    }else{
+        allTasksWithProjects
+    }
+
+    val tasksTabs = getPrioritiesTabs(filteredTasks)
 
     val startingTabIndex = 0
     val pagerState = rememberPagerState(initialPage = startingTabIndex)
@@ -124,11 +136,11 @@ fun TasksPrioritiesWithPager(
 
 
 fun getPrioritiesTabs(
-    allTasks: List<TaskWithProject>
+    filteredTasks: List<TaskWithProject>
 ): ArrayList<DashboardTaskTabsByPriorities> {
     val tasksTabs = arrayListOf<DashboardTaskTabsByPriorities>()
     EnumPriorities.values().forEachIndexed { index, priority ->
-        val tasks  = allTasks.filter { task -> task.task.priority == priority.toString }
+        val tasks  = filteredTasks.filter { task -> task.task.priority == priority.toString }
         tasksTabs.add(
             DashboardTaskTabsByPriorities(
                 index = index,
