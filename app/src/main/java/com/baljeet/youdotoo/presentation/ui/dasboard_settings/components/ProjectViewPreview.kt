@@ -56,12 +56,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 @Composable
 fun ProjectViewPreview() {
 
-
     var showProjectsInitially by remember {
         mutableStateOf(SharedPref.showProjectsInitially)
     }
-
-
 
     Column(
         modifier = Modifier
@@ -317,7 +314,7 @@ fun ProjectViewPreview() {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(15.dp),
+                        .padding(10.dp),
                     verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     DoTooItemView(

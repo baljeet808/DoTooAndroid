@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.presentation.ui.dasboard_settings.components.DashboardTasksListTypePreview
 import com.baljeet.youdotoo.presentation.ui.dasboard_settings.components.ProjectViewPreview
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
@@ -104,11 +105,16 @@ fun DashboardSettingsView(
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1f)
+                .weight(1f),
+            verticalArrangement = Arrangement.spacedBy(30.dp)
         ) {
 
             item {
                ProjectViewPreview()
+            }
+
+            item {
+                DashboardTasksListTypePreview()
             }
 
         }

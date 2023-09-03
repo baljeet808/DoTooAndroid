@@ -129,6 +129,11 @@ object SharedPref {
         set(value) = sharedPref.edit{ it.putBoolean("showProjectsInitially", value)}
 
 
+    var showTasksByPrioritiesInitially : Boolean
+        get() = sharedPref.getBoolean("showTasksByPrioritiesInitially", false)
+        set(value) = sharedPref.edit{ it.putBoolean("showTasksByPrioritiesInitially", value)}
+
+
     fun clearAll(){
         sharedPref.edit().clear().apply()
     }
