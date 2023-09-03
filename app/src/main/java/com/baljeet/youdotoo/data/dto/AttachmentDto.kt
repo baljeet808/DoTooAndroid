@@ -4,5 +4,6 @@ import android.net.Uri
 
 data class AttachmentDto(
     val uri : Uri,
-    val mimeType : String
+    val mimeType : String,
+    var uploadingFailed : Boolean = false
 )

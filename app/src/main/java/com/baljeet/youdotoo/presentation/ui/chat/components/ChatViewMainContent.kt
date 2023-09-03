@@ -1,10 +1,5 @@
 package com.baljeet.youdotoo.presentation.ui.chat.components
 
-import android.net.Uri
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -25,11 +20,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -51,15 +41,12 @@ import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun ChatViewMainContent(
     participants : List<UserEntity>,
     messages: LazyPagingItems<MessageEntity>,
     project : Project?,
-    sendMessage: (messageString: String, attachments : List<Uri>) -> Unit,
     openEmoticons: (message: MessageEntity) -> Unit,
     openCollaboratorsScreen: () -> Unit,
     openPersonTagger: () -> Unit,
@@ -70,43 +57,10 @@ fun ChatViewMainContent(
 
     SharedPref.init(LocalContext.current)
 
-    var selectedImageUris by remember {
-        mutableStateOf<List<Uri>>(emptyList())
-    }
-
-    val scope = rememberCoroutineScope()
-
-    var showToast by remember {
-        mutableStateOf(false)
-    }
 
 
-    if(showToast){
-        Toast.makeText(LocalContext.current,"You can only send 4 photos at a time.",Toast.LENGTH_SHORT).show()
-    }
 
-    val multiplePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickMultipleVisualMedia(maxItems = (4)),
-        onResult = { uris ->
-            if(uris.size + selectedImageUris.size  > 4){
-                scope.launch {
-                    showToast = true
-                    delay(1000)
-                    showToast = false
-                }
-            }
 
-            val previousImages  = selectedImageUris.toCollection(ArrayList())
-            uris.forEach {
-                if(previousImages.none { uri -> uri == it }){
-                    if(previousImages.size < 4) {
-                        previousImages.add(it)
-                    }
-                }
-            }
-            selectedImageUris = previousImages
-        }
-    )
 
     Box(
         modifier = Modifier
@@ -192,36 +146,10 @@ fun ChatViewMainContent(
              *SendBox
              * **/
             MessageBoxView(
-                onClickSend = { message ->
-                    sendMessage(message, selectedImageUris)
-                },
-                pickAttachments = {
-                    if(selectedImageUris.size <4) {
-                        multiplePhotoPickerLauncher.launch(
-                            PickVisualMediaRequest(
-                                ActivityResultContracts.PickVisualMedia.ImageOnly
-                            )
-                        )
-                    }else{
-                        scope.launch{
-                            showToast = true
-                            delay(1000)
-                            showToast = false
-                        }
-                    }
-                },
                 openCollaboratorsScreen = openCollaboratorsScreen,
                 openPersonTagger = openPersonTagger,
                 openCamera = {
 
-                },
-                attachments  = selectedImageUris.toCollection(ArrayList()),
-                removeAttachment = { attachment ->
-                    val selectedImages = selectedImageUris.toCollection(ArrayList())
-                    if(selectedImages.any { uri -> uri == attachment }){
-                        selectedImages.remove(attachment)
-                    }
-                    selectedImageUris = selectedImages
                 },
                 project = project
             )

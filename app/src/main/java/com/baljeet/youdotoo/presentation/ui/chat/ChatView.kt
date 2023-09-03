@@ -2,7 +2,6 @@
 
 package com.baljeet.youdotoo.presentation.ui.chat
 
-import android.net.Uri
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateValue
@@ -53,7 +52,6 @@ import kotlinx.coroutines.launch
 fun ChatView(
     participants: List<UserEntity>,
     messages: LazyPagingItems<MessageEntity>,
-    sendMessage: (message: String, attachments: List<Uri>) -> Unit,
     showAttachment: (messages: MessageEntity) -> Unit,
     interactOnMessage: (message: MessageEntity, emoticon: String) -> Unit,
     onClose : () -> Unit,
@@ -211,7 +209,6 @@ fun ChatView(
             ChatViewMainContent(
                 modifier = Modifier.padding(padding),
                 messages = messages,
-                sendMessage = sendMessage,
                 openEmoticons = { message ->
                     selectedMessage = message
                     currentBottomSheet = ChatScreenBottomSheetTypes.MESSAGE_EMOTICONS
