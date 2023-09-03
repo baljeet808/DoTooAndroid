@@ -137,49 +137,51 @@ fun ChatViewMainContent(
                 reverseLayout = true
             ) {
 
-                items(
-                    count = messages.itemCount,
-                    key = messages.itemKey{ message -> message.id},
-                    contentType = messages.itemContentType { "Messages" }
-                ){ index: Int ->
+                if(participants.isNotEmpty()) {
+                    items(
+                        count = messages.itemCount,
+                        key = messages.itemKey { message -> message.id },
+                        contentType = messages.itemContentType { "Messages" }
+                    ) { index: Int ->
 
-                    val message : MessageEntity? = messages[index]
+                        val message: MessageEntity? = messages[index]
 
-                    message?.let{
+                        message?.let {
 
-                        val nextMessage = if (messages[messages.itemCount-1] == message) {
-                            null
-                        } else {
-                            messages[index + 1]
+                            val nextMessage = if (messages[messages.itemCount - 1] == message) {
+                                null
+                            } else {
+                                messages[index + 1]
+                            }
+
+                            val isThisFromMe = message.senderId == SharedPref.userId
+                            val showUserInfo = nextMessage?.senderId != message.senderId
+
+                            if (isThisFromMe) {
+                                SenderMessageBubbleView(
+                                    message = message,
+                                    onLongPress = {
+                                        openEmoticons(message)
+                                    },
+                                    users = participants,
+                                    showSenderInfo = showUserInfo,
+                                    showAttachment = {
+                                        showAttachment(message)
+                                    }
+                                )
+                            } else {
+                                ThereMessageBubbleView(
+                                    message = message,
+                                    users = participants,
+                                    onLongPress = {
+                                        openEmoticons(message)
+                                    },
+                                    showSenderInfo = showUserInfo
+                                )
+                            }
                         }
 
-                        val isThisFromMe = message.senderId == SharedPref.userId
-                        val showUserInfo = nextMessage?.senderId != message.senderId
-
-                        if(isThisFromMe){
-                            SenderMessageBubbleView(
-                                message = message,
-                                onLongPress = {
-                                    openEmoticons(message)
-                                },
-                                users= participants ,
-                                showSenderInfo  = showUserInfo,
-                                showAttachment = {
-                                    showAttachment(message)
-                                }
-                            )
-                        }else{
-                            ThereMessageBubbleView(
-                                message = message,
-                                users = participants,
-                                onLongPress = {
-                                    openEmoticons(message)
-                                },
-                                showSenderInfo  = showUserInfo
-                            )
-                        }
                     }
-
                 }
 
                 item {

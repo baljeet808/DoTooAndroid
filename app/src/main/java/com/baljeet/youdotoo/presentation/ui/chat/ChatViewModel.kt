@@ -1,6 +1,5 @@
 package com.baljeet.youdotoo.presentation.ui.chat
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,18 +13,14 @@ import com.baljeet.youdotoo.common.updateInteraction
 import com.baljeet.youdotoo.data.dto.AttachmentDto
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
-import com.baljeet.youdotoo.data.local.entities.UserEntity
-import com.baljeet.youdotoo.data.mappers.toProject
+import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.messages.GetPagedMessagesOfProject
 import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdAsFlowUseCase
-import com.baljeet.youdotoo.domain.use_cases.project.GetProjectByIdUseCase
 import com.baljeet.youdotoo.domain.use_cases.users.GetUsersByIdsUseCase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
@@ -36,7 +31,6 @@ class ChatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val getProjectByIdAsFlowUseCase: GetProjectByIdAsFlowUseCase,
     private val getUsersByIdsUseCase: GetUsersByIdsUseCase,
-    private val getProjectByIdUseCase: GetProjectByIdUseCase,
     private val getPagedMessagesOfProject: GetPagedMessagesOfProject
 ) : ViewModel() {
 
@@ -51,16 +45,10 @@ class ChatViewModel @Inject constructor(
 
     fun getProjectById(): Flow<ProjectEntity> = getProjectByIdAsFlowUseCase(projectId)
 
-    var usersOfChat = mutableStateOf<List<UserEntity>>(listOf())
 
-    init {
-        viewModelScope.launch {
-            val project = getProjectByIdUseCase(projectId)
-            getUsersByIdsUseCase(project.toProject().getUserIds()).onEach {
-                usersOfChat.value = it
-            }
-        }
-    }
+    fun getUsersOFProject( project : Project) = getUsersByIdsUseCase(project.getUserIds())
+
+
 
     fun getAllMessagesOfThisProject() : Flow<PagingData<MessageEntity>> = getPagedMessagesOfProject(projectId)
         .cachedIn(viewModelScope)

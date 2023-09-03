@@ -71,6 +71,7 @@ import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRo
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -93,6 +94,10 @@ fun ProjectView(
 
     SharedPref.init(LocalContext.current)
 
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setSystemBarsColor(
+        color = getLightThemeColor()
+    )
     val showViewerPermissionDialog = remember {
         mutableStateOf(false)
     }
