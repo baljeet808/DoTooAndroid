@@ -181,7 +181,7 @@ fun ProjectsView(
 
 
     var showTopInfo by remember {
-        mutableStateOf(true)
+        mutableStateOf(SharedPref.showProjectsInitially)
     }
 
     val transition = rememberInfiniteTransition(label = "")

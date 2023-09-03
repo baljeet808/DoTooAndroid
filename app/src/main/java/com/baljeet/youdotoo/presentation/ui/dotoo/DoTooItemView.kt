@@ -42,7 +42,8 @@ fun DoTooItemView(
     doToo: TaskWithProject,
     navigateToTaskEdit: () -> Unit,
     navigateToQuickEditDotoo : () -> Unit,
-    onToggleDone: () -> Unit
+    onToggleDone: () -> Unit,
+    usingForDemo : Boolean = false
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -52,11 +53,11 @@ fun DoTooItemView(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .height(80.dp)
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
+            .height(if(usingForDemo){ 50.dp }else {80.dp})
+            .shadow(elevation = 5.dp, shape = RoundedCornerShape(if(usingForDemo){ 14.dp }else {20.dp}))
             .background(
                 color = getDarkThemeColor(),
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(if(usingForDemo){ 14.dp }else {20.dp})
             ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -71,7 +72,12 @@ fun DoTooItemView(
                         navigateToQuickEditDotoo()
                     }
                 )
-                .padding(start = 10.dp, end = 0.dp, top = 10.dp, bottom = 10.dp),
+                .padding(
+                    start = if(usingForDemo){ 6.dp }else {10.dp},
+                    end = 0.dp,
+                    top = if(usingForDemo){ 6.dp }else {10.dp},
+                    bottom = if(usingForDemo){ 6.dp }else {10.dp}
+                ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -86,9 +92,8 @@ fun DoTooItemView(
                     onToggleDone()
                 },
                 modifier = Modifier
-
-                    .height(30.dp)
-                    .width(30.dp)
+                    .height(if(usingForDemo){ 20.dp }else {30.dp})
+                    .width(if(usingForDemo){ 20.dp }else {30.dp})
                     .padding(0.dp),
             ) {
                 Icon(
@@ -100,8 +105,8 @@ fun DoTooItemView(
                     contentDescription = "Checked circular icon",
                     tint = Color(doToo.projectEntity.color),
                     modifier = Modifier
-                        .height(30.dp)
-                        .width(30.dp)
+                        .height(if(usingForDemo){ 20.dp }else {30.dp})
+                        .width(if(usingForDemo){ 20.dp }else {30.dp})
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
@@ -114,7 +119,7 @@ fun DoTooItemView(
                     Color.Black
                 },
                 fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 18.sp,
+                fontSize = if(usingForDemo){ 13.sp }else {18.sp},
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 style = if (doToo.task.done) {
@@ -123,13 +128,16 @@ fun DoTooItemView(
                     TextStyle()
                 },
                 modifier = Modifier
-                    .weight(0.9f)
+                    .weight(if(usingForDemo){ 0.7f }else {0.9f})
             )
 
             Icon(
                 Icons.Default.ArrowForwardIos,
                 contentDescription ="Navigate to chat button",
-                tint = Color(doToo.projectEntity.color)
+                tint = Color(doToo.projectEntity.color),
+                modifier = Modifier
+                    .height(if(usingForDemo){ 20.dp }else {30.dp})
+                    .width(if(usingForDemo){ 20.dp }else {30.dp})
             )
         }
     }

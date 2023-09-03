@@ -1,10 +1,10 @@
 package com.baljeet.youdotoo.common
 
 import com.baljeet.youdotoo.data.local.entities.ColorPaletteEntity
-import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
+import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProjectEntity
@@ -47,37 +47,41 @@ fun getRandomId(): String {
     return UUID.randomUUID().toString()
 }
 
-fun getSampleDotooItem(): TaskEntity {
+fun getSampleDotooItem(title : String = "Water plants 🪴 before leaving", taskDone : Boolean = true ): TaskEntity {
     return TaskEntity(
         id = getRandomId(),
-        title = "Wash the dishes Please",
+        title = title,
         description = "To see the preview comment code related to viewModel",
         dueDate = 90L,
         createDate = 789L,
-        done = Random.nextInt(from = 0, 1) == 0,
+        done = taskDone,
         priority = "High",
         updatedBy = "Baljeet create this doToo item.",
         projectId = ""
     )
 }
 
-fun getSampleTaskWithProject() : TaskWithProject {
+fun getSampleTaskWithProject(
+    taskTitle : String = "Water plants 🪴 before leaving",
+    projectTitle : String = "Trip cape breton 🌄",
+    taskDone : Boolean = true
+) : TaskWithProject {
     return TaskWithProject(
-        task = getSampleDotooItem(),
-        projectEntity = getSampleProject().toProjectEntity()
+        task = getSampleDotooItem(taskTitle, taskDone),
+        projectEntity = getSampleProject(projectTitle).toProjectEntity()
     )
 }
 
-fun getSampleProject(): Project {
+fun getSampleProject(projectTitle : String = "Trip cape breton 🌄"): Project {
     return Project(
         id = getRandomId(),
-        name = "Daily long long chores",
+        name = projectTitle,
         description = "This project is about the irritating stuff which always gets forgotten.",
         ownerId = "",
         collaboratorIds = getSampleIds(),
         viewerIds = getSampleIds(),
         update = "",
-        color = getRandomColor(),
+        color = EnumProjectColors.Purple.longValue,
         updatedAt = getSampleDateInLong()
     )
 }

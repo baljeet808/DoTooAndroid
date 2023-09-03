@@ -16,6 +16,7 @@ import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.presentation.ui.accounts.addAccountsViewDestination
+import com.baljeet.youdotoo.presentation.ui.dasboard_settings.addDashboardSettingsViewDestination
 import com.baljeet.youdotoo.presentation.ui.dashboard.DestinationDashboardRoute
 import com.baljeet.youdotoo.presentation.ui.dashboard.addDashboardViewDestination
 import com.baljeet.youdotoo.presentation.ui.notifications.addNotificationViewDestination
@@ -79,6 +80,7 @@ class DashBoard : ComponentActivity() {
                         addThemeChooserViewDestination(navController)
                         addProfileQuickViewDestination(navController)
                         addSettingsViewDestination(navController)
+                        addDashboardSettingsViewDestination(navController)
                         addAccountsViewDestination(navController)
                         addProjectOnlyViewDestination(navController)
                     }

@@ -44,24 +44,50 @@ fun ProjectCardView(
     project: ProjectWithDoToos,
     role: EnumRoles,
     onItemClick: () -> Unit,
-    modifier: Modifier
+    modifier: Modifier,
+    usingForDemo: Boolean = false
 ) {
 
     SharedPref.init(LocalContext.current)
 
-    val animatedProgress = animateFloatAsState(
-        targetValue = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
-        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
-    ).value
+    val animatedProgress = if (usingForDemo) {
+        animateFloatAsState(
+            targetValue = .4f,
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
+        ).value
+    } else {
+        animateFloatAsState(
+            targetValue = (project.tasks.filter { task -> task.done }.size.toFloat() / (project.tasks.size).toFloat()),
+            animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec, label = ""
+        ).value
+    }
 
     Column(
         modifier = modifier
-            .widthIn(max = 220.dp)
-            .heightIn(max = 160.dp)
-            .shadow(elevation = 5.dp, shape = RoundedCornerShape(10.dp))
+            .widthIn(
+                max = if (usingForDemo) {
+                    150.dp
+                } else 220.dp
+            )
+            .heightIn(
+                max = if (usingForDemo) {
+                    90.dp
+                } else 160.dp
+            )
+            .shadow(
+                elevation = 5.dp, shape = RoundedCornerShape(
+                    if (usingForDemo) {
+                        6.dp
+                    } else 10.dp
+                )
+            )
             .background(
                 color = getDarkThemeColor(),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(
+                    if (usingForDemo) {
+                        6.dp
+                    } else 10.dp
+                )
             ),
     ) {
 
@@ -71,32 +97,54 @@ fun ProjectCardView(
                     color = Color(project.project.color)
                 )
                 .fillMaxWidth()
-                .height(10.dp)
-        ) {
-
-        }
+                .height(
+                    if (usingForDemo) {
+                        6.dp
+                    } else 10.dp
+                )
+        ) {}
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .clickable(onClick = onItemClick)
-                .padding(start = 15.dp, end = 15.dp, bottom = 15.dp, top = 5.dp),
+                .padding(
+                    start = if (usingForDemo) {
+                        7.dp
+                    } else 15.dp,
+                    end = if (usingForDemo) {
+                        7.dp
+                    } else 15.dp,
+                    bottom = if (usingForDemo) {
+                        7.dp
+                    } else 15.dp,
+                    top = if (usingForDemo) {
+                        2.dp
+                    } else 5.dp
+                ),
             verticalArrangement = Arrangement.SpaceEvenly
         ) {
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 5.dp),
+                    .padding(
+                        bottom = if (usingForDemo) {
+                            2.dp
+                        } else 5.dp
+                    ),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Text(
-                    text = project.tasks.size.toString().plus(if(project.tasks.size == 1) " Task" else " Tasks"),
+                    text = project.tasks.size.toString()
+                        .plus(if (project.tasks.size == 1) " Task" else " Tasks"),
                     color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
+                    fontSize = if (usingForDemo) {
+                        9.sp
+                    } else 16.sp,
                     modifier = Modifier
                 )
 
@@ -105,7 +153,9 @@ fun ProjectCardView(
                     text = role.name,
                     color = getTextColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
-                    fontSize = 16.sp,
+                    fontSize = if (usingForDemo) {
+                        9.sp
+                    } else 16.sp,
                     modifier = Modifier
                 )
 
@@ -116,7 +166,9 @@ fun ProjectCardView(
                 text = project.project.name,
                 color = getTextColor(),
                 fontFamily = FontFamily(Nunito.Bold.font),
-                fontSize = 20.sp,
+                fontSize = if (usingForDemo) {
+                    14.sp
+                } else 20.sp,
                 maxLines = 2,
                 minLines = 2,
                 overflow = TextOverflow.Ellipsis,
@@ -124,7 +176,13 @@ fun ProjectCardView(
                     .fillMaxWidth()
                     .padding(top = 5.dp, bottom = 5.dp)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(
+                modifier = Modifier.height(
+                    if (usingForDemo) {
+                        5.dp
+                    } else 10.dp
+                )
+            )
             LinearProgressIndicator(
                 progress = animatedProgress,
                 modifier = Modifier,

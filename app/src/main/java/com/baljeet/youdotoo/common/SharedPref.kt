@@ -124,6 +124,10 @@ object SharedPref {
         set(value) = sharedPref.edit{ it.putBoolean("doNotBugMeAboutProFeaturesAgain", value)}
 
 
+    var showProjectsInitially : Boolean
+        get() = sharedPref.getBoolean("showProjectsInitially", true)
+        set(value) = sharedPref.edit{ it.putBoolean("showProjectsInitially", value)}
+
 
     fun clearAll(){
         sharedPref.edit().clear().apply()
