@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,7 @@ import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DotooBlue
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 
 @Composable
 fun AccountView(
@@ -68,7 +69,11 @@ fun AccountView(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = getLightThemeColor()
+                color = if (isSystemInDarkTheme()) {
+                    getDarkThemeColor()
+                } else {
+                    getNightLightColor()
+                }
             ),
         verticalArrangement = Arrangement.Top
     ) {
@@ -94,7 +99,7 @@ fun AccountView(
                     .height(50.dp)
                     .border(
                         width = 1.dp,
-                        color = getDarkThemeColor(),
+                        color = getLightThemeColor(),
                         shape = RoundedCornerShape(40.dp)
                     )
 
@@ -102,7 +107,7 @@ fun AccountView(
                 Icon(
                     Icons.Default.ArrowBackIos,
                     contentDescription = "Button to close current screen.",
-                    tint = getTextColor()
+                    tint = Color.White
                 )
             }
 
@@ -116,20 +121,12 @@ fun AccountView(
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = getTextColor()
+                color = Color.White
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
 
         Spacer(modifier = Modifier.height(10.dp))
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-                .background(
-                    color = getDarkThemeColor()
-                )
-        )
 
         LazyColumn(
             modifier = Modifier
@@ -148,7 +145,7 @@ fun AccountView(
                     fontSize = 22.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontWeight = FontWeight.ExtraBold,
-                    color = getTextColor()
+                    color = Color.White
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -175,7 +172,7 @@ fun AccountView(
                             fontSize = 18.sp,
                             fontFamily = FontFamily(Nunito.Bold.font),
                             fontWeight = FontWeight.ExtraBold,
-                            color = getTextColor()
+                            color = Color.White
                         )
 
                         Text(
@@ -186,7 +183,7 @@ fun AccountView(
                             fontSize = 15.sp,
                             fontFamily = FontFamily(Nunito.Bold.font),
                             fontWeight = FontWeight.ExtraBold,
-                            color = getTextColor()
+                            color = Color.White
                         )
 
                         Text(
@@ -220,7 +217,7 @@ fun AccountView(
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(
-                            color = getDarkThemeColor()
+                            color = getLightThemeColor()
                         )
                 )
 
@@ -237,7 +234,7 @@ fun AccountView(
                     fontSize = 22.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontWeight = FontWeight.ExtraBold,
-                    color = getTextColor()
+                    color = Color.White
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -255,7 +252,7 @@ fun AccountView(
                      * **/
                     androidx.compose.material.Text(
                         text = "No subscription",
-                        color = getTextColor(),
+                        color = Color.White,
                         fontFamily = FontFamily(Nunito.Normal.font),
                         fontSize = 16.sp,
                         modifier = Modifier,
@@ -281,7 +278,7 @@ fun AccountView(
                             .fillMaxWidth()
                             .padding(start = 20.dp, end = 20.dp)
                             .background(
-                                color = getDarkThemeColor(),
+                                color = getLightThemeColor(),
                                 shape = RoundedCornerShape(10.dp)
                             )
                     ) {
@@ -297,7 +294,7 @@ fun AccountView(
                             Icon(
                                 Icons.Default.Sell,
                                 contentDescription = "Buy Pro membership",
-                                tint = getTextColor(),
+                                tint = Color.White,
                                 modifier = Modifier
                                     .height(30.dp)
                                     .width(30.dp)
@@ -305,7 +302,7 @@ fun AccountView(
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = "Be A Pro Member",
-                                color = getTextColor(),
+                                color = Color.White,
                                 fontFamily = FontFamily(Nunito.Normal.font),
                                 fontSize = 16.sp,
                                 modifier = Modifier.weight(1f),
@@ -315,7 +312,7 @@ fun AccountView(
                         }
 
                         Text(
-                            text = buildMoneyAnnotatedString(getTextColor(), "4.99", 34.sp),
+                            text = buildMoneyAnnotatedString(Color.White, "4.99", 34.sp),
                             fontFamily = FontFamily(Nunito.Normal.font),
                             modifier = Modifier
                                 .fillMaxWidth(),
@@ -325,7 +322,7 @@ fun AccountView(
                         Text(
                             text = "More details >>",
                             fontFamily = FontFamily(Nunito.Normal.font),
-                            color = getTextColor(),
+                            color = Color.White,
                             fontSize = 16.sp,
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -341,7 +338,7 @@ fun AccountView(
                             .fillMaxWidth()
                             .padding(start = 20.dp, end = 20.dp)
                             .background(
-                                color = getDarkThemeColor(),
+                                color = getLightThemeColor(),
                                 shape = RoundedCornerShape(10.dp)
                             )
 
@@ -358,7 +355,7 @@ fun AccountView(
                             Icon(
                                 Icons.Default.CancelPresentation,
                                 contentDescription = "Cancel button",
-                                tint = getTextColor(),
+                                tint = Color.White,
                                 modifier = Modifier
                                     .height(30.dp)
                                     .width(30.dp)
@@ -366,7 +363,7 @@ fun AccountView(
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
                                 text = "Cancel Membership",
-                                color = getTextColor(),
+                                color = Color.White,
                                 fontFamily = FontFamily(Nunito.Normal.font),
                                 fontSize = 16.sp,
                                 modifier = Modifier.weight(1f),
@@ -385,7 +382,7 @@ fun AccountView(
                         .fillMaxWidth()
                         .height(1.dp)
                         .background(
-                            color = getDarkThemeColor()
+                            color = getLightThemeColor()
                         )
                 )
             }
@@ -401,7 +398,7 @@ fun AccountView(
                     fontSize = 22.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontWeight = FontWeight.ExtraBold,
-                    color = getTextColor()
+                    color = Color.White
                 )
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -411,7 +408,7 @@ fun AccountView(
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
                         .background(
-                            color = getDarkThemeColor(),
+                            color = getLightThemeColor(),
                             shape = RoundedCornerShape(10.dp)
                         )
 
@@ -428,7 +425,7 @@ fun AccountView(
                         Icon(
                             Icons.Default.Logout,
                             contentDescription = "logout button",
-                            tint = getTextColor(),
+                            tint = Color.White,
                             modifier = Modifier
                                 .height(30.dp)
                                 .width(30.dp)
@@ -436,7 +433,7 @@ fun AccountView(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "Log out",
-                            color = getTextColor(),
+                            color = Color.White,
                             fontFamily = FontFamily(Nunito.Normal.font),
                             fontSize = 16.sp,
                             modifier = Modifier.weight(1f),
@@ -453,7 +450,7 @@ fun AccountView(
                         .fillMaxWidth()
                         .padding(start = 20.dp, end = 20.dp)
                         .background(
-                            color = getDarkThemeColor(),
+                            color = getLightThemeColor(),
                             shape = RoundedCornerShape(10.dp)
                         )
 
@@ -470,7 +467,7 @@ fun AccountView(
                         Icon(
                             Icons.Default.DeleteForever,
                             contentDescription = "Delete account button",
-                            tint = getTextColor(),
+                            tint = Color.White,
                             modifier = Modifier
                                 .height(30.dp)
                                 .width(30.dp)
@@ -478,7 +475,7 @@ fun AccountView(
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             text = "Delete Account",
-                            color = getTextColor(),
+                            color = Color.White,
                             fontFamily = FontFamily(Nunito.Normal.font),
                             fontSize = 16.sp,
                             modifier = Modifier.weight(1f),

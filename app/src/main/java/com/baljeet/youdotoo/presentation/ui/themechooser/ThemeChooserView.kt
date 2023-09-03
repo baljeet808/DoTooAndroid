@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -53,7 +54,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.baljeet.youdotoo.presentation.ui.themechooser.components.ColorPalettes
 
 
@@ -84,7 +85,11 @@ fun ThemeChooserView(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = getLightThemeColor()
+                color = if (isSystemInDarkTheme()) {
+                    getDarkThemeColor()
+                } else {
+                    getNightLightColor()
+                }
             ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -109,7 +114,7 @@ fun ThemeChooserView(
                     .height(50.dp)
                     .border(
                         width = 1.dp,
-                        color = getDarkThemeColor(),
+                        color = getLightThemeColor(),
                         shape = RoundedCornerShape(40.dp)
                     )
 
@@ -117,7 +122,7 @@ fun ThemeChooserView(
                 Icon(
                     Icons.Default.ArrowBackIos,
                     contentDescription = "Button to close current screen.",
-                    tint = getTextColor()
+                    tint = Color.White
                 )
             }
 
@@ -131,7 +136,7 @@ fun ThemeChooserView(
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = getTextColor()
+                color = Color.White
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
@@ -147,7 +152,7 @@ fun ThemeChooserView(
 
             Text(
                 text = "Preview".uppercase(),
-                color = getTextColor(),
+                color = Color.White,
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 14.sp,
                 modifier = Modifier
@@ -326,7 +331,7 @@ fun ThemeChooserView(
             ) {
                 Text(
                     text = "Dark",
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 13.sp,
                     modifier = Modifier
@@ -337,7 +342,7 @@ fun ThemeChooserView(
                 )
                 Text(
                     text = "Light",
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 13.sp,
                     modifier = Modifier
@@ -357,7 +362,7 @@ fun ThemeChooserView(
 
         Text(
             text = "Select color".uppercase(),
-            color = LightAppBarIconsColor,
+            color = Color.White,
             fontFamily = FontFamily(Nunito.Normal.font),
             fontSize = 14.sp,
             modifier = Modifier
@@ -410,11 +415,10 @@ fun ThemeChooserView(
             verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            androidx.compose.material.Text(
+            Text(
                 text = "Apply",
                 color = Color.White,
                 fontFamily = FontFamily(Nunito.Bold.font),
-
                 )
             Spacer(modifier = Modifier.width(10.dp))
             Icon(

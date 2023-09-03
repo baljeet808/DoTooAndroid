@@ -34,7 +34,6 @@ import com.baljeet.youdotoo.R
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 
 @Composable
 fun AccountSectionView(
@@ -58,7 +57,7 @@ fun AccountSectionView(
             fontSize = 20.sp,
             fontFamily = FontFamily(Nunito.Bold.font),
             fontWeight = FontWeight.ExtraBold,
-            color = getTextColor()
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -100,7 +99,7 @@ fun AccountSectionView(
                  * **/
                 Text(
                     text = SharedPref.userEmail,
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth(),

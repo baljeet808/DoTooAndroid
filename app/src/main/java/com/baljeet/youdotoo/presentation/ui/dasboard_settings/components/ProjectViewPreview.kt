@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandLess
@@ -62,27 +63,23 @@ fun ProjectViewPreview() {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-
-            .padding(20.dp)
-            .background(
-                color = getDarkThemeColor(),
-                shape = RoundedCornerShape(10.dp)
-            ),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp),
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Keep the projects open initially",
-                color = getTextColor(),
+                color = Color.White,
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 16.sp,
                 modifier = Modifier.weight(1f),
@@ -98,7 +95,8 @@ fun ProjectViewPreview() {
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color(EnumProjectColors.Purple.longValue),
                     uncheckedColor = Color(EnumProjectColors.Purple.longValue)
-                )
+                ),
+                modifier = Modifier.width(25.dp)
             )
         }
 
@@ -128,18 +126,18 @@ fun ProjectViewPreview() {
             fontFamily = FontFamily(Nunito.Normal.font),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
         )
 
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
+                .padding(top = 15.dp, bottom = 15.dp, start = 35.dp, end = 35.dp)
         ) {
             Text(
                 text = "Preview",
-                color = getTextColor(),
+                color = Color.White,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -149,7 +147,7 @@ fun ProjectViewPreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
+                .padding(start = 30.dp, bottom = 10.dp, end = 30.dp)
                 .background(
                     color = getLightThemeColor(),
                     shape = RoundedCornerShape(

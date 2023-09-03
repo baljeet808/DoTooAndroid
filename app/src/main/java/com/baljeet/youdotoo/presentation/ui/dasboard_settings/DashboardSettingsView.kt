@@ -3,6 +3,7 @@ package com.baljeet.youdotoo.presentation.ui.dasboard_settings
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -35,7 +37,7 @@ import com.baljeet.youdotoo.presentation.ui.dasboard_settings.components.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 
 @Composable
 fun DashboardSettingsView(
@@ -49,7 +51,11 @@ fun DashboardSettingsView(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                color = getLightThemeColor()
+                color = if (isSystemInDarkTheme()) {
+                    getDarkThemeColor()
+                } else {
+                    getNightLightColor()
+                }
             )
     ) {
 
@@ -74,7 +80,7 @@ fun DashboardSettingsView(
                     .height(50.dp)
                     .border(
                         width = 1.dp,
-                        color = getDarkThemeColor(),
+                        color = getLightThemeColor(),
                         shape = RoundedCornerShape(40.dp)
                     )
 
@@ -82,7 +88,7 @@ fun DashboardSettingsView(
                 Icon(
                     Icons.Default.ArrowBackIos,
                     contentDescription = "Button to close current screen.",
-                    tint = getTextColor()
+                    tint = Color.White
                 )
             }
 
@@ -96,7 +102,7 @@ fun DashboardSettingsView(
                 fontSize = 18.sp,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontWeight = FontWeight.ExtraBold,
-                color = getTextColor()
+                color = Color.White
             )
             Spacer(modifier = Modifier.width(50.dp))
         }
@@ -115,6 +121,10 @@ fun DashboardSettingsView(
 
             item {
                 DashboardTasksListTypePreview()
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(40.dp))
             }
 
         }

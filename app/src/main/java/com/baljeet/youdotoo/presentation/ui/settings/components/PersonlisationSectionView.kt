@@ -35,9 +35,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDayLightColor
-import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
+import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 
 @Composable
 fun PersonalisationSectionView(
@@ -48,8 +47,7 @@ fun PersonalisationSectionView(
     SharedPref.init(LocalContext.current)
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            ,
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
@@ -64,7 +62,7 @@ fun PersonalisationSectionView(
             fontSize = 20.sp,
             fontFamily = FontFamily(Nunito.Bold.font),
             fontWeight = FontWeight.ExtraBold,
-            color = getTextColor()
+            color = Color.White
         )
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -88,7 +86,7 @@ fun PersonalisationSectionView(
                     .width(40.dp)
                     .height(40.dp)
                     .clip(shape = RoundedCornerShape(65.dp)),
-                tint = getTextColor()
+                tint = Color.White
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -106,7 +104,7 @@ fun PersonalisationSectionView(
                  * **/
                 Text(
                     text = "Change theme",
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth(),
@@ -144,7 +142,7 @@ fun PersonalisationSectionView(
                 .height(1.dp)
                 .padding(start = 60.dp)
                 .background(
-                    color = getDarkThemeColor()
+                    color = getLightThemeColor()
                 )
         )
         Spacer(modifier = Modifier.height(25.dp))
@@ -169,7 +167,7 @@ fun PersonalisationSectionView(
                     .width(40.dp)
                     .height(40.dp)
                     .clip(shape = RoundedCornerShape(65.dp)),
-                tint = getTextColor()
+                tint = Color.White
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -187,7 +185,7 @@ fun PersonalisationSectionView(
                  * **/
                 Text(
                     text = "Dashboard settings",
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth(),
@@ -225,7 +223,7 @@ fun PersonalisationSectionView(
                 .height(1.dp)
                 .padding(start = 60.dp)
                 .background(
-                    color = getDarkThemeColor()
+                    color = getLightThemeColor()
                 )
         )
         Spacer(modifier = Modifier.height(25.dp))
@@ -250,7 +248,7 @@ fun PersonalisationSectionView(
                     .width(40.dp)
                     .height(40.dp)
                     .clip(shape = RoundedCornerShape(65.dp)),
-                tint = getTextColor()
+                tint = Color.White
             )
 
             Spacer(modifier = Modifier.width(20.dp))
@@ -268,7 +266,7 @@ fun PersonalisationSectionView(
                  * **/
                 Text(
                     text = "Dialog preferences",
-                    color = getTextColor(),
+                    color = Color.White,
                     fontFamily = FontFamily(Nunito.Normal.font),
                     fontSize = 16.sp,
                     modifier = Modifier.fillMaxWidth(),

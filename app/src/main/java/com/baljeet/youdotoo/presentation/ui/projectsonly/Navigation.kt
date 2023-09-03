@@ -24,7 +24,10 @@ fun NavGraphBuilder.addProjectOnlyViewDestination(
         val projectsWithTasks by viewModel.getProjectsWithTasks().collectAsState(initial = listOf())
 
         ProjectsOnlyView(
-            projects = projectsWithTasks
+            projects = projectsWithTasks,
+            onClose = {
+                navController.popBackStack()
+            }
         )
     }
 }

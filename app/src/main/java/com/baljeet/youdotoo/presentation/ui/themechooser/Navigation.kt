@@ -1,5 +1,6 @@
 package com.baljeet.youdotoo.presentation.ui.themechooser
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -7,7 +8,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.baljeet.youdotoo.common.SharedPref
-import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
+import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
@@ -22,13 +24,19 @@ fun NavGraphBuilder.addThemeChooserViewDestination(
 ) {
     composable(
         route = DestinationThemeChooserRoute
-    ){
-        val viewModel : ColorPalettesViewModel = hiltViewModel()
+    ) {
+        val viewModel: ColorPalettesViewModel = hiltViewModel()
 
         val allPalette by viewModel.getColorPalettes().collectAsState(initial = listOf())
 
         val systemUiController = rememberSystemUiController()
-        systemUiController.setSystemBarsColor(color = getLightThemeColor())
+        systemUiController.setSystemBarsColor(
+            color = if (isSystemInDarkTheme()) {
+                getDarkThemeColor()
+            } else {
+                getNightLightColor()
+            }
+        )
 
         ThemeChooserView(
             onClose = {

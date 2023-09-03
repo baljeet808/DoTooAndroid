@@ -4,6 +4,7 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,7 +46,6 @@ import com.baljeet.youdotoo.presentation.ui.dotoo.HeadingTextWithCount
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksPrioritiesTabRow
 import com.baljeet.youdotoo.presentation.ui.dotoo.getPrioritiesTabs
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
-import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -62,29 +62,34 @@ fun DashboardTasksListTypePreview() {
         mutableStateOf(SharedPref.showCalendarViewInitially)
     }
 
+
+
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-
-            .padding(20.dp)
-            .background(
-                color = getDarkThemeColor(),
-                shape = RoundedCornerShape(10.dp)
-            ),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
+        Box (
+            modifier = Modifier
+                .background(
+                    color = getLightThemeColor()
+                )
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp),
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Show calendar view initially",
-                color = getTextColor(),
+                color = Color.White,
                 fontFamily = FontFamily(Nunito.Normal.font),
                 fontSize = 16.sp,
                 modifier = Modifier.weight(1f),
@@ -100,7 +105,8 @@ fun DashboardTasksListTypePreview() {
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color(EnumProjectColors.Purple.longValue),
                     uncheckedColor = Color(EnumProjectColors.Purple.longValue)
-                )
+                ),
+                modifier = Modifier.width(25.dp)
             )
         }
 
@@ -130,18 +136,23 @@ fun DashboardTasksListTypePreview() {
             fontFamily = FontFamily(Nunito.Normal.font),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                .padding(start = 40.dp, end = 40.dp, bottom = 10.dp)
         )
 
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(15.dp)
+                .padding(
+                    top = 15.dp,
+                    bottom = 15.dp,
+                    start = 35.dp,
+                    end = 35.dp
+                )
         ) {
             Text(
                 text = "Preview",
-                color = getTextColor(),
+                color = Color.White,
                 fontFamily = FontFamily(Nunito.Bold.font),
                 fontSize = 16.sp,
                 modifier = Modifier
@@ -151,7 +162,7 @@ fun DashboardTasksListTypePreview() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
-                .padding(start = 10.dp, bottom = 10.dp, end = 10.dp)
+                .padding(start = 30.dp, bottom = 10.dp, end = 30.dp)
                 .background(
                     color = getLightThemeColor(),
                     shape = RoundedCornerShape(
