@@ -171,6 +171,7 @@ fun TasksScheduleLazyColumn(
                             heading = "Pending",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(start = 10.dp)
                         )
                     }
                     items(pendingTasks, key = { it.task.id }) { task ->
@@ -208,6 +209,7 @@ fun TasksScheduleLazyColumn(
                             heading = "Yesterday",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(start = 10.dp)
                         )
                     }
                     items(yesterdayTasks, key = { it.task.id }) { task ->
@@ -244,6 +246,7 @@ fun TasksScheduleLazyColumn(
                             heading = "Today",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(start = 10.dp)
                         )
                     }
                     items(todayTasks, key = { it.task.id }) { task ->
@@ -280,6 +283,7 @@ fun TasksScheduleLazyColumn(
                             heading = "Tomorrow",
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .padding(start = 10.dp)
                         )
                     }
                     items(tomorrowTasks, key = { it.task.id }) { task ->
@@ -322,6 +326,7 @@ fun TasksScheduleLazyColumn(
                                         .toNiceDateFormat(false),
                                     modifier = Modifier
                                         .fillMaxWidth()
+                                        .padding(start = 10.dp)
                                 )
                             }
                             items(tasksOnSpecificDate, key = { it.task.id }) { task ->

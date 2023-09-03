@@ -98,7 +98,7 @@ object SharedPref {
 
 
     var isUserAPro : Boolean
-        get() = sharedPref.getBoolean("isUserAPro", false)
+        get() = sharedPref.getBoolean("isUserAPro", true)
         set(value) = sharedPref.edit { it.putBoolean("isUserAPro", value) }
 
 
