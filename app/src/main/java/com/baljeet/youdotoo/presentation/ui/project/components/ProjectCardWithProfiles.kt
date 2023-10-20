@@ -54,7 +54,6 @@ import com.baljeet.youdotoo.presentation.ui.theme.DoTooYellow
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 
-
 @Composable
 fun ProjectCardWithProfiles(
     project: Project,
