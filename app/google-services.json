@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "538878880757-pebg9n3heql1cm9oc6i07vbseb7lkkm4.apps.googleusercontent.com",
+          "client_id": "538878880757-1e2trebvu8j9rn2qrspbs1r3ms2cs460.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.baljeet.youdotoo",
-            "certificate_hash": "214b9d96b7204ea3402fe6b11f51c73bb6d1428e"
+            "certificate_hash": "2f87a19dde3cdce6e927b27bde749d1d08dbae77"
           }
         },
         {
@@ -37,6 +37,13 @@
             {
               "client_id": "538878880757-5l9chu3t6bbl0qmgffic69nr4q1p5c87.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "538878880757-42gpm4ejoqeu7nglmqmj7tn1v5mbvlp9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "Baljeet.YouDoTooIos"
+              }
             }
           ]
         }
