@@ -1,7 +1,5 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -27,10 +25,8 @@ fun NavGraphBuilder.addDashboardViewDestination(
     ){
         val viewModel : DashboardViewModel  = hiltViewModel()
 
-        val allTasks by viewModel.allTasks().collectAsState(initial = arrayListOf())
 
         DashboardView(
-            allTasks = allTasks,
             userData =  UserData(
                 userId = SharedPref.userId ?: "",
                 userName = SharedPref.userName,

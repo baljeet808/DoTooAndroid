@@ -2,14 +2,8 @@ package com.baljeet.youdotoo.presentation.ui.drawer
 
 import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.VectorConverter
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -30,34 +24,29 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
-import androidx.compose.material.icons.filled.Logout
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.baljeet.youdotoo.common.ConstSampleAvatarUrl
-import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
-import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.MenuItem
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentWhiteColor
@@ -66,7 +55,7 @@ import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightDarkColor
 import com.baljeet.youdotoo.presentation.ui.theme.getNightLightColor
-import java.lang.Float.max
+
 
 /**
  * Updated by Baljeet singh.
@@ -79,61 +68,17 @@ fun NavigationDrawer(
     closeDrawer : () -> Unit,
     logout: () -> Unit,
     modifier: Modifier,
-    allTasks : List<TaskEntity>,
     openProfile : () -> Unit
 ) {
 
-
     val animatedProgress = animateFloatAsState(
-        targetValue = (max(0.1f,allTasks.filter { task -> task.done }.size.toFloat()) / max(1F,(allTasks.size).toFloat())),
+        targetValue = (.5f),
         animationSpec = tween(
             delayMillis = 1500,
             durationMillis = 1500,
             easing = LinearEasing
         ), label = ""
     ).value
-
-    val transition = rememberInfiniteTransition(label = "")
-
-    val offsetX by transition.animateValue(
-        initialValue = (-40).dp,
-        targetValue = 20.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 10000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-    val offsetY by transition.animateValue(
-        initialValue = (300).dp,
-        targetValue = 450.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 30000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-
-    val offsetX1 by transition.animateValue(
-        initialValue = (-60).dp,
-        targetValue = 20.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 30000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-    val offsetY1 by transition.animateValue(
-        initialValue = 450.dp,
-        targetValue = 300.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 20000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-
-
 
     Box(
         modifier = modifier
@@ -147,30 +92,6 @@ fun NavigationDrawer(
             )
             .padding(20.dp)
     ) {
-
-
-        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-            drawCircle(
-                color = NightTransparentWhiteColor,
-                radius = 230.dp.toPx(),
-                center = Offset(
-                    x = offsetX1.toPx(),
-                    y = offsetY1.toPx()
-                )
-            )
-        })
-
-        Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-            drawCircle(
-                color = NightTransparentWhiteColor,
-                radius = 180.dp.toPx(),
-                center = Offset(
-                    x = offsetX.toPx(),
-                    y = offsetY.toPx()
-                )
-            )
-        })
-
 
         Column(
             modifier = Modifier
@@ -212,12 +133,12 @@ fun NavigationDrawer(
                     )
 
                     CircularProgressIndicator(
+                        progress = { animatedProgress },
                         modifier = Modifier
                             .progressSemantics()
                             .size(100.dp),
-                        progress = animatedProgress,
+                        color = NightDotooBrightPink,
                         trackColor = getLightThemeColor(),
-                        color = NightDotooBrightPink
                     )
                 }
 
@@ -238,7 +159,7 @@ fun NavigationDrawer(
 
                 ) {
                     Icon(
-                        Icons.Default.ArrowBackIos,
+                        Icons.AutoMirrored.Filled.ArrowBackIos,
                         contentDescription = "Button to close side drawer.",
                         tint = Color.White
                     )
@@ -370,7 +291,7 @@ fun NavigationDrawer(
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Icon(
-                    Icons.Default.Logout,
+                    Icons.AutoMirrored.Filled.Logout,
                     contentDescription = "LogoUt Button",
                     tint = Color.White
                 )
@@ -394,9 +315,6 @@ fun PreviewNavigationDrawer() {
         closeDrawer = {},
         logout = {},
         modifier = Modifier,
-        allTasks = listOf(
-            getSampleDotooItem()
-        ),
         openProfile = {}
     )
 }

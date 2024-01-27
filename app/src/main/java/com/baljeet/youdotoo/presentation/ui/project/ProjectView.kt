@@ -18,12 +18,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.DeleteForever
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,7 +35,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusRequester
@@ -75,10 +74,9 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectView(
-    project: ProjectEntity,
+    project: ProjectEntity?,
     users: List<UserEntity>,
     tasks: List<TaskEntity>,
     onToggle: (TaskWithProject) -> Unit,
@@ -152,7 +150,7 @@ fun ProjectView(
         mutableStateOf<TaskWithProject?>(null)
     }
 
-    val role = getRole(project.toProject())
+    val role = project?.toProject()?.let { getRole(it) }
 
     val focusScope = rememberCoroutineScope()
     val keyBoardController = LocalSoftwareKeyboardController.current
@@ -206,23 +204,25 @@ fun ProjectView(
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    if(getRole(project.toProject()) != EnumRoles.Viewer){
-                        navigateToCreateTask()
-                    }else{
-                        showBlur = true
-                        showViewerPermissionDialog.value = true
-                    }
-                },
-                modifier = Modifier,
-                backgroundColor = Color(project.color)
-            ) {
-                Icon(
-                    Icons.Outlined.Add,
-                    contentDescription = "Floating button to quickly add a task to this project",
-                    tint = Color.White
-                )
+            if (project != null) {
+                FloatingActionButton(
+                    onClick = {
+                        if(getRole(project.toProject())!= EnumRoles.Viewer){
+                            navigateToCreateTask()
+                        }else{
+                            showBlur = true
+                            showViewerPermissionDialog.value = true
+                        }
+                    },
+                    modifier = Modifier,
+                    containerColor = Color(project.color)
+                ) {
+                    Icon(
+                        Icons.Outlined.Add,
+                        contentDescription = "Floating button to quickly add a task to this project",
+                        tint = Color.White
+                    )
+                }
             }
         }
     ) { padding ->
@@ -248,29 +248,31 @@ fun ProjectView(
             /**
              *Top Project Card
              * **/
-            ProjectCardWithProfiles(
-                project = project.toProject(),
-                users = users.map { it.toUser() },
-                tasks = tasks.map { it },
-                onItemDeleteClick = deleteProject,
-                updateProjectTitle = { title ->
-                    project.copy().toProject().let { projectCopy ->
-                        projectCopy.name = title
-                        upsertProject(projectCopy)
+            if (project != null) {
+                ProjectCardWithProfiles(
+                    project = project.toProject(),
+                    users = users.map { it.toUser() },
+                    tasks = tasks.map { it },
+                    onItemDeleteClick = deleteProject,
+                    updateProjectTitle = { title ->
+                        project.copy().toProject().let { projectCopy ->
+                            projectCopy.name = title
+                            upsertProject(projectCopy)
+                        }
+                    },
+                    updateProjectDescription = { description ->
+                        project.copy().toProject().let { projectCopy ->
+                            projectCopy.description = description
+                            upsertProject(projectCopy)
+                        }
+                    },
+                    toggleNotificationSetting = {},
+                    onClickInvite = onClickInvite,
+                    showDialogBackgroundBlur = {
+                        showBlur = it
                     }
-                },
-                updateProjectDescription = { description ->
-                    project.copy().toProject().let { projectCopy ->
-                        projectCopy.description = description
-                        upsertProject(projectCopy)
-                    }
-                },
-                toggleNotificationSetting = {},
-                onClickInvite = onClickInvite,
-                showDialogBackgroundBlur = {
-                    showBlur = it
-                }
-            )
+                )
+            }
 
 
             Box(
@@ -294,7 +296,7 @@ fun ProjectView(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Icon(
-                        Icons.Default.Chat,
+                        Icons.AutoMirrored.Filled.Chat,
                         contentDescription = "show less or more button",
                         tint = getTextColor()
                     )
@@ -312,64 +314,66 @@ fun ProjectView(
                 }
             }
 
-            /**
-             * List of tasks form this project
-             * **/
-            DoTooItemsLazyColumn(
-                doToos = tasks.map { task ->
-                    TaskWithProject(
-                        task = task,
-                        projectEntity = project
-                    )
-                }.toCollection(ArrayList()),
-                onToggleDoToo = { task ->
-                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
-                        showBlur = true
-                        showViewerPermissionDialog.value = true
-                    }else {
-                        onToggle(task)
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
-                onItemDelete = { task ->
-                    if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
-                        showBlur = true
-                        showViewerPermissionDialog.value = true
-                    } else {
-                        if (SharedPref.deleteTaskWithoutConfirmation) {
-                            deleteTask(task)
-                        } else {
-                            taskToDelete.value = task
+            project?.let {
+                /**
+                 * List of tasks form this project
+                 * **/
+                DoTooItemsLazyColumn(
+                    doToos = tasks.map { task ->
+                        TaskWithProject(
+                            task = task,
+                            projectEntity = project
+                        )
+                    }.toCollection(ArrayList()),
+                    onToggleDoToo = { task ->
+                        if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
                             showBlur = true
-                            showDeleteConfirmationDialog.value = true
+                            showViewerPermissionDialog.value = true
+                        } else {
+                            onToggle(task)
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(start = 10.dp, end = 10.dp, top = 10.dp, bottom = 0.dp),
+                    onItemDelete = { task ->
+                        if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
+                            showBlur = true
+                            showViewerPermissionDialog.value = true
+                        } else {
+                            if (SharedPref.deleteTaskWithoutConfirmation) {
+                                deleteTask(task)
+                            } else {
+                                taskToDelete.value = task
+                                showBlur = true
+                                showDeleteConfirmationDialog.value = true
+                            }
+                        }
+                    },
+                    navigateToEditTask = { task ->
+                        if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
+                            showBlur = true
+                            showViewerPermissionDialog.value = true
+                        } else {
+                            navigateToEditTask(task)
+                        }
+                    },
+                    navigateToQuickEditTask = { task ->
+                        if (role == EnumRoles.Viewer || role == EnumRoles.Blocked) {
+                            showBlur = true
+                            showViewerPermissionDialog.value = true
+                        } else {
+                            taskToEdit.value = task
+                            keyBoardController?.show()
+                            showBlur = true
+                            focusScope.launch {
+                                delay(500)
+                                focusRequester.requestFocus()
+                            }
                         }
                     }
-                },
-                navigateToEditTask = { task ->
-                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
-                        showBlur = true
-                        showViewerPermissionDialog.value = true
-                    }else {
-                        navigateToEditTask(task)
-                    }
-                },
-                navigateToQuickEditTask = { task ->
-                    if(role == EnumRoles.Viewer || role == EnumRoles.Blocked){
-                        showBlur = true
-                        showViewerPermissionDialog.value = true
-                    }else {
-                        taskToEdit.value = task
-                        keyBoardController?.show()
-                        showBlur = true
-                        focusScope.launch {
-                            delay(500)
-                            focusRequester.requestFocus()
-                        }
-                    }
-                }
-            )
+                )
+            }
 
         }
 

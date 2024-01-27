@@ -4,18 +4,11 @@ import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.EaseIn
 import androidx.compose.animation.core.EaseOut
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.VectorConverter
-import androidx.compose.animation.core.animateValue
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,18 +40,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
@@ -74,21 +64,17 @@ import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksPrioritiesWithPager
-import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBoxRound
-import com.baljeet.youdotoo.presentation.ui.theme.LessTransparentBlueColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightTransparentWhiteColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ProjectsView(
     navigateToDoToos: (project: Project) -> Unit,
@@ -184,48 +170,6 @@ fun ProjectsView(
         mutableStateOf(SharedPref.showProjectsInitially)
     }
 
-    val transition = rememberInfiniteTransition(label = "")
-
-    val darkTheme = isSystemInDarkTheme()
-
-    val offsetX by transition.animateValue(
-        initialValue = (300).dp,
-        targetValue = 150.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 20000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-    val offsetY by transition.animateValue(
-        initialValue = (450).dp,
-        targetValue = 550.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 30000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-
-    val offsetX1 by transition.animateValue(
-        initialValue = 160.dp,
-        targetValue = 310.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 30000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-    val offsetY1 by transition.animateValue(
-        initialValue = 550.dp,
-        targetValue = 450.dp,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 20000),
-            repeatMode = RepeatMode.Reverse
-        ),
-        typeConverter = Dp.VectorConverter, label = ""
-    )
-
     val keyBoardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember {
         FocusRequester()
@@ -276,39 +220,6 @@ fun ProjectsView(
                 )
                 .padding(paddingValues = padding)
         ) {
-
-
-            /**
-             * Two Animated Circles in background
-             * **/
-            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-                drawCircle(
-                    color = if (darkTheme) {
-                        NightTransparentWhiteColor
-                    } else {
-                        LessTransparentBlueColor
-                    },
-                    radius = 230.dp.toPx(),
-                    center = Offset(
-                        x = offsetX1.toPx(),
-                        y = offsetY1.toPx()
-                    )
-                )
-            })
-            Canvas(modifier = Modifier.fillMaxSize(), onDraw = {
-                drawCircle(
-                    color = if (darkTheme) {
-                        NightTransparentWhiteColor
-                    } else {
-                        LessTransparentBlueColor
-                    },
-                    radius = 180.dp.toPx(),
-                    center = Offset(
-                        x = offsetX.toPx(),
-                        y = offsetY.toPx()
-                    )
-                )
-            })
 
 
             /**
@@ -482,7 +393,7 @@ fun ProjectsView(
                     contentAlignment = Alignment.BottomCenter
                 ) {
 
-
+/*
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView) {
                         TasksScheduleLazyColumn(
                             modifier = Modifier
@@ -545,7 +456,7 @@ fun ProjectsView(
                                 }
                             }
                         )
-                    }
+                    }*/
 
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView.not()) {
                         /**

@@ -1,8 +1,8 @@
 package com.baljeet.youdotoo.presentation.ui.projects
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -22,7 +22,7 @@ fun NavGraphBuilder.addProjectsViewDestination(
     ){
 
         val viewModel : ProjectsViewModel = hiltViewModel()
-        val projects by viewModel.projectsWithTaskCount().collectAsState(initial = arrayListOf())
+        val projects by viewModel.projectsWithTaskCount().collectAsStateWithLifecycle(initialValue = arrayListOf())
 
         ProjectsView(
             projects = projects,

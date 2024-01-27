@@ -1,5 +1,12 @@
 package com.baljeet.youdotoo.presentation.ui.dashboard
 
+
+//Suppressing warning reason: Had to use these two imports despite having material3 library because normal library has drawer support
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.Scaffold
+//noinspection UsingMaterialAndMaterial3Libraries
+import androidx.compose.material.rememberScaffoldState
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
@@ -17,8 +24,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Scaffold
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,15 +34,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.baljeet.youdotoo.common.getSampleDotooItem
+import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.menuItems
 import com.baljeet.youdotoo.data.dto.UserData
-import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.presentation.ui.attachment_viewer.addAttachmentViewerDestination
 import com.baljeet.youdotoo.presentation.ui.chat.addChatViewDestination
 import com.baljeet.youdotoo.presentation.ui.create_task.addCreateTaskViewDestination
@@ -63,7 +68,6 @@ import kotlinx.coroutines.launch
  * **/
 @Composable
 fun DashboardView(
-    allTasks: List<TaskEntity>,
     userData : UserData,
     logout : () -> Unit,
     onClickNotifications: () -> Unit,
@@ -71,6 +75,7 @@ fun DashboardView(
     openProfile : () -> Unit,
     navigateToProjectsOnlyView : () -> Unit
 ) {
+    SharedPref.init(LocalContext.current)
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
@@ -167,7 +172,6 @@ fun DashboardView(
                         logout()
                     },
                     modifier = Modifier.width(250.dp),
-                    allTasks = allTasks,
                     openProfile = {
                         scope.launch {
                             scaffoldState.drawerState.close()
@@ -273,9 +277,6 @@ fun DashboardView(
 @Composable
 fun PreviewDashboardView() {
     DashboardView(
-        allTasks = listOf(
-            getSampleDotooItem()
-        ),
         userData = UserData(
             userEmail = "",
             userId = "",
