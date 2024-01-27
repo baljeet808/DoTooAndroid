@@ -7,7 +7,6 @@ import androidx.compose.material.Scaffold
 //noinspection UsingMaterialAndMaterial3Libraries
 import androidx.compose.material.rememberScaffoldState
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -38,7 +37,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.menuItems
@@ -80,7 +78,6 @@ fun DashboardView(
     val scaffoldState = rememberScaffoldState()
     val navController = rememberNavController()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     val darkTheme = isSystemInDarkTheme()
     val systemUiController = rememberSystemUiController()
@@ -234,20 +231,17 @@ fun DashboardView(
                 /**
                  * Top app bar
                  * **/
-                AnimatedVisibility(visible = navBackStackEntry?.destination?.route == DestinationProjectsRoute) {
-                    TopBar(
-                        modifier = Modifier.height(60.dp),
-                        notificationsState = true,
-                        onMenuItemClick = {
-                            scope.launch {
-                                scaffoldState.drawerState.open()
-                            }
-                            maximizeCurrentScreen = false
-                        },
-                        onNotificationsClicked = onClickNotifications
-                    )
-                }
-
+                TopBar(
+                    modifier = Modifier.height(60.dp),
+                    notificationsState = true,
+                    onMenuItemClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                        maximizeCurrentScreen = false
+                    },
+                    onNotificationsClicked = onClickNotifications
+                )
 
 
                 NavHost(
