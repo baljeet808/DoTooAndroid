@@ -44,7 +44,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
@@ -55,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
@@ -64,6 +64,7 @@ import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.dotoo.TasksPrioritiesWithPager
+import com.baljeet.youdotoo.presentation.ui.dotoo.TasksScheduleLazyColumn
 import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectsLazyRow
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
@@ -393,7 +394,7 @@ fun ProjectsView(
                     contentAlignment = Alignment.BottomCenter
                 ) {
 
-/*
+
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView) {
                         TasksScheduleLazyColumn(
                             modifier = Modifier
@@ -456,7 +457,7 @@ fun ProjectsView(
                                 }
                             }
                         )
-                    }*/
+                    }
 
                     androidx.compose.animation.AnimatedVisibility(visible = showScheduleTasksView.not()) {
                         /**
@@ -587,7 +588,7 @@ fun ProjectsView(
                         showBlur = false
                         taskToEdit.value = null
                     },
-                    themeColor = Color(taskToEdit.value?.projectEntity?.color ?: getRandomColor()),
+                    themeColor = taskToEdit.value?.projectEntity?.color?.getColor()?: getRandomColor().getColor(),
                     lines = 2
                 )
 

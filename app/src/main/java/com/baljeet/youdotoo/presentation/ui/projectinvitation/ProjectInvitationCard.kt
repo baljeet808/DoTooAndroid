@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getColor
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleInvitation
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -41,7 +43,7 @@ fun ProjectInvitationCard(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = Color(invitation?.projectColor ?: 4278215265))
+            .background(color =invitation?.projectColor?.getColor()?: getRandomColor().getColor())
             .padding(10.dp),
         verticalArrangement = Arrangement.SpaceAround
     ) {
@@ -57,7 +59,7 @@ fun ProjectInvitationCard(
                 )
             )
             drawCircle(
-                color = Color(invitation?.projectColor ?: 4278215265),
+                color = invitation?.projectColor?.getColor()?: getRandomColor().getColor(),
                 radius = 100.dp.toPx(),
                 center = Offset(
                     x = 50.dp.toPx(),

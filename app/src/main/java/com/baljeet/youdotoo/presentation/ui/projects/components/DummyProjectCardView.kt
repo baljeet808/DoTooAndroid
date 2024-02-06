@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
@@ -52,7 +53,7 @@ fun DummyProjectCardView(
     role: String,
     onItemClick: () -> Unit,
     modifier: Modifier,
-    backgroundColor: Color = Color(getRandomColor()),
+    backgroundColor: Color = getRandomColor().getColor(),
     textColor: Color = Color.White,
     leftAlign: Boolean
 ) {
@@ -165,10 +166,10 @@ fun DummyProjectCardView(
             )
             Spacer(modifier = Modifier.height(10.dp))
             LinearProgressIndicator(
-                progress = animatedProgress,
+                progress = { animatedProgress },
                 modifier = Modifier,
-                color = Color(project.project.color),
-                strokeCap = StrokeCap.Round
+                color = project.project.color.getColor(),
+                strokeCap = StrokeCap.Round,
             )
         }
 
@@ -184,7 +185,7 @@ fun PreviewDummyProjectCardPreview() {
         project = getSampleProjectWithTasks(),
         onItemClick = {},
         role = "Blocked",
-        backgroundColor = Color(getRandomColor()),
+        backgroundColor = getRandomColor().getColor(),
         textColor = Color.White,
         leftAlign = true
     )

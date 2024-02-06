@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleTaskWithProject
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
@@ -19,7 +20,7 @@ fun DummyDoTooItemsLazyColumn(
     doToos: List<TaskWithProject>,
     modifier: Modifier,
     textColor : Color = Color.White,
-    backgroundColor : Color = Color(getRandomColor())
+    backgroundColor : Color = getRandomColor().getColor()
 ) {
 
 

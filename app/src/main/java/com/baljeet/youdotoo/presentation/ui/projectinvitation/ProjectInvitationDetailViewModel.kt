@@ -7,6 +7,7 @@ import com.baljeet.youdotoo.common.AccessTypeViewer
 import com.baljeet.youdotoo.common.InvitationAccepted
 import com.baljeet.youdotoo.common.InvitationDeclined
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.domain.models.Project
@@ -65,7 +66,7 @@ class ProjectInvitationDetailViewModel @Inject constructor(
                 viewerIds = (projectSnapshot.get("viewerIds") as List<String>),
                 collaboratorIds = (projectSnapshot.get("collaboratorIds") as List<String>),
                 update = projectSnapshot.getString("update") ?: "",
-                color = projectSnapshot.getLong("color") ?: 4278215265,
+                color = projectSnapshot.getString("color") ?: getRandomColor(),
                 updatedAt = projectSnapshot.getLong("updatedAt") ?: getSampleDateInLong()
             )
 

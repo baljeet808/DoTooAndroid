@@ -15,7 +15,7 @@ data class InvitationEntity(
     val projectId : String,
     val projectName : String,
     val projectDetail : String,
-    val projectColor : Long,
+    val projectColor : String,
     var status : Int,
     val accessType : Int
 )

@@ -17,7 +17,7 @@ data class NotificationEntity(
     val taskId : String?,
     val messageId : String?,
     val createdAt : Long,
-    var projectColor : Long,
+    var projectColor : String,
     val isNew : Boolean,
     val notificationType : EnumNotificationType
 )

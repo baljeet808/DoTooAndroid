@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -34,8 +34,9 @@ import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
-import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.Project
@@ -172,7 +173,7 @@ fun ChatViewMainContent(
                         radius = 20.dp
                     )
                     .background(
-                        color = Color(project?.color ?: EnumProjectColors.Purple.longValue)
+                        color = project?.color?.getColor()?: getRandomColor().getColor()
                     )
             ){
 
@@ -211,7 +212,7 @@ fun ChatViewMainContent(
 
                 ) {
                     Icon(
-                        Icons.Default.ArrowBackIos,
+                        Icons.AutoMirrored.Filled.ArrowBackIos,
                         contentDescription = "Button to close current screen.",
                         tint = Color.White
                     )

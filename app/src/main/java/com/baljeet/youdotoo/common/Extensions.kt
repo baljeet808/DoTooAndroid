@@ -305,3 +305,35 @@ fun buildMoneyAnnotatedString(textColor : Color, money : String, size : TextUnit
         }
     }
 }
+
+//enum class EnumProjectColors(val value : Long){
+//    Green(),
+//    Orange(4294935846),
+//    Lime(4281178457),
+//    Red(4294261839),
+//    //Cyan(4287356926),
+//    Yellow(4294935846),
+//    Purple(4290677246),
+//    Graphite(4281347373),
+//    Peach(4293428895),
+//    //Teal(4289130720),
+//    Brown(4289014314),
+//    Pink(4294928820)
+//}
+
+
+
+fun String.getColor(): Color {
+    return when(this){
+        EnumProjectColors.Green.name -> Color(0xFF006261)
+        EnumProjectColors.Pink.name -> Color(0xFFFF69B4)
+        EnumProjectColors.Blue.name -> Color(0xff363CB5)
+        EnumProjectColors.Red.name -> Color(0xFFF53C4F)
+        EnumProjectColors.Yellow.name -> Color(0xFFFF8526)
+        EnumProjectColors.Brown.name -> Color(0xFFA52A2A)
+        EnumProjectColors.Black.name -> Color(0xFF302D2D)
+        EnumProjectColors.Cyan.name -> Color(0xFF8BDFFE)
+        EnumProjectColors.Indigo.name -> Color(0xFF4b0082)
+        else -> {Color(0xFF4b0082)}
+    }
+}

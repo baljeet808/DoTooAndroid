@@ -18,7 +18,7 @@ fun NavGraphBuilder.addCreateProjectViewDestination(
         val viewModel : CreateProjectViewModel = hiltViewModel()
 
         CreateProjectView(
-            createProject = { name: String, description: String, color : Long ->
+            createProject = { name: String, description: String, color : String ->
                 viewModel.createProject(
                     projectName = name,
                     description = description,

@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleTaskWithProject
 import com.baljeet.youdotoo.presentation.ui.dotoo.DoTooItemView
 import com.baljeet.youdotoo.presentation.ui.dotoo.HeadingTextWithCount
@@ -103,8 +104,8 @@ fun DashboardTasksListTypePreview() {
                     SharedPref.showCalendarViewInitially = it
                 },
                 colors = CheckboxDefaults.colors(
-                    checkedColor = Color(EnumProjectColors.Purple.longValue),
-                    uncheckedColor = Color(EnumProjectColors.Purple.longValue)
+                    checkedColor = EnumProjectColors.Indigo.name.getColor(),
+                    uncheckedColor = EnumProjectColors.Indigo.name.getColor()
                 ),
                 modifier = Modifier.width(25.dp)
             )
@@ -117,7 +118,7 @@ fun DashboardTasksListTypePreview() {
             val endingString = " to switch back to priority view."
 
             val buttonStyle = SpanStyle(
-                color = Color(EnumProjectColors.Purple.longValue),
+                color = EnumProjectColors.Indigo.name.getColor(),
                 fontSize = 14.sp
             )
 

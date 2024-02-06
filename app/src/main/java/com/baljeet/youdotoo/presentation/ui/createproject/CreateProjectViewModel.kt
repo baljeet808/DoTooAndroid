@@ -22,7 +22,7 @@ class CreateProjectViewModel @Inject constructor(
         .getInstance()
         .collection("projects")
 
-    fun createProject(projectName: String, description: String?, projectColor: Long) {
+    fun createProject(projectName: String, description: String?, projectColor: String) {
         val newProject = Project(
             id = UUID.randomUUID().toString(),
             ownerId = SharedPref.userId!!,

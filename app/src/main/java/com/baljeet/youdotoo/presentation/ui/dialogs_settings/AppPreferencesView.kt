@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBackIos
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
@@ -102,7 +103,7 @@ fun AppPreferencesView(
 
             ) {
                 Icon(
-                    Icons.Default.ArrowBackIos,
+                    Icons.AutoMirrored.Filled.ArrowBackIos,
                     contentDescription = "Button to close current screen.",
                     tint = Color.White
                 )
@@ -168,8 +169,8 @@ fun AppPreferencesView(
                                 SharedPref.deleteTaskWithoutConfirmation = it
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Color(EnumProjectColors.Purple.longValue),
-                                uncheckedColor = Color(EnumProjectColors.Purple.longValue)
+                                checkedColor = EnumProjectColors.Indigo.name.getColor(),
+                                uncheckedColor = EnumProjectColors.Indigo.name.getColor()
                             ),
                             modifier = Modifier.width(25.dp)
                         )
@@ -211,8 +212,8 @@ fun AppPreferencesView(
                                 SharedPref.doNotBugMeAboutProFeaturesAgain = it
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Color(EnumProjectColors.Purple.longValue),
-                                uncheckedColor = Color(EnumProjectColors.Purple.longValue)
+                                checkedColor = EnumProjectColors.Indigo.name.getColor(),
+                                uncheckedColor = EnumProjectColors.Indigo.name.getColor()
                             ),
                             modifier = Modifier.width(25.dp)
                         )
@@ -254,8 +255,8 @@ fun AppPreferencesView(
                                 SharedPref.doNotShowViewerTasksOnDashboard = it
                             },
                             colors = CheckboxDefaults.colors(
-                                checkedColor = Color(EnumProjectColors.Purple.longValue),
-                                uncheckedColor = Color(EnumProjectColors.Purple.longValue)
+                                checkedColor = EnumProjectColors.Indigo.name.getColor(),
+                                uncheckedColor = EnumProjectColors.Indigo.name.getColor()
                             ),
                             modifier = Modifier.width(25.dp)
                         )

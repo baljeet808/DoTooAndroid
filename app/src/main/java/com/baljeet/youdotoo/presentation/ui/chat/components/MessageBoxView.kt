@@ -23,20 +23,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AlternateEmail
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.PhotoLibrary
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,8 +58,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.data.dto.AttachmentDto
 import com.baljeet.youdotoo.domain.models.Project
@@ -206,7 +207,8 @@ fun MessageBoxView(
                                 )
                                 .clickable(
                                     onClick = {
-                                        val allAttachments = attachmentsDTOs.toCollection(ArrayList())
+                                        val allAttachments =
+                                            attachmentsDTOs.toCollection(ArrayList())
 
                                         if (allAttachments.any { a -> a.uri == attachment.uri }) {
                                             allAttachments.remove(attachment)
@@ -223,7 +225,7 @@ fun MessageBoxView(
                             modifier = Modifier
                                 .width(30.dp)
                                 .padding(end = 5.dp),
-                            color = Color(project?.color?:EnumProjectColors.Purple.longValue)
+                            color = project?.color?.getColor()?: getRandomColor().getColor()
                         )
                     }
                     if(attachmentsStates is MessageBoxViewModel.AttachmentStates.CompletedWithErrors)
@@ -231,7 +233,9 @@ fun MessageBoxView(
                         Icon(
                             Icons.Default.ErrorOutline,
                             contentDescription ="Error icon" ,
-                            modifier = Modifier.width(30.dp).padding(end = 5.dp),
+                            modifier = Modifier
+                                .width(30.dp)
+                                .padding(end = 5.dp),
                             tint = DoTooRed
                         )
                     }
@@ -290,11 +294,12 @@ fun MessageBoxView(
                 modifier = Modifier
                     .weight(1f)
                     .padding(5.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
+                    focusedIndicatorColor = Color.Transparent
                 )
             )
 
@@ -318,7 +323,7 @@ fun MessageBoxView(
                     )
                     .background(
                         color = if (message.isNotBlank() || attachmentsDTOs.isNotEmpty()) {
-                            Color(project?.color ?: EnumProjectColors.Purple.longValue)
+                            project?.color?.getColor() ?: getRandomColor().getColor()
                         } else {
                             Color.Gray
                         },
@@ -328,7 +333,7 @@ fun MessageBoxView(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    Icons.Default.Send,
+                    Icons.AutoMirrored.Filled.Send,
                     contentDescription = "Send message button",
                     tint = Color.White,
                     modifier = Modifier

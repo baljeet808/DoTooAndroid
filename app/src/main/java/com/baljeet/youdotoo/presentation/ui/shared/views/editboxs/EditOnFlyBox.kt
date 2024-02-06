@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
@@ -183,7 +184,7 @@ fun PreviewEditOnFlyBox(){
         placeholder = "This is the placeholder text, for testing purpose. Which should acquire two lines.",
         label = "This is label",
         maxCharLength = 40,
-        themeColor = Color(getRandomColor()),
+        themeColor = getRandomColor().getColor(),
         lines = 2
     )
 }

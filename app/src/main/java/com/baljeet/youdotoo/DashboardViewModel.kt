@@ -133,7 +133,7 @@ class DashboardViewModel @Inject constructor(
                         viewerIds = (project.get("viewerIds") as List<String>),
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
-                        color = project.getLong("color") ?: 4278215265,
+                        color = project.getString("color") ?: "Indigo",
                         updatedAt = project.getLong("updatedAt") ?: getSampleDateInLong()
                     )
                     //Saving it to list
@@ -254,7 +254,7 @@ class DashboardViewModel @Inject constructor(
                             accessType = (invitation.getLong("accessType") ?: 0).toInt(),
                             status = (invitation.getLong("status") ?: 0).toInt(),
                             projectDetail = invitation.getString("projectDetail") ?: "",
-                            projectColor = invitation.getLong("projectColor")
+                            projectColor = invitation.getString("projectColor")
                                 ?: getRandomColor()
                         )
                     )

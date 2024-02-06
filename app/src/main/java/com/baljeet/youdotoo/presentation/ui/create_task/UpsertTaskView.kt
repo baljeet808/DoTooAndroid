@@ -25,12 +25,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LowPriority
-import androidx.compose.material.icons.outlined.Notes
 import androidx.compose.material.icons.outlined.PlaylistRemove
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,7 +50,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
@@ -75,6 +74,8 @@ import com.baljeet.youdotoo.common.EnumCreateTaskSheetType
 import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getColor
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
@@ -90,7 +91,6 @@ import com.baljeet.youdotoo.presentation.ui.shared.views.bottomSheets.SelectProj
 import com.baljeet.youdotoo.presentation.ui.theme.DoTooRed
 import com.baljeet.youdotoo.presentation.ui.theme.LightAppBarIconsColor
 import com.baljeet.youdotoo.presentation.ui.theme.LightDotooFooterTextColor
-import com.baljeet.youdotoo.presentation.ui.theme.NightDotooBrightBlue
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooFooterTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.NightDotooTextColor
 import com.baljeet.youdotoo.presentation.ui.theme.getDayDarkColor
@@ -107,7 +107,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.toJavaLocalDate
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpsertTaskView(
     createTask: (
@@ -446,7 +446,7 @@ fun UpsertTaskView(
                     Icon(
                         Icons.Outlined.Adjust,
                         contentDescription = "Button to set due date for this task.",
-                        tint = Color(selectedProject?.color ?: 0xFFFF8526),
+                        tint = selectedProject?.color?.getColor()?: getRandomColor().getColor(),
                         modifier = Modifier
                             .width(30.dp)
                             .height(30.dp)
@@ -473,7 +473,7 @@ fun UpsertTaskView(
                     text = "Due Date set to ".plus(
                         customDatetime?.toJavaLocalDate()?.toNiceDateFormat() ?: ""
                     ),
-                    color = Color(selectedProject?.color ?: 4294935846),
+                    color = selectedProject?.color?.getColor()?: getRandomColor().getColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 16.sp,
                     maxLines = 1,
@@ -551,7 +551,7 @@ fun UpsertTaskView(
                         if (descriptionOn) {
                             Icons.Outlined.PlaylistRemove
                         } else {
-                            Icons.Outlined.Notes
+                            Icons.AutoMirrored.Outlined.Notes
                         },
                         contentDescription = "Button to set due date for this task.",
                         tint = LightAppBarIconsColor
@@ -805,8 +805,7 @@ fun UpsertTaskView(
                     modifier = Modifier
                         .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                         .background(
-                            color = selectedProject?.color?.let { Color(it) }
-                                ?: NightDotooBrightBlue,
+                            color = selectedProject?.color?.getColor()?: getRandomColor().getColor(),
                             shape = RoundedCornerShape(30.dp)
                         )
                         .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)

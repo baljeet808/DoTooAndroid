@@ -2,6 +2,7 @@ package com.baljeet.youdotoo.presentation.ui.accounts
 
 import androidx.lifecycle.ViewModel
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.users.GetUserByIdAsFlowUseCase
@@ -50,7 +51,7 @@ class AccountViewModel @Inject constructor(
                         viewerIds = (project.get("viewerIds") as List<String>),
                         collaboratorIds = (project.get("collaboratorIds") as List<String>),
                         update = project.getString("update") ?: "",
-                        color = project.getLong("color") ?: 4278215265,
+                        color = project.getString("color") ?: getRandomColor() ,
                         updatedAt = project.getLong("updatedAt") ?: getSampleDateInLong()
                     )
 

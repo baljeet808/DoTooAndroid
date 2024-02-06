@@ -122,7 +122,7 @@ object SharedPref {
 
 
     var showCalendarViewInitially : Boolean
-        get() = sharedPref.getBoolean("showCalendarViewInitially", true)
+        get() = sharedPref.getBoolean("showCalendarViewInitially", false)
         set(value) = sharedPref.edit{ it.putBoolean("showCalendarViewInitially", value)}
 
 

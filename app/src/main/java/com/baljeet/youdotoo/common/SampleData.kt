@@ -81,7 +81,7 @@ fun getSampleProject(projectTitle : String = "Trip cape breton 🌄"): Project {
         collaboratorIds = getSampleIds(),
         viewerIds = getSampleIds(),
         update = "",
-        color = EnumProjectColors.Purple.longValue,
+        color = EnumProjectColors.Blue.name,
         updatedAt = getSampleDateInLong()
     )
 }
@@ -97,9 +97,10 @@ fun getSampleProjectWithTasks(): ProjectWithDoToos {
     )
 }
 
-fun getRandomColor(): Long {
+@OptIn(ExperimentalStdlibApi::class)
+fun getRandomColor(): String {
     val randomInt = Random.nextInt(from = 0, 9)
-    return EnumProjectColors.values()[randomInt].longValue
+    return EnumProjectColors.values()[randomInt].name
 }
 
 
@@ -191,9 +192,9 @@ fun getSampleColorPalette(): ColorPaletteEntity{
     return ColorPaletteEntity(
         id = getRandomId(),
         paletteName = "Randomized",
-        nightDark = getRandomColor(),
-        nightLight = getRandomColor(),
-        dayDark = getRandomColor(),
-        dayLight = getRandomColor()
+        nightDark = getRandomColor().getColor().value.toLong(),
+        nightLight = getRandomColor().getColor().value.toLong(),
+        dayDark = getRandomColor().getColor().value.toLong(),
+        dayLight = getRandomColor().getColor().value.toLong()
     )
 }

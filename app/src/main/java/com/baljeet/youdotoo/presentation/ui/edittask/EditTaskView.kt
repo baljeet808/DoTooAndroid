@@ -26,13 +26,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Adjust
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.LowPriority
-import androidx.compose.material.icons.outlined.Notes
 import androidx.compose.material.icons.outlined.PlaylistRemove
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,7 +52,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
@@ -79,7 +78,9 @@ import com.baljeet.youdotoo.common.EnumCreateTaskSheetType
 import com.baljeet.youdotoo.common.EnumPriorities
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getDueDateEnumEntry
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
@@ -116,7 +117,7 @@ import kotlinx.datetime.toJavaLocalDate
 import kotlinx.datetime.toJavaLocalDateTime
 import kotlinx.datetime.toKotlinLocalDate
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTaskView(
     project : ProjectEntity?,
@@ -438,7 +439,7 @@ fun EditTaskView(
                         Icon(
                             Icons.Outlined.Adjust,
                             contentDescription = "Button to set due date for this task.",
-                            tint = Color(project?.color ?: 0xFFFF8526),
+                            tint = project?.color?.getColor()?: getRandomColor().getColor(),
                             modifier = Modifier
                                 .width(30.dp)
                                 .height(30.dp)
@@ -457,7 +458,7 @@ fun EditTaskView(
                     Icon(
                         Icons.Default.Lock,
                         contentDescription = "Project Locked Icon",
-                        tint = Color(project?.color?: 4294935846)
+                        tint = project?.color?.getColor()?: getRandomColor().getColor()
                     )
                 }
 
@@ -472,7 +473,7 @@ fun EditTaskView(
                     text = "Due Date set to ".plus(
                         customDatetime?.toJavaLocalDate()?.toNiceDateFormat() ?: ""
                     ),
-                    color = Color(project?.color ?: 4294935846),
+                    color = project?.color?.getColor()?: getRandomColor().getColor(),
                     fontFamily = FontFamily(Nunito.Bold.font),
                     fontSize = 14.sp,
                     maxLines = 1,
@@ -554,7 +555,7 @@ fun EditTaskView(
                         if (descriptionOn) {
                             Icons.Outlined.PlaylistRemove
                         } else {
-                            Icons.Outlined.Notes
+                            Icons.AutoMirrored.Outlined.Notes
                         },
                         contentDescription = "Button to set due date for this task.",
                         tint = LightAppBarIconsColor
@@ -811,7 +812,7 @@ fun EditTaskView(
                     modifier = Modifier
                         .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                         .background(
-                            color = project?.color?.let { Color(it) }
+                            color = project?.color?.getColor()
                                 ?: NightDotooBrightBlue,
                             shape = RoundedCornerShape(30.dp)
                         )

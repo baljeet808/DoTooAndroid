@@ -15,7 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Message
+import androidx.compose.material.icons.automirrored.outlined.Message
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleMessageNotification
 import com.baljeet.youdotoo.common.toNiceDateTimeFormat
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
@@ -60,7 +61,7 @@ fun MessageNotificationItemView(
         ) {
 
             androidx.compose.material.Icon(
-                Icons.Outlined.Message,
+                Icons.AutoMirrored.Outlined.Message,
                 contentDescription = "Menu button to open notification settings",
                 tint = if (isSystemInDarkTheme()) {
                     NightDotooTextColor
@@ -72,7 +73,7 @@ fun MessageNotificationItemView(
                     .height(25.dp)
                     .border(
                         width = 1.dp,
-                        color = Color(notification.projectColor),
+                        color = notification.projectColor.getColor(),
                         shape = RoundedCornerShape(30.dp)
                     )
                     .padding(4.dp)
@@ -111,7 +112,7 @@ fun MessageNotificationItemView(
             text = notification.createdAt.toNiceDateTimeFormat(true),
             fontFamily = FontFamily(Nunito.Bold.font),
             fontSize = 11.sp,
-            color = Color(notification.projectColor),
+            color = notification.projectColor.getColor(),
             textAlign = TextAlign.End,
             modifier = Modifier
                 .padding(top = 4.dp)

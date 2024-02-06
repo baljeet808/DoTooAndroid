@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
@@ -215,7 +216,7 @@ fun ProjectView(
                         }
                     },
                     modifier = Modifier,
-                    containerColor = Color(project.color)
+                    containerColor = project.color.getColor()
                 ) {
                     Icon(
                         Icons.Outlined.Add,
@@ -428,7 +429,7 @@ fun ProjectView(
                     onCancel = {
                         showBlur = false
                     },
-                    themeColor = Color(taskToEdit.value?.projectEntity?.color ?: getRandomColor()),
+                    themeColor = taskToEdit.value?.projectEntity?.color?.getColor()?: getRandomColor().getColor(),
                     lines = 2
                 )
 

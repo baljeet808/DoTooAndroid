@@ -27,10 +27,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.outlined.Adjust
-import androidx.compose.material.icons.outlined.Notes
 import androidx.compose.material.icons.outlined.PlaylistRemove
 import androidx.compose.material.icons.outlined.Preview
 import androidx.compose.material3.Icon
@@ -46,7 +46,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
@@ -67,6 +66,7 @@ import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRandomColorEnum
 import com.baljeet.youdotoo.common.maxDescriptionCharsAllowed
 import com.baljeet.youdotoo.common.maxTitleCharsAllowedForProject
@@ -80,10 +80,9 @@ import com.baljeet.youdotoo.presentation.ui.theme.getLightThemeColor
 import com.baljeet.youdotoo.presentation.ui.theme.getTextColor
 import kotlinx.coroutines.delay
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CreateProjectView(
-    createProject: (name: String, description: String, color: Long) -> Unit,
+    createProject: (name: String, description: String, color: String) -> Unit,
     navigateBack: () -> Unit
 ) {
 
@@ -254,7 +253,7 @@ fun CreateProjectView(
                 Icon(
                     Icons.Outlined.Adjust,
                     contentDescription = "Button to set project color.",
-                    tint = Color(selectedColor.longValue),
+                    tint = selectedColor.name.getColor(),
                     modifier = Modifier
                         .width(30.dp)
                         .height(30.dp)
@@ -319,7 +318,7 @@ fun CreateProjectView(
                         Icon(
                             Icons.Outlined.Adjust,
                             contentDescription = "Button to set project color.",
-                            tint = Color(color.longValue),
+                            tint = color.name.getColor(),
                             modifier = Modifier
                                 .width(25.dp)
                                 .height(25.dp)
@@ -420,7 +419,7 @@ fun CreateProjectView(
                     if (descriptionOn) {
                         Icons.Outlined.PlaylistRemove
                     } else {
-                        Icons.Outlined.Notes
+                        Icons.AutoMirrored.Outlined.Notes
                     },
                     contentDescription = "Button to set add description to project.",
                     tint = LightAppBarIconsColor
@@ -519,7 +518,7 @@ fun CreateProjectView(
                             createProject(
                                 projectName,
                                 description,
-                                selectedColor.longValue
+                                selectedColor.name
                             )
                         } else {
                             projectName = ""
@@ -613,7 +612,7 @@ fun CreateProjectView(
                                 createProject(
                                     projectName,
                                     description,
-                                    selectedColor.longValue
+                                    selectedColor.name
                                 )
                             } else {
                                 projectName = ""
@@ -657,7 +656,7 @@ fun CreateProjectView(
                 modifier = Modifier
                     .shadow(elevation = 5.dp, shape = RoundedCornerShape(30.dp))
                     .background(
-                        color = Color(selectedColor.longValue),
+                        color = selectedColor.name.getColor(),
                         shape = RoundedCornerShape(30.dp)
                     )
                     .padding(top = 10.dp, bottom = 10.dp, start = 20.dp, end = 20.dp)
@@ -667,7 +666,7 @@ fun CreateProjectView(
                                 createProject(
                                     projectName,
                                     description,
-                                    selectedColor.longValue
+                                    selectedColor.name
                                 )
                             } else {
                                 projectName = ""

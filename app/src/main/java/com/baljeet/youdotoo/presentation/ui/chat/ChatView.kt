@@ -27,14 +27,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import com.baljeet.youdotoo.common.ChatScreenBottomSheetTypes
-import com.baljeet.youdotoo.common.EnumProjectColors
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
+import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.UserEntity
 import com.baljeet.youdotoo.domain.models.Project
@@ -62,7 +62,7 @@ fun ChatView(
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = Color(project?.color?:EnumProjectColors.Purple.longValue)
+        color = project?.color?.getColor()?: getRandomColor().getColor()
     )
 
     var selectedMessage: MessageEntity? by remember {

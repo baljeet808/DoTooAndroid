@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleProject
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -92,7 +93,7 @@ fun SelectProjectBottomSheet(
                     Icon(
                         Icons.Outlined.Adjust,
                         contentDescription = "Button to set due date for this task.",
-                        tint = Color(project.color),
+                        tint = project.color.getColor(),
                         modifier = Modifier
                             .width(30.dp)
                             .height(30.dp)

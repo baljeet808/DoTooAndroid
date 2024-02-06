@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumRoles
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDotooItem
 import com.baljeet.youdotoo.common.getSampleProfile
@@ -110,7 +111,7 @@ fun ProjectCardWithProfiles(
             .padding(10.dp)
             .shadow(elevation = 5.dp, shape = RoundedCornerShape(20.dp))
             .clip(shape = RoundedCornerShape(20.dp))
-            .background(color = Color(project.color)),
+            .background(color = project.color.getColor()),
         verticalArrangement = Arrangement.SpaceAround
     ) {
 
@@ -125,7 +126,7 @@ fun ProjectCardWithProfiles(
                 )
             )
             drawCircle(
-                color = Color(project.color),
+                color = project.color.getColor(),
                 radius = 100.dp.toPx(),
                 center = Offset(
                     x = 50.dp.toPx(),
@@ -234,7 +235,7 @@ fun ProjectCardWithProfiles(
                         onCancel = {
                             showEditDescriptionBox = false
                         },
-                        themeColor = Color(project.color ),
+                        themeColor = project.color.getColor(),
                         lines = 3
                     )
                 }
@@ -288,7 +289,7 @@ fun ProjectCardWithProfiles(
                     onCancel = {
                         showEditTitleBox = false
                     },
-                    themeColor = Color(project.color ),
+                    themeColor = project.color.getColor(),
                     lines = 2
                 )
             }

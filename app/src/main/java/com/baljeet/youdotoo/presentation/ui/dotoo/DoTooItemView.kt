@@ -8,7 +8,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForwardIos
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.material3.Icon
@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleTaskWithProject
 import com.baljeet.youdotoo.common.playWooshSound
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
@@ -103,7 +104,7 @@ fun DoTooItemView(
                         Icons.Outlined.Circle
                     },
                     contentDescription = "Checked circular icon",
-                    tint = Color(doToo.projectEntity.color),
+                    tint = doToo.projectEntity.color.getColor(),
                     modifier = Modifier
                         .height(if(usingForDemo){ 20.dp }else {30.dp})
                         .width(if(usingForDemo){ 20.dp }else {30.dp})
@@ -132,9 +133,9 @@ fun DoTooItemView(
             )
 
             Icon(
-                Icons.Default.ArrowForwardIos,
+                Icons.AutoMirrored.Filled.ArrowForwardIos,
                 contentDescription ="Navigate to chat button",
-                tint = Color(doToo.projectEntity.color),
+                tint = doToo.projectEntity.color.getColor(),
                 modifier = Modifier
                     .height(if(usingForDemo){ 20.dp }else {30.dp})
                     .width(if(usingForDemo){ 20.dp }else {30.dp})

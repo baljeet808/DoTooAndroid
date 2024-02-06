@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -32,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
@@ -94,7 +94,7 @@ fun ProjectCardView(
         Row(
             modifier = Modifier
                 .background(
-                    color = Color(project.project.color)
+                    color = project.project.color.getColor()
                 )
                 .fillMaxWidth()
                 .height(
@@ -184,10 +184,10 @@ fun ProjectCardView(
                 )
             )
             LinearProgressIndicator(
-                progress = animatedProgress,
+                progress = { animatedProgress },
                 modifier = Modifier,
-                color = Color(project.project.color),
-                strokeCap = StrokeCap.Round
+                color = project.project.color.getColor(),
+                strokeCap = StrokeCap.Round,
             )
         }
 

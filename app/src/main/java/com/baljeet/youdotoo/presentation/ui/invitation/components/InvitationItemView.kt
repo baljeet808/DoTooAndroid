@@ -43,6 +43,7 @@ import com.baljeet.youdotoo.common.InvitationDeclined
 import com.baljeet.youdotoo.common.InvitationPending
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.addHapticFeedback
+import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleProfile
 import com.baljeet.youdotoo.data.mappers.toUserEntity
 import com.baljeet.youdotoo.domain.models.UserInvitation
@@ -170,9 +171,9 @@ fun InvitationItemView(
                     fontSize = 13.sp,
                     fontFamily = FontFamily(Nunito.Bold.font),
                     color = if (userInvitation.invitationEntity!!.status == InvitationAccepted) {
-                        Color(EnumProjectColors.Green.longValue)
+                        EnumProjectColors.Green.name.getColor()
                     } else {
-                        Color(EnumProjectColors.Red.longValue)
+                        EnumProjectColors.Red.name.getColor()
                     },
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
