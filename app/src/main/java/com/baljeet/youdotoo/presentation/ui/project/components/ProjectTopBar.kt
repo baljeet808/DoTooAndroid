@@ -1,4 +1,4 @@
-package com.baljeet.youdotoo.presentation.ui.projects.components
+package com.baljeet.youdotoo.presentation.ui.project.components
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.VolumeMute
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.PersonAdd
-import androidx.compose.material.icons.rounded.VolumeMute
-import androidx.compose.material.icons.rounded.VolumeUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -117,9 +117,9 @@ fun ProjectTopBar(
                 Icon(
 
                     if (notificationsState){
-                        Icons.Rounded.VolumeUp
+                        Icons.AutoMirrored.Rounded.VolumeUp
                     }else{
-                        Icons.Rounded.VolumeMute
+                        Icons.AutoMirrored.Rounded.VolumeMute
                     },
                     contentDescription = "Button to Delete the project",
                     tint = Color.White

@@ -121,7 +121,7 @@ fun TasksScheduleLazyColumn(
 
     val allTasksWithProjects by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
-    val filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
+    var filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
         allTasksWithProjects
             .filter {
                     task -> getRole(task.projectEntity.toProject()) != EnumRoles.Viewer
@@ -129,6 +129,8 @@ fun TasksScheduleLazyColumn(
     }else{
         allTasksWithProjects
     }
+
+    filteredTasks = filteredTasks.filter { task -> task.projectEntity.hideFromDashboard.not() }
 
     /**
      * Logic to check if need to show empty view or not

@@ -13,8 +13,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
@@ -22,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
@@ -33,6 +40,7 @@ import com.baljeet.youdotoo.common.EnumRoles
 import com.baljeet.youdotoo.common.SharedPref
 import com.baljeet.youdotoo.common.getColor
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.theme.getDarkThemeColor
@@ -45,7 +53,8 @@ fun ProjectCardView(
     role: EnumRoles,
     onItemClick: () -> Unit,
     modifier: Modifier,
-    usingForDemo: Boolean = false
+    usingForDemo: Boolean = false,
+    hideProjectTasksFromDashboard : (project: ProjectEntity) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -99,8 +108,8 @@ fun ProjectCardView(
                 .fillMaxWidth()
                 .height(
                     if (usingForDemo) {
-                        6.dp
-                    } else 10.dp
+                        7.dp
+                    } else 12.dp
                 )
         ) {}
 
@@ -148,7 +157,6 @@ fun ProjectCardView(
                     modifier = Modifier
                 )
 
-
                 Text(
                     text = role.name,
                     color = getTextColor(),
@@ -158,8 +166,6 @@ fun ProjectCardView(
                     } else 16.sp,
                     modifier = Modifier
                 )
-
-
             }
 
             Text(
@@ -169,8 +175,8 @@ fun ProjectCardView(
                 fontSize = if (usingForDemo) {
                     14.sp
                 } else 20.sp,
-                maxLines = 2,
-                minLines = 2,
+                maxLines = 1,
+                minLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,10 +185,28 @@ fun ProjectCardView(
             Spacer(
                 modifier = Modifier.height(
                     if (usingForDemo) {
-                        5.dp
-                    } else 10.dp
+                        2.dp
+                    } else 5.dp
                 )
             )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End
+            ) {
+                IconButton(
+                    onClick = {hideProjectTasksFromDashboard(project.project)},
+                    modifier = Modifier
+                        .height(20.dp)
+                        .width(20.dp)
+                ) {
+                    Icon(
+                        if(project.project.hideFromDashboard) (Icons.Default.VisibilityOff) else (Icons.Default.Visibility),
+                        contentDescription = "Show/hide project from dashboard button",
+                        tint = Color.Gray
+                    )
+                }
+
+            }
             LinearProgressIndicator(
                 progress = { animatedProgress },
                 modifier = Modifier,
@@ -195,13 +219,14 @@ fun ProjectCardView(
 
 }
 
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
 fun DefaultProjectCardPreview() {
     ProjectCardView(
         modifier = Modifier,
         project = getSampleProjectWithTasks(),
         onItemClick = {},
-        role = EnumRoles.Editor
+        role = EnumRoles.Editor,
+        hideProjectTasksFromDashboard = {}
     )
 }

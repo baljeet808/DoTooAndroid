@@ -10,6 +10,7 @@ import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toProject
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.DeleteDoTooUseCase
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
@@ -81,7 +82,7 @@ class ProjectsViewModel @Inject constructor(
 
     private fun createProjectLocally(project: Project) {
         CoroutineScope(Dispatchers.IO).launch {
-            upsertProjectUseCase(listOf(project))
+            upsertProjectUseCase(listOf(project.toProjectEntity()))
         }
     }
 
@@ -182,6 +183,11 @@ class ProjectsViewModel @Inject constructor(
     }
 
 
+    fun hideOrShowProjectTasksOnDashboard(project : ProjectEntity){
+        val projectCopy = project.copy()
+        projectCopy.hideFromDashboard = project.hideFromDashboard.not()
+        updateProjectLocally(projectCopy)
+    }
 
     private fun updateProject(project : Project){
         val projectCopy = project.copy()
@@ -192,7 +198,7 @@ class ProjectsViewModel @Inject constructor(
                 updateProjectOnSever(projectCopy)
             }
             EnumRoles.Admin -> {
-                updateProjectLocally(projectCopy)
+                updateProjectLocally(projectCopy.toProjectEntity())
             }
             EnumRoles.Editor -> {
                 updateProjectOnSever(projectCopy)
@@ -215,7 +221,7 @@ class ProjectsViewModel @Inject constructor(
             .set(project)
     }
 
-    private fun updateProjectLocally(project : Project){
+    private fun updateProjectLocally(project : ProjectEntity){
         CoroutineScope(Dispatchers.IO).launch {
             upsertProjectUseCase(listOf(project))
         }

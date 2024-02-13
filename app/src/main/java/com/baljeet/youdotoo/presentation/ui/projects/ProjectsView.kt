@@ -59,6 +59,7 @@ import com.baljeet.youdotoo.common.getRandomColor
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleProjectWithTasks
 import com.baljeet.youdotoo.common.maxTitleCharsAllowed
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.local.relations.TaskWithProject
 import com.baljeet.youdotoo.data.mappers.toProject
@@ -85,7 +86,8 @@ fun ProjectsView(
     navigateToCreateTask: () -> Unit,
     navigateToCreateProject: () -> Unit,
     deleteTask:(TaskWithProject) -> Unit,
-    updateTaskTitle: (task: TaskWithProject, title: String) -> Unit
+    updateTaskTitle: (task: TaskWithProject, title: String) -> Unit,
+    hideProjectTasksFromDashboard : (project : ProjectEntity) -> Unit
 ) {
 
     SharedPref.init(LocalContext.current)
@@ -316,7 +318,10 @@ fun ProjectsView(
                                 .fillMaxWidth(),
                             projects = projects.sortedBy { p -> p.project.updatedAt }.reversed(),
                             navigateToDoToos = navigateToDoToos,
-                            listState = projectsListState
+                            listState = projectsListState,
+                            hideProjectTasksFromDashboard = { project ->
+                                hideProjectTasksFromDashboard(project)
+                            }
                         )
                     }
                 }
@@ -613,6 +618,7 @@ fun DefaultProjectPreview() {
         navigateToCreateTask = {},
         navigateToCreateProject = {},
         updateTaskTitle = { _, _ -> },
-        deleteTask = {}
+        deleteTask = {},
+        hideProjectTasksFromDashboard = {}
     )
 }

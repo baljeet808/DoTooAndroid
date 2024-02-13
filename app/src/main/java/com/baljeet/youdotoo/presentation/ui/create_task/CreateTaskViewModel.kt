@@ -9,6 +9,7 @@ import com.baljeet.youdotoo.common.getExactDateTimeInSecondsFrom1970
 import com.baljeet.youdotoo.common.getRole
 import com.baljeet.youdotoo.common.getSampleDateInLong
 import com.baljeet.youdotoo.data.local.entities.TaskEntity
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.use_cases.doTooItems.UpsertDoToosUseCase
 import com.baljeet.youdotoo.domain.use_cases.project.GetAllProjectsAsFlowUseCase
@@ -145,7 +146,7 @@ class CreateTaskViewModel  @Inject constructor(
 
     private fun updateProjectLocally(project : Project){
         CoroutineScope(Dispatchers.IO).launch {
-            upsertProjectUseCase(listOf(project))
+            upsertProjectUseCase(listOf(project.toProjectEntity()))
         }
     }
 

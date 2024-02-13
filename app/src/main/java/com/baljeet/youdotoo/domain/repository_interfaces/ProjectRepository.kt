@@ -12,7 +12,7 @@ interface ProjectRepository {
      fun getAllProjectsAndTasksAsFlow(): Flow<List<ProjectWithDoToos>>
      suspend fun getProjectById(projectId : String): ProjectEntity
      fun getProjectByIdAsFlow(projectId : String): Flow<ProjectEntity>
-     suspend fun upsertProject(projects : List<Project>)
+     suspend fun upsertProject(projects : List<ProjectEntity>)
      suspend fun deleteProject(project : Project)
      suspend fun searchProjects(searchQuery : String) : List<Project>
 }

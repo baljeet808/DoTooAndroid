@@ -68,6 +68,9 @@ fun NavGraphBuilder.addProjectsViewDestination(
             },
             deleteTask = { task ->
                 viewModel.deleteTask(task.task)
+            },
+            hideProjectTasksFromDashboard = { projectEntity ->
+                viewModel.hideOrShowProjectTasksOnDashboard(projectEntity)
             }
         )
     }

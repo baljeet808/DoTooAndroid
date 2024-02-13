@@ -17,5 +17,6 @@ data class ProjectEntity(
     var color : String = getRandomColor(),
     var collaboratorIds : String = "",
     var viewerIds: String = "",
-    var updatedAt : Long = getSampleDateInLong()
+    var updatedAt : Long = getSampleDateInLong(),
+    var hideFromDashboard : Boolean = false
 )

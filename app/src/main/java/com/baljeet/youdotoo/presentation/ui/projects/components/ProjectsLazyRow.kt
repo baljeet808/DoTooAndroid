@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.baljeet.youdotoo.common.getRole
+import com.baljeet.youdotoo.data.local.entities.ProjectEntity
 import com.baljeet.youdotoo.data.local.relations.ProjectWithDoToos
 import com.baljeet.youdotoo.data.mappers.toProject
 import com.baljeet.youdotoo.domain.models.Project
@@ -22,7 +23,8 @@ fun ProjectsLazyRow(
     listState : LazyListState,
     modifier: Modifier,
     projects: List<ProjectWithDoToos>,
-    navigateToDoToos: (project: Project) -> Unit
+    navigateToDoToos: (project: Project) -> Unit,
+    hideProjectTasksFromDashboard : (project : ProjectEntity) -> Unit
 ) {
 
     LazyRow(
@@ -40,7 +42,10 @@ fun ProjectsLazyRow(
                 ),
                 project = project,
                 onItemClick = { navigateToDoToos(project.project.toProject()) },
-                role = getRole(project.project.toProject())
+                role = getRole(project.project.toProject()),
+                hideProjectTasksFromDashboard = { proj ->
+                    hideProjectTasksFromDashboard(proj)
+                }
             )
         }
     }

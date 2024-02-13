@@ -46,7 +46,6 @@ import com.baljeet.youdotoo.common.maxTitleCharsAllowed
 import com.baljeet.youdotoo.data.local.entities.TaskEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
-import com.baljeet.youdotoo.presentation.ui.projects.components.ProjectTopBar
 import com.baljeet.youdotoo.presentation.ui.shared.styles.Nunito
 import com.baljeet.youdotoo.presentation.ui.shared.views.dialogs.AppCustomDialog
 import com.baljeet.youdotoo.presentation.ui.shared.views.editboxs.EditOnFlyBox

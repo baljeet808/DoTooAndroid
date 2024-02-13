@@ -39,8 +39,8 @@ class ProjectRepositoryImpl @Inject constructor(
         return projectDao.getProjectByIdAsFlow(projectId)
     }
 
-    override suspend fun upsertProject(projects: List<Project>) {
-        projectDao.upsertAll(projects.map { it.toProjectEntity() })
+    override suspend fun upsertProject(projects: List<ProjectEntity>) {
+        projectDao.upsertAll(projects )
     }
 
     override suspend fun deleteProject(project: Project) {

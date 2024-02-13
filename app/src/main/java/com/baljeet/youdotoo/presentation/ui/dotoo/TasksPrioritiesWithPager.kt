@@ -45,7 +45,7 @@ fun TasksPrioritiesWithPager(
 
     val allTasksWithProjects by viewModel.getAllTasksWithProjectAsFlow().collectAsState(initial = listOf())
 
-    val filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
+    var filteredTasks = if(SharedPref.doNotShowViewerTasksOnDashboard){
         allTasksWithProjects
             .filter {
                     task -> getRole(task.projectEntity.toProject()) != EnumRoles.Viewer
@@ -53,6 +53,8 @@ fun TasksPrioritiesWithPager(
     }else{
         allTasksWithProjects
     }
+
+    filteredTasks = filteredTasks.filter { task -> task.projectEntity.hideFromDashboard.not() }
 
     val tasksTabs = getPrioritiesTabs(filteredTasks)
 

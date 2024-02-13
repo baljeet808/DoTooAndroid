@@ -260,7 +260,8 @@ fun ProjectViewPreview() {
                         ),
                         onItemClick = {},
                         role = EnumRoles.Admin,
-                        usingForDemo = true
+                        usingForDemo = true,
+                        hideProjectTasksFromDashboard = {}
                     )
                 }
             }

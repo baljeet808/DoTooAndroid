@@ -18,6 +18,7 @@ import com.baljeet.youdotoo.data.local.entities.InvitationEntity
 import com.baljeet.youdotoo.data.local.entities.MessageEntity
 import com.baljeet.youdotoo.data.local.entities.NotificationEntity
 import com.baljeet.youdotoo.data.mappers.toProject
+import com.baljeet.youdotoo.data.mappers.toProjectEntity
 import com.baljeet.youdotoo.domain.models.Project
 import com.baljeet.youdotoo.domain.models.User
 import com.baljeet.youdotoo.domain.use_cases.database_operations.DeleteAllTablesUseCase
@@ -140,7 +141,7 @@ class DashboardViewModel @Inject constructor(
                     allOnlineProjects.add(onlineProject)
                     // save all online projects to local db
                     CoroutineScope(Dispatchers.IO).launch {
-                        upsertProjectUseCase.invoke(arrayListOf(onlineProject))
+                        upsertProjectUseCase.invoke(arrayListOf(onlineProject.toProjectEntity()))
                     }
 
                     projectsReference
